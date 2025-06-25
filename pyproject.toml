@@ -1,7 +1,82 @@
 [project]
 name = "bibliofabric"
 version = "0.1.0"
-description = "Add your description here"
+description = "Generic framework for building modern asynchronous API clients for bibliometric and scholarly data retrieval"
 readme = "README.md"
-requires-python = ">=3.13"
-dependencies = []
+authors = [
+    {name = "Samuel Mok", email = "s.mok@utwente.nl"}
+]
+license = {text = "MIT"}
+requires-python = ">=3.12"
+dependencies = [
+    "httpx>=0.27.0",
+    "tenacity>=9.1.2",
+    "pydantic>=2.9.0",
+    "pydantic-settings>=2.9.1",
+    "loguru>=0.7.0",
+    "cachetools>=5.3.0",
+    "python-dotenv>=1.1.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/utsmok/bibliofabric"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.4",
+    "pytest-asyncio>=0.26.0",
+    "pytest-cov>=6.1.1",
+    "pytest-httpx>=0.35.0",
+]
+lint = ["ruff>=0.8.0"]
+test = ["pytest", "pytest-randomly"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/bibliofabric"]
+
+[tool.uv.pip]
+generate-hashes = true
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.format]
+docstring-code-format = true
+docstring-code-line-length = 60
+
+[tool.ruff.lint]
+select = [
+    "E4",
+    "E7",
+    "E9",
+    "F",
+    "I",     # isort
+    "B",     # bugbear -- flake8 bugfinder
+    "Q",     # correct quotes usage
+    "PTH",   # Replace os functions with pathlib functions
+    "SIM",   # Simplify statements
+    "RET",   # Return value related rules
+    "PIE",   # misc flake8 rules
+    "FBT",   # boolean traps
+    "PERF",  # performance optimization
+    "PL",    # pylint
+    "UP",    # check for deprecated ways of coding
+    "FURB",
+]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_functions = "test_*"
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
