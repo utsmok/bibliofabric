@@ -1,0 +1,58 @@
+site_name: AIREloom
+site_description: Asynchronous Python client for OpenAIRE APIs.
+# repo_url: &lt;URL_to_your_Git_repository_if_any&gt; # Optional
+# edit_uri: "" # Optional, if repo_url is set
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - toc.integrate
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.annotation
+    - content.code.copy
+  language: en
+  palette:
+    - scheme: default
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+      primary: indigo
+      accent: indigo
+    - scheme: slate
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+      primary: indigo
+      accent: indigo
+
+plugins:
+  - search
+  # Note: python-extractor plugin may not be properly installed
+  # Comment out until plugin is confirmed working or replace with mkdocstrings
+  # - "python-extractor":
+  #     module_dir: "aireloom" # Path to your Python package
+
+nav:
+  - Home: index.md
+  - Installation: installation.md
+  - Getting Started: getting_started.md
+  - Authentication: authentication.md
+  - Usage:
+    - Research Products: usage/research_products.md
+    - Organizations: usage/organizations.md
+    - Data Sources: usage/data_sources.md
+    - Projects: usage/projects.md
+    - Scholix Links: usage/scholix.md
+  - Configuration: configuration.md
+  - API Reference (Basic): api_reference.md # For mkdocs-python-extractor
+  - Advanced:
+    - Configuration: advanced/configuration.md
+    - Hooks: advanced/hooks.md
+    - Rate Limiting: advanced/rate_limiting.md
+    - Error Handling: advanced/error_handling.md
+    - Caching: advanced/caching.md
