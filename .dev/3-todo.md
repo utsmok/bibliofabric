@@ -1,0 +1,55 @@
+# Project To-Do List: `bibliofabric` Refactor
+
+-   [ ] **Phase 0: Establish Project Foundation**
+    -   [ ] **Task 0.1: Set up new directory structure dependencies etc**
+        -   [ ] folder src/ should contain the `bibliofabric` folder for the generic package -- initially empty
+        -   [ ] folder src/ should contain the `aireloom` folder for the specific client library, this should be complete
+        -   [ ] both should have their own `pyproject.toml` files
+        -   [ ] `aireloom` should have a dependency on `bibliofabric`
+
+-   [ ] **Phase 1: Develop `bibliofabric` Generic Framework**
+    -   [ ] **Task 1.1: Migrate Core Modules**
+        -   [ ] Move `exceptions.py`.
+        -   [ ] Move `log_config.py`.
+        -   [ ] Move `types.py`.
+        -   [ ] Move `auth.py`.
+        -   [ ] Update all internal imports within these files.
+    -   [ ] **Task 1.2: Create Generic Settings**
+        -   [ ] Create `bibliofabric/config.py`.
+        -   [ ] Define `BaseApiSettings` with only generic fields (timeout, retries, cache, etc.).
+    -   [ ] **Task 1.3: Define Core Protocols**
+        -   [ ] Create `bibliofabric/models.py`.
+        -   [ ] Define the `ResponseUnwrapper` protocol inside it.
+    -   [ ] **Task 1.4: Implement the `BaseApiClient`**
+        -   [ ] Create `bibliofabric/client.py`.
+        -   [ ] Implement `BaseApiClient`, ensuring its `__init__` accepts a `ResponseUnwrapper`.
+        -   [ ] Port all generic request, retry, cache, and rate-limit logic from `aireloom`.
+    -   [ ] **Task 1.5: Implement Generic Resource Mixins**
+        -   [ ] Create `bibliofabric/resources.py`.
+        -   [ ] Implement `BaseResourceClient`.
+        -   [ ] Implement `GettableMixin`.
+        -   [ ] Implement `SearchableMixin`.
+        -   [ ] Implement `CursorIterableMixin`.
+
+-   [ ] **Phase 2: Refactor `aireloom` to use `bibliofabric`**
+    -   [ ] **Task 2.1: Implement the OpenAIRE Unwrapper**
+        -   [ ] Create `aireloom/unwrapper.py`.
+        -   [ ] Implement `OpenAireUnwrapper` class, satisfying the `ResponseUnwrapper` protocol.
+    -   [ ] **Task 2.2: Refactor `aireloom` Client & Config**
+        -   [ ] Update `aireloom.config.ApiSettings` to inherit from `BaseApiSettings`.
+        -   [ ] Update `aireloom.client.AireloomClient` to inherit from `BaseApiClient`.
+        -   [ ] Update `AireloomClient.__init__` to pass the `OpenAireUnwrapper` to the parent class.
+    -   [ ] **Task 2.3: Refactor `aireloom` Resource Clients**
+        -   [ ] Update `ResearchProductsClient` to use mixins.
+        -   [ ] Update `ProjectsClient` to use mixins.
+        -   [ ] Update `OrganizationsClient` to use mixins.
+        -   [ ] Update `DataSourcesClient` to use mixins.
+        -   [ ] Verify `ScholixClient` and adapt as needed, keeping its custom logic.
+
+-   [ ] **Phase 3: Validate the Refactor**
+    -   [ ] **Task 3.1: Execute All Tests**
+        -   [ ] Run `pytest` suite.
+        -   [ ] Run `verification_script.py`.
+    -   [ ] **Task 3.2: Resolve All Failures**
+        -   [ ] Debug any failing tests.
+        -   [ ] Ensure functionality is identical to the pre-refactor version.
