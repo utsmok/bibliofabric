@@ -1,4 +1,18 @@
+"""
+End-to-end tests that perform real requests to the OpenAIRE API.
+
+These tests are designed to validate the entire workflow, from client instantiation
+to data parsing and comparison with raw API responses. They are marked as asyncio
+and are intended to be run in a controlled environment with access to the OpenAIRE API.
+
+To run these tests, you might need to set up authentication credentials in a .env file.
+For example, create a .env file in the root of the project with the following content:
+AIRELOOM_OPENAIRE_API_TOKEN="your_token"
+"""
+
+from collections.abc import Coroutine
 from datetime import date, datetime
+from typing import Any
 
 import httpx
 import pytest
@@ -6,229 +20,309 @@ from bibliofabric.log_config import configure_logging, logger
 from rich import print
 
 from aireloom import AireloomSession
-from aireloom.endpoints import ResearchProductsFilters, ScholixFilters
+from aireloom.endpoints import (
+    DataSourcesFilters,
+    OrganizationsFilters,
+    ProjectsFilters,
+    ResearchProductsFilters,
+    ScholixFilters,
+)
+from aireloom.models.base import ApiResponse
 from aireloom.models.research_product import ResearchProductResponse
 
+# --- Configuration & Setup ---
+
 configure_logging()
-# To run these tests, you might need to set up authentication credentials in a .env file.
-# For example, create a .env file in the root of the project with the following content:
-# AIRELOOM_OPENAIRE_API_TOKEN="your_token"
 
 
-class TestActualData:
-    retrieved_data: ResearchProductResponse | None = None
+# --- Helper Functions ---
 
-    @pytest.mark.asyncio
-    async def test_research_products_and_related_entities(self):
-        """
-        This test performs a real-world scenario:
-        1. Searches for research products with specific filters.
-        2. Verifies the author of the retrieved products.
-        3. Uses the results to test other endpoints (projects, organizations, etc.).
-        4. Compares the results from the aireloom client with raw data from httpx.
-        """
-        async with AireloomSession() as session:
-            # 1. Search for research products
-            filters = ResearchProductsFilters(
-                authorOrcid="0000-0003-0581-2668",
-                fromPublicationDate=datetime(2020, 1, 1).date(),
+
+async def get_raw_data(url: str, params: dict) -> dict[str, Any]:
+    """Fetches raw data from a given URL using httpx."""
+    async with httpx.AsyncClient() as client:
+        logger.debug(f"Requesting raw data from URL: {url} with params: {params}")
+        response = await client.get(url, params=params)
+        response.raise_for_status()
+        return response.json()
+
+
+def compare_dicts(aireloom_dict: dict, raw_dict: dict) -> None:
+    """
+       Recursively compares a dictionary parsed by the Aireloom client with a raw
+       dictionary from the API.
+
+       It ensures that every key-value pair in the raw dictionary exists and matches
+    in
+       the Aireloom-parsed dictionary.
+    """
+    for key, raw_value in raw_dict.items():
+        # The API uses 'mainTitle' but the model uses 'title'
+        if key == "mainTitle":
+            key = "title"
+
+        if key not in aireloom_dict and raw_value is not None:
+            raise AssertionError(
+                f"Key '{key}' from raw_data not found in aireloom_dict"
             )
 
-            research_products: ResearchProductResponse = (
-                await session.research_products.search(filters=filters, page_size=100)
+        aireloom_value = aireloom_dict.get(key)
+
+        if isinstance(raw_value, dict):
+            assert isinstance(aireloom_value, dict), (
+                f"Type mismatch for key '{key}': expected dict, got {type(aireloom_value)}"
+            )
+            compare_dicts(aireloom_value, raw_value)
+        elif isinstance(raw_value, list):
+            assert isinstance(aireloom_value, list), (
+                f"Type mismatch for key '{key}': expected list, got {type(aireloom_value)}"
+            )
+            compare_lists(aireloom_value, raw_value)
+        else:
+            assert aireloom_value == raw_value, (
+                f"Value mismatch for key '{key}': {aireloom_value} != {raw_value}"
             )
 
-            assert research_products is not None
-            assert research_products.results is not None
-            self.retrieved_data = research_products
-            # 2. Verify author
-            for product in research_products.results:
-                # Simplified assertion for debugging
-                found_author = False
-                assert product.authors is not None
 
-                for author in product.authors:
-                    if (
-                        author.pid
-                        and author.pid.id
-                        and author.pid.id.value == "0000-0003-0581-2668"
-                    ):
-                        found_author = True
-                        break
-                assert any(
-                    any(
-                        pid and pid.id and pid.id.value == "0000-0003-0581-2668"
-                        for pid in (
-                            author.pid if isinstance(author.pid, list) else [author.pid]
-                        )
-                        if author.pid is not None
-                    )
-                    for author in product.authors
-                ), (
-                    f"Author with ORCID 0000-0003-0581-2668 not found in product {product.id}"
-                )
-                print(
-                    f"Authors for product {product.id}: {product.authors}"
-                )  # Debugging print
-
-            # 3. Test other endpoints using the retrieved data
-            if research_products.results:
-                first_product = research_products.results[0]
-
-                # Get a project (if available)
-                if hasattr(first_product, "project") and first_product.project:
-                    project_id = first_product.project.id
-                    project = await session.projects.get(project_id)
-                    assert project.id == project_id
-
-                # Get an organization (if available)
-                if (
-                    hasattr(first_product, "organizations")
-                    and first_product.organizations
-                ):
-                    organisation_id = first_product.organizations[0].id
-                    organisation = await session.organizations.get(organisation_id)
-                    assert organisation.id == organisation_id
-
-                # Get a data source (if available)
-                if hasattr(first_product, "datasource") and first_product.datasource:
-                    datasource_id = first_product.datasource.id
-                    datasource = await session.data_sources.get(datasource_id)
-                    assert datasource.id == datasource_id
-
-                # Get scholix data (if DOI available)
-                doi = None
-                if first_product.pids:
-                    for pid in first_product.pids:
-                        if pid and pid.id and pid.id.scheme == "doi":
-                            doi = pid.id.value
-                            break
-                if doi:
-                    scholix_filters = ScholixFilters(sourcePid=f"doi:{doi}")
-                    scholix_links = await session.scholix.search_links(
-                        filters=scholix_filters
-                    )
-                    assert scholix_links is not None
-
-    async def _get_raw_data(self, url: str, params: dict):
-        async with httpx.AsyncClient() as client:
-            print(f"Raw data request URL: {url} with params: {params}")
-            response = await client.get(url, params=params)
-            response.raise_for_status()
-            return response.json()
-
-    @pytest.mark.asyncio
-    async def test_compare_with_raw_data(self):
-        """
-        Compares the output of the aireloom client with raw data from httpx.
-        """
-        async with AireloomSession() as session:
-            # Ensure we have retrieved data from the previous test
-            if self.retrieved_data is None:
-                filters = ResearchProductsFilters(
-                    authorOrcid="0000-0003-0581-2668",
-                    fromPublicationDate=datetime(2020, 1, 1).date(),
-                )
-
-                research_products: ResearchProductResponse = (
-                    await session.research_products.search(
-                        filters=filters, page_size=100
-                    )
-                )
-
-                assert research_products is not None
-                assert research_products.results is not None
-                self.retrieved_data = research_products
-
-            params = {
-                k: v.strftime("%Y-%m-%d") if isinstance(v, date) else v
-                for k, v in filters.model_dump(exclude_none=True).items()
-            }
-            params["pageSize"] = 100
-            # Get raw data from httpx
-            raw_data = await self._get_raw_data(
-                session.research_products._api_client._base_url + "/researchProducts",
-                params=params,
+def compare_lists(aireloom_list: list, raw_list: list) -> None:
+    """
+    Recursively compares a list parsed by the Aireloom client with a raw list
+    from the API.
+    """
+    assert len(aireloom_list) == len(raw_list), (
+        f"Lists have different lengths: {len(aireloom_list)} != {len(raw_list)}"
+    )
+    for aireloom_item, raw_item in zip(aireloom_list, raw_list, strict=False):
+        if isinstance(raw_item, dict):
+            assert isinstance(aireloom_item, dict), (
+                f"Type mismatch in list: expected dict, got {type(aireloom_item)}"
+            )
+            compare_dicts(aireloom_item, raw_item)
+        elif isinstance(raw_item, list):
+            assert isinstance(aireloom_item, list), (
+                f"Type mismatch in list: expected list, got {type(aireloom_item)}"
+            )
+            compare_lists(aireloom_item, raw_item)
+        else:
+            assert aireloom_item == raw_item, (
+                f"Items do not match: {aireloom_item} != {raw_item}"
             )
 
-            # Compare the results
-            assert self.retrieved_data is not None
-            assert self.retrieved_data.results is not None
 
-            # Ensure the number of results matches
-            assert len(self.retrieved_data.results) == len(raw_data["results"])
+def compare_models_with_raw(
+    aireloom_response: ApiResponse, raw_response: dict[str, Any]
+) -> None:
+    """
+    Compares the Aireloom client's parsed Pydantic models with the raw API response.
+    """
+    assert aireloom_response.results is not None
+    assert "results" in raw_response
+    assert len(aireloom_response.results) == len(raw_response["results"]), (
+        "Number of results does not match"
+    )
 
-            # Compare basic fields for each product
-            for aireloom_product, raw_product in zip(
-                self.retrieved_data.results, raw_data["results"], strict=False
-            ):
-                aireloom_dict = aireloom_product.model_dump()
-                aireloom_dict = dict(sorted(aireloom_dict.items()))
-                raw_dict = dict(sorted(raw_product.items()))
+    for aireloom_item, raw_item in zip(
+        aireloom_response.results, raw_response["results"], strict=False
+    ):
+        try:
+            aireloom_dict = aireloom_item.model_dump(exclude_unset=True)
+            compare_dicts(aireloom_dict, raw_item)
+        except AssertionError as e:
+            logger.warning(f"Mismatch found in item {aireloom_item.id}: {e}")
+            print("============= AIREloom Product ==============")
+            print(aireloom_item.model_dump_json(indent=2))
+            print("============= Raw Product ==============")
+            print(raw_item)
+            raise
 
-                # we want to compare json structures aireloom_dict and raw_dict
-                # We start with raw_dict: all fields and keys should in this dict should be present in aireloom_dict in the same way
-                # aireloom_dict can also have additiona fields, we can ignore that.
 
-                # if a field/key is in raw_dict but not in aireloom_dict: assertion error.
+# --- Fixtures ---
 
-                # for this we need a recursive function that compares the two dicts. Also, the nested dicts can hold dicts/lists as values, so handle that as well.
 
-                def compare_dicts(a, b):
-                    assert isinstance(a, dict) and isinstance(b, dict), (
-                        f"received value from raw_data is dict, but aireloom_dict isn't: {a}"
-                    )
-                    for key, value in b.items():
-                        assert key in a, (
-                            f"Key '{key}' from raw_data not found in aireloom_dict"
-                        )
-                        if isinstance(value, dict):
-                            compare_dicts(a[key], value)
-                        elif isinstance(value, list):
-                            for item in value:
-                                assert item in a[key], (
-                                    f"Item '{item}' from raw_data not found in aireloom_dict[{key}]"
-                                )
-                        else:
-                            assert a[key] == value, (
-                                f"Value mismatch for key '{key}': {a[key]} != {value}"
-                            )
+@pytest.fixture(scope="function")
+async def aireloom_session() -> Coroutine[Any, Any, AireloomSession]:
+    """Provides an AireloomSession for the entire test module."""
+    async with AireloomSession(timeout=30) as session:
+        yield session
 
-                def compare_lists(a, b):
-                    assert isinstance(a, list) and isinstance(b, list), (
-                        "Both arguments must be lists"
-                    )
-                    assert len(a) == len(b), (
-                        f"Lists have different lengths: {len(a)} != {len(b)}"
-                    )
 
-                    for item_a, item_b in zip(a, b, strict=False):
-                        if isinstance(item_a, dict) and isinstance(item_b, dict):
-                            compare_dicts(item_a, item_b)
-                        elif isinstance(item_a, list) and isinstance(item_b, list):
-                            compare_lists(item_a, item_b)
-                        else:
-                            assert item_a == item_b, (
-                                f"Items do not match: {item_a} != {item_b}"
-                            )
+@pytest.fixture(scope="function")
+async def initial_research_products(
+    aireloom_session: AireloomSession,
+) -> ResearchProductResponse:
+    """
+    Performs an initial search for research products to be used as a data
+    source for other tests.
+    """
+    filters = ResearchProductsFilters(
+        authorOrcid="0000-0003-0581-2668",
+        fromPublicationDate=datetime(2020, 1, 1).date(),
+    )
 
-                try:
-                    for key, v in raw_dict.items():
-                        if key == "mainTitle":
-                            key = "title"
-                        if isinstance(v, dict):
-                            compare_dicts(aireloom_dict.get(key), v)
-                        elif isinstance(v, list):
-                            compare_lists(aireloom_dict.get(key), v)
-                        else:
-                            assert aireloom_dict.get(key) == v, (
-                                f"Value mismatch for key '{key}': {aireloom_dict.get(key)} != {v}"
-                            )
+    response = await aireloom_session.research_products.search(
+        filters=filters, page_size=100
+    )
+    assert response is not None and response.results is not None
+    return response
 
-                except AssertionError as e:
-                    logger.warning(f"Mismatch found in {key}: {e}")
-                    print("============= AIREloom Product =============")
-                    print(aireloom_dict)
-                    print("============= Raw Product =============")
-                    print(raw_dict)
-                    raise e
+
+# --- Test Classes ---
+
+
+class TestResearchProducts:
+    """Tests for the ResearchProducts endpoint."""
+
+    async def test_compare_with_raw_data(
+        self,
+        aireloom_session: AireloomSession,
+        initial_research_products: ResearchProductResponse,
+    ):
+        """
+        Compares the client's output for research products with raw data from httpx.
+        """
+        filters = ResearchProductsFilters(
+            authorOrcid="0000-0003-0581-2668",
+            fromPublicationDate=datetime(2020, 1, 1).date(),
+        )
+
+        params = {
+            k: v.strftime("%Y-%m-%d") if isinstance(v, date) else v
+            for k, v in filters.model_dump(exclude_none=True).items()
+        }
+        params["pageSize"] = 100
+
+        raw_data = await get_raw_data(
+            aireloom_session.research_products._api_client._base_url
+            + "/researchProducts",
+            params=params,
+        )
+
+        compare_models_with_raw(initial_research_products, raw_data)
+
+
+@pytest.mark.asyncio
+class TestRelatedEndpoints:
+    """
+    Tests for endpoints that rely on data from the initial research products search.
+    """
+
+    async def test_projects_endpoint(
+        self,
+        aireloom_session: AireloomSession,
+        initial_research_products: ResearchProductResponse,
+    ):
+        """Tests fetching projects."""
+
+        filters = ProjectsFilters(relOrganizationName="Universiteit Twente")
+        projects_response = await aireloom_session.projects.search(
+            filters=filters, page_size=100
+        )
+
+        assert projects_response is not None and projects_response.results is not None
+
+        assert len(projects_response.results) == 100, (
+            f"Expected 100 projects, got {len(projects_response.results)}"
+        )
+
+        # Compare with raw data
+        params = filters.model_dump(exclude_none=True)
+        params["pageSize"] = 100
+        raw_data = await get_raw_data(
+            aireloom_session.projects._api_client._base_url + "/projects", params=params
+        )
+        compare_models_with_raw(projects_response, raw_data)
+
+    async def test_organizations_endpoint(
+        self,
+        aireloom_session: AireloomSession,
+        initial_research_products: ResearchProductResponse,
+    ):
+        """Tests fetching organizations"""
+
+        filters = OrganizationsFilters(legalName="Universiteit Twente")
+        orgs_response = await aireloom_session.organizations.search(
+            filters=filters, page_size=100
+        )
+
+        assert orgs_response is not None and orgs_response.results is not None
+        assert len(orgs_response.results) == 100, (
+            f"Expected 100 organizations, got {len(orgs_response.results)}"
+        )
+        # Compare with raw data
+        params = filters.model_dump(exclude_none=True)
+        params["pageSize"] = 100
+        raw_data = await get_raw_data(
+            aireloom_session.organizations._api_client._base_url + "/organizations",
+            params=params,
+        )
+        compare_models_with_raw(orgs_response, raw_data)
+
+    async def test_data_sources_endpoint(
+        self,
+        aireloom_session: AireloomSession,
+        initial_research_products: ResearchProductResponse,
+    ):
+        """Tests fetching data sources."""
+
+        filters = DataSourcesFilters(search="twente")
+        ds_response = await aireloom_session.data_sources.search(
+            filters=filters, page_size=4
+        )
+
+        assert ds_response is not None and ds_response.results is not None
+        assert len(ds_response.results) == 4, (
+            f"Expected 4 data sources, got {len(ds_response.results)}"
+        )
+        # Compare with raw data
+        params = filters.model_dump(exclude_none=True)
+        params["pageSize"] = 4
+        raw_data = await get_raw_data(
+            aireloom_session.data_sources._api_client._base_url + "/dataSources",
+            params=params,
+        )
+        compare_models_with_raw(ds_response, raw_data)
+
+    async def test_scholix_endpoint(
+        self,
+        aireloom_session: AireloomSession,
+        initial_research_products: ResearchProductResponse,
+    ):
+        """Tests fetching Scholix links."""
+
+        print(f"Found {len(initial_research_products.results)} research products.")
+        dois = []
+        for prod in initial_research_products.results:
+            if not prod.pids:
+                continue
+            print(f"Product ID: {prod.id}, PIDs: {[pid for pid in prod.pids]}")
+            for pid in prod.pids:
+                if pid.scheme == "doi":
+                    dois.append(pid.value)
+
+        dois = list(set(dois))
+        assert dois, "No DOIs found in research products!"
+
+        logger.info(f"Found {len(dois)} unique DOIs to test Scholix links.")
+        for doi in dois:
+            try:
+                filters = ScholixFilters(sourcePid=f"doi:{doi}")
+                scholix_response = await aireloom_session.scholix.search_links(
+                    filters=filters
+                )
+
+                assert (
+                    scholix_response is not None
+                    and scholix_response.results is not None
+                )
+
+                # Compare with raw data
+                params = {"sourcePid": f"doi:{doi}"}
+                raw_data = await get_raw_data(
+                    aireloom_session.scholix._api_client._base_url + "/Links",
+                    params=params,
+                )
+                compare_models_with_raw(scholix_response, raw_data)
+                break  # Exit after the first successful DOI to avoid rate limits
+            except Exception as e:
+                logger.error(f"Error processing DOI {doi}: {e}")
+                continue

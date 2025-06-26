@@ -67,30 +67,47 @@
     -   [x] **Task 3.3: Create a real-world example test script for the `aireloom` library**
         -   [X] Create a new test script in the `aireloom` test suite named `test_actual_data.py` or similar.
         -   [X] Follow the `aireloom` guidelines for setting up the client & retrieving data: use the README.md as primary entry point; and the rest of the docs (`src/aireloom/docs`) as reference if needed.
-        -   [X] Also set up a manual API retrieval function that calls the OpenAIRE API directly using `httpx` with the  same parameters as the `aireloom` client calls. Store this raw data for later comparison.
-    -   [ ] **Task 3.4: Use this test to validate the research product endpoint of the `aireloom` library**
+        -   [X] Also set up a manual API retrieval function that calls the OpenAIRE API directly using `httpx` with the  same parameters as the `aireloom` client calls.
+    -   [x] **Task 3.4: Use this test to validate the research product endpoint of the `aireloom` library**
           -   [X] Set up a `ResearchProductsFilters` instance to use as a filter for the research_products endpoint. Use the specific parameters listed below.
               -   [X] `authorOrcid`: "0000-0003-0581-2668"
               -   [X] `fromPublicationDate`: "2020-01-01"
           -   [X] Retrieve the list of research products using the filter. Verify that all retrieved items have the expected author listed (i.e. the one with the ORCID "0000-0003-0581-2668", name should be Han Gardeniers or a variant of that).
           -   [X] Solve issues that arise during the process.
                 - [X] The parsed output from the `aireloom` client should match the raw output retrieved using `httpx`.
-     -   [ ] **Task 3.5: Validate all other endpoints using the retrieved research products as a starting point**
-          -   [ ] Test all other available endpoints (listed below). Use the retrieved research products from the previous step to extract the necessary identifiers to use as parameters for the other endpoints. Preferably, use the OpenAIRE IDs of the linked products, but if not available, use other structured identifiers. Make sure to retrieve at least 5 items from each endpoint. Use the research products test script as a template for testing the others -- but make sure to adapt the filters and parameters to match the specific endpoint requirements.
-              -   [ ] Projects
-                -   [ ] Filtered query succesfully run with expected results.
-                -   [ ] Compare all raw output retrieved using HTTPX with the parsed & verified output from the `aireloom` client (i.e. the pydantic models representing the data).
-              -   [ ] Organizations
-                -   [ ] Filtered query succesfully run with expected results.
-                -   [ ] Compare all raw output retrieved using HTTPX with the parsed & verified output from the `aireloom` client (i.e. the pydantic models representing the data).
-              -   [ ] Data Sources
-                -   [ ] Filtered query succesfully run with expected results.
-                -   [ ] Compare all raw output retrieved using HTTPX with the parsed & verified output from the `aireloom` client (i.e. the pydantic models representing the data).
-              -   [ ] Scholix
-                -   [ ] Filtered query succesfully run with expected results.
-                -   [ ] Compare all raw output retrieved using HTTPX with the parsed & verified output from the `aireloom` client (i.e. the pydantic models representing the data).
+     -   [x] **Task 3.5: Validate all other endpoints using the retrieved research products as a starting point**
+          -   [X] Test all other available endpoints (listed below).  Make sure to retrieve more than 1 item from each endpoint.
+              -   [X] Projects
+                -   [X] Filtered query succesfully run with expected results.
+                -   [X] Compare all raw output retrieved using HTTPX with the parsed & verified output from the `aireloom` client (i.e. the pydantic models representing the data).
+              -   [X] Organizations
+                -   [X] Filtered query succesfully run with expected results.
+                -   [X] Compare all raw output retrieved using HTTPX with the parsed & verified output from the `aireloom` client (i.e. the pydantic models representing the data).
+              -   [X] Data Sources
+                -   [X] Filtered query succesfully run with expected results.
+                -   [X] Compare all raw output retrieved using HTTPX with the parsed & verified output from the `aireloom` client (i.e. the pydantic models representing the data).
+              -   [X] Scholix
+                -   [X] Filtered query succesfully run with expected results.
+                -   [X] Compare all raw output retrieved using HTTPX with the parsed & verified output from the `aireloom` client (i.e. the pydantic models representing the data).
+      -   [ ] **Task 3.6: Final touches**
+          -   [ ] Verify that the test suite covers all functionality and edge cases of the `aireloom` client. Basic pytest cmd: `uv run pytest /src/aireloom/tests`. Make sure the coverage is up to spec.
+          -   [ ] Verify that the test suite covers all functionality and edge cases of the `bibliofabric` package. Basic pytest cmd: `uv run pytest /src/bibliofabric/tests`. Make sure the coverage is up to spec.
+          -   [ ]  Ensure that all code is properly documented, including:
+              -   [ ] Docstrings for all classes, methods, and functions.
+              -   [ ] Inline comments where necessary to explain complex logic.
+          -   [ ] Update all README.md files for both `bibliofabric` and `aireloom` to reflect the new structure and usage.
+          -   [ ] Build the documentation for `aireloom` using mkdocs.
+          -   [ ] Set up the documentation for `bibliofabric` using mkdocs.
+          -   [ ] Build the documentation for `bibliofabric` using mkdocs.
+          -   [ ] Ensure that the `aireloom` and `bibliofabric` packages are properly versioned and ready for release, including
+              -   [ ] Updating the version number in `pyproject.toml`.
+              -   [ ] Ensuring all dependencies are correctly listed and cleaned up.
+              -   [ ] Verifying that the package can be installed from source and works as expected.
+              -   [ ] Create a release branch for `bibliofabric` and `aireloom` to prepare for the final release.
+              -   [ ] Any other final touches that are needed to ensure a smooth release process.
 
-              -
+
+
 # Decisions & Notes
 
 *Record decisions made during development, including why certain approaches were chosen, alternatives considered, and any relevant context.*

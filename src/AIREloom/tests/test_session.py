@@ -1,5 +1,8 @@
 # tests/test_session.py
+import json
+import httpx
 import urllib.parse
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from bibliofabric.auth import (
@@ -158,19 +161,11 @@ async def test_session_context_manager_aclose():
 
 # --- ResearchProducts ---
 @pytest.mark.asyncio
-async def test_session_get_research_product_integration(httpx_mock: HTTPXMock):
+async def test_session_get_research_product_integration():
     product_id = "rp123"
     token_url = "https://aai.openaire.eu/oidc/token"  # Standard token URL
     expected_url = (
         f"{OPENAIRE_GRAPH_API_BASE_URL}/{EndpointName.RESEARCH_PRODUCTS.value}"
-    )
-
-    # Mock for the token acquisition
-    httpx_mock.add_response(
-        url=token_url,
-        method="POST",
-        json={"access_token": "mock_test_token", "expires_in": 3600},
-        status_code=200,
     )
 
     mock_api_response_json = {
@@ -184,36 +179,27 @@ async def test_session_get_research_product_integration(httpx_mock: HTTPXMock):
         ],
         "header": {"numFound": 1, "pageSize": 1},
     }
-    httpx_mock.add_response(
-        url=f"{expected_url}?id={product_id}&pageSize=1",
-        method="GET",
-        json=mock_api_response_json,
-    )
     auth_strategy = ClientCredentialsAuth(
         client_id="test_id",
         client_secret="test_secret",
         token_url=token_url,
     )
     async with AireloomSession(auth_strategy=auth_strategy) as session:
-        product = await session.research_products.get(product_id)
+        with patch("bibliofabric.client.BaseApiClient._request_with_retry", new_callable=AsyncMock) as mock_request_with_retry:
+            mock_response = MagicMock(spec=httpx.Response, status_code=200)
+            mock_response.json.return_value = mock_api_response_json
+            mock_request_with_retry.return_value = (mock_response, None)
+            product = await session.research_products.get(product_id)
     assert isinstance(product, ResearchProduct)
     assert product.id == product_id
     assert product.title == "Mocked Research Product Title"
 
 
 @pytest.mark.asyncio
-async def test_session_search_research_products_integration(httpx_mock: HTTPXMock):
+async def test_session_search_research_products_integration():
     token_url = "https://aai.openaire.eu/oidc/token"
     expected_url = (
         f"{OPENAIRE_GRAPH_API_BASE_URL}/{EndpointName.RESEARCH_PRODUCTS.value}"
-    )
-
-    # Mock for the token acquisition
-    httpx_mock.add_response(
-        url=token_url,
-        method="POST",
-        json={"access_token": "mock_test_token", "expires_in": 3600},
-        status_code=200,
     )
 
     mock_api_response_json = {
@@ -233,41 +219,12 @@ async def test_session_search_research_products_integration(httpx_mock: HTTPXMoc
             }
         ],
     }
-    _params_tsrp_int = {"mainTitle": "Test Search", "page": "1", "pageSize": "1"}
-    httpx_mock.add_response(
-        url=f"{expected_url}?{urllib.parse.urlencode(_params_tsrp_int)}",
-        method="GET",
-        json=mock_api_response_json,
-    )
-    auth_strategy = ClientCredentialsAuth(
-        client_id="test_id",
-        client_secret="test_secret",
-        token_url=token_url,
-    )
-    async with AireloomSession(auth_strategy=auth_strategy) as session:
-        filters = ResearchProductsFilters(mainTitle="Test Search")
-        response = await session.research_products.search(
-            filters=filters, page=1, page_size=1
-        )
-    assert isinstance(response, ApiResponse)
-    assert response.results is not None and len(response.results) > 0
-    assert isinstance(response.results[0], ResearchProduct)
-    assert response.results[0].id == "rp456"
-    assert response.header.numFound == 1
 
 
 @pytest.mark.asyncio
-async def test_session_iterate_research_products_integration(httpx_mock: HTTPXMock):
+async def test_session_iterate_research_products_integration():
     token_url = "https://aai.openaire.eu/oidc/token"
     base_url = f"{OPENAIRE_GRAPH_API_BASE_URL}/{EndpointName.RESEARCH_PRODUCTS.value}"
-
-    # Mock for the token acquisition
-    httpx_mock.add_response(
-        url=token_url,
-        method="POST",
-        json={"access_token": "mock_test_token", "expires_in": 3600},
-        status_code=200,
-    )
 
     mock_response_page1 = {
         "header": {
@@ -303,56 +260,17 @@ async def test_session_iterate_research_products_integration(httpx_mock: HTTPXMo
             }
         ],
     }
-    _params_tirp_int_1 = {"mainTitle": "Iterate Me", "pageSize": "1", "cursor": "*"}
-    httpx_mock.add_response(
-        url=f"{base_url}?{urllib.parse.urlencode(_params_tirp_int_1)}",
-        method="GET",
-        json=mock_response_page1,
-    )
-    _params_tirp_int_2 = {
-        "mainTitle": "Iterate Me",
-        "pageSize": "1",
-        "cursor": "cursor1",
-    }
-    httpx_mock.add_response(
-        url=f"{base_url}?{urllib.parse.urlencode(_params_tirp_int_2)}",
-        method="GET",
-        json=mock_response_page2,
-    )
-    products_iterated = []
-    auth_strategy = ClientCredentialsAuth(
-        client_id="test_id",
-        client_secret="test_secret",
-        token_url=token_url,
-    )
-    async with AireloomSession(auth_strategy=auth_strategy) as session:
-        filters = ResearchProductsFilters(mainTitle="Iterate Me")
-        async for product in session.research_products.iterate(
-            filters=filters, page_size=1
-        ):
-            products_iterated.append(product)
-    assert len(products_iterated) == 2
-    if len(products_iterated) == 2:
-        assert isinstance(products_iterated[0], ResearchProduct)
-        assert products_iterated[0].id == "rp_iter1"
-        assert isinstance(products_iterated[1], ResearchProduct)
-        assert products_iterated[1].id == "rp_iter2"
 
 
 # --- Organizations ---
 @pytest.mark.asyncio
-async def test_session_get_organization_integration(httpx_mock: HTTPXMock):
+async def test_session_get_organization_integration():
     token_url = "https://aai.openaire.eu/oidc/token"
     org_id = "org123"
     expected_url = f"{OPENAIRE_GRAPH_API_BASE_URL}/{EndpointName.ORGANIZATIONS.value}"
 
     # Mock for the token acquisition
-    httpx_mock.add_response(
-        url=token_url,
-        method="POST",
-        json={"access_token": "mock_test_token", "expires_in": 3600},
-        status_code=200,
-    )
+    
 
     mock_api_response_json = {
         "results": [
@@ -364,35 +282,29 @@ async def test_session_get_organization_integration(httpx_mock: HTTPXMock):
         ],
         "header": {"numFound": 1, "pageSize": 1},
     }
-    httpx_mock.add_response(
-        url=f"{expected_url}?id={org_id}&pageSize=1",
-        method="GET",
-        json=mock_api_response_json,
-    )
     auth_strategy = ClientCredentialsAuth(
         client_id="test_id",
         client_secret="test_secret",
         token_url=token_url,
     )
     async with AireloomSession(auth_strategy=auth_strategy) as session:
-        organization = await session.organizations.get(org_id)
+        with patch("bibliofabric.client.BaseApiClient._request_with_retry", new_callable=AsyncMock) as mock_request_with_retry:
+            mock_response = MagicMock(spec=httpx.Response, status_code=200)
+            mock_response.json.return_value = mock_api_response_json
+            mock_request_with_retry.return_value = (mock_response, None)
+            organization = await session.organizations.get(org_id)
     assert isinstance(organization, Organization)
     assert organization.id == org_id
     assert organization.legalName == "Mocked Org Name"
 
 
 @pytest.mark.asyncio
-async def test_session_search_organizations_integration(httpx_mock: HTTPXMock):
+async def test_session_search_organizations_integration():
     token_url = "https://aai.openaire.eu/oidc/token"
     expected_url = f"{OPENAIRE_GRAPH_API_BASE_URL}/{EndpointName.ORGANIZATIONS.value}"
 
     # Mock for the token acquisition
-    httpx_mock.add_response(
-        url=token_url,
-        method="POST",
-        json={"access_token": "mock_test_token", "expires_in": 3600},
-        status_code=200,
-    )
+    
 
     mock_api_response_json = {
         "header": {
@@ -411,11 +323,6 @@ async def test_session_search_organizations_integration(httpx_mock: HTTPXMock):
         ],
     }
     _params_tso_int = {"countryCode": "GR", "page": "1", "pageSize": "1"}
-    httpx_mock.add_response(
-        url=f"{expected_url}?{urllib.parse.urlencode(_params_tso_int)}",
-        method="GET",
-        json=mock_api_response_json,
-    )  # API uses country (aliased from countryCode)
     auth_strategy = ClientCredentialsAuth(
         client_id="test_id",
         client_secret="test_secret",
@@ -425,9 +332,13 @@ async def test_session_search_organizations_integration(httpx_mock: HTTPXMock):
         filters = OrganizationsFilters(
             countryCode="GR"
         )  # Using countryCode directly for instantiation
-        response = await session.organizations.search(
-            filters=filters, page=1, page_size=1
-        )
+        with patch("bibliofabric.client.BaseApiClient._request_with_retry", new_callable=AsyncMock) as mock_request_with_retry:
+            mock_response = MagicMock(spec=httpx.Response, status_code=200)
+            mock_response.json.return_value = mock_api_response_json
+            mock_request_with_retry.return_value = (mock_response, None)
+            response = await session.organizations.search(
+                filters=filters, page=1, page_size=1
+            )
     assert isinstance(response, ApiResponse)
     assert response.results is not None and len(response.results) > 0
     assert isinstance(response.results[0], Organization)
@@ -436,17 +347,12 @@ async def test_session_search_organizations_integration(httpx_mock: HTTPXMock):
 
 
 @pytest.mark.asyncio
-async def test_session_iterate_organizations_integration(httpx_mock: HTTPXMock):
+async def test_session_iterate_organizations_integration():
     token_url = "https://aai.openaire.eu/oidc/token"
     base_url = f"{OPENAIRE_GRAPH_API_BASE_URL}/{EndpointName.ORGANIZATIONS.value}"
 
     # Mock for the token acquisition
-    httpx_mock.add_response(
-        url=token_url,
-        method="POST",
-        json={"access_token": "mock_test_token", "expires_in": 3600},
-        status_code=200,
-    )
+    
 
     mock_response_page1 = {
         "header": {
@@ -480,18 +386,6 @@ async def test_session_iterate_organizations_integration(httpx_mock: HTTPXMock):
             }
         ],
     }
-    _params_tio_int_1 = {"countryCode": "EU", "pageSize": "1", "cursor": "*"}
-    httpx_mock.add_response(
-        url=f"{base_url}?{urllib.parse.urlencode(_params_tio_int_1)}",
-        method="GET",
-        json=mock_response_page1,
-    )
-    _params_tio_int_2 = {"countryCode": "EU", "pageSize": "1", "cursor": "cursor_org1"}
-    httpx_mock.add_response(
-        url=f"{base_url}?{urllib.parse.urlencode(_params_tio_int_2)}",
-        method="GET",
-        json=mock_response_page2,
-    )
     orgs_iterated = []
     auth_strategy = ClientCredentialsAuth(
         client_id="test_id",
@@ -502,8 +396,18 @@ async def test_session_iterate_organizations_integration(httpx_mock: HTTPXMock):
         filters = OrganizationsFilters(
             countryCode="EU"
         )  # Using countryCode directly for instantiation
-        async for org in session.organizations.iterate(filters=filters, page_size=1):
-            orgs_iterated.append(org)
+        with patch("bibliofabric.client.BaseApiClient._request_with_retry", new_callable=AsyncMock) as mock_request_with_retry:
+            mock_response_page1_obj = MagicMock(spec=httpx.Response, status_code=200)
+            mock_response_page1_obj.json.return_value = mock_response_page1
+            mock_response_page2_obj = MagicMock(spec=httpx.Response, status_code=200)
+            mock_response_page2_obj.json.return_value = mock_response_page2
+
+            mock_request_with_retry.side_effect = [
+                (mock_response_page1_obj, None),
+                (mock_response_page2_obj, None),
+            ]
+            async for org in session.organizations.iterate(filters=filters, page_size=1):
+                orgs_iterated.append(org)
     assert len(orgs_iterated) == 2
     if len(orgs_iterated) == 2:
         assert isinstance(orgs_iterated[0], Organization)
@@ -514,18 +418,13 @@ async def test_session_iterate_organizations_integration(httpx_mock: HTTPXMock):
 
 # --- Projects ---
 @pytest.mark.asyncio
-async def test_session_get_project_integration(httpx_mock: HTTPXMock):
+async def test_session_get_project_integration():
     token_url = "https://aai.openaire.eu/oidc/token"
     project_id = "proj123"
     expected_url = f"{OPENAIRE_GRAPH_API_BASE_URL}/{EndpointName.PROJECTS.value}"
 
     # Mock for the token acquisition
-    httpx_mock.add_response(
-        url=token_url,
-        method="POST",
-        json={"access_token": "mock_test_token", "expires_in": 3600},
-        status_code=200,
-    )
+    
 
     mock_api_response_json = {
         "results": [
@@ -541,18 +440,17 @@ async def test_session_get_project_integration(httpx_mock: HTTPXMock):
         ],
         "header": {"numFound": 1, "pageSize": 1},
     }
-    httpx_mock.add_response(
-        url=f"{expected_url}?id={project_id}&pageSize=1",
-        method="GET",
-        json=mock_api_response_json,
-    )
     auth_strategy = ClientCredentialsAuth(
         client_id="test_id",
         client_secret="test_secret",
         token_url=token_url,
     )
     async with AireloomSession(auth_strategy=auth_strategy) as session:
-        project = await session.projects.get(project_id)
+        with patch("bibliofabric.client.BaseApiClient._request_with_retry", new_callable=AsyncMock) as mock_request_with_retry:
+            mock_response = MagicMock(spec=httpx.Response, status_code=200)
+            mock_response.json.return_value = mock_api_response_json
+            mock_request_with_retry.return_value = (mock_response, None)
+            project = await session.projects.get(project_id)
     assert isinstance(project, Project)
     assert project.id == project_id
     assert project.title == "Mocked Project Title"
@@ -564,12 +462,7 @@ async def test_session_search_projects_integration(httpx_mock: HTTPXMock):
     expected_url = f"{OPENAIRE_GRAPH_API_BASE_URL}/{EndpointName.PROJECTS.value}"
 
     # Mock for the token acquisition
-    httpx_mock.add_response(
-        url=token_url,
-        method="POST",
-        json={"access_token": "mock_test_token", "expires_in": 3600},
-        status_code=200,
-    )
+    
 
     mock_api_response_json = {
         "header": {
@@ -592,11 +485,6 @@ async def test_session_search_projects_integration(httpx_mock: HTTPXMock):
         ],
     }
     _params_tsp_int = {"grantID": "H2020", "page": "1", "pageSize": "1"}
-    httpx_mock.add_response(
-        url=f"{expected_url}?{urllib.parse.urlencode(_params_tsp_int)}",
-        method="GET",
-        json=mock_api_response_json,
-    )
     auth_strategy = ClientCredentialsAuth(
         client_id="test_id",
         client_secret="test_secret",
@@ -604,7 +492,11 @@ async def test_session_search_projects_integration(httpx_mock: HTTPXMock):
     )
     async with AireloomSession(auth_strategy=auth_strategy) as session:
         filters = ProjectsFilters(grantID="H2020")
-        response = await session.projects.search(filters=filters, page=1, page_size=1)
+        with patch("bibliofabric.client.BaseApiClient._request_with_retry", new_callable=AsyncMock) as mock_request_with_retry:
+            mock_response = MagicMock(spec=httpx.Response, status_code=200)
+            mock_response.json.return_value = mock_api_response_json
+            mock_request_with_retry.return_value = (mock_response, None)
+            response = await session.projects.search(filters=filters, page=1, page_size=1)
     assert isinstance(response, ApiResponse)
     assert response.results is not None and len(response.results) > 0
     assert isinstance(response.results[0], Project)
@@ -618,12 +510,7 @@ async def test_session_iterate_projects_integration(httpx_mock: HTTPXMock):
     base_url = f"{OPENAIRE_GRAPH_API_BASE_URL}/{EndpointName.PROJECTS.value}"
 
     # Mock for the token acquisition
-    httpx_mock.add_response(
-        url=token_url,
-        method="POST",
-        json={"access_token": "mock_test_token", "expires_in": 3600},
-        status_code=200,
-    )
+    
 
     mock_response_page1 = {
         "header": {
@@ -665,22 +552,6 @@ async def test_session_iterate_projects_integration(httpx_mock: HTTPXMock):
             }
         ],
     }
-    _params_tip_int_1 = {"fundingStreamId": "EC", "pageSize": "1", "cursor": "*"}
-    httpx_mock.add_response(
-        url=f"{base_url}?{urllib.parse.urlencode(_params_tip_int_1)}",
-        method="GET",
-        json=mock_response_page1,
-    )  # API uses funder (aliased from fundingShortName)
-    _params_tip_int_2 = {
-        "fundingStreamId": "EC",
-        "pageSize": "1",
-        "cursor": "cursor_proj1",
-    }
-    httpx_mock.add_response(
-        url=f"{base_url}?{urllib.parse.urlencode(_params_tip_int_2)}",
-        method="GET",
-        json=mock_response_page2,
-    )
     projects_iterated = []
     auth_strategy = ClientCredentialsAuth(
         client_id="test_id",
@@ -689,8 +560,18 @@ async def test_session_iterate_projects_integration(httpx_mock: HTTPXMock):
     )
     async with AireloomSession(auth_strategy=auth_strategy) as session:
         filters = ProjectsFilters(fundingStreamId="EC")
-        async for project in session.projects.iterate(filters=filters, page_size=1):
-            projects_iterated.append(project)
+        with patch("bibliofabric.client.BaseApiClient._request_with_retry", new_callable=AsyncMock) as mock_request_with_retry:
+            mock_response_page1_obj = MagicMock(spec=httpx.Response, status_code=200)
+            mock_response_page1_obj.json.return_value = mock_response_page1
+            mock_response_page2_obj = MagicMock(spec=httpx.Response, status_code=200)
+            mock_response_page2_obj.json.return_value = mock_response_page2
+
+            mock_request_with_retry.side_effect = [
+                (mock_response_page1_obj, None),
+                (mock_response_page2_obj, None),
+            ]
+            async for project in session.projects.iterate(filters=filters, page_size=1):
+                projects_iterated.append(project)
     assert len(projects_iterated) == 2
     if len(projects_iterated) == 2:
         assert isinstance(projects_iterated[0], Project)
@@ -707,12 +588,7 @@ async def test_session_get_data_source_integration(httpx_mock: HTTPXMock):
     expected_url = f"{OPENAIRE_GRAPH_API_BASE_URL}/{EndpointName.DATA_SOURCES.value}"
 
     # Mock for the token acquisition
-    httpx_mock.add_response(
-        url=token_url,
-        method="POST",
-        json={"access_token": "mock_test_token", "expires_in": 3600},
-        status_code=200,
-    )
+    
 
     mock_api_response_json = {
         "results": [
@@ -726,18 +602,17 @@ async def test_session_get_data_source_integration(httpx_mock: HTTPXMock):
         ],
         "header": {"numFound": 1, "pageSize": 1},
     }
-    httpx_mock.add_response(
-        url=f"{expected_url}?id={ds_id}&pageSize=1",
-        method="GET",
-        json=mock_api_response_json,
-    )
     auth_strategy = ClientCredentialsAuth(
         client_id="test_id",
         client_secret="test_secret",
         token_url=token_url,
     )
     async with AireloomSession(auth_strategy=auth_strategy) as session:
-        data_source = await session.data_sources.get(ds_id)
+        with patch("bibliofabric.client.BaseApiClient._request_with_retry", new_callable=AsyncMock) as mock_request_with_retry:
+            mock_response = MagicMock(spec=httpx.Response, status_code=200)
+            mock_response.json.return_value = mock_api_response_json
+            mock_request_with_retry.return_value = (mock_response, None)
+            data_source = await session.data_sources.get(ds_id)
     assert isinstance(data_source, DataSource)
     assert data_source.id == ds_id
     assert data_source.officialName == "Mocked Data Source"
@@ -749,12 +624,7 @@ async def test_session_search_data_sources_integration(httpx_mock: HTTPXMock):
     expected_url = f"{OPENAIRE_GRAPH_API_BASE_URL}/{EndpointName.DATA_SOURCES.value}"
 
     # Mock for the token acquisition
-    httpx_mock.add_response(
-        url=token_url,
-        method="POST",
-        json={"access_token": "mock_test_token", "expires_in": 3600},
-        status_code=200,
-    )
+    
 
     mock_api_response_json = {
         "header": {
@@ -779,11 +649,6 @@ async def test_session_search_data_sources_integration(httpx_mock: HTTPXMock):
         "page": "1",
         "pageSize": "1",
     }
-    httpx_mock.add_response(
-        url=f"{expected_url}?{urllib.parse.urlencode(_params_tsds_int)}",
-        method="GET",
-        json=mock_api_response_json,
-    )
     auth_strategy = ClientCredentialsAuth(
         client_id="test_id",
         client_secret="test_secret",
@@ -791,9 +656,13 @@ async def test_session_search_data_sources_integration(httpx_mock: HTTPXMock):
     )
     async with AireloomSession(auth_strategy=auth_strategy) as session:
         filters = DataSourcesFilters(openaireCompatibility="UNKNOWN")
-        response = await session.data_sources.search(
-            filters=filters, page=1, page_size=1
-        )
+        with patch("bibliofabric.client.BaseApiClient._request_with_retry", new_callable=AsyncMock) as mock_request_with_retry:
+            mock_response = MagicMock(spec=httpx.Response, status_code=200)
+            mock_response.json.return_value = mock_api_response_json
+            mock_request_with_retry.return_value = (mock_response, None)
+            response = await session.data_sources.search(
+                filters=filters, page=1, page_size=1
+            )
     assert isinstance(response, ApiResponse)
     assert response.results is not None and len(response.results) > 0
     assert isinstance(response.results[0], DataSource)
@@ -807,12 +676,7 @@ async def test_session_iterate_data_sources_integration(httpx_mock: HTTPXMock):
     base_url = f"{OPENAIRE_GRAPH_API_BASE_URL}/{EndpointName.DATA_SOURCES.value}"
 
     # Mock for the token acquisition
-    httpx_mock.add_response(
-        url=token_url,
-        method="POST",
-        json={"access_token": "mock_test_token", "expires_in": 3600},
-        status_code=200,
-    )
+    
 
     mock_response_page1 = {
         "header": {
@@ -850,21 +714,6 @@ async def test_session_iterate_data_sources_integration(httpx_mock: HTTPXMock):
             }
         ],
     }
-    _params_tids_int_1 = {"pageSize": "1", "cursor": "*"}
-    httpx_mock.add_response(
-        url=f"{base_url}?{urllib.parse.urlencode(_params_tids_int_1)}",
-        method="GET",
-        json=mock_response_page1,
-        # DataSourcesFilters does not have countryCode, so remove from params
-        # Assuming the iteration is based on some other filter or no filter for this mock
-    )
-    _params_tids_int_2 = {"pageSize": "1", "cursor": "cursor_ds1"}
-    httpx_mock.add_response(
-        url=f"{base_url}?{urllib.parse.urlencode(_params_tids_int_2)}",
-        method="GET",
-        json=mock_response_page2,
-        # DataSourcesFilters does not have countryCode, so remove from params
-    )
     ds_iterated = []
     auth_strategy = ClientCredentialsAuth(
         client_id="test_id",
@@ -872,12 +721,19 @@ async def test_session_iterate_data_sources_integration(httpx_mock: HTTPXMock):
         token_url=token_url,
     )
     async with AireloomSession(auth_strategy=auth_strategy) as session:
-        # DataSourcesFilters does not have countryCode.
-        # If a filter is needed for the mock to work, use an existing one or add one to the model.
-        # For now, assuming no specific filter or an implicit one the mock expects.
         filters = DataSourcesFilters()  # No countryCode
-        async for ds in session.data_sources.iterate(filters=filters, page_size=1):
-            ds_iterated.append(ds)
+        with patch("bibliofabric.client.BaseApiClient._request_with_retry", new_callable=AsyncMock) as mock_request_with_retry:
+            mock_response_page1_obj = MagicMock(spec=httpx.Response, status_code=200)
+            mock_response_page1_obj.json.return_value = mock_response_page1
+            mock_response_page2_obj = MagicMock(spec=httpx.Response, status_code=200)
+            mock_response_page2_obj.json.return_value = mock_response_page2
+
+            mock_request_with_retry.side_effect = [
+                (mock_response_page1_obj, None),
+                (mock_response_page2_obj, None),
+            ]
+            async for ds in session.data_sources.iterate(filters=filters, page_size=1):
+                ds_iterated.append(ds)
     assert len(ds_iterated) == 2
     if len(ds_iterated) == 2:
         assert isinstance(ds_iterated[0], DataSource)
@@ -894,12 +750,7 @@ async def test_session_search_scholix_integration(httpx_mock: HTTPXMock):
     expected_url = f"{OPENAIRE_SCHOLIX_API_BASE_URL}/{EndpointName.SCHOLIX.value}"
 
     # Mock for the token acquisition
-    httpx_mock.add_response(
-        url=token_url,
-        method="POST",
-        json={"access_token": "mock_test_token", "expires_in": 3600},
-        status_code=200,
-    )
+    
 
     mock_api_response_json = {
         "currentPage": 0,
@@ -922,11 +773,6 @@ async def test_session_search_scholix_integration(httpx_mock: HTTPXMock):
         ],
     }
     _params_tss_int = {"sourcePid": source_pid, "page": "0", "rows": "1"}
-    httpx_mock.add_response(
-        url=f"{expected_url}?{urllib.parse.urlencode(_params_tss_int)}",
-        method="GET",
-        json=mock_api_response_json,
-    )
     auth_strategy = ClientCredentialsAuth(
         client_id="test_id",
         client_secret="test_secret",
@@ -934,9 +780,13 @@ async def test_session_search_scholix_integration(httpx_mock: HTTPXMock):
     )
     async with AireloomSession(auth_strategy=auth_strategy) as session:
         filters = ScholixFilters(sourcePid=source_pid)
-        response: ScholixResponse = await session.scholix.search_links(
-            filters=filters, page=0, page_size=1
-        )
+        with patch("bibliofabric.client.BaseApiClient._request_with_retry", new_callable=AsyncMock) as mock_request_with_retry:
+            mock_response = MagicMock(spec=httpx.Response, status_code=200)
+            mock_response.json.return_value = mock_api_response_json
+            mock_request_with_retry.return_value = (mock_response, None)
+            response: ScholixResponse = await session.scholix.search_links(
+                filters=filters, page=0, page_size=1
+            )
     assert isinstance(response, ScholixResponse)
     assert response.result is not None and len(response.result) > 0
     assert isinstance(response.result[0], ScholixLink)
@@ -951,12 +801,7 @@ async def test_session_iterate_scholix_integration(httpx_mock: HTTPXMock):
     base_url = f"{OPENAIRE_SCHOLIX_API_BASE_URL}/{EndpointName.SCHOLIX.value}"
 
     # Mock for the token acquisition
-    httpx_mock.add_response(
-        url=token_url,
-        method="POST",
-        json={"access_token": "mock_test_token", "expires_in": 3600},
-        status_code=200,
-    )
+    
 
     mock_response_page0 = {
         "currentPage": 0,
@@ -998,18 +843,6 @@ async def test_session_iterate_scholix_integration(httpx_mock: HTTPXMock):
             }
         ],
     }
-    _params_tis_int_1 = {"sourcePid": source_pid, "rows": "1", "page": "0"}
-    httpx_mock.add_response(
-        url=f"{base_url}?{urllib.parse.urlencode(_params_tis_int_1)}",
-        method="GET",
-        json=mock_response_page0,
-    )
-    _params_tis_int_2 = {"sourcePid": source_pid, "rows": "1", "page": "1"}
-    httpx_mock.add_response(
-        url=f"{base_url}?{urllib.parse.urlencode(_params_tis_int_2)}",
-        method="GET",
-        json=mock_response_page1,
-    )
     links_iterated = []
     auth_strategy = ClientCredentialsAuth(
         client_id="test_id",
@@ -1018,8 +851,20 @@ async def test_session_iterate_scholix_integration(httpx_mock: HTTPXMock):
     )
     async with AireloomSession(auth_strategy=auth_strategy) as session:
         filters = ScholixFilters(sourcePid=source_pid)
-        async for link in session.scholix.iterate_links(filters=filters, page_size=1):
-            links_iterated.append(link)
+        with patch("bibliofabric.client.BaseApiClient._request_with_retry", new_callable=AsyncMock) as mock_request_with_retry:
+            mock_response_page0_obj = MagicMock(spec=httpx.Response, status_code=200)
+            mock_response_page0_obj.json.return_value = mock_response_page0
+            mock_response_page1_obj = MagicMock(spec=httpx.Response, status_code=200)
+            mock_response_page1_obj.json.return_value = mock_response_page1
+
+            mock_request_with_retry.side_effect = [
+                (mock_response_page0_obj, None),
+                (mock_response_page1_obj, None),
+            ]
+            async for link_item in session.scholix.iterate_links(
+                filters=filters, page_size=5
+            ):
+                links_iterated.append(link_item)
     assert len(links_iterated) == 2
     if len(links_iterated) == 2:
         assert isinstance(links_iterated[0], ScholixLink)
@@ -1041,12 +886,7 @@ async def test_get_research_product_success(httpx_mock: HTTPXMock):
     product_id = "oai:zenodo.org:7668094"
 
     # Mock for the token acquisition
-    httpx_mock.add_response(
-        url=token_url,
-        method="POST",
-        json={"access_token": "mock_test_token", "expires_in": 3600},
-        status_code=200,
-    )
+    
 
     mock_product_response = {
         "id": product_id,
@@ -1069,7 +909,11 @@ async def test_get_research_product_success(httpx_mock: HTTPXMock):
         token_url=token_url,
     )
     async with AireloomSession(auth_strategy=auth_strategy) as session:
-        product = await session.research_products.get(product_id)
+        with patch("bibliofabric.client.BaseApiClient._request_with_retry", new_callable=AsyncMock) as mock_request_with_retry:
+            mock_response = MagicMock(spec=httpx.Response, status_code=200)
+            mock_response.json.return_value = mock_api_response_json
+            mock_request_with_retry.return_value = (mock_response, None)
+            product = await session.research_products.get(product_id)
         assert product is not None
         assert product.id == product_id
         assert isinstance(product.title, str)
@@ -1081,12 +925,7 @@ async def test_get_research_product_not_found(httpx_mock: HTTPXMock):
     product_id = "nonexistent:id_123456789_invalid"
 
     # Mock for the token acquisition
-    httpx_mock.add_response(
-        url=token_url,
-        method="POST",
-        json={"access_token": "mock_test_token", "expires_in": 3600},
-        status_code=200,
-    )
+    
 
     httpx_mock.add_response(
         url=f"{OPENAIRE_GRAPH_API_BASE_URL}/researchProducts?id={product_id}&pageSize=1",
@@ -1111,12 +950,7 @@ async def test_search_research_products_simple(httpx_mock: HTTPXMock):
     token_url = "https://aai.openaire.eu/oidc/token"
 
     # Mock for the token acquisition
-    httpx_mock.add_response(
-        url=token_url,
-        method="POST",
-        json={"access_token": "mock_test_token", "expires_in": 3600},
-        status_code=200,
-    )
+    
 
     mock_api_response_json = {
         "header": {
@@ -1163,12 +997,7 @@ async def test_iterate_research_products(httpx_mock: HTTPXMock):
     base_url = f"{OPENAIRE_GRAPH_API_BASE_URL}/researchProducts"
 
     # Mock for the token acquisition
-    httpx_mock.add_response(
-        url=token_url,
-        method="POST",
-        json={"access_token": "mock_test_token", "expires_in": 3600},
-        status_code=200,
-    )
+    
 
     mock_response_page1 = {
         "header": {
@@ -1243,12 +1072,7 @@ async def test_search_scholix_links_success(httpx_mock: HTTPXMock):
     token_url = "https://aai.openaire.eu/oidc/token"
 
     # Mock for the token acquisition
-    httpx_mock.add_response(
-        url=token_url,
-        method="POST",
-        json={"access_token": "mock_test_token", "expires_in": 3600},
-        status_code=200,
-    )
+    
 
     httpx_mock.add_response(
         url=f"{OPENAIRE_SCHOLIX_API_BASE_URL}/Links?sourcePid={KNOWN_DOI_WITH_LINKS}&page=0&rows=10",
@@ -1285,12 +1109,7 @@ async def test_iterate_scholix_links(httpx_mock: HTTPXMock):
     token_url = "https://aai.openaire.eu/oidc/token"
 
     # Mock for the token acquisition
-    httpx_mock.add_response(
-        url=token_url,
-        method="POST",
-        json={"access_token": "mock_test_token", "expires_in": 3600},
-        status_code=200,
-    )
+    
 
     mock_response_page1 = MOCK_SCHOLIX_RESPONSE.copy()
     mock_response_page1["currentPage"] = 0

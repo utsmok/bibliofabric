@@ -21,7 +21,6 @@ import tenacity
 from cachetools import TTLCache
 from tenacity import (
     AsyncRetrying,
-    RetryError,
     stop_after_attempt,
     wait_exponential,
 )
@@ -449,7 +448,7 @@ class BaseApiClient:
         data: Mapping[str, Any] | None = None,
         base_url_override: str | None = None,
         expected_model: type[Any] | None = None,
-    ) -> tuple[httpx.Response, Any | None]:
+    ) -> tuple[httpx.Response, Any | None, int]:
         """Make an HTTP request with configured retries for transient errors.
 
         Args:
@@ -462,8 +461,8 @@ class BaseApiClient:
             expected_model: Optional Pydantic model for response parsing.
 
         Returns:
-            tuple[httpx.Response, Any | None]: The HTTP response and optionally
-                parsed model instance.
+            tuple[httpx.Response, Any | None, int]: The HTTP response, optionally
+                parsed model instance, and the number of attempts made.
 
         Raises:
             Various exceptions depending on failure type after all retries are exhausted.
@@ -552,23 +551,19 @@ class BaseApiClient:
             reraise=True,  # Reraise the exception if all retries fail
             before_sleep=self._before_retry_sleep,  # Log before sleeping
         )
+
+        @retry_strategy
+        async def _call_execute_single_request():
+            return await self._execute_single_request(request_data)
+
         try:
-            return await retry_strategy.__call__(
-                self._execute_single_request, request_data, expected_model
+            response, parsed_model = await retry_strategy(
+                self._execute_single_request, request_data
             )
-        except RetryError as e:  # This catches tenacity's RetryError
-            logger.error(
-                f"All retries failed for {request_data.url}. Last exception: {e.last_attempt.exception() if e.last_attempt else 'Unknown'}"
-            )
-            # Re-raise the original exception that caused the retries to fail
-            if e.last_attempt and e.last_attempt.failed:
-                original_exception = e.last_attempt.exception()
-                if original_exception:
-                    raise original_exception from e
-            # Fallback if for some reason last_attempt is not available
-            raise BibliofabricError(
-                f"All retries failed for {request_data.url}. No specific last exception captured."
-            ) from e
+            return response, parsed_model, retry_strategy.statistics['attempt_number']
+        except Exception as e:
+            logger.error(f"Request failed after multiple retries: {e}")
+            raise
 
     async def _before_retry_sleep(self, retry_state: tenacity.RetryCallState) -> None:
         """Log details before tenacity sleeps between retries.
@@ -694,7 +689,7 @@ class BaseApiClient:
                     return cached_item  # cached_item is the parsed_model
 
         # --- Execute Request (if not a cache hit or not cacheable) ---
-        response, parsed_model = await self._request_with_retry(
+        response, parsed_model, attempts = await self._request_with_retry(
             method=method,
             path=path,
             params=params,

@@ -8,6 +8,7 @@ from pydantic import (
     ConfigDict,
     Field,
     field_validator,
+    model_validator,
 )
 
 from .base import ApiResponse, BaseEntity
@@ -26,23 +27,11 @@ logger = logging.getLogger(__name__)
 
 
 # Sub-models for nested structures
-class PidIdentifier(BaseModel):
-    scheme: str | None = None
-    value: str | None = None
-
-    model_config = ConfigDict(extra="allow")
-
-
-class PidProvenance(BaseModel):
-    provenance: str | None = None
-    trust: float | None = None
-
-    model_config = ConfigDict(extra="allow")
 
 
 class Pid(BaseModel):
-    id: PidIdentifier | None = None
-    provenance: PidProvenance | None = None
+    scheme: str | None = None
+    value: str | None = None
 
     model_config = ConfigDict(extra="allow")
 
@@ -68,7 +57,6 @@ class BestAccessRight(BaseModel):
 class ResultCountry(BaseModel):
     code: str | None = None
     label: str | None = None
-    provenance: PidProvenance | None = None
 
     model_config = ConfigDict(extra="allow")
 
@@ -145,7 +133,6 @@ class License(BaseModel):
 
     code: str | None = None
     label: str | None = None
-    provenance: PidProvenance | None = None
 
     model_config = ConfigDict(extra="allow")
 
@@ -198,7 +185,6 @@ class Language(BaseModel):
 
 class Subject(BaseModel):
     subject: dict[str, str] | None = None
-    provenance: PidProvenance | None = None
 
     model_config = ConfigDict(extra="allow")
 
@@ -234,7 +220,7 @@ class ResearchProduct(BaseEntity):
     originalIds: list[str] | None = Field(default_factory=list)
     pids: list[Pid] | None = Field(default_factory=list)
     type: ResearchProductType | None = None
-    title: str | None = Field(None, alias="mainTitle")
+    title: str | None = None
     authors: list[Author] | None = Field(default_factory=list)
     bestAccessRight: BestAccessRight | None = None
     country: ResultCountry | None = None
@@ -247,26 +233,10 @@ class ResearchProduct(BaseEntity):
     subjects: list[Subject] | None = Field(default_factory=list)
     container: Container | None = None
     geoLocation: GeoLocation | None = None
-    # Added based on documentation/analysis
     keywords: list[str] | None = Field(default_factory=list)
-    journal: Container | None = (
-        None  # Alias for container, if needed for specific mapping
-    )
-    # Fields from OpenAIRE documentation that might be relevant
-    # dateOfAcceptance: str | None = None
-    # firstOnlineDate: str | None = None
-    # lastUpdateDate: str | None = None
-    # embargoEndDate: str | None = None
-    # alternativeAbstracts: list[dict[str, str]] | None = Field(default_factory=list)
-    # fundingReferences: list[dict[str, Any]] | None = Field(default_factory=list) # Complex, define if needed
-    # relatedProducts: list[dict[str, Any]] | None = Field(default_factory=list) # Complex, define if needed
-    # alternateIdentifiers: list[dict[str, str]] | None = Field(default_factory=list)
-    # formats: list[str] | None = Field(default_factory=list)
-    # rights: list[dict[str, str]] | None = Field(default_factory=list)
-    # sources: list[str] | None = Field(default_factory=list)
-    # relevance: float | None = None # Often part of search result metadata, not the entity itself
+    journal: Container | None = None
 
-    model_config = ConfigDict(extra="allow")
+    model_config = ConfigDict(extra="allow", populate_by_name=True)
 
     @field_validator("keywords", mode="before")
     @classmethod
@@ -280,6 +250,14 @@ class ResearchProduct(BaseEntity):
             f"Unexpected value for ResearchProduct.keywords: {v}. Expected string or None."
         )
         return None  # Or raise ValueError if strictness is preferred
+
+    @model_validator(mode="before")
+    @classmethod
+    def get_title_from_main_title(cls, data: Any) -> Any:
+        """Populate title from mainTitle if title is not present."""
+        if isinstance(data, dict) and "mainTitle" in data:
+            data["title"] = data.pop("mainTitle")
+        return data
 
 
 # Define the specific response type for ResearchProduct results
