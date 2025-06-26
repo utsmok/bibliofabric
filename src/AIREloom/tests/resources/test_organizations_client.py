@@ -1,23 +1,23 @@
 # tests/resources/test_organizations_client.py
 from unittest.mock import AsyncMock
 
-import httpx  # Import httpx
+import httpx
 import pytest
 from bibliofabric.exceptions import BibliofabricError, ValidationError
 
+from aireloom.client import AireloomClient
 from aireloom.constants import DEFAULT_PAGE_SIZE
 from aireloom.endpoints import ORGANIZATIONS, OrganizationsFilters
-from aireloom.models import (
-    Header,
-    Organization,  # For type hinting search results
-)
+from aireloom.models import Header, Organization
 from aireloom.resources import OrganizationsClient
+from aireloom.unwrapper import OpenAireUnwrapper
 
 
 @pytest.fixture
-def mock_api_client_fixture():  # Renamed
+def mock_api_client_fixture():
     """Fixture to create a mock AireloomClient."""
-    mock_client = AsyncMock()
+    mock_client = AsyncMock(spec=AireloomClient)
+    mock_client._response_unwrapper = OpenAireUnwrapper()
     mock_http_response = AsyncMock(spec=httpx.Response)
     mock_http_response.status_code = 200
     mock_http_response.json.return_value = {
@@ -36,7 +36,7 @@ def mock_api_client_fixture():  # Renamed
 
 @pytest.fixture
 def organizations_client(mock_api_client_fixture: AsyncMock) -> OrganizationsClient:
-    """Fixture to create an OrganizationsClient with a mocked API client."""
+    """Fixture to create a OrganizationsClient with a mocked API client."""
     return OrganizationsClient(api_client=mock_api_client_fixture)
 
 

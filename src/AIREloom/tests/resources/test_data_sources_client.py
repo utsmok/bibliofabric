@@ -1,23 +1,23 @@
 # tests/resources/test_data_sources_client.py
 from unittest.mock import AsyncMock
 
-import httpx  # Import httpx
+import httpx
 import pytest
 from bibliofabric.exceptions import BibliofabricError, ValidationError
 
+from aireloom.client import AireloomClient
 from aireloom.constants import DEFAULT_PAGE_SIZE
 from aireloom.endpoints import DATA_SOURCES, DataSourcesFilters
-from aireloom.models import (
-    DataSource,
-    Header,
-)
+from aireloom.models import DataSource, Header
 from aireloom.resources import DataSourcesClient
+from aireloom.unwrapper import OpenAireUnwrapper
 
 
 @pytest.fixture
-def mock_api_client_fixture():  # Renamed
+def mock_api_client_fixture():
     """Fixture to create a mock AireloomClient."""
-    mock_client = AsyncMock()
+    mock_client = AsyncMock(spec=AireloomClient)
+    mock_client._response_unwrapper = OpenAireUnwrapper()
     mock_http_response = AsyncMock(spec=httpx.Response)
     mock_http_response.status_code = 200
     mock_http_response.json.return_value = {
@@ -30,8 +30,7 @@ def mock_api_client_fixture():  # Renamed
         },
         "results": [],
     }
-    # Make request return the response object directly, not as a coroutine
-    mock_client.request = AsyncMock(return_value=mock_http_response)
+    mock_client.request.return_value = mock_http_response
     return mock_client
 
 

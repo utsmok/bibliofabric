@@ -1,23 +1,23 @@
 # tests/resources/test_projects_client.py
 from unittest.mock import AsyncMock
 
-import httpx  # Import httpx
+import httpx
 import pytest
 from bibliofabric.exceptions import BibliofabricError, ValidationError
 
+from aireloom.client import AireloomClient
 from aireloom.constants import DEFAULT_PAGE_SIZE
 from aireloom.endpoints import PROJECTS, ProjectsFilters
-from aireloom.models import (
-    Header,
-    Project,  # For type hinting search results
-)
+from aireloom.models import Header, Project
 from aireloom.resources import ProjectsClient
+from aireloom.unwrapper import OpenAireUnwrapper
 
 
 @pytest.fixture
-def mock_api_client_fixture():  # Renamed
+def mock_api_client_fixture():
     """Fixture to create a mock AireloomClient."""
-    mock_client = AsyncMock()
+    mock_client = AsyncMock(spec=AireloomClient)
+    mock_client._response_unwrapper = OpenAireUnwrapper()
     mock_http_response = AsyncMock(spec=httpx.Response)
     mock_http_response.status_code = 200
     mock_http_response.json.return_value = {
@@ -62,15 +62,12 @@ async def test_get_project(
         "header": {"numFound": 1, "pageSize": 1},
     }
     mock_api_client_fixture.request.return_value = mock_http_response
-
     project = await projects_client.get(project_id)
 
     mock_api_client_fixture.request.assert_called_once_with(
         "GET",
         PROJECTS,
         params={"id": project_id, "pageSize": 1},
-        data=None,
-        json_data=None,
     )
     assert project == expected_project
     assert project.code == "PROJ_CODE_XYZ"
@@ -97,13 +94,11 @@ async def test_get_project_not_found(
     with pytest.raises(BibliofabricError) as exc_info:
         await projects_client.get(project_id)
 
-    assert f"API error fetching Project {project_id}: Status 404" in str(exc_info.value)
+    assert f"Unexpected error fetching entity {project_id}" in str(exc_info.value)
     mock_api_client_fixture.request.assert_called_once_with(
         "GET",
         PROJECTS,
         params={"id": project_id, "pageSize": 1},
-        data=None,
-        json_data=None,
     )
 
 
@@ -136,8 +131,6 @@ async def test_search_projects_no_filters(
         "GET",
         PROJECTS,
         params=expected_params,
-        data=None,
-        json_data=None,
     )
     assert response.results == [
         Project.model_validate(item) for item in expected_results_data
@@ -201,8 +194,6 @@ async def test_search_projects_with_filters_and_sort(
         "GET",
         PROJECTS,
         params=expected_params,
-        data=None,
-        json_data=None,
     )
     assert response.results == [
         Project.model_validate(item) for item in expected_results_data
@@ -322,8 +313,6 @@ async def test_iterate_projects_no_results(
         "GET",
         PROJECTS,
         params=expected_params,
-        data=None,
-        json_data=None,
     )
 
 

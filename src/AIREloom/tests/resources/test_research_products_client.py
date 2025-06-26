@@ -4,8 +4,8 @@ from unittest.mock import AsyncMock, call  # Import call
 
 import httpx
 import pytest
-from bibliofabric.exceptions import BibliofabricError, ValidationError
 
+from aireloom.client import AireloomClient
 from aireloom.constants import DEFAULT_PAGE_SIZE
 from aireloom.endpoints import RESEARCH_PRODUCTS, ResearchProductsFilters
 from aireloom.models import (
@@ -13,27 +13,15 @@ from aireloom.models import (
     ResearchProduct,  # Added for type hinting if needed
 )
 from aireloom.resources import ResearchProductsClient
+from bibliofabric.exceptions import BibliofabricError, ValidationError
+from aireloom.unwrapper import OpenAireUnwrapper
 
 
 @pytest.fixture
 def mock_api_client_fixture():  # Renamed to avoid conflict with argument name
     """Fixture to create a mock AireloomClient."""
-
-    # Create a simple class that acts like our API client but isn't a Mock
-    class MockApiClient:
-        def __init__(self):
-            from aireloom.unwrapper import OpenAireUnwrapper
-
-            # Use the same attribute name as BaseApiClient
-            self._response_unwrapper = OpenAireUnwrapper()
-            self._mock_response: AsyncMock | None = None
-
-        async def request(self, method, path, params=None, data=None, json_data=None):
-            return self._mock_response
-
-    mock_client = MockApiClient()
-
-    # Default behavior: return a successful mock response with empty data
+    mock_client = AsyncMock(spec=AireloomClient)
+    mock_client._response_unwrapper = OpenAireUnwrapper()
     mock_http_response = AsyncMock(spec=httpx.Response)
     mock_http_response.status_code = 200
     mock_http_response.json.return_value = {
@@ -46,7 +34,7 @@ def mock_api_client_fixture():  # Renamed to avoid conflict with argument name
         },
         "results": [],
     }
-    mock_client._mock_response = mock_http_response
+    mock_client.request.return_value = mock_http_response
     return mock_client
 
 
@@ -74,19 +62,17 @@ async def test_get_research_product(
         "results": [expected_product_data_dict],
         "header": {"numFound": 1, "pageSize": 1},
     }
-    mock_api_client_fixture.request = AsyncMock(return_value=mock_http_response)
+    mock_api_client_fixture.request.return_value = mock_http_response
 
     product = await research_products_client.get(product_id)
 
     mock_api_client_fixture.request.assert_called_once_with(
         "GET",
         RESEARCH_PRODUCTS,
-        params={
-            "id": product_id,
-            "pageSize": 1,
-        },  # get by id now uses search with params
+        params={"id": product_id, "pageSize": 1},
     )
     assert product == expected_product
+
 
 
 @pytest.mark.asyncio
@@ -117,15 +103,11 @@ async def test_get_research_product_not_found(
     with pytest.raises(BibliofabricError) as exc_info:
         await research_products_client.get(product_id)
 
-    assert f"API error fetching ResearchProduct {product_id}: Status 404" in str(
-        exc_info.value
-    )
+    assert f"Unexpected error fetching entity {product_id}" in str(exc_info.value)
     mock_api_client_fixture.request.assert_called_once_with(
         "GET",
         RESEARCH_PRODUCTS,
         params={"id": product_id, "pageSize": 1},
-        data=None,
-        json_data=None,
     )
 
 
@@ -160,8 +142,6 @@ async def test_search_research_products_no_filters(
         "GET",
         RESEARCH_PRODUCTS,
         params=expected_params,
-        data=None,
-        json_data=None,
     )
     assert response.results == [
         ResearchProduct.model_validate(item) for item in expected_results_data
@@ -224,8 +204,6 @@ async def test_search_research_products_with_filters_and_sort(
         "GET",
         RESEARCH_PRODUCTS,
         params=expected_params,
-        data=None,
-        json_data=None,
     )
     assert response.results == [
         ResearchProduct.model_validate(item) for item in expected_results_data
@@ -344,8 +322,6 @@ async def test_iterate_research_products_no_results(
         "GET",
         RESEARCH_PRODUCTS,
         params=expected_params,
-        data=None,
-        json_data=None,
     )
 
 
@@ -390,8 +366,6 @@ async def test_iterate_single_page_no_next_cursor(
         "GET",
         RESEARCH_PRODUCTS,
         params=expected_params,
-        data=None,
-        json_data=None,
     )
 
 
@@ -460,7 +434,5 @@ async def test_iterate_api_error_during_iteration(
             "cursor": "cursor_for_page2",
             "type": "software",
         },
-        data=None,
-        json_data=None,
     )
     assert expected_second_call in mock_api_client_fixture.request.mock_calls

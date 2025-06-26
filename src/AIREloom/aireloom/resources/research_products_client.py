@@ -25,6 +25,12 @@ class ResearchProductsClient(
     _entity_path: str = RESEARCH_PRODUCTS
     _entity_model: type[ResearchProduct] = ResearchProduct
     _search_response_model: type[ResearchProductResponse] = ResearchProductResponse
+    _valid_sort_fields = {
+        "bestaccessright",
+        "publicationdate",
+        "relevance",
+        "title",
+    }
 
     def __init__(self, api_client: "AireloomClient"):
         """Initializes the ResearchProductsClient.

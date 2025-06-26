@@ -16,7 +16,7 @@ from typing import TYPE_CHECKING, Any, Protocol
 
 from pydantic import BaseModel
 
-from .exceptions import BibliofabricError
+from .exceptions import BibliofabricError, ValidationError
 from .log_config import logger
 
 if TYPE_CHECKING:
@@ -175,7 +175,7 @@ class SearchableMixin:
         page_size: int = 20,
         sort_by: str | None = None,
         filters: BaseModel | dict[str, Any] | None = None,
-    ) -> Any:
+    ) -> BaseModel | dict[str, Any]:
         """Search for entities with pagination support.
 
         Args:
@@ -191,6 +191,7 @@ class SearchableMixin:
         Raises:
             BibliofabricError: If the API request fails.
         """
+
         if not self._entity_path:
             raise BibliofabricError(
                 f"{self.__class__.__name__} must define _entity_path"
@@ -208,9 +209,15 @@ class SearchableMixin:
                     f"filters must be a Pydantic model or dictionary, got {type(filters)}"
                 )
 
+        filter_dict["page"] = page
+        filter_dict["pageSize"] = page_size
+
+        if sort_by:
+            filter_dict["sortBy"] = sort_by
+
         logger.info(
-            f"Searching {self._entity_path}: page={page}, size={page_size}, "
-            f"sort='{sort_by}', filters={filter_dict}"
+            f"Searching {self._entity_path}: page={filter_dict.get('page')}, size={filter_dict.get('pageSize')}, "
+            f"sort='{filter_dict.get('sortBy')}', filters={filter_dict}"
         )
 
         # Build query parameters
@@ -220,6 +227,11 @@ class SearchableMixin:
         }
 
         if sort_by:
+            if (
+                hasattr(self, "_valid_sort_fields")
+                and sort_by.split()[0] not in self._valid_sort_fields
+            ):
+                raise ValidationError(f"Invalid sort field: {sort_by.split()[0]}")
             params["sortBy"] = sort_by
 
         if filter_dict:

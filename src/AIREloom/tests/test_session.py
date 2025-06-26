@@ -3,6 +3,7 @@ import urllib.parse
 
 import pytest
 from bibliofabric.auth import (
+    ClientCredentialsAuth,
     NoAuth,
     StaticTokenAuth,
 )
@@ -188,7 +189,12 @@ async def test_session_get_research_product_integration(httpx_mock: HTTPXMock):
         method="GET",
         json=mock_api_response_json,
     )
-    async with AireloomSession() as session:
+    auth_strategy = ClientCredentialsAuth(
+        client_id="test_id",
+        client_secret="test_secret",
+        token_url=token_url,
+    )
+    async with AireloomSession(auth_strategy=auth_strategy) as session:
         product = await session.research_products.get(product_id)
     assert isinstance(product, ResearchProduct)
     assert product.id == product_id
@@ -233,7 +239,12 @@ async def test_session_search_research_products_integration(httpx_mock: HTTPXMoc
         method="GET",
         json=mock_api_response_json,
     )
-    async with AireloomSession() as session:
+    auth_strategy = ClientCredentialsAuth(
+        client_id="test_id",
+        client_secret="test_secret",
+        token_url=token_url,
+    )
+    async with AireloomSession(auth_strategy=auth_strategy) as session:
         filters = ResearchProductsFilters(mainTitle="Test Search")
         response = await session.research_products.search(
             filters=filters, page=1, page_size=1
@@ -309,7 +320,12 @@ async def test_session_iterate_research_products_integration(httpx_mock: HTTPXMo
         json=mock_response_page2,
     )
     products_iterated = []
-    async with AireloomSession() as session:
+    auth_strategy = ClientCredentialsAuth(
+        client_id="test_id",
+        client_secret="test_secret",
+        token_url=token_url,
+    )
+    async with AireloomSession(auth_strategy=auth_strategy) as session:
         filters = ResearchProductsFilters(mainTitle="Iterate Me")
         async for product in session.research_products.iterate(
             filters=filters, page_size=1
@@ -353,7 +369,12 @@ async def test_session_get_organization_integration(httpx_mock: HTTPXMock):
         method="GET",
         json=mock_api_response_json,
     )
-    async with AireloomSession() as session:
+    auth_strategy = ClientCredentialsAuth(
+        client_id="test_id",
+        client_secret="test_secret",
+        token_url=token_url,
+    )
+    async with AireloomSession(auth_strategy=auth_strategy) as session:
         organization = await session.organizations.get(org_id)
     assert isinstance(organization, Organization)
     assert organization.id == org_id
@@ -395,7 +416,12 @@ async def test_session_search_organizations_integration(httpx_mock: HTTPXMock):
         method="GET",
         json=mock_api_response_json,
     )  # API uses country (aliased from countryCode)
-    async with AireloomSession() as session:
+    auth_strategy = ClientCredentialsAuth(
+        client_id="test_id",
+        client_secret="test_secret",
+        token_url=token_url,
+    )
+    async with AireloomSession(auth_strategy=auth_strategy) as session:
         filters = OrganizationsFilters(
             countryCode="GR"
         )  # Using countryCode directly for instantiation
@@ -467,7 +493,12 @@ async def test_session_iterate_organizations_integration(httpx_mock: HTTPXMock):
         json=mock_response_page2,
     )
     orgs_iterated = []
-    async with AireloomSession() as session:
+    auth_strategy = ClientCredentialsAuth(
+        client_id="test_id",
+        client_secret="test_secret",
+        token_url=token_url,
+    )
+    async with AireloomSession(auth_strategy=auth_strategy) as session:
         filters = OrganizationsFilters(
             countryCode="EU"
         )  # Using countryCode directly for instantiation
@@ -515,7 +546,12 @@ async def test_session_get_project_integration(httpx_mock: HTTPXMock):
         method="GET",
         json=mock_api_response_json,
     )
-    async with AireloomSession() as session:
+    auth_strategy = ClientCredentialsAuth(
+        client_id="test_id",
+        client_secret="test_secret",
+        token_url=token_url,
+    )
+    async with AireloomSession(auth_strategy=auth_strategy) as session:
         project = await session.projects.get(project_id)
     assert isinstance(project, Project)
     assert project.id == project_id
@@ -561,7 +597,12 @@ async def test_session_search_projects_integration(httpx_mock: HTTPXMock):
         method="GET",
         json=mock_api_response_json,
     )
-    async with AireloomSession() as session:
+    auth_strategy = ClientCredentialsAuth(
+        client_id="test_id",
+        client_secret="test_secret",
+        token_url=token_url,
+    )
+    async with AireloomSession(auth_strategy=auth_strategy) as session:
         filters = ProjectsFilters(grantID="H2020")
         response = await session.projects.search(filters=filters, page=1, page_size=1)
     assert isinstance(response, ApiResponse)
@@ -624,7 +665,7 @@ async def test_session_iterate_projects_integration(httpx_mock: HTTPXMock):
             }
         ],
     }
-    _params_tip_int_1 = {"funder": "EC", "pageSize": "1", "cursor": "*"}
+    _params_tip_int_1 = {"fundingStreamId": "EC", "pageSize": "1", "cursor": "*"}
     httpx_mock.add_response(
         url=f"{base_url}?{urllib.parse.urlencode(_params_tip_int_1)}",
         method="GET",
@@ -641,7 +682,12 @@ async def test_session_iterate_projects_integration(httpx_mock: HTTPXMock):
         json=mock_response_page2,
     )
     projects_iterated = []
-    async with AireloomSession() as session:
+    auth_strategy = ClientCredentialsAuth(
+        client_id="test_id",
+        client_secret="test_secret",
+        token_url=token_url,
+    )
+    async with AireloomSession(auth_strategy=auth_strategy) as session:
         filters = ProjectsFilters(fundingStreamId="EC")
         async for project in session.projects.iterate(filters=filters, page_size=1):
             projects_iterated.append(project)
@@ -685,7 +731,12 @@ async def test_session_get_data_source_integration(httpx_mock: HTTPXMock):
         method="GET",
         json=mock_api_response_json,
     )
-    async with AireloomSession() as session:
+    auth_strategy = ClientCredentialsAuth(
+        client_id="test_id",
+        client_secret="test_secret",
+        token_url=token_url,
+    )
+    async with AireloomSession(auth_strategy=auth_strategy) as session:
         data_source = await session.data_sources.get(ds_id)
     assert isinstance(data_source, DataSource)
     assert data_source.id == ds_id
@@ -733,7 +784,12 @@ async def test_session_search_data_sources_integration(httpx_mock: HTTPXMock):
         method="GET",
         json=mock_api_response_json,
     )
-    async with AireloomSession() as session:
+    auth_strategy = ClientCredentialsAuth(
+        client_id="test_id",
+        client_secret="test_secret",
+        token_url=token_url,
+    )
+    async with AireloomSession(auth_strategy=auth_strategy) as session:
         filters = DataSourcesFilters(openaireCompatibility="UNKNOWN")
         response = await session.data_sources.search(
             filters=filters, page=1, page_size=1
@@ -810,7 +866,12 @@ async def test_session_iterate_data_sources_integration(httpx_mock: HTTPXMock):
         # DataSourcesFilters does not have countryCode, so remove from params
     )
     ds_iterated = []
-    async with AireloomSession() as session:
+    auth_strategy = ClientCredentialsAuth(
+        client_id="test_id",
+        client_secret="test_secret",
+        token_url=token_url,
+    )
+    async with AireloomSession(auth_strategy=auth_strategy) as session:
         # DataSourcesFilters does not have countryCode.
         # If a filter is needed for the mock to work, use an existing one or add one to the model.
         # For now, assuming no specific filter or an implicit one the mock expects.
@@ -866,7 +927,12 @@ async def test_session_search_scholix_integration(httpx_mock: HTTPXMock):
         method="GET",
         json=mock_api_response_json,
     )
-    async with AireloomSession() as session:
+    auth_strategy = ClientCredentialsAuth(
+        client_id="test_id",
+        client_secret="test_secret",
+        token_url=token_url,
+    )
+    async with AireloomSession(auth_strategy=auth_strategy) as session:
         filters = ScholixFilters(sourcePid=source_pid)
         response: ScholixResponse = await session.scholix.search_links(
             filters=filters, page=0, page_size=1
@@ -945,7 +1011,12 @@ async def test_session_iterate_scholix_integration(httpx_mock: HTTPXMock):
         json=mock_response_page1,
     )
     links_iterated = []
-    async with AireloomSession() as session:
+    auth_strategy = ClientCredentialsAuth(
+        client_id="test_id",
+        client_secret="test_secret",
+        token_url=token_url,
+    )
+    async with AireloomSession(auth_strategy=auth_strategy) as session:
         filters = ScholixFilters(sourcePid=source_pid)
         async for link in session.scholix.iterate_links(filters=filters, page_size=1):
             links_iterated.append(link)
@@ -992,7 +1063,12 @@ async def test_get_research_product_success(httpx_mock: HTTPXMock):
         },
         status_code=200,
     )
-    async with AireloomSession() as session:
+    auth_strategy = ClientCredentialsAuth(
+        client_id="test_id",
+        client_secret="test_secret",
+        token_url=token_url,
+    )
+    async with AireloomSession(auth_strategy=auth_strategy) as session:
         product = await session.research_products.get(product_id)
         assert product is not None
         assert product.id == product_id
@@ -1018,7 +1094,12 @@ async def test_get_research_product_not_found(httpx_mock: HTTPXMock):
         status_code=404,
         json={"message": "Not Found"},
     )
-    async with AireloomSession() as session:
+    auth_strategy = ClientCredentialsAuth(
+        client_id="test_id",
+        client_secret="test_secret",
+        token_url=token_url,
+    )
+    async with AireloomSession(auth_strategy=auth_strategy) as session:
         with pytest.raises(
             BibliofabricError, match="API request failed with status 404"
         ):
@@ -1059,7 +1140,12 @@ async def test_search_research_products_simple(httpx_mock: HTTPXMock):
         method="GET",
         json=mock_api_response_json,
     )
-    async with AireloomSession() as session:
+    auth_strategy = ClientCredentialsAuth(
+        client_id="test_id",
+        client_secret="test_secret",
+        token_url=token_url,
+    )
+    async with AireloomSession(auth_strategy=auth_strategy) as session:
         filters = ResearchProductsFilters(mainTitle="Open Science")
         response = await session.research_products.search(
             filters=filters, page_size=5, page=1
@@ -1132,7 +1218,12 @@ async def test_iterate_research_products(httpx_mock: HTTPXMock):
         method="GET",
         json=mock_response_page2,
     )
-    async with AireloomSession() as session:
+    auth_strategy = ClientCredentialsAuth(
+        client_id="test_id",
+        client_secret="test_secret",
+        token_url=token_url,
+    )
+    async with AireloomSession(auth_strategy=auth_strategy) as session:
         count = 0
         max_items_to_iterate = 2
         filters = ResearchProductsFilters(mainTitle="FAIR data")
@@ -1165,7 +1256,12 @@ async def test_search_scholix_links_success(httpx_mock: HTTPXMock):
         json=MOCK_SCHOLIX_RESPONSE,
         status_code=200,
     )
-    async with AireloomSession() as session:
+    auth_strategy = ClientCredentialsAuth(
+        client_id="test_id",
+        client_secret="test_secret",
+        token_url=token_url,
+    )
+    async with AireloomSession(auth_strategy=auth_strategy) as session:
         filters = ScholixFilters(sourcePid=KNOWN_DOI_WITH_LINKS)
         response: ScholixResponse = await session.scholix.search_links(
             filters=filters, page_size=10, page=0
@@ -1256,7 +1352,12 @@ async def test_iterate_scholix_links(httpx_mock: HTTPXMock):
         json=mock_response_page2,
         status_code=200,
     )
-    async with AireloomSession() as session:
+    auth_strategy = ClientCredentialsAuth(
+        client_id="test_id",
+        client_secret="test_secret",
+        token_url=token_url,
+    )
+    async with AireloomSession(auth_strategy=auth_strategy) as session:
         count = 0
         max_items_to_iterate = 7
         filters = ScholixFilters(sourcePid=KNOWN_DOI_WITH_LINKS)

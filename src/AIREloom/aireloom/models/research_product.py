@@ -141,6 +141,8 @@ class ResultPid(BaseModel):
 
 
 class License(BaseModel):
+    """Unused?"""
+
     code: str | None = None
     label: str | None = None
     provenance: PidProvenance | None = None
@@ -152,7 +154,9 @@ class Instance(BaseModel):
     accessRight: AccessRight | None = None
     alternateIdentifier: list[dict[str, str]] = Field(default_factory=list)
     articleProcessingCharge: ArticleProcessingCharge | None = None
-    license: License | None = None
+    license: str | None = (
+        None  # changed to str -- License objects seems to be unused in api?
+    )
     collectedFrom: dict[str, str] | None = None
     hostedBy: dict[str, str] | None = None
     distributionLocation: str | None = None
@@ -163,6 +167,7 @@ class Instance(BaseModel):
     type: str | None = None
     urls: list[str] = Field(default_factory=list)
 
+    '''
     @field_validator("license", mode="before")
     @classmethod
     def handle_string_license(cls, v: Any) -> License | None:
@@ -180,7 +185,7 @@ class Instance(BaseModel):
             f"Unexpected license format: {v}. Expected string, dict, or License object."
         )
         return None
-
+    '''
     model_config = ConfigDict(extra="allow")
 
 
@@ -229,7 +234,7 @@ class ResearchProduct(BaseEntity):
     originalIds: list[str] | None = Field(default_factory=list)
     pids: list[Pid] | None = Field(default_factory=list)
     type: ResearchProductType | None = None
-    title: str | None = None
+    title: str | None = Field(None, alias="mainTitle")
     authors: list[Author] | None = Field(default_factory=list)
     bestAccessRight: BestAccessRight | None = None
     country: ResultCountry | None = None

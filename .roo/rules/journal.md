@@ -57,21 +57,59 @@
         -   [x] Update `DataSourcesClient` to use mixins.
         -   [x] Verify `ScholixClient` and adapt as needed, keeping its custom logic.
 
--   [ ] **Phase 3: Validate the Refactor**
-    -   [ ] **Task 3.1: Execute All Tests**
-        -   [ ] Run `pytest` suite.
-        -   [ ] Run `verification_script.py`.
-    -   [ ] **Task 3.2: Resolve All Failures**
-        -   [ ] Debug any failing tests.
-        -   [ ] Ensure functionality is identical to the pre-refactor version.
+-   [x] **Phase 3: Validate the Refactor**
+    -   [x] **Task 3.1: Execute All Tests**
+        -   [x] Run `pytest` suite.
+        -   [x] Run `verification_script.py`.
+    -   [x] **Task 3.2: Resolve All Failures**
+        -   [x] Debug any failing tests.
+        -   [x] Ensure functionality is identical to the pre-refactor version.
+    -   [x] **Task 3.3: Create a real-world example test script for the `aireloom` library**
+        -   [X] Create a new test script in the `aireloom` test suite named `test_actual_data.py` or similar.
+        -   [X] Follow the `aireloom` guidelines for setting up the client & retrieving data: use the README.md as primary entry point; and the rest of the docs (`src/aireloom/docs`) as reference if needed.
+        -   [X] Also set up a manual API retrieval function that calls the OpenAIRE API directly using `httpx` with the  same parameters as the `aireloom` client calls. Store this raw data for later comparison.
+    -   [ ] **Task 3.4: Use this test to validate the research product endpoint of the `aireloom` library**
+          -   [X] Set up a `ResearchProductsFilters` instance to use as a filter for the research_products endpoint. Use the specific parameters listed below.
+              -   [X] `authorOrcid`: "0000-0003-0581-2668"
+              -   [X] `fromPublicationDate`: "2020-01-01"
+          -   [X] Retrieve the list of research products using the filter. Verify that all retrieved items have the expected author listed (i.e. the one with the ORCID "0000-0003-0581-2668", name should be Han Gardeniers or a variant of that).
+          -   [X] Solve issues that arise during the process.
+                - [X] The parsed output from the `aireloom` client should match the raw output retrieved using `httpx`.
+     -   [ ] **Task 3.5: Validate all other endpoints using the retrieved research products as a starting point**
+          -   [ ] Test all other available endpoints (listed below). Use the retrieved research products from the previous step to extract the necessary identifiers to use as parameters for the other endpoints. Preferably, use the OpenAIRE IDs of the linked products, but if not available, use other structured identifiers. Make sure to retrieve at least 5 items from each endpoint. Use the research products test script as a template for testing the others -- but make sure to adapt the filters and parameters to match the specific endpoint requirements.
+              -   [ ] Projects
+                -   [ ] Filtered query succesfully run with expected results.
+                -   [ ] Compare all raw output retrieved using HTTPX with the parsed & verified output from the `aireloom` client (i.e. the pydantic models representing the data).
+              -   [ ] Organizations
+                -   [ ] Filtered query succesfully run with expected results.
+                -   [ ] Compare all raw output retrieved using HTTPX with the parsed & verified output from the `aireloom` client (i.e. the pydantic models representing the data).
+              -   [ ] Data Sources
+                -   [ ] Filtered query succesfully run with expected results.
+                -   [ ] Compare all raw output retrieved using HTTPX with the parsed & verified output from the `aireloom` client (i.e. the pydantic models representing the data).
+              -   [ ] Scholix
+                -   [ ] Filtered query succesfully run with expected results.
+                -   [ ] Compare all raw output retrieved using HTTPX with the parsed & verified output from the `aireloom` client (i.e. the pydantic models representing the data).
 
-
+              -
 # Decisions & Notes
 
 *Record decisions made during development, including why certain approaches were chosen, alternatives considered, and any relevant context.*
 *Keep it concise an clear*
 *Any notes for future developers should be added here, including any known issues, limitations, or areas for improvement.*
 *Remember to date your entries for future reference.*
+
+## 2025-06-25: Phase 3 - Validation Completed
+
+**What was done:**
+- After fixing all import errors and other issues arising from the refactor, the full test suite was executed.
+- All `pytest` tests now pass successfully.
+- The `verification_script.py` also runs without errors, confirming that the refactored `aireloom` client produces the same output as the original version.
+
+**Conclusion:**
+The refactoring is complete and validated. The `bibliofabric` framework successfully abstracts the generic client logic, and the `aireloom` client correctly utilizes it without any loss of functionality. The project is now in a stable state.
+
+**Next steps:**
+The main refactoring work is complete. Future work can focus on adding new features, creating clients for other APIs (like Crossref or OpenAlex), or improving documentation.
 
 ## 2025-06-25: Phase 0 Configuration Completed
 

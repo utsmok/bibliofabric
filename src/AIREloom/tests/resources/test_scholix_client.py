@@ -1,22 +1,25 @@
 # tests/resources/test_scholix_client.py
 from unittest.mock import AsyncMock, call
 
-import httpx  # Import httpx
+import httpx
 import pytest
-from bibliofabric.exceptions import BibliofabricError  # Added ValidationError
+from bibliofabric.exceptions import BibliofabricError
 
+from aireloom.client import AireloomClient
 from aireloom.constants import DEFAULT_PAGE_SIZE, OPENAIRE_SCHOLIX_API_BASE_URL
 from aireloom.endpoints import SCHOLIX, ScholixFilters
 from aireloom.models import (
-    ScholixRelationship,  # Added
+    ScholixRelationship,
 )
 from aireloom.resources import ScholixClient
+from aireloom.unwrapper import OpenAireUnwrapper
 
 
 @pytest.fixture
-def mock_api_client_fixture():  # Renamed
+def mock_api_client_fixture():
     """Fixture to create a mock AireloomClient."""
-    mock_client = AsyncMock()
+    mock_client = AsyncMock(spec=AireloomClient)
+    mock_client._response_unwrapper = OpenAireUnwrapper()
     mock_http_response = AsyncMock(spec=httpx.Response)
     mock_http_response.status_code = 200
     # Default Scholix response for mock
