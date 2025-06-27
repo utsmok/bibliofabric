@@ -56,8 +56,7 @@ For end-users (if `aireloom` were published to PyPI), installation would be simp
 # uv pip install aireloom
 # (This would also pull bibliofabric if it were a PyPI dependency)
 
-```bash
-> uv add aireloom
+uv add aireloom
 # or
 > uv pip install aireloom
 ```
