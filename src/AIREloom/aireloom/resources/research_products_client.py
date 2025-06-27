@@ -1,5 +1,12 @@
 # aireloom/resources/research_products_client.py
-"""Client for interacting with OpenAIRE Research Products."""
+"""Client for interacting with the OpenAIRE Research Products API endpoint.
+
+This module provides the `ResearchProductsClient`, which facilitates access to
+OpenAIRE's research product data (e.g., publications, datasets, software).
+It leverages generic mixins from `bibliofabric.resources` for common API
+operations like retrieving individual entities, searching, and iterating
+through result sets.
+"""
 
 from typing import TYPE_CHECKING
 
@@ -20,7 +27,21 @@ from ..models import ResearchProduct, ResearchProductResponse
 class ResearchProductsClient(
     GettableMixin, SearchableMixin, CursorIterableMixin, BaseResourceClient
 ):
-    """Provides methods to interact with OpenAIRE Research Products."""
+    """Client for the OpenAIRE Research Products API endpoint.
+
+    This client provides standardized methods (`get`, `search`, `iterate`) for
+    accessing research product data, by inheriting from `bibliofabric` mixins.
+    It is configured with the specific API path and Pydantic models relevant
+    to OpenAIRE research products.
+
+    Attributes:
+        _entity_path (str): The API path for research products.
+        _entity_model (type[ResearchProduct]): Pydantic model for a single research product.
+        _search_response_model (type[ResearchProductResponse]): Pydantic model for the
+                                                                search response envelope.
+        _valid_sort_fields (set[str]): A set of field names that are valid for sorting
+                                       results from this endpoint.
+    """
 
     _entity_path: str = RESEARCH_PRODUCTS
     _entity_model: type[ResearchProduct] = ResearchProduct

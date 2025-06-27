@@ -1,5 +1,11 @@
 # aireloom/resources/projects_client.py
-"""Client for interacting with OpenAIRE Projects."""
+"""Client for interacting with the OpenAIRE Projects API endpoint.
+
+This module provides the `ProjectsClient`, enabling access to OpenAIRE's
+project data. It utilizes generic mixins from `bibliofabric.resources`
+for standard API operations like fetching, searching, and iterating through
+project entities.
+"""
 
 from typing import TYPE_CHECKING
 
@@ -20,7 +26,20 @@ from ..models import Project, ProjectResponse
 class ProjectsClient(
     GettableMixin, SearchableMixin, CursorIterableMixin, BaseResourceClient
 ):
-    """Provides methods to interact with OpenAIRE Projects."""
+    """Client for the OpenAIRE Projects API endpoint.
+
+    This client offers standardized methods (`get`, `search`, `iterate`) for
+    accessing project data by inheriting from `bibliofabric` mixins.
+    It is configured with the API path and Pydantic models specific to
+    OpenAIRE project entities.
+
+    Attributes:
+        _entity_path (str): The API path for projects.
+        _entity_model (type[Project]): Pydantic model for a single project.
+        _search_response_model (type[ProjectResponse]): Pydantic model for the
+                                                        search response envelope.
+        _valid_sort_fields (set[str]): Valid sort fields for this endpoint.
+    """
 
     _entity_path: str = PROJECTS
     _entity_model: type[Project] = Project

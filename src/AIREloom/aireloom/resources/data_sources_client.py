@@ -1,5 +1,10 @@
 # aireloom/resources/data_sources_client.py
-"""Client for interacting with OpenAIRE Data Sources."""
+"""Client for interacting with the OpenAIRE Data Sources API endpoint.
+
+This module provides the `DataSourcesClient` for accessing OpenAIRE's
+data source information. Like the `OrganizationsClient`, it currently uses
+custom implementations for `get`, `search`, and `iterate` operations.
+"""
 
 from collections.abc import AsyncIterator
 from typing import TYPE_CHECKING, Any
@@ -26,7 +31,20 @@ from .base_client import BaseResourceClient
 
 
 class DataSourcesClient(BaseResourceClient):
-    """Provides methods to interact with OpenAIRE Data Sources."""
+    """Client for the OpenAIRE Data Sources API endpoint.
+
+    This client allows interaction with OpenAIRE's data source entities,
+    offering methods for retrieval (`get`), searching (`search`), and iteration
+    (`iterate`). It currently employs custom logic for these operations.
+
+    Attributes:
+        _entity_path (str): The API path for data sources.
+        _entity_model (type[DataSource]): Pydantic model for a single data source.
+        _response_model (type[DataSourceResponse]): Pydantic model for the
+                                                     search response envelope.
+        _endpoint_def (dict): Configuration for this endpoint from `ENDPOINT_DEFINITIONS`.
+        _valid_sort_fields (set[str]): Valid sort fields for this endpoint.
+    """
 
     _entity_path: str = DATA_SOURCES
     _entity_model: type[DataSource] = DataSource

@@ -1,5 +1,13 @@
 # aireloom/resources/scholix_client.py
-"""Client for interacting with OpenAIRE Scholix (Scholexplorer) API."""
+"""Client for interacting with the OpenAIRE Scholix (Scholexplorer) API.
+
+This module provides the `ScholixClient`, which is specialized for querying
+the OpenAIRE Scholexplorer API to find links (relationships) between
+scholarly entities (e.g., publications, datasets). It uses a different
+base URL and has custom methods for searching and iterating through Scholix links,
+as the Scholix API has a distinct structure and pagination mechanism compared
+to the main OpenAIRE Graph API.
+"""
 
 from collections.abc import AsyncIterator
 from typing import TYPE_CHECKING, Any
@@ -23,10 +31,22 @@ from .base_client import BaseResourceClient
 
 
 class ScholixClient(BaseResourceClient):
-    """Provides methods to interact with the OpenAIRE Scholexplorer API."""
+    """Client for the OpenAIRE Scholexplorer API (Scholix links).
+
+    This client handles requests to the Scholix API, which provides data on
+    relationships between research artifacts (e.g., citations, supplements).
+    It uses a specific base URL (`_scholix_base_url`) and custom methods
+    (`search_links`, `iterate_links`) tailored to the Scholix API's structure,
+    including its 0-indexed pagination and specific request parameters.
+
+    Attributes:
+        _entity_path (str): The API path for Scholix links (typically "Links").
+        _scholix_base_url (str): The base URL for the Scholexplorer API.
+        _endpoint_def (dict): Configuration for this endpoint from `ENDPOINT_DEFINITIONS`.
+    """
 
     _entity_path: str = (
-        SCHOLIX  # This is the endpoint path, not an entity type like others
+        SCHOLIX  # This is the endpoint path, typically "Links"
     )
 
     def __init__(
@@ -35,11 +55,12 @@ class ScholixClient(BaseResourceClient):
         """Initializes the ScholixClient.
 
         Args:
-            api_client: An instance of AireloomClient.
-            scholix_base_url: Base URL for the Scholexplorer API.
+            api_client: An instance of `AireloomClient` to be used for making requests.
+            scholix_base_url: Optional base URL for the Scholexplorer API. If None,
+                the default from `aireloom.constants` is used.
         """
         super().__init__(api_client)
-        self._scholix_base_url = scholix_base_url or OPENAIRE_SCHOLIX_API_BASE_URL
+        self._scholix_base_url: str = scholix_base_url or OPENAIRE_SCHOLIX_API_BASE_URL
         if self._entity_path not in ENDPOINT_DEFINITIONS:
             raise ValueError(
                 f"Missing endpoint definition for Scholix path: {self._entity_path}"
@@ -55,13 +76,24 @@ class ScholixClient(BaseResourceClient):
 
     def _build_scholix_params(
         self,
-        page: int,  # Scholix is 0-indexed
+        page: int,
         page_size: int,
-        filters: dict[str, Any] | None,  # Changed to Optional[dict]
+        filters: dict[str, Any] | None,
     ) -> dict[str, Any]:
-        """Builds the query parameter dictionary for Scholix API."""
+        """Builds the query parameter dictionary specifically for the Scholix API.
+
+        The Scholix API uses 'rows' for page size and expects 'page' to be 0-indexed.
+
+        Args:
+            page: The 0-indexed page number.
+            page_size: The number of results per page (maps to 'rows' parameter).
+            filters: A dictionary of filter criteria to include in the parameters.
+
+        Returns:
+            A dictionary of query parameters suitable for the Scholix API.
+        """
         # Scholix uses 'rows' for page_size and 0-indexed 'page'
-        params = {"page": page, "rows": page_size}
+        params: dict[str, Any] = {"page": page, "rows": page_size}
         if filters:
             params.update(filters)
         return {k: v for k, v in params.items() if v is not None}

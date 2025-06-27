@@ -1,3 +1,6 @@
+# aireloom/resources/base_client.py
+"""Defines the base class for all OpenAIRE API resource clients in the aireloom library."""
+
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:

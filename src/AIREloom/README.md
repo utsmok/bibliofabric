@@ -1,25 +1,60 @@
 # AIREloom: An Asynchronous Python Client for OpenAIRE APIs
 
-AIREloom provides a modern, asynchronous interface to interact with the OpenAIRE Graph API and Scholexplorer API, leveraging `httpx` and `pydantic` for robust and efficient data retrieval.
+AIREloom provides a modern, asynchronous interface to interact with the OpenAIRE Graph API and Scholexplorer API. It is built upon the `bibliofabric` generic client framework, leveraging `httpx` and `pydantic` for robust and efficient data retrieval.
 
 ## Features
 
-*   Asynchronous requests using `httpx`.
-*   Built-in retry logic for transient network errors and rate limits.
-*   Support for multiple authentication strategies:
-    *   No Authentication
-    *   Static API Token
-    *   OAuth2 Client Credentials
-*   Pydantic models for response validation and easy data access.
-*   Methods for fetching single entities, searching with filters/sorting (using page-based pagination), and efficient iteration over large result sets (often using cursor-based pagination abstracted by the client).
-*   Interaction with both OpenAIRE Graph API (Research Products, Projects, Organizations, Data Sources) and Scholexplorer API (Scholix links).
-*   Configurable via environment variables or `.env` files.
-*   Configurable rate limiting strategies (see [Rate Limiting Documentation](docs/advanced/rate_limiting.md)).
-*   Optional client-side caching for GET requests.
-*   Basic hook system for injecting custom logic into the request/response lifecycle (see [Hook System Documentation](docs/advanced/hooks.md)).
+*   **Built on `bibliofabric`**: Inherits a generic, robust client foundation.
+*   **Asynchronous by Design**: Utilizes `asyncio` and `httpx` for non-blocking API interactions.
+*   **Comprehensive OpenAIRE Coverage**:
+    *   OpenAIRE Graph API: Access to Research Products, Projects, Organizations, and Data Sources.
+    *   Scholexplorer API: For discovering links (relationships) between scholarly entities.
+*   **Robust Error Handling**: Built-in retry logic for transient network errors and common API error statuses.
+*   **Flexible Authentication**:
+    *   Automatic detection based on environment variables (`.env` file support).
+    *   Supports No Authentication, Static API Token, and OAuth2 Client Credentials.
+    *   Strategies provided by `bibliofabric.auth`.
+*   **Data Validation & Modeling**: Uses Pydantic models for request parameters (filters) and for parsing API responses, ensuring data integrity and ease of use.
+*   **Efficient Data Retrieval**:
+    *   `get()`: Fetch single entities by ID.
+    *   `search()`: Paginated search with filtering and sorting capabilities.
+    *   `iterate()`: Efficiently iterate over large result sets using cursor-based pagination for Graph API endpoints and page-based for Scholix.
+*   **Configurable Behavior**:
+    *   Timeouts, retries, backoff factors through `bibliofabric.config.BaseApiSettings` and `aireloom.config.ApiSettings`.
+    *   Optional client-side caching for GET requests.
+    *   Rate limiting awareness and handling (parsing `Retry-After` headers).
+*   **Extensible**: Basic hook system (pre/post-request) via `bibliofabric` for custom logic.
 
 ## Installation
-Install the `aireloom` package from PyPI, preferably using uv:
+
+AIREloom is designed to work with its companion library, `bibliofabric`. In a typical development setup for this project, both are local packages.
+
+**1. `bibliofabric` (Generic Framework):**
+   Ensure `bibliofabric` is available. If developing locally, it's usually a sibling directory.
+
+**2. `aireloom` (This Library):**
+   `aireloom` depends on the local `bibliofabric`. Its `pyproject.toml` should specify this:
+   ```toml
+   [project]
+   # ...
+   dependencies = [
+       "bibliofabric @ {root:uri}/../bibliofabric",
+       # other aireloom dependencies like pydantic, httpx, loguru...
+   ]
+   ```
+   Install `aireloom` (and its local `bibliofabric` dependency) into your environment, preferably using `uv`:
+
+```bash
+# From the root of the monorepo or where both package dirs are visible
+uv pip install -e src/bibliofabric -e src/AIREloom
+# Or, if your project is set up with uv.workspace.json:
+# uv sync
+```
+
+For end-users (if `aireloom` were published to PyPI), installation would be simpler:
+```bash
+# uv pip install aireloom
+# (This would also pull bibliofabric if it were a PyPI dependency)
 
 ```bash
 > uv add aireloom

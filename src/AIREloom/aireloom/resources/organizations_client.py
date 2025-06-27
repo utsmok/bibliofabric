@@ -1,5 +1,12 @@
 # aireloom/resources/organizations_client.py
-"""Client for interacting with OpenAIRE Organizations."""
+"""Client for interacting with the OpenAIRE Organizations API endpoint.
+
+This module provides the `OrganizationsClient` for accessing OpenAIRE's
+organization data. Unlike some other resource clients in `aireloom` that
+fully leverage `bibliofabric` mixins for CRUD operations, this client currently
+maintains its own implementations for `get`, `search`, and `iterate`, though
+they are based on similar patterns.
+"""
 
 from collections.abc import AsyncIterator
 from typing import TYPE_CHECKING, Any
@@ -26,7 +33,21 @@ from .base_client import BaseResourceClient
 
 
 class OrganizationsClient(BaseResourceClient):
-    """Provides methods to interact with OpenAIRE Organizations."""
+    """Client for the OpenAIRE Organizations API endpoint.
+
+    This client provides methods to retrieve individual organizations (`get`),
+    search for organizations based on filters (`search`), and iterate through
+    all organizations (`iterate`). It currently uses custom implementations for these
+    methods rather than directly using the generic mixins from `bibliofabric.resources`.
+
+    Attributes:
+        _entity_path (str): The API path for organizations.
+        _entity_model (type[Organization]): Pydantic model for a single organization.
+        _response_model (type[OrganizationResponse]): Pydantic model for the
+                                                       search response envelope.
+        _endpoint_def (dict): Configuration for this endpoint from `ENDPOINT_DEFINITIONS`.
+        _valid_sort_fields (set[str]): Valid sort fields for this endpoint.
+    """
 
     _entity_path: str = ORGANIZATIONS
     _entity_model: type[Organization] = Organization

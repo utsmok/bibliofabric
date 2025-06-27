@@ -1,4 +1,10 @@
-"""Base Pydantic models for API entities and responses."""
+"""Base Pydantic models for OpenAIRE API entities and responses.
+
+This module defines foundational Pydantic models used across the `aireloom`
+library to represent common structures in OpenAIRE API responses, such as
+response headers, base entity identifiers, and generic API response envelopes.
+These models provide data validation and a clear structure for API data.
+"""
 
 import logging
 from typing import Any, Generic, TypeVar
@@ -12,7 +18,23 @@ logger = logging.getLogger(__name__)
 
 
 class Header(BaseModel):
-    """Model for the standard API response header."""
+    """Represents the 'header' section commonly found in OpenAIRE API responses.
+
+    This model captures metadata about the API response, such as status,
+    query time, total number of results found (`numFound`), pagination details
+    like `nextCursor`, and page size. It includes validators to coerce
+    numeric fields that might be returned as strings by the API.
+
+    Attributes:
+        status: Optional status message from the API.
+        code: Optional status code from the API.
+        message: Optional descriptive message from the API.
+        queryTime: Time taken by the API to process the query, in milliseconds.
+        numFound: Total number of results found matching the query criteria.
+        nextCursor: The cursor string to use for fetching the next page of results.
+                    Can be a string or an HttpUrl.
+        pageSize: The number of results included in the current page.
+    """
 
     # Note: status, code, message are typically expected, but optional for robustness.
     status: str | None = None
@@ -45,7 +67,16 @@ class Header(BaseModel):
 
 
 class BaseEntity(BaseModel):
-    """Base model for all OpenAIRE entities (like publication, project, etc.)."""
+    """A base Pydantic model for OpenAIRE entities (e.g., publication, project).
+
+    This model provides a common foundation for all specific entity types,
+    primarily by ensuring an `id` field is present, which is a common
+    identifier across most OpenAIRE entities. It allows extra fields from the
+    API to be captured without causing validation errors.
+
+    Attributes:
+        id: The unique identifier for the entity.
+    """
 
     # Common identifier across most entities
     id: str
@@ -54,7 +85,19 @@ class BaseEntity(BaseModel):
 
 
 class ApiResponse(BaseModel, Generic[EntityType]):
-    """Generic base model for standard API list responses."""
+    """Generic Pydantic model for standard OpenAIRE API list responses.
+
+    This model represents the common envelope structure for API responses that
+    return a list of entities. It includes a `header` (metadata) and a `results`
+    field containing the list of entities. It is generic over `EntityType` to
+    allow specific entity types to be used in the `results` list.
+
+    Attributes:
+        header: A `Header` object containing metadata about the response.
+        results: An optional list of entities of type `EntityType`. A validator
+                 ensures this field is a list or None, handling potential API
+                 inconsistencies gracefully.
+    """
 
     header: Header
     # Results can sometimes be null/absent, sometimes an empty list

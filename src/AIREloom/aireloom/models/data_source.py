@@ -1,7 +1,14 @@
-# https://graph.openaire.eu/docs/data-model/entities/data-source
+# aireloom/models/data_source.py
+"""Pydantic models for representing OpenAIRE Data Source entities and related structures.
+
+This module defines the Pydantic model for an OpenAIRE Data Source,
+including nested models for controlled vocabulary fields and type literals
+for restricted string values based on the OpenAIRE data model documentation.
+Reference: https://graph.openaire.eu/docs/data-model/entities/data-source
+"""
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field  # Added ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 from .base import ApiResponse, BaseEntity
 from .research_product import Container
@@ -13,7 +20,16 @@ DatabaseRestrictionType = Literal["feeRequired", "registration", "other"]
 
 # Base classes for controlled fields
 class ControlledField(BaseModel):
-    """Represents a controlled vocabulary field with scheme and value."""
+    """Represents a field with a controlled vocabulary, typically including a scheme and a value.
+
+    This model is used for structured data elements where the value has a specific
+    meaning defined by an associated scheme (e.g., a PID like DOI, or a subject
+    classification from a specific thesaurus).
+
+    Attributes:
+        scheme: The scheme or system defining the context of the value (e.g., "doi", "orcid", "mesh").
+        value: The actual value from the controlled vocabulary.
+    """
 
     scheme: str | None = None
     value: str | None = None
@@ -23,7 +39,11 @@ class ControlledField(BaseModel):
 
 # Main DataSource model
 class DataSource(BaseEntity):
-    """Model representing an OpenAIRE Data Source entity."""
+    """Model representing an OpenAIRE Data Source entity.
+
+    A data source in OpenAIRE can be a repository, journal, aggregator, etc.
+    This model captures various metadata fields associated with a data source.
+    """
 
     originalIds: list[str] | None = Field(default_factory=list)
     pids: list[ControlledField] | None = Field(default_factory=list)
@@ -58,3 +78,4 @@ class DataSource(BaseEntity):
 
 # Define the specific response type for data sources
 DataSourceResponse = ApiResponse[DataSource]
+"""Type alias for an API response containing a list of `DataSource` entities."""
