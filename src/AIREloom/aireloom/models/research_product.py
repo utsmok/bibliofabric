@@ -209,7 +209,7 @@ class ArticleProcessingCharge(BaseModel):
     model_config = ConfigDict(extra="allow")
 
 
-class ResultPid(BaseModel): # This seems identical to the top-level Pid, consider reuse/aliasing if appropriate.
+class ResultPid(BaseModel): 
     """Represents a Persistent Identifier (PID) within a result context.
 
     Note: This model appears functionally identical to the top-level `Pid` model.
@@ -225,7 +225,7 @@ class ResultPid(BaseModel): # This seems identical to the top-level Pid, conside
     model_config = ConfigDict(extra="allow")
 
 
-class License(BaseModel): # Marked as "Unused?" in original code. Retaining structure for now.
+class License(BaseModel): 
     """Represents license information.
 
     Note: This model was marked as potentially unused in the original API response
@@ -339,8 +339,7 @@ class Container(BaseModel):
 
     Attributes:
         edition: The edition of the container.
-        iss: Likely an identifier, possibly ISSN or ISBN depending on context.
-             (API documentation might be needed for precise meaning).
+        iss: The issue number of the container.
         issnLinking: The linking ISSN for a serial publication.
         issnOnline: The ISSN for the online version of a serial.
         issnPrinted: The ISSN for the printed version of a serial.
@@ -350,7 +349,7 @@ class Container(BaseModel):
         vol: Volume number of the container.
     """
     edition: str | None = None
-    iss: str | None = None # Consider clarifying if this is ISSN or other ID type
+    iss: str | None = None 
     issnLinking: str | None = None
     issnOnline: str | None = None
     issnPrinted: str | None = None
