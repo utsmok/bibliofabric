@@ -7,6 +7,8 @@ completely API-agnostic way through the ResponseUnwrapper protocol.
 """
 
 import asyncio
+import hashlib
+import json
 import ssl
 import time
 from collections.abc import Mapping
@@ -18,10 +20,9 @@ from typing import Any, Self
 import certifi
 import httpx
 import tenacity
-from cachetools import TTLCache
+from cachetools import TTLCache  # type: ignore[import-untyped]
 from tenacity import (
     AsyncRetrying,
-    RetryError,
     stop_after_attempt,
     wait_exponential,
 )
@@ -32,6 +33,7 @@ from .exceptions import (
     APIError,
     AuthError,
     BibliofabricError,
+    BibliofabricRequestError,  # Added import
     NetworkError,
     RateLimitError,
     TimeoutError,
@@ -60,9 +62,26 @@ class BaseApiClient:
     - Comprehensive error handling and logging
     - Pre/post request hooks for customization
     - Response unwrapping through the ResponseUnwrapper protocol
+
+    Attributes:
+        _settings: Configuration settings for the client.
+        _response_unwrapper: Instance to handle API-specific response structures.
+        _base_url: The base URL for API requests.
+        _retryable_status_codes: HTTP status codes that trigger a retry.
+        _cache: Optional TTL cache for GET requests.
+        _auth_strategy: Authentication strategy instance.
+        _http_client: The underlying httpx.AsyncClient for making requests.
+        _should_close_client: Flag indicating if this instance owns the _http_client.
+        _rate_limit_limit: Last observed rate limit capacity.
+        _rate_limit_remaining: Last observed remaining requests in the current window.
+        _rate_limit_reset_timestamp: Timestamp for when the rate limit window resets.
+        _rate_limit_lock: Lock for synchronizing access to rate limit state.
     """
 
-    DEFAULT_RETRYABLE_STATUS_CODES = frozenset([429, 500, 502, 503, 504])
+    DEFAULT_RETRYABLE_STATUS_CODES: frozenset[int] = frozenset(
+        [429, 500, 502, 503, 504]
+    )
+    """Default set of HTTP status codes considered retryable."""
 
     def __init__(
         self,
@@ -91,20 +110,22 @@ class BaseApiClient:
         """
         self._settings = settings
         self._response_unwrapper = response_unwrapper
-        self._base_url = base_url.rstrip("/")
-        self._retryable_status_codes = retryable_status_codes
+        self._base_url: str = base_url.rstrip("/")
+        self._retryable_status_codes: frozenset[int] = retryable_status_codes
 
         # Initialize cache
-        self._cache: TTLCache | None = None
-        if self._settings.enable_caching:
+        self._cache: TTLCache[str, Any] | None = None
+        if self._settings.enable_caching and self._settings.cache_ttl_seconds > 0:
             logger.info(
                 f"Client-side caching enabled. Max size: {self._settings.cache_max_size}, "
                 f"TTL: {self._settings.cache_ttl_seconds}s"
             )
-            self._cache = TTLCache(
+            self._cache = TTLCache(  # type: ignore[type-arg]
                 maxsize=self._settings.cache_max_size,
                 ttl=self._settings.cache_ttl_seconds,
             )
+        else:
+            logger.info("Client-side caching is disabled.")
 
         # Set up authentication strategy
         self._auth_strategy: AuthStrategy = auth_strategy or NoAuth()
@@ -338,7 +359,7 @@ class BaseApiClient:
                 )
                 for hook in self._settings.post_request_hooks:
                     try:
-                        hook(response, parsed_model)  # parsed_model can be None
+                        hook(response, parsed_model, 1)  # Always 1 for single request
                     except Exception as e:
                         logger.error(
                             f"Error executing post-request hook {getattr(hook, '__name__', str(hook))}: {e}",
@@ -378,9 +399,16 @@ class BaseApiClient:
         except httpx.TimeoutException as e:
             logger.error(f"Request timed out: {request.url}")
             raise TimeoutError("Request timed out", request=request) from e
-        except httpx.NetworkError as e:
-            logger.error(f"Network error occurred: {request.url}")
-            raise NetworkError("Network error occurred", request=request) from e
+        except httpx.NetworkError as e:  # Specific network errors
+            logger.error(f"Network error occurred for {request.url}: {e}")
+            raise NetworkError(
+                f"Network error for {request.url}: {e}", request=request
+            ) from e
+        except httpx.RequestError as e:  # Other httpx request errors (e.g. connection, read timeouts if not httpx.TimeoutException)
+            logger.error(f"HTTP request error for {request.url}: {e}")
+            raise BibliofabricRequestError(
+                f"HTTP request error for {request.url}: {e}", request=request
+            ) from e
         except Exception as e:
             # If response was received before another exception, parse its headers
             if response:
@@ -391,6 +419,7 @@ class BaseApiClient:
             )
             if isinstance(e, BibliofabricError):  # If it's already our error, re-raise
                 raise e
+            # Keep this as a general fallback
             raise BibliofabricError(
                 f"An unexpected error occurred during request execution: {e}",
                 request=request,
@@ -414,7 +443,7 @@ class BaseApiClient:
             url = "N/A"
             request = getattr(exc, "request", None)
             if request:
-                url = getattr(request, "url", "N/A")
+                url = str(getattr(request, "url", "N/A"))
 
             # Retry on timeout, network, and rate limit errors
             if isinstance(exc, TimeoutError | NetworkError | RateLimitError):
@@ -449,7 +478,7 @@ class BaseApiClient:
         data: Mapping[str, Any] | None = None,
         base_url_override: str | None = None,
         expected_model: type[Any] | None = None,
-    ) -> tuple[httpx.Response, Any | None]:
+    ) -> tuple[httpx.Response, Any | None, int]:
         """Make an HTTP request with configured retries for transient errors.
 
         Args:
@@ -462,8 +491,8 @@ class BaseApiClient:
             expected_model: Optional Pydantic model for response parsing.
 
         Returns:
-            tuple[httpx.Response, Any | None]: The HTTP response and optionally
-                parsed model instance.
+            tuple[httpx.Response, Any | None, int]: The HTTP response, optionally
+                parsed model instance, and the number of attempts made.
 
         Raises:
             Various exceptions depending on failure type after all retries are exhausted.
@@ -552,23 +581,15 @@ class BaseApiClient:
             reraise=True,  # Reraise the exception if all retries fail
             before_sleep=self._before_retry_sleep,  # Log before sleeping
         )
+
         try:
-            return await retry_strategy.__call__(
+            response, parsed_model = await retry_strategy(
                 self._execute_single_request, request_data, expected_model
             )
-        except RetryError as e:  # This catches tenacity's RetryError
-            logger.error(
-                f"All retries failed for {request_data.url}. Last exception: {e.last_attempt.exception() if e.last_attempt else 'Unknown'}"
-            )
-            # Re-raise the original exception that caused the retries to fail
-            if e.last_attempt and e.last_attempt.failed:
-                original_exception = e.last_attempt.exception()
-                if original_exception:
-                    raise original_exception from e
-            # Fallback if for some reason last_attempt is not available
-            raise BibliofabricError(
-                f"All retries failed for {request_data.url}. No specific last exception captured."
-            ) from e
+            return response, parsed_model, retry_strategy.statistics["attempt_number"]
+        except Exception as e:
+            logger.error(f"Request failed after multiple retries: {e}")
+            raise
 
     async def _before_retry_sleep(self, retry_state: tenacity.RetryCallState) -> None:
         """Log details before tenacity sleeps between retries.
@@ -612,8 +633,6 @@ class BaseApiClient:
         Returns:
             str: A unique cache key string.
         """
-        import hashlib
-        import json
 
         # Start with method and URL
         key_parts = [method.upper(), url]
@@ -694,7 +713,7 @@ class BaseApiClient:
                     return cached_item  # cached_item is the parsed_model
 
         # --- Execute Request (if not a cache hit or not cacheable) ---
-        response, parsed_model = await self._request_with_retry(
+        response, parsed_model, attempts = await self._request_with_retry(
             method=method,
             path=path,
             params=params,
@@ -784,7 +803,12 @@ class BaseApiClient:
         )
         return self
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
+    async def __aexit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: object | None,
+    ) -> None:
         """Exit the async context manager and clean up resources.
 
         Args:

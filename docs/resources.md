@@ -1,0 +1,3 @@
+# Resources
+
+::: bibliofabric.resources

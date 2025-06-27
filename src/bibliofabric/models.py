@@ -8,9 +8,10 @@ client implementation to define how their specific JSON response format
 should be parsed and processed.
 """
 
-from typing import Any, Protocol
+from typing import Any, Protocol, runtime_checkable
 
 
+@runtime_checkable
 class ResponseUnwrapper(Protocol):
     """Protocol for unwrapping API-specific response structures.
 
@@ -28,8 +29,8 @@ class ResponseUnwrapper(Protocol):
         ```json
         {
             "header": {
-                "total": 1000,
-                "nextCursor": "abc123"
+                "total": 1000,  # [total]
+                "nextCursor": "abc123"  # [nextCursor]
             },
             "results": [
                 {"id": "1", "title": "Paper 1"},
@@ -38,10 +39,8 @@ class ResponseUnwrapper(Protocol):
         }
         ```
 
-        The OpenAIRE implementation would:
-        - `unwrap_results()` → return response["results"]
-        - `get_total_results()` → return response["header"]["total"]
-        - `get_next_page_token()` → return response["header"]["nextCursor"]
+        [total]: #total
+        [nextCursor]: #nextcursor
     """
 
     def unwrap_results(self, response_json: dict[str, Any]) -> list[dict[str, Any]]:

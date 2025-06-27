@@ -28,6 +28,12 @@ dev = [
     "pytest-cov>=6.1.1",
     "pytest-httpx>=0.35.0",
 ]
+docs = [
+    "mkdocs~=1.6.0",
+    "mkdocs-material~=9.5.0",
+    "mkdocstrings[python]",
+]
+
 lint = ["ruff>=0.8.0"]
 test = ["pytest", "pytest-randomly"]
 
@@ -68,6 +74,12 @@ select = [
     "FURB",
 ]
 
+[tool.ruff.lint.pylint]
+max-args = 10
+max-branches = 25
+max-statements = 75
+
+
 [tool.ruff.lint.isort]
 combine-as-imports = true
 
@@ -75,6 +87,9 @@ combine-as-imports = true
 "__init__.py" = ["F401"]
 
 [tool.pytest.ini_options]
+pythonpath = [
+  "src"
+]
 testpaths = ["tests"]
 python_files = "test_*.py"
 python_functions = "test_*"

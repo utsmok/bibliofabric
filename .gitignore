@@ -1,3 +1,9 @@
+site/
+.roo/
+
+node_modules/
+package-lock.json
+package.json/a
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -125,7 +131,8 @@ secrets.env
 .ropeproject
 
 # mkdocs documentation
-/site
+*/site
+site/*
 
 # mypy
 .mypy_cache/

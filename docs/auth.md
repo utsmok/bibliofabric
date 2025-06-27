@@ -1,0 +1,3 @@
+# Authentication
+
+::: bibliofabric.auth

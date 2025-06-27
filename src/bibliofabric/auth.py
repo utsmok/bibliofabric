@@ -1,5 +1,5 @@
 import asyncio
-from enum import Enum  # Added
+from enum import Enum
 from typing import Protocol
 
 import httpx
@@ -8,14 +8,23 @@ from .exceptions import AuthError, ConfigurationError
 from .log_config import logger
 
 
-class AuthStrategyType(Enum):  # Added
+class AuthStrategyType(Enum):
+    """Enumeration of available authentication strategy types.
+
+    Used in configuration to specify which authentication method to use.
+    """
+
     NONE = "none"
     STATIC_TOKEN = "static_token"
     CLIENT_CREDENTIALS = "client_credentials"
 
 
 class AuthStrategy(Protocol):
-    """Protocol defining the interface for authentication strategies."""
+    """Protocol defining the interface for various authentication strategies.
+
+    Concrete implementations of this protocol handle the specifics of adding
+    authentication information (e.g., headers, tokens) to an HTTP request.
+    """
 
     async def async_authenticate(self, request: httpx.Request) -> None:
         """
@@ -40,42 +49,67 @@ class AuthStrategy(Protocol):
 
 
 class NoAuth:
-    """Implements the AuthStrategy protocol for requests requiring no authentication."""
+    """Implements the AuthStrategy protocol for requests requiring no authentication.
+
+    This strategy makes no modifications to the outgoing request.
+    """
 
     async def async_authenticate(self, request: httpx.Request) -> None:
         """Does nothing as no authentication is needed."""
-        logger.trace("Using NoAuth strategy.")
+        logger.trace("Using NoAuth strategy, no authentication applied.")
 
     async def async_close(self) -> None:
-        """No resources to close for NoAuth."""
+        """No resources to close for NoAuth, this method is a no-op."""
 
 
 class StaticTokenAuth:
-    """
-    Implements AuthStrategy using a static Bearer token (e.g., personal API token).
+    """Implements AuthStrategy using a static Bearer token.
+
+    This strategy is suitable for APIs that use a pre-issued, long-lived
+    API token (e.g., a personal access token). The token is added to the
+    `Authorization` header as a Bearer token.
+
+    Attributes:
+        _token: The static API token.
     """
 
     def __init__(self, token: str | None):
+        """Initializes StaticTokenAuth with the provided API token.
+
+        Args:
+            token: The static API token to use for authentication.
+
+        Raises:
+            ConfigurationError: If the token is None or empty.
+        """
         if not token:
-            # If token is expected but not provided, raise config error
             raise ConfigurationError("StaticTokenAuth requires a non-empty 'token'.")
-        self._token = token
+        self._token: str = token
         logger.debug("StaticTokenAuth initialized.")
 
     async def async_authenticate(self, request: httpx.Request) -> None:
-        """Adds the static Authorization: Bearer token header."""
+        """Adds the static 'Authorization: Bearer <token>' header to the request."""
         logger.trace("Authenticating request using StaticTokenAuth.")
         request.headers["Authorization"] = f"Bearer {self._token}"
 
     async def async_close(self) -> None:
-        """No resources to close for StaticTokenAuth."""
+        """No resources to close for StaticTokenAuth, this method is a no-op."""
 
 
 class ClientCredentialsAuth:
-    """
-    Implements AuthStrategy using OAuth2 Client Credentials Grant Flow.
+    """Implements AuthStrategy using OAuth2 Client Credentials Grant Flow.
 
-    Fetches a Bearer token using client_id and client_secret via Basic Auth.
+    This strategy fetches a Bearer token from a specified token URL using
+    client ID and client secret, then uses this token for subsequent API requests.
+    It handles token fetching and includes a lock to prevent concurrent token requests.
+
+    Attributes:
+        _client_id: The OAuth2 client ID.
+        _client_secret: The OAuth2 client secret.
+        _token_url: The URL of the OAuth2 token endpoint.
+        _access_token: The currently active access token.
+        _token_client: An internal httpx.AsyncClient for fetching the token.
+        _fetch_lock: An asyncio.Lock to prevent race conditions during token fetching.
     """
 
     def __init__(
@@ -93,20 +127,35 @@ class ClientCredentialsAuth:
         self._token_url: str = token_url
         self._access_token: str | None = None
         self._token_client: httpx.AsyncClient | None = None
-        self._fetch_lock = asyncio.Lock()  # Prevent concurrent token fetches
+        self._fetch_lock = asyncio.Lock()
         logger.debug("ClientCredentialsAuth initialized.")
 
     async def _get_token_client(self) -> httpx.AsyncClient:
-        """Initializes and returns the internal httpx client for token fetching."""
+        """Lazily initializes and returns an internal httpx.AsyncClient for token requests.
+
+        Returns:
+            An httpx.AsyncClient instance.
+        """
         if self._token_client is None:
-            # Create a simple client for token fetching, no complex retries needed here usually
             self._token_client = httpx.AsyncClient(
                 timeout=15.0
-            )  # Shorter timeout for token request
+            )  # Standard timeout for token requests
         return self._token_client
 
     async def _fetch_access_token(self) -> str:
-        """Fetches a new access token using client credentials."""
+        """Fetches a new OAuth2 access token using the client credentials grant type.
+
+        This method handles the POST request to the token URL and extracts the
+        access token from the JSON response. It uses a lock to prevent multiple
+        concurrent requests for a new token.
+
+        Returns:
+            The fetched access token as a string.
+
+        Raises:
+            AuthError: If token fetching fails due to HTTP errors, network issues,
+                       or an invalid response from the token endpoint.
+        """
         async with self._fetch_lock:
             # Double-check if token was fetched while waiting for the lock
             if self._access_token:

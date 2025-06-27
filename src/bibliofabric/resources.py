@@ -16,7 +16,7 @@ from typing import TYPE_CHECKING, Any, Protocol
 
 from pydantic import BaseModel
 
-from .exceptions import BibliofabricError
+from .exceptions import BibliofabricError, ValidationError
 from .log_config import logger
 
 if TYPE_CHECKING:
@@ -32,9 +32,11 @@ class ResourceClientProtocol(Protocol):
     """
 
     _api_client: "BaseApiClient"
-    _entity_path: str
-    _entity_model: Any  # More flexible to handle any Pydantic model type
-    _search_response_model: Any  # More flexible to handle any Pydantic model type
+    _entity_path: str  # The relative API path for the resource, e.g., "publications"
+    _entity_model: type[BaseModel] | None  # Pydantic model for a single entity
+    _search_response_model: (
+        type[BaseModel] | None
+    )  # Pydantic model for the search/list response envelope
 
     @property
     def response_unwrapper(self) -> "ResponseUnwrapper": ...
@@ -48,10 +50,16 @@ class BaseResourceClient:
     unwrapper. All resource mixins expect to be used with this base class.
 
     Attributes:
-        _api_client: The main API client instance for making HTTP requests.
-        _entity_path: The API endpoint path for this resource (set by subclasses).
-        _entity_model: Optional Pydantic model class for individual entities.
-        _search_response_model: Optional Pydantic model class for search responses.
+        _api_client: The main `BaseApiClient` instance used for making HTTP requests.
+        _entity_path: The specific API endpoint path for this resource (e.g., "items",
+            "users"). This must be defined by concrete subclasses.
+        _entity_model: Optional Pydantic model (`type[BaseModel] | None`) that represents
+            a single entity of this resource. If provided, methods like `get()`
+            and `iterate()` will attempt to parse results into this model.
+        _search_response_model: Optional Pydantic model (`type[BaseModel] | None`)
+            that represents the structure of a search or list response envelope for
+            this resource. If provided, `search()` will attempt to parse the entire
+            response into this model.
     """
 
     def __init__(self, api_client: "BaseApiClient"):
@@ -77,12 +85,17 @@ class GettableMixin:
     """Mixin that provides generic get() functionality for retrieving single entities.
 
     This mixin implements a standard pattern for fetching individual entities by ID.
-    It uses the search functionality with an ID filter since many APIs don't provide
-    direct GET endpoints for individual resources.
+    It typically uses a search operation filtered by the entity's ID, as some APIs
+    may not offer direct GET-by-ID endpoints, or this approach offers more
+    consistency.
 
-    Classes using this mixin must inherit from BaseResourceClient and define:
-    - _entity_path: The API endpoint path
-    - _entity_model: The Pydantic model for the entity type (optional)
+    To use this mixin, a class must:
+    1. Inherit from `BaseResourceClient` (or a class that provides the
+       `ResourceClientProtocol` attributes).
+    2. Define `_entity_path: str` specifying the API endpoint path for the resource.
+    3. Optionally, define `_entity_model: type[BaseModel] | None`. If provided,
+       the retrieved entity data will be parsed into an instance of this model.
+       If None, raw dictionary data is returned.
     """
 
     async def get(self: ResourceClientProtocol, entity_id: str) -> Any:
@@ -161,12 +174,20 @@ class SearchableMixin:
     """Mixin that provides generic search() functionality with pagination support.
 
     This mixin implements a standard pattern for searching entities with support
-    for page-based pagination, filtering, and sorting. It uses the response
-    unwrapper to handle API-specific response formats.
+    for page-based pagination, filtering, and sorting. It relies on the
+    `ResponseUnwrapper` (via `BaseResourceClient`) to correctly parse the
+    API's specific list response structure.
 
-    Classes using this mixin must inherit from BaseResourceClient and define:
-    - _entity_path: The API endpoint path
-    - _search_response_model: The Pydantic model for search responses (optional)
+    To use this mixin, a class must:
+    1. Inherit from `BaseResourceClient` (or a class that provides the
+       `ResourceClientProtocol` attributes).
+    2. Define `_entity_path: str` specifying the API endpoint path for the resource.
+    3. Optionally, define `_search_response_model: type[BaseModel] | None`.
+       If provided, the entire search response (including pagination details and
+       results) will be parsed into an instance of this model. If None, the raw
+       JSON response dictionary is returned.
+    4. Optionally, define `_valid_sort_fields: frozenset[str]` if you want to
+       validate the `sort_by` parameter against a predefined set of fields.
     """
 
     async def search(
@@ -175,7 +196,7 @@ class SearchableMixin:
         page_size: int = 20,
         sort_by: str | None = None,
         filters: BaseModel | dict[str, Any] | None = None,
-    ) -> Any:
+    ) -> BaseModel | dict[str, Any]:
         """Search for entities with pagination support.
 
         Args:
@@ -191,6 +212,7 @@ class SearchableMixin:
         Raises:
             BibliofabricError: If the API request fails.
         """
+
         if not self._entity_path:
             raise BibliofabricError(
                 f"{self.__class__.__name__} must define _entity_path"
@@ -208,9 +230,15 @@ class SearchableMixin:
                     f"filters must be a Pydantic model or dictionary, got {type(filters)}"
                 )
 
+        filter_dict["page"] = page
+        filter_dict["pageSize"] = page_size
+
+        if sort_by:
+            filter_dict["sortBy"] = sort_by
+
         logger.info(
-            f"Searching {self._entity_path}: page={page}, size={page_size}, "
-            f"sort='{sort_by}', filters={filter_dict}"
+            f"Searching {self._entity_path}: page={filter_dict.get('page')}, size={filter_dict.get('pageSize')}, "
+            f"sort='{filter_dict.get('sortBy')}', filters={filter_dict}"
         )
 
         # Build query parameters
@@ -220,6 +248,11 @@ class SearchableMixin:
         }
 
         if sort_by:
+            if (
+                hasattr(self, "_valid_sort_fields")
+                and sort_by.split()[0] not in self._valid_sort_fields  # type: ignore[attr-defined]
+            ):
+                raise ValidationError(f"Invalid sort field: {sort_by.split()[0]}")
             params["sortBy"] = sort_by
 
         if filter_dict:
@@ -260,12 +293,17 @@ class CursorIterableMixin:
     """Mixin that provides generic iterate() functionality using cursor-based pagination.
 
     This mixin implements a standard pattern for iterating through all results
-    using cursor-based pagination. It handles the pagination loop automatically
-    and yields individual entities as they are retrieved.
+    of a resource using cursor-based pagination. It automatically handles fetching
+    subsequent pages by using the `nextCursor` (or equivalent) provided by the API,
+    as interpreted by the `ResponseUnwrapper`. It yields individual entities.
 
-    Classes using this mixin must inherit from BaseResourceClient and define:
-    - _entity_path: The API endpoint path
-    - _entity_model: The Pydantic model for individual entities (optional)
+    To use this mixin, a class must:
+    1. Inherit from `BaseResourceClient` (or a class that provides the
+       `ResourceClientProtocol` attributes, including access to a `ResponseUnwrapper`).
+    2. Define `_entity_path: str` specifying the API endpoint path for the resource.
+    3. Optionally, define `_entity_model: type[BaseModel] | None`. If provided,
+       each yielded entity will be parsed into an instance of this model.
+       If None, raw dictionary data for each entity is yielded.
     """
 
     async def iterate(
@@ -315,23 +353,28 @@ class CursorIterableMixin:
         )
 
         # Build initial parameters with cursor pagination
-        params: dict[str, Any] = {
+        current_params: dict[
+            str, Any
+        ] = {  # Renamed to current_params for clarity in loop
             "cursor": "*",  # Start cursor for iteration
             "pageSize": page_size,
         }
 
         if sort_by:
-            params["sortBy"] = sort_by
+            current_params["sortBy"] = sort_by
 
         if filter_dict:
-            params.update(filter_dict)
+            current_params.update(filter_dict)
 
         while True:
             try:
-                logger.debug(f"Iterating {self._entity_path} with params: {params}")
+                logger.debug(
+                    f"Iterating {self._entity_path} with params: {current_params}"
+                )
 
+                # Pass a copy of params to avoid issues with mock call_args_list
                 response = await self._api_client.request(
-                    "GET", self._entity_path, params=params
+                    "GET", self._entity_path, params=current_params.copy()
                 )
 
                 response_data = response.json()
@@ -369,15 +412,15 @@ class CursorIterableMixin:
                     break
 
                 # Update cursor for next iteration
-                params["cursor"] = next_cursor
+                current_params["cursor"] = next_cursor
                 # Remove page if it accidentally got in, cursor handles pagination
-                params.pop("page", None)
+                current_params.pop("page", None)
 
             except Exception as e:
                 if isinstance(e, BibliofabricError):
                     raise
                 logger.exception(
-                    f"Failed during iteration of {self._entity_path} with params {params}"
+                    f"Failed during iteration of {self._entity_path} with params {current_params}"
                 )
                 raise BibliofabricError(
                     f"Unexpected error during iteration of {self._entity_path}: {e}"

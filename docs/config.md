@@ -1,0 +1,3 @@
+# Configuration
+
+::: bibliofabric.config
