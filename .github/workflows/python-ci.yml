@@ -3,6 +3,10 @@ name: Python CI
 on:
   push:
     branches: ["main"]
+    tags:
+      - 'v*.*.*'
+      - 'v*.*'
+      - 'v*'
   pull_request:
     branches: ["main"]
 
@@ -24,12 +28,12 @@ jobs:
         uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
-        
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version-file: "pyproject.toml"
-          
+
       - name: Install dependencies
         run: |
           uv sync --all-groups --all-extras
@@ -47,32 +51,32 @@ jobs:
         run: |
           uv build
 
-          
+
   build-docs:
     runs-on: ubuntu-latest
     needs: test
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-  
+
       - name: Install & setup uv
         uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
-        
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version-file: "pyproject.toml"
-          
+
       - name: Install dependencies
         run: |
           uv sync --all-groups --all-extras
-          
+
       - name: Build & deploy docs
         run: |
           uv run mkdocs gh-deploy --force
-          
+
   publish-pypi:
     needs: test
     runs-on: ubuntu-latest
@@ -91,12 +95,12 @@ jobs:
         uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
-        
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version-file: "pyproject.toml"
-          
+
       - name: Install dependencies
         run: |
           uv sync --all-groups --all-extras
