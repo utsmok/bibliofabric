@@ -1,4 +1,13 @@
-"""Defines API endpoint paths and validation details."""
+"""Defines OpenAIRE API endpoint paths, filter models, and related configurations.
+
+This module centralizes the definitions for various OpenAIRE API endpoints,
+including their relative paths and Pydantic models for request filter parameters.
+It also provides utility functions related to endpoint configurations, such as
+retrieving valid sort fields for an endpoint.
+
+The filter models ensure type safety and validation for parameters passed to
+the API client's search and iteration methods.
+"""
 
 from datetime import date
 from typing import Literal

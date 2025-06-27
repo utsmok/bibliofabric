@@ -68,12 +68,19 @@ class RateLimitError(APIError):
 
 
 class TimeoutError(BibliofabricError):
-    """Represents a request timeout error."""
+    """Represents a request timeout error.
+
+    This error is raised when an HTTP request does not complete within the configured timeout.
+    """
 
     def __init__(self, message: str, *, request: httpx.Request | None = None):
-        # Timeout errors typically don't have a response, but do have the request
-        super().__init__(message, response=None)  # Base class handles message
-        self.request = request  # Store the request associated with the timeout
+        """Initializes the TimeoutError.
+
+        Args:
+            message: The error message.
+            request: The httpx.Request object associated with the timeout.
+        """
+        super().__init__(message, request=request, response=None)
 
     def __str__(self) -> str:
         if self.request:
@@ -82,12 +89,20 @@ class TimeoutError(BibliofabricError):
 
 
 class NetworkError(BibliofabricError):
-    """Represents a network connection error (e.g., DNS, connection refused)."""
+    """Represents a network connection error (e.g., DNS resolution failure, connection refused).
+
+    This error indicates a problem in establishing or maintaining a network connection
+    to the server during an HTTP request.
+    """
 
     def __init__(self, message: str, *, request: httpx.Request | None = None):
-        # Network errors might not have a response, but have the failing request
-        super().__init__(message, response=None)
-        self.request = request
+        """Initializes the NetworkError.
+
+        Args:
+            message: The error message.
+            request: The httpx.Request object associated with the network error.
+        """
+        super().__init__(message, request=request, response=None)
 
     def __str__(self) -> str:
         if self.request:
@@ -105,3 +120,12 @@ class ConfigurationError(BibliofabricError):
 
 class AuthError(BibliofabricError):
     """Raised when an authentication error occurs, e.g., fetching a token fails."""
+
+
+class BibliofabricRequestError(BibliofabricError):
+    """Represents an error during the HTTP request process itself.
+
+    This can be due to network issues, timeouts, or HTTP errors from the server
+    that are not covered by more specific exceptions like RateLimitError or NotFoundError.
+    """
+    pass
