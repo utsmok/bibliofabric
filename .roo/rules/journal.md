@@ -90,10 +90,11 @@
                 -   [X] Filtered query succesfully run with expected results.
                 -   [X] Compare all raw output retrieved using HTTPX with the parsed & verified output from the `aireloom` client (i.e. the pydantic models representing the data).
       -   [ ] **Task 3.6: Final touches**
-          -   [ ] Verify that the test suite covers all functionality and edge cases of the `aireloom` client. Basic pytest cmd: `uv run pytest /src/aireloom/tests`. Make sure the coverage is up to spec.
-          -   [ ] Verify that the test suite covers all functionality and edge cases of the `bibliofabric` package. Basic pytest cmd: `uv run pytest /src/bibliofabric/tests`. Make sure the coverage is up to spec.
-          -   [ ]  Ensure that all code is properly documented, including:
-              -   [ ] Docstrings for all classes, methods, and functions.
+          -   [x] Verify that the test suite covers all functionality and edge cases of the `aireloom` client. Basic pytest cmd: `uv run pytest /src/aireloom/tests`. Make sure the coverage is up to spec. (Achieved 91%)
+          -   [x] Verify that the test suite covers all functionality and edge cases of the `bibliofabric` package. Basic pytest cmd: `uv run pytest /src/bibliofabric/tests`. Make sure the coverage is up to spec. (Achieved 83%)
+          -   [c]  Ensure that all code is properly documented, including: (c = currently in progress)
+              -   [x] Docstrings for all classes, methods, and functions in `bibliofabric`.
+              -   [c] Docstrings for all classes, methods, and functions in `aireloom`. (Partially done for client.py, config.py, constants.py, endpoints.py)
               -   [ ] Inline comments where necessary to explain complex logic.
           -   [ ] Update all README.md files for both `bibliofabric` and `aireloom` to reflect the new structure and usage.
           -   [ ] Build the documentation for `aireloom` using mkdocs.

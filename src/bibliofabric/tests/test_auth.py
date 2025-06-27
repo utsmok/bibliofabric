@@ -99,7 +99,7 @@ async def test_client_credentials_auth_fetch_token_success(mock_post, MockBasicA
             auth=MockBasicAuth.return_value,
             data={"grant_type": "client_credentials"},
         )
-        MockBasicAuth.assert_called_once_with(username="id", password="secret")
+    MockBasicAuth.assert_called_once_with(username="id", password="secret")
 
 
 @pytest.mark.asyncio

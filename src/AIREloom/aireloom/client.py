@@ -25,10 +25,36 @@ from .unwrapper import OpenAireUnwrapper
 
 
 class AireloomClient(BaseApiClient):
-    """Asynchronous HTTP client for interacting with OpenAIRE APIs.
+    """Asynchronous client for interacting with the OpenAIRE Graph and Scholix APIs.
 
-    This client inherits all generic HTTP functionality from BaseApiClient
-    and adds OpenAIRE-specific resource clients and configuration.
+    This client provides a high-level interface to various OpenAIRE API endpoints,
+    handling authentication, request retries, caching, and rate limiting.
+    It builds upon the generic `bibliofabric.client.BaseApiClient` and is configured
+    specifically for OpenAIRE services.
+
+    Resource clients for different OpenAIRE entities (e.g., research products,
+    projects, organizations) are available as properties of this client.
+
+    Authentication is handled automatically based on provided settings or can be
+    customized by passing an `auth_strategy`. If no credentials or strategy are
+    provided, requests will be made without authentication.
+
+    Typical usage:
+    ```python
+    async with AireloomClient() as client:
+        product = await client.research_products.get("some_product_id")
+        async for project in client.projects.iterate(filters=ProjectFilters(...)):
+            print(project.title)
+    ```
+
+    Attributes:
+        research_products (ResearchProductsClient): Client for research product endpoints.
+        organizations (OrganizationsClient): Client for organization endpoints.
+        projects (ProjectsClient): Client for project endpoints.
+        data_sources (DataSourcesClient): Client for data source endpoints.
+        scholix (ScholixClient): Client for Scholix (scholarly link exchange) endpoints.
+        _settings (ApiSettings): The resolved API settings for this client instance.
+        _scholix_base_url (str): The base URL for the Scholix API.
     """
 
     def __init__(
@@ -36,35 +62,48 @@ class AireloomClient(BaseApiClient):
         settings: ApiSettings | None = None,
         auth_strategy: AuthStrategy | None = None,
         *,
-        # Allow direct override for testing/specific cases, but prefer settings
         api_token: str | None = None,
         client_id: str | None = None,
         client_secret: str | None = None,
         base_url: str = OPENAIRE_GRAPH_API_BASE_URL,
         scholix_base_url: str = OPENAIRE_SCHOLIX_API_BASE_URL,
     ):
-        """
-        Initializes the AireloomClient with OpenAIRE-specific functionality.
+        """Initializes the AireloomClient.
 
-        Authentication is determined automatically based on settings unless an
-        explicit `auth_strategy` is provided.
+        This constructor sets up the client with necessary configurations,
+        determines the authentication strategy, and initializes resource-specific
+        sub-clients.
 
-        Order of precedence for automatic auth determination:
-        1. Client Credentials (if client_id & client_secret are configured)
-        2. Static Token (if api_token is configured)
-        3. No Authentication
+        Authentication Strategy Resolution:
+        - If `auth_strategy` is explicitly provided, it is used.
+        - Otherwise, credentials (api_token, client_id, client_secret) passed
+          directly to this constructor take precedence over those in `settings`.
+        - If credentials are not passed directly, they are sourced from `settings`
+          (which are loaded from environment variables or .env files).
+        - The order of preference for automatic strategy selection is:
+            1. Client Credentials (if client_id & client_secret are available)
+            2. Static Token (if api_token is available)
+            3. No Authentication (if no credentials are found)
 
         Args:
-            settings: Optional ApiSettings instance. If None, loads global settings.
-            auth_strategy: Optional explicit authentication strategy instance.
-            api_token: Optional static API token (overrides settings if provided).
-            client_id: Optional client ID (overrides settings if provided).
-            client_secret: Optional client secret (overrides settings if provided).
-            base_url: The base URL for the OpenAIRE Graph API.
-            scholix_base_url: The base URL for the OpenAIRE Scholix API.
+            settings: An optional `ApiSettings` instance. If `None`, global settings
+                are loaded via `aireloom.config.get_settings()`. These settings
+                can be a source for authentication credentials and other client behaviors.
+            auth_strategy: An optional explicit `AuthStrategy` instance. If provided,
+                it overrides automatic authentication resolution.
+            api_token: An optional static API token. If provided, it takes precedence
+                over `settings.openaire_api_token` for StaticTokenAuth.
+            client_id: An optional client ID for ClientCredentialsAuth. Takes
+                precedence over `settings.openaire_client_id`.
+            client_secret: An optional client secret for ClientCredentialsAuth. Takes
+                precedence over `settings.openaire_client_secret`.
+            base_url: The base URL for the OpenAIRE Graph API. Defaults to the
+                production OpenAIRE Graph API URL.
+            scholix_base_url: The base URL for the OpenAIRE Scholix API. Defaults
+                to the production OpenAIRE Scholix API URL.
         """
-        self._settings = settings or get_settings()
-        self._scholix_base_url = scholix_base_url.rstrip("/")
+        self._settings: ApiSettings = settings or get_settings()
+        self._scholix_base_url: str = scholix_base_url.rstrip("/")
 
         logger.debug(
             f"AireloomClient.__init__ settings: id={id(self._settings)}, "
@@ -142,27 +181,27 @@ class AireloomClient(BaseApiClient):
 
     @property
     def research_products(self) -> ResearchProductsClient:
-        """Access ResearchProductsClient."""
+        """Provides access to the ResearchProductsClient for OpenAIRE research product APIs."""
         return self._research_products
 
     @property
     def organizations(self) -> OrganizationsClient:
-        """Access OrganizationsClient."""
+        """Provides access to the OrganizationsClient for OpenAIRE organization APIs."""
         return self._organizations
 
     @property
     def projects(self) -> ProjectsClient:
-        """Access ProjectsClient."""
+        """Provides access to the ProjectsClient for OpenAIRE project APIs."""
         return self._projects
 
     @property
     def data_sources(self) -> DataSourcesClient:
-        """Access DataSourcesClient."""
+        """Provides access to the DataSourcesClient for OpenAIRE data source APIs."""
         return self._data_sources
 
     @property
     def scholix(self) -> ScholixClient:
-        """Access ScholixClient."""
+        """Provides access to the ScholixClient for OpenAIRE Scholix (scholarly link) APIs."""
         return self._scholix
 
     async def __aenter__(self) -> Self:

@@ -1,4 +1,10 @@
 # bibliofabric/log_config.py
+"""Logging configuration for the bibliofabric library using Loguru.
+
+This module provides a centralized function to configure the Loguru logger
+with a standardized format, level, and sink for consistent logging across
+the bibliofabric framework and its derived API clients.
+"""
 import sys
 
 from loguru import logger
@@ -19,7 +25,7 @@ def configure_logging(level: str = "INFO", sink=sys.stderr):
         sink,
         level=level.upper(),
         format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
-        colorize=True,
+        colorize=sink is sys.stderr, # Only colorize if writing to stderr
         backtrace=True,
         diagnose=True,
     )

@@ -8,9 +8,10 @@ client implementation to define how their specific JSON response format
 should be parsed and processed.
 """
 
-from typing import Any, Protocol
+from typing import Any, Protocol, runtime_checkable
 
 
+@runtime_checkable
 class ResponseUnwrapper(Protocol):
     """Protocol for unwrapping API-specific response structures.
 

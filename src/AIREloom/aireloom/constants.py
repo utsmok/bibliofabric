@@ -1,4 +1,8 @@
-"""Constants used throughout the Aireloom library."""
+"""Constants used throughout the Aireloom library.
+
+This module defines constants for API base URLs, default client settings,
+endpoint names, and various literals or enumerations used for API parameters.
+"""
 
 from enum import Enum
 from typing import Literal
