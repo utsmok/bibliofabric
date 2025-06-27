@@ -1,4 +1,6 @@
 # `bibliofabric`: a foundation for modern scholarly API clients
+*Samuel Mok // s.mok@utwente.nl // 2025*
+
 
 `bibliofabric` is a foundational, asynchronous Python framework for building modern, resilient, and maintainable clients for scholarly APIs. It is the generic engine designed to create a future toolkit of clients for services like OpenAIRE, Crossref, OpenAlex, and more.
 
