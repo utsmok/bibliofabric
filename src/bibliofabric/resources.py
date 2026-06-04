@@ -43,6 +43,8 @@ class ResourceClientProtocol(Protocol):
     @property
     def response_unwrapper(self) -> "ResponseUnwrapper": ...
 
+    def _validate_sort_field(self, field: str) -> None: ...
+
 
 class BaseResourceClient:
     """Base class for all resource clients in the bibliofabric framework.

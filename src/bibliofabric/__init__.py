@@ -17,19 +17,54 @@ except PackageNotFoundError:
 __author__ = "Samuel Mok"
 __email__ = "s.mok@utwente.nl"
 
-# Import core modules for easy access
-from . import auth, client, config, exceptions, log_config, models, resources, types
+from .auth import AuthStrategy, ClientCredentialsAuth, NoAuth, StaticTokenAuth
+from .client import BaseApiClient
+from .config import BaseApiSettings
+from .exceptions import (
+    APIError,
+    AuthError,
+    BibliofabricError,
+    BibliofabricRequestError,
+    ConfigurationError,
+    NetworkError,
+    NotFoundError,
+    RateLimitError,
+    TimeoutError,
+    ValidationError,
+)
+from .models import ResponseUnwrapper
+from .resources import (
+    BaseResourceClient,
+    CursorIterableMixin,
+    GettableMixin,
+    PageIterableMixin,
+    SearchableMixin,
+)
 
 __all__ = [
     "__version__",
     "__author__",
     "__email__",
-    "auth",
-    "client",
-    "config",
-    "exceptions",
-    "log_config",
-    "models",
-    "resources",
-    "types",
+    "AuthStrategy",
+    "BaseApiClient",
+    "BaseApiSettings",
+    "BaseResourceClient",
+    "BibliofabricError",
+    "APIError",
+    "NotFoundError",
+    "ValidationError",
+    "RateLimitError",
+    "TimeoutError",
+    "NetworkError",
+    "ConfigurationError",
+    "AuthError",
+    "BibliofabricRequestError",
+    "ClientCredentialsAuth",
+    "CursorIterableMixin",
+    "GettableMixin",
+    "NoAuth",
+    "PageIterableMixin",
+    "ResponseUnwrapper",
+    "SearchableMixin",
+    "StaticTokenAuth",
 ]

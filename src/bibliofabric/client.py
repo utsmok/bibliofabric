@@ -790,7 +790,7 @@ class BaseApiClient:
         if hasattr(self._auth_strategy, "async_close") and callable(
             self._auth_strategy.async_close
         ):
-            await self._auth_strategy.async_close()  # type: ignore
+            await self._auth_strategy.async_close()
 
     async def __aenter__(self) -> Self:
         """Enter the async context manager.

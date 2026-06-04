@@ -4,14 +4,8 @@ from functools import lru_cache
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from . import __version__ as _VERSION
 from .types import PostRequestHook, PreRequestHook
-
-try:
-    from importlib.metadata import version as _get_version
-
-    _VERSION = _get_version("bibliofabric")
-except Exception:
-    _VERSION = "0.0.0"
 
 
 class BaseApiSettings(BaseSettings):
