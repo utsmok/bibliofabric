@@ -8,6 +8,7 @@ from .types import PostRequestHook, PreRequestHook
 
 try:
     from importlib.metadata import version as _get_version
+
     _VERSION = _get_version("bibliofabric")
 except Exception:
     _VERSION = "0.0.0"

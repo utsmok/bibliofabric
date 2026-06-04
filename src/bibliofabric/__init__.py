@@ -10,6 +10,7 @@ The framework is designed to be extended by specific API client implementations
 
 try:
     from importlib.metadata import PackageNotFoundError, version as _get_version
+
     __version__ = _get_version("bibliofabric")
 except PackageNotFoundError:
     __version__ = "0.0.0"

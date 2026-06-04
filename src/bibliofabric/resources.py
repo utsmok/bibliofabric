@@ -63,6 +63,7 @@ class BaseResourceClient:
             this resource. If provided, `search()` will attempt to parse the entire
             response into this model.
     """
+
     _base_url_override: str | None = None
     _supports_direct_get: bool = False
 
@@ -145,7 +146,9 @@ class GettableMixin:
                 # Direct GET by ID: construct path like "resource/{id}"
                 direct_path = f"{self._entity_path}/{entity_id}"
                 response = await self._api_client.request(
-                    "GET", direct_path, params=None,
+                    "GET",
+                    direct_path,
+                    params=None,
                     base_url_override=self._base_url_override,
                 )
                 response_data = response.json()
@@ -154,7 +157,9 @@ class GettableMixin:
                 # Use search with ID parameter instead of direct GET
                 params = {"id": entity_id, "pageSize": 1}
                 response = await self._api_client.request(
-                    "GET", self._entity_path, params=params,
+                    "GET",
+                    self._entity_path,
+                    params=params,
                     base_url_override=self._base_url_override,
                 )
                 response_data = response.json()
@@ -262,7 +267,9 @@ class SearchableMixin:
         )
         try:
             response = await self._api_client.request(
-                "GET", self._entity_path, params=params,
+                "GET",
+                self._entity_path,
+                params=params,
                 base_url_override=self._base_url_override,
             )
 
@@ -377,7 +384,9 @@ class CursorIterableMixin:
 
                 # Pass a copy of params to avoid issues with mock call_args_list
                 response = await self._api_client.request(
-                    "GET", self._entity_path, params=current_params.copy(),
+                    "GET",
+                    self._entity_path,
+                    params=current_params.copy(),
                     base_url_override=self._base_url_override,
                 )
 
