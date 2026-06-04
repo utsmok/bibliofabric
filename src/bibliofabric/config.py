@@ -6,6 +6,12 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from .types import PostRequestHook, PreRequestHook
 
+try:
+    from importlib.metadata import version as _get_version
+    _VERSION = _get_version("bibliofabric")
+except Exception:
+    _VERSION = "0.0.0"
+
 
 class BaseApiSettings(BaseSettings):
     """
@@ -38,7 +44,7 @@ class BaseApiSettings(BaseSettings):
         default=0.5, description="Backoff factor for retries (seconds)"
     )
     user_agent: str = Field(
-        default="bibliofabric/1.0.0",
+        default=f"bibliofabric/{_VERSION}",
         description="User-Agent header for requests",
     )
 

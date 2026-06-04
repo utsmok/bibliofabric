@@ -8,7 +8,11 @@ The framework is designed to be extended by specific API client implementations
 (like aireloom for OpenAIRE) while centralizing common functionality.
 """
 
-__version__ = "0.1.0"
+try:
+    from importlib.metadata import PackageNotFoundError, version as _get_version
+    __version__ = _get_version("bibliofabric")
+except PackageNotFoundError:
+    __version__ = "0.0.0"
 __author__ = "Samuel Mok"
 __email__ = "s.mok@utwente.nl"
 
