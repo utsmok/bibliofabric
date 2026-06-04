@@ -235,3 +235,69 @@ async def test_client_credentials_auth_close_no_client():
     auth._token_client = None  # Ensure no client
     await auth.async_close()
     # No exception means it passed
+
+
+# --- ClientCredentialsAuth Token Expiry Tests ---
+
+
+@pytest.mark.asyncio
+@patch("httpx.AsyncClient.post")
+async def test_client_credentials_auth_token_refetched_when_expired(mock_post):
+    """Test that token is re-fetched when _is_token_expired() returns True."""
+    mock_post.return_value = httpx.Response(
+        200,
+        json={"access_token": "refreshed_token", "expires_in": 3600},
+        request=httpx.Request("POST", "http://token.com"),
+    )
+
+    auth = ClientCredentialsAuth(
+        client_id="id", client_secret="secret", token_url="http://token.com"
+    )
+    auth._access_token = "old_token"
+    # Set expiry in the past so _is_token_expired() returns True
+    auth._token_expires_at = 1000.0  # Long ago
+
+    request = httpx.Request("GET", "http://example.com")
+    await auth.async_authenticate(request)
+
+    assert request.headers["Authorization"] == "Bearer refreshed_token"
+    assert auth._access_token == "refreshed_token"
+    mock_post.assert_called_once()
+
+
+@pytest.mark.asyncio
+@patch("httpx.AsyncClient.post")
+async def test_client_credentials_auth_token_not_refetched_when_valid(mock_post):
+    """Test that token is NOT re-fetched when still valid."""
+    import time
+
+    auth = ClientCredentialsAuth(
+        client_id="id", client_secret="secret", token_url="http://token.com"
+    )
+    auth._access_token = "valid_token"
+    # Set expiry far in the future so _is_token_expired() returns False
+    auth._token_expires_at = time.time() + 3600
+
+    request = httpx.Request("GET", "http://example.com")
+    await auth.async_authenticate(request)
+
+    assert request.headers["Authorization"] == "Bearer valid_token"
+    mock_post.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_client_credentials_auth_token_no_expiry_assumed_valid():
+    """Test that token with no expiry info (_token_expires_at=None) is assumed valid."""
+    auth = ClientCredentialsAuth(
+        client_id="id", client_secret="secret", token_url="http://token.com"
+    )
+    auth._access_token = "persistent_token"
+    # _token_expires_at is None by default — token should be treated as valid
+    assert auth._token_expires_at is None
+
+    request = httpx.Request("GET", "http://example.com")
+    with patch.object(auth, "_fetch_access_token") as mock_fetch:
+        await auth.async_authenticate(request)
+        mock_fetch.assert_not_called()
+
+    assert request.headers["Authorization"] == "Bearer persistent_token"

@@ -6,12 +6,13 @@ import pytest
 from pydantic import BaseModel, Field
 
 from bibliofabric.client import BaseApiClient
-from bibliofabric.exceptions import BibliofabricError
+from bibliofabric.exceptions import BibliofabricError, ValidationError
 from bibliofabric.models import ResponseUnwrapper
 from bibliofabric.resources import (
     BaseResourceClient,
     CursorIterableMixin,
     GettableMixin,
+    PageIterableMixin,
     SearchableMixin,
 )
 
@@ -75,6 +76,22 @@ class CursorIterableTestClient(CursorIterableMixin, ConcreteResourceClient):
     pass
 
 
+class PageIterableTestClient(PageIterableMixin, ConcreteResourceClient):
+    pass
+
+
+class ValidatingSearchableClient(SearchableMixin, ConcreteResourceClient):
+    _valid_sort_fields = frozenset({"title", "date"})
+
+    def _validate_sort_field(self, field: str) -> None:
+        if field not in self._valid_sort_fields:
+            raise ValidationError(f"Invalid sort field: {field}")
+
+
+class DirectGetTestClient(GettableMixin, ConcreteResourceClient):
+    _supports_direct_get = True
+
+
 @pytest.fixture
 def gettable_client(mock_api_client, mock_unwrapper):
     return GettableTestClient(mock_api_client, mock_unwrapper)
@@ -88,6 +105,11 @@ def searchable_client(mock_api_client, mock_unwrapper):
 @pytest.fixture
 def cursor_iterable_client(mock_api_client, mock_unwrapper):
     return CursorIterableTestClient(mock_api_client, mock_unwrapper)
+
+
+@pytest.fixture
+def page_iterable_client(mock_api_client, mock_unwrapper):
+    return PageIterableTestClient(mock_api_client, mock_unwrapper)
 
 
 # --- BaseResourceClient Tests ---
@@ -127,7 +149,8 @@ async def test_gettable_mixin_get_success(
     result = await gettable_client.get(entity_id)
 
     mock_api_client.request.assert_awaited_once_with(
-        "GET", "test_entities", params={"id": entity_id, "pageSize": 1}
+        "GET", "test_entities", params={"id": entity_id, "pageSize": 1},
+        base_url_override=None,
     )
     mock_unwrapper.unwrap_results.assert_called_once_with(
         {"results": [mock_raw_item], "header": {"numFound": 1}}
@@ -217,7 +240,8 @@ async def test_searchable_mixin_search_success(
         "custom_filter": "test",
     }
     mock_api_client.request.assert_awaited_once_with(
-        "GET", "test_entities", params=expected_params
+        "GET", "test_entities", params=expected_params,
+        base_url_override=None,
     )
     assert isinstance(result, MockSearchResponseModel)
     assert len(result.results) == 2
@@ -298,11 +322,11 @@ async def test_cursor_iterable_mixin_iterate_success(
 
     args, kwargs = calls[0]
     assert args == ("GET", "test_entities")
-    assert kwargs == {"params": {"cursor": "*", "pageSize": 1, "active": True}}
+    assert kwargs == {"params": {"cursor": "*", "pageSize": 1, "active": True}, "base_url_override": None}
 
     args, kwargs = calls[1]
     assert args == ("GET", "test_entities")
-    assert kwargs == {"params": {"cursor": "cursor2", "pageSize": 1, "active": True}}
+    assert kwargs == {"params": {"cursor": "cursor2", "pageSize": 1, "active": True}, "base_url_override": None}
 
     assert mock_unwrapper.unwrap_results.call_count == 2
     assert mock_unwrapper.get_next_page_token.call_count == 2
@@ -371,3 +395,205 @@ async def test_cursor_iterable_mixin_iterate_empty_initial_results(
     mock_api_client.request.assert_awaited_once()  # Should make one call
     mock_unwrapper.unwrap_results.assert_called_once()
     mock_unwrapper.get_next_page_token.assert_called_once()  # Still checks for next token
+
+
+# --- _base_url_override Tests ---
+
+
+@pytest.mark.asyncio
+async def test_searchable_mixin_base_url_override_passed(
+    mock_api_client, mock_unwrapper
+):
+    """Test that _base_url_override is passed through to request()."""
+    mock_raw_response_json = {"results": [], "numFound": 0}
+    mock_response = MagicMock(spec=httpx.Response)
+    mock_response.json.return_value = mock_raw_response_json
+    mock_api_client.request.return_value = mock_response
+
+    client = SearchableTestClient(mock_api_client, mock_unwrapper)
+    client._base_url_override = "https://custom.api.com/v1"
+
+    await client.search()
+
+    mock_api_client.request.assert_awaited_once()
+    _, kwargs = mock_api_client.request.call_args
+    assert kwargs.get("base_url_override") == "https://custom.api.com/v1"
+
+
+@pytest.mark.asyncio
+async def test_searchable_mixin_base_url_override_default_none(
+    mock_api_client, mock_unwrapper
+):
+    """Test that default _base_url_override=None is passed through to request()."""
+    mock_raw_response_json = {"results": [], "numFound": 0}
+    mock_response = MagicMock(spec=httpx.Response)
+    mock_response.json.return_value = mock_raw_response_json
+    mock_api_client.request.return_value = mock_response
+
+    client = SearchableTestClient(mock_api_client, mock_unwrapper)
+    # _base_url_override defaults to None
+
+    await client.search()
+
+    mock_api_client.request.assert_awaited_once()
+    _, kwargs = mock_api_client.request.call_args
+    assert kwargs.get("base_url_override") is None
+
+
+# --- _validate_sort_field Tests ---
+
+
+@pytest.mark.asyncio
+async def test_validate_sort_field_raises_on_invalid(mock_api_client, mock_unwrapper):
+    """Test that _validate_sort_field raises ValidationError for invalid sort fields."""
+    client = ValidatingSearchableClient(mock_api_client, mock_unwrapper)
+
+    with pytest.raises(ValidationError, match="Invalid sort field"):
+        await client.search(sort_by="invalid_field asc")
+
+
+@pytest.mark.asyncio
+async def test_validate_sort_field_default_allows_any(
+    mock_api_client, mock_unwrapper
+):
+    """Test that default _validate_sort_field (no-op) allows any sort field."""
+    mock_raw_response_json = {"results": [], "numFound": 0}
+    mock_response = MagicMock(spec=httpx.Response)
+    mock_response.json.return_value = mock_raw_response_json
+    mock_api_client.request.return_value = mock_response
+
+    client = SearchableTestClient(mock_api_client, mock_unwrapper)
+    client._search_response_model = None  # Return raw dict for easy assertion
+    # Default _validate_sort_field is a no-op, should not raise
+    result = await client.search(sort_by="any_field asc")
+
+    assert result == mock_raw_response_json
+
+
+# --- _supports_direct_get Tests ---
+
+
+@pytest.mark.asyncio
+async def test_gettable_mixin_direct_get_uses_path(
+    mock_api_client, mock_unwrapper
+):
+    """Test that _supports_direct_get=True uses direct path GET /{path}/{id}."""
+    entity_id = "123"
+    mock_raw_item = {"id": entity_id, "value": "Direct Value"}
+    mock_response = MagicMock(spec=httpx.Response)
+    mock_response.json.return_value = mock_raw_item
+    mock_api_client.request.return_value = mock_response
+    mock_unwrapper.unwrap_single_item.return_value = mock_raw_item
+
+    client = DirectGetTestClient(mock_api_client, mock_unwrapper)
+    result = await client.get(entity_id)
+
+    mock_api_client.request.assert_awaited_once()
+    call_args, call_kwargs = mock_api_client.request.call_args
+    assert call_args[1] == "test_entities/123"  # path should be direct
+    assert call_kwargs.get("params") is None or "id" not in (
+        call_kwargs.get("params") or {}
+    )
+    mock_unwrapper.unwrap_single_item.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_gettable_mixin_default_uses_search_by_id(
+    gettable_client, mock_api_client, mock_unwrapper
+):
+    """Test that default _supports_direct_get=False uses search-by-ID pattern."""
+    entity_id = "123"
+    mock_raw_item = {"id": entity_id, "value": "Test Value"}
+    mock_raw_response_json = {"results": [mock_raw_item], "numFound": 1}
+    mock_response = MagicMock(spec=httpx.Response)
+    mock_response.json.return_value = mock_raw_response_json
+    mock_api_client.request.return_value = mock_response
+    mock_unwrapper.unwrap_results.return_value = [mock_raw_item]
+
+    result = await gettable_client.get(entity_id)
+
+    mock_api_client.request.assert_awaited_once()
+    _, kwargs = mock_api_client.request.call_args
+    params = kwargs.get("params", {})
+    assert params.get("id") == "123"
+    assert params.get("pageSize") == 1
+    mock_unwrapper.unwrap_results.assert_called_once()
+
+
+# --- PageIterableMixin Tests ---
+
+
+@pytest.mark.asyncio
+async def test_page_iterable_mixin_basic_iteration(
+    mock_api_client, mock_unwrapper
+):
+    """Test that PageIterableMixin iterates pages 1, 2 and stops on empty page 3."""
+    page1_items = [{"id": "1", "value": "A"}, {"id": "2", "value": "B"}]
+    page2_items = [{"id": "3", "value": "C"}]
+
+    responses = []
+    for items in [page1_items, page2_items, []]:
+        resp = MagicMock(spec=httpx.Response)
+        resp.json.return_value = {"results": items}
+        responses.append(resp)
+
+    mock_api_client.request.side_effect = responses
+    mock_unwrapper.unwrap_results.side_effect = [page1_items, page2_items, []]
+    mock_unwrapper.get_total_results.return_value = None  # No total info
+
+    client = PageIterableTestClient(mock_api_client, mock_unwrapper)
+    results = [item async for item in client.iterate()]
+
+    assert len(results) == 3
+    assert results[0].id == "1"
+    assert results[1].id == "2"
+    assert results[2].id == "3"
+    assert mock_api_client.request.await_count == 3
+
+
+@pytest.mark.asyncio
+async def test_page_iterable_mixin_stops_on_total(
+    mock_api_client, mock_unwrapper
+):
+    """Test that PageIterableMixin stops early when total results are reached."""
+    page1_items = [{"id": "1", "value": "A"}, {"id": "2", "value": "B"}]
+    page2_items = [{"id": "3", "value": "C"}]
+
+    responses = []
+    for items in [page1_items, page2_items]:
+        resp = MagicMock(spec=httpx.Response)
+        resp.json.return_value = {"results": items}
+        responses.append(resp)
+
+    mock_api_client.request.side_effect = responses
+    mock_unwrapper.unwrap_results.side_effect = [page1_items, page2_items]
+    # Total is 3, page_size=2: after page 2 (fetched=4>=3), iteration stops
+    mock_unwrapper.get_total_results.return_value = 3
+
+    client = PageIterableTestClient(mock_api_client, mock_unwrapper)
+    results = [item async for item in client.iterate(page_size=2)]
+
+    assert len(results) == 3
+    assert mock_api_client.request.await_count == 2  # Stopped after 2 pages
+
+
+@pytest.mark.asyncio
+async def test_page_iterable_mixin_base_url_override(
+    mock_api_client, mock_unwrapper
+):
+    """Test that _base_url_override is passed through in PageIterableMixin requests."""
+    response_json = {"results": []}
+    mock_response = MagicMock(spec=httpx.Response)
+    mock_response.json.return_value = response_json
+    mock_api_client.request.return_value = mock_response
+    mock_unwrapper.unwrap_results.return_value = []
+
+    client = PageIterableTestClient(mock_api_client, mock_unwrapper)
+    client._base_url_override = "https://custom.api.com/v2"
+
+    results = [item async for item in client.iterate()]
+
+    assert len(results) == 0
+    mock_api_client.request.assert_awaited_once()
+    _, kwargs = mock_api_client.request.call_args
+    assert kwargs.get("base_url_override") == "https://custom.api.com/v2"
