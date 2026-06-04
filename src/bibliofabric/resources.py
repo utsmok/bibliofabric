@@ -16,7 +16,7 @@ from typing import TYPE_CHECKING, Any, Protocol
 
 from pydantic import BaseModel
 
-from .exceptions import BibliofabricError, ValidationError
+from .exceptions import BibliofabricError
 from .log_config import logger
 
 if TYPE_CHECKING:
@@ -96,7 +96,7 @@ class BaseResourceClient:
         Raises:
             ValidationError: If the sort field is invalid.
         """
-        pass
+        ...  # noqa: PIE790
 
 
 class GettableMixin:

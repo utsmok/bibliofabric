@@ -3,7 +3,7 @@ site/
 
 node_modules/
 package-lock.json
-package.json/a
+package.json
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

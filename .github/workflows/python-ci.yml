@@ -38,14 +38,17 @@ jobs:
         run: |
           uv sync --all-groups --all-extras
 
-      - name: Lint, format, and fix with ruff
+      - name: Lint with ruff
         run: |
-          uv run ruff check src/ --fix
-          uv run ruff format src/
+          uv run ruff check src/
+
+      - name: Check formatting with ruff
+        run: |
+          uv run ruff format --check src/
 
       - name: Test with pytest
         run: |
-          uv run pytest --cov=myproj tests/
+          uv run pytest --cov=bibliofabric tests/
 
       - name: Build package
         run: |
