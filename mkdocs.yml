@@ -32,5 +32,6 @@ nav:
     - Models: models.md
     - Authentication: auth.md
     - Exceptions: exceptions.md
+  - Contributing: contributing.md
 watch:
   - src/bibliofabric
