@@ -1,4 +1,5 @@
 import asyncio
+import time
 from enum import Enum
 from typing import Protocol
 
@@ -126,6 +127,7 @@ class ClientCredentialsAuth:
         self._client_secret: str = client_secret
         self._token_url: str = token_url
         self._access_token: str | None = None
+        self._token_expires_at: float | None = None
         self._token_client: httpx.AsyncClient | None = None
         self._fetch_lock = asyncio.Lock()
         logger.debug("ClientCredentialsAuth initialized.")
@@ -158,7 +160,7 @@ class ClientCredentialsAuth:
         """
         async with self._fetch_lock:
             # Double-check if token was fetched while waiting for the lock
-            if self._access_token:
+            if self._access_token and not self._is_token_expired():
                 return self._access_token
 
             logger.info(f"Fetching new access token from {self._token_url}")
@@ -176,8 +178,11 @@ class ClientCredentialsAuth:
                 access_token = token_data.get("access_token")
                 if not access_token:
                     raise AuthError("Access token not found in token response.")
-                # TODO: Handle token expiry ('expires_in') for future automatic refresh
-                # expires_in = token_data.get("expires_in")
+                expires_in = token_data.get("expires_in")
+                if expires_in:
+                    self._token_expires_at = time.time() + expires_in - 30  # 30s buffer
+                else:
+                    self._token_expires_at = None
                 logger.info("Successfully fetched new access token.")
                 self._access_token = access_token
                 assert self._access_token is not None, "Access token should be set here"
@@ -193,11 +198,21 @@ class ClientCredentialsAuth:
                 logger.error(f"Error fetching token: {e}")
                 raise AuthError(f"Failed to fetch access token: {e}") from e
 
+    def _is_token_expired(self) -> bool:
+        """Check if the current access token has expired.
+        Returns:
+            True if the token is expired or missing, False if still valid.
+        """
+        if self._access_token is None:
+            return True
+        if self._token_expires_at is None:
+            return False  # No expiry info, assume valid
+        return time.time() >= self._token_expires_at
+
     async def async_authenticate(self, request: httpx.Request) -> None:
         """Ensures a valid token is fetched and adds the Authorization header."""
         logger.trace("Authenticating request using ClientCredentialsAuth.")
-        if not self._access_token:
-            # Fetch token if not already available (first time or after expiry if implemented)
+        if not self._access_token or self._is_token_expired():
             await self._fetch_access_token()
 
         if not self._access_token:
