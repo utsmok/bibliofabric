@@ -37,6 +37,8 @@ class ResourceClientProtocol(Protocol):
     _search_response_model: (
         type[BaseModel] | None
     )  # Pydantic model for the search/list response envelope
+    _base_url_override: str | None
+    _supports_direct_get: bool
 
     @property
     def response_unwrapper(self) -> "ResponseUnwrapper": ...
@@ -61,6 +63,8 @@ class BaseResourceClient:
             this resource. If provided, `search()` will attempt to parse the entire
             response into this model.
     """
+    _base_url_override: str | None = None
+    _supports_direct_get: bool = False
 
     def __init__(self, api_client: "BaseApiClient"):
         """Initialize the base resource client.
@@ -79,6 +83,20 @@ class BaseResourceClient:
             ResponseUnwrapper: The response unwrapper instance from the API client.
         """
         return self._api_client._response_unwrapper
+
+    def _validate_sort_field(self, field: str) -> None:
+        """Validate a sort field name. Override in subclasses for custom validation.
+
+        Default implementation does nothing (no validation).
+        Consumers can override to check against allowed fields.
+
+        Args:
+            field: The sort field name to validate.
+
+        Raises:
+            ValidationError: If the sort field is invalid.
+        """
+        pass
 
 
 class GettableMixin:
@@ -123,29 +141,34 @@ class GettableMixin:
         logger.info(f"Fetching entity with ID: {entity_id}")
 
         try:
-            # Use search with ID parameter instead of direct GET
-            params = {"id": entity_id, "pageSize": 1}
-
-            response = await self._api_client.request(
-                "GET", self._entity_path, params=params
-            )
-
-            response_data = response.json()
-
-            # Use the response unwrapper to get results
-            results = self.response_unwrapper.unwrap_results(response_data)
-
-            if not results:
-                entity_name = (
-                    self._entity_model.__name__ if self._entity_model else "Entity"
+            if self._supports_direct_get:
+                # Direct GET by ID: construct path like "resource/{id}"
+                direct_path = f"{self._entity_path}/{entity_id}"
+                response = await self._api_client.request(
+                    "GET", direct_path, params=None,
+                    base_url_override=self._base_url_override,
                 )
-                raise BibliofabricError(
-                    f"{entity_name} with ID '{entity_id}' not found."
+                response_data = response.json()
+                entity_data = self.response_unwrapper.unwrap_single_item(response_data)
+            else:
+                # Use search with ID parameter instead of direct GET
+                params = {"id": entity_id, "pageSize": 1}
+                response = await self._api_client.request(
+                    "GET", self._entity_path, params=params,
+                    base_url_override=self._base_url_override,
                 )
-
-            # Get the first (and should be only) result
-            entity_data = results[0]
-
+                response_data = response.json()
+                # Use the response unwrapper to get results
+                results = self.response_unwrapper.unwrap_results(response_data)
+                if not results:
+                    entity_name = (
+                        self._entity_model.__name__ if self._entity_model else "Entity"
+                    )
+                    raise BibliofabricError(
+                        f"{entity_name} with ID '{entity_id}' not found."
+                    )
+                # Get the first (and should be only) result
+                entity_data = results[0]
             # Parse with entity model if available
             if self._entity_model:
                 try:
@@ -156,7 +179,6 @@ class GettableMixin:
                         "Returning raw data."
                     )
                     return entity_data
-
             return entity_data
 
         except Exception as e:
@@ -186,8 +208,8 @@ class SearchableMixin:
        If provided, the entire search response (including pagination details and
        results) will be parsed into an instance of this model. If None, the raw
        JSON response dictionary is returned.
-    4. Optionally, define `_valid_sort_fields: frozenset[str]` if you want to
-       validate the `sort_by` parameter against a predefined set of fields.
+    4. Optionally, override `_validate_sort_field()` in your resource client
+       if you want to validate the `sort_by` parameter against allowed fields.
     """
 
     async def search(
@@ -218,49 +240,30 @@ class SearchableMixin:
                 f"{self.__class__.__name__} must define _entity_path"
             )
 
-        # Convert filters to dictionary if it's a Pydantic model
-        filter_dict: dict[str, Any] = {}
+        # Build query parameters
+        params: dict[str, Any] = {}
         if filters:
             if isinstance(filters, BaseModel):
-                filter_dict = filters.model_dump(exclude_none=True, by_alias=True)
+                params = filters.model_dump(exclude_none=True, by_alias=True)
             elif isinstance(filters, dict):
-                filter_dict = filters
+                params = dict(filters)  # copy to avoid mutating caller's dict
             else:
                 raise BibliofabricError(
                     f"filters must be a Pydantic model or dictionary, got {type(filters)}"
                 )
-
-        filter_dict["page"] = page
-        filter_dict["pageSize"] = page_size
-
+        params["page"] = page
+        params["pageSize"] = page_size
         if sort_by:
-            filter_dict["sortBy"] = sort_by
-
-        logger.info(
-            f"Searching {self._entity_path}: page={filter_dict.get('page')}, size={filter_dict.get('pageSize')}, "
-            f"sort='{filter_dict.get('sortBy')}', filters={filter_dict}"
-        )
-
-        # Build query parameters
-        params: dict[str, Any] = {
-            "page": page,
-            "pageSize": page_size,
-        }
-
-        if sort_by:
-            if (
-                hasattr(self, "_valid_sort_fields")
-                and sort_by.split()[0] not in self._valid_sort_fields  # type: ignore[attr-defined]
-            ):
-                raise ValidationError(f"Invalid sort field: {sort_by.split()[0]}")
+            self._validate_sort_field(sort_by.split()[0])
             params["sortBy"] = sort_by
-
-        if filter_dict:
-            params.update(filter_dict)
-
+        logger.info(
+            f"Searching {self._entity_path}: page={params.get('page')}, size={params.get('pageSize')}, "
+            f"sort='{params.get('sortBy')}', filters={params}"
+        )
         try:
             response = await self._api_client.request(
-                "GET", self._entity_path, params=params
+                "GET", self._entity_path, params=params,
+                base_url_override=self._base_url_override,
             )
 
             response_data = response.json()
@@ -374,7 +377,8 @@ class CursorIterableMixin:
 
                 # Pass a copy of params to avoid issues with mock call_args_list
                 response = await self._api_client.request(
-                    "GET", self._entity_path, params=current_params.copy()
+                    "GET", self._entity_path, params=current_params.copy(),
+                    base_url_override=self._base_url_override,
                 )
 
                 response_data = response.json()
@@ -421,6 +425,134 @@ class CursorIterableMixin:
                     raise
                 logger.exception(
                     f"Failed during iteration of {self._entity_path} with params {current_params}"
+                )
+                raise BibliofabricError(
+                    f"Unexpected error during iteration of {self._entity_path}: {e}"
+                ) from e
+
+
+class PageIterableMixin:
+    """Mixin that provides generic iterate() functionality using page-based pagination.
+
+    This mixin implements a standard pattern for iterating through all results
+    of a resource using page-based pagination (incrementing page numbers).
+    It yields individual entities.
+
+    To use this mixin, a class must:
+    1. Inherit from `BaseResourceClient` (or provide the ResourceClientProtocol attributes).
+    2. Define `_entity_path: str` specifying the API endpoint path for the resource.
+    3. Optionally, define `_entity_model: type[BaseModel] | None` for per-entity parsing.
+    """
+
+    async def iterate(
+        self: ResourceClientProtocol,
+        page_size: int = 100,
+        sort_by: str | None = None,
+        filters: BaseModel | dict[str, Any] | None = None,
+    ) -> AsyncIterator[Any]:
+        """Iterate through all entities matching the criteria using page-based pagination.
+
+        This method automatically handles pagination by incrementing the page number
+        to fetch successive pages of results. It yields individual entities.
+
+        Args:
+            page_size: Number of results to fetch per API call during iteration.
+            sort_by: Field to sort by.
+            filters: Filter criteria as a Pydantic model or dictionary.
+
+        Yields:
+            Any: Individual entities, either as parsed Pydantic models (if
+                _entity_model is defined) or as raw dictionaries.
+
+        Raises:
+            BibliofabricError: If the API request fails during iteration.
+        """
+        if not self._entity_path:
+            raise BibliofabricError(
+                f"{self.__class__.__name__} must define _entity_path"
+            )
+
+        # Convert filters to dictionary if it's a Pydantic model
+        params: dict[str, Any] = {}
+        if filters:
+            if isinstance(filters, BaseModel):
+                params = filters.model_dump(exclude_none=True, by_alias=True)
+            elif isinstance(filters, dict):
+                params = dict(filters)
+            else:
+                raise BibliofabricError(
+                    f"filters must be a Pydantic model or dictionary, got {type(filters)}"
+                )
+
+        if sort_by:
+            self._validate_sort_field(sort_by.split()[0])
+            params["sortBy"] = sort_by
+
+        logger.info(
+            f"Iterating {self._entity_path} (page-based): pageSize={page_size}, "
+            f"sort='{sort_by}', filters={params}"
+        )
+
+        current_page = 1
+
+        while True:
+            try:
+                params["page"] = current_page
+                params["pageSize"] = page_size
+
+                logger.debug(
+                    f"Iterating {self._entity_path} page {current_page} with params: {params}"
+                )
+
+                response = await self._api_client.request(
+                    "GET",
+                    self._entity_path,
+                    params=params.copy(),
+                    base_url_override=self._base_url_override,
+                )
+
+                response_data = response.json()
+
+                # Use the response unwrapper to get results
+                results = self.response_unwrapper.unwrap_results(response_data)
+
+                if not results:
+                    logger.debug(
+                        f"No more results for {self._entity_path} at page {current_page}, stopping iteration."
+                    )
+                    break
+
+                # Yield each result
+                for result_data in results:
+                    if self._entity_model:
+                        try:
+                            yield self._entity_model.model_validate(result_data)
+                        except Exception as e:
+                            logger.warning(
+                                f"Failed to parse entity data with {self._entity_model.__name__}: {e}. "
+                                "Yielding raw data."
+                            )
+                            yield result_data
+                    else:
+                        yield result_data
+
+                # Check if there are more pages
+                total = self.response_unwrapper.get_total_results(response_data)
+                if total is not None:
+                    fetched = current_page * page_size
+                    if fetched >= total:
+                        logger.debug(
+                            f"Fetched all {total} results for {self._entity_path}, stopping iteration."
+                        )
+                        break
+
+                current_page += 1
+
+            except Exception as e:
+                if isinstance(e, BibliofabricError):
+                    raise
+                logger.exception(
+                    f"Failed during iteration of {self._entity_path} with params {params}"
                 )
                 raise BibliofabricError(
                     f"Unexpected error during iteration of {self._entity_path}: {e}"
