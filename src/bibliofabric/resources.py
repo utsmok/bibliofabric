@@ -135,15 +135,21 @@ class BaseResourceClient:
         elif hasattr(self, "search"):
             # Fallback: single page search
             response = await self.search(  # ty: ignore[call-non-callable]
-                page=1, page_size=min(limit or page_size, page_size),
-                sort_by=sort_by, filters=filters,
+                page=1,
+                page_size=min(limit or page_size, page_size),
+                sort_by=sort_by,
+                filters=filters,
             )
             if isinstance(response, BaseModel):
                 results = getattr(response, "results", None)
                 if results:
                     collected = list(results)[:limit] if limit else list(results)
             elif isinstance(response, dict):
-                collected = response.get("results", [])[:limit] if limit else response.get("results", [])
+                collected = (
+                    response.get("results", [])[:limit]
+                    if limit
+                    else response.get("results", [])
+                )
         return collected
 
     async def count(
@@ -193,7 +199,9 @@ class BaseResourceClient:
         Returns:
             The first entity, or None.
         """
-        results = await self.collect(filters=filters, limit=1, sort_by=sort_by, page_size=1)
+        results = await self.collect(
+            filters=filters, limit=1, sort_by=sort_by, page_size=1
+        )
         return results[0] if results else None
 
 

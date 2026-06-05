@@ -21,8 +21,16 @@ def safe_dig(obj: Any, *path: str, default: Any = None) -> Any:
 
     Examples::
 
-        safe_dig(product, "container", "name")  # returns "" or the name
-        safe_dig(product, "indicators", "citationImpact", "citationCount", default=0)
+        safe_dig(
+            product, "container", "name"
+        )  # returns "" or the name
+        safe_dig(
+            product,
+            "indicators",
+            "citationImpact",
+            "citationCount",
+            default=0,
+        )
     """
     current = obj
     for key in path:
@@ -44,8 +52,8 @@ class DigMixin:
 
     Usage::
 
-        class MyModel(BaseModel, DigMixin):
-            ...
+        class MyModel(BaseModel, DigMixin): ...
+
 
         model.dig("container", "name")  # safe chained access
     """
