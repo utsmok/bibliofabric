@@ -101,6 +101,101 @@ class BaseResourceClient:
         """
         ...  # noqa: PIE790
 
+    async def collect(
+        self,
+        *,
+        filters: BaseModel | dict[str, Any] | None = None,
+        limit: int | None = None,
+        sort_by: str | None = None,
+        page_size: int = 100,
+    ) -> list[Any]:
+        """Collect results into a list, optionally limited.
+
+        Uses the subclass's ``iterate()`` method if available, otherwise falls back
+        to a single ``search()`` call.
+
+        Args:
+            filters: Filter criteria.
+            limit: Maximum number of results to collect. None = collect all.
+            sort_by: Field to sort by.
+            page_size: Number of results per page during iteration.
+
+        Returns:
+            A list of entities (parsed models if ``_entity_model`` is set).
+        """
+        collected: list[Any] = []
+        # Prefer iterate (handles all pagination types) if the subclass has it
+        if hasattr(self, "iterate"):
+            async for entity in self.iterate(  # ty: ignore[call-non-callable]
+                page_size=page_size, sort_by=sort_by, filters=filters
+            ):
+                collected.append(entity)
+                if limit is not None and len(collected) >= limit:
+                    break
+        elif hasattr(self, "search"):
+            # Fallback: single page search
+            response = await self.search(  # ty: ignore[call-non-callable]
+                page=1, page_size=min(limit or page_size, page_size),
+                sort_by=sort_by, filters=filters,
+            )
+            if isinstance(response, BaseModel):
+                results = getattr(response, "results", None)
+                if results:
+                    collected = list(results)[:limit] if limit else list(results)
+            elif isinstance(response, dict):
+                collected = response.get("results", [])[:limit] if limit else response.get("results", [])
+        return collected
+
+    async def count(
+        self,
+        *,
+        filters: BaseModel | dict[str, Any] | None = None,
+    ) -> int:
+        """Return total number of matching entities without fetching all results.
+
+        Performs a minimal search (page_size=1) and reads the total from
+        the response header.
+
+        Args:
+            filters: Filter criteria.
+
+        Returns:
+            Total count of matching entities, or 0 if unavailable.
+        """
+        if not hasattr(self, "search"):
+            raise NotImplementedError(
+                f"{self.__class__.__name__} does not support search; count() unavailable"
+            )
+        response = await self.search(page=1, page_size=1, filters=filters)  # ty: ignore[call-non-callable]
+        if isinstance(response, BaseModel):
+            header = getattr(response, "header", None)
+            if header and hasattr(header, "numFound") and header.numFound is not None:
+                return header.numFound
+        elif isinstance(response, dict):
+            header = response.get("header", {})
+            total = header.get("numFound")
+            if total is not None:
+                return int(total)
+        return 0
+
+    async def first(
+        self,
+        *,
+        filters: BaseModel | dict[str, Any] | None = None,
+        sort_by: str | None = None,
+    ) -> Any | None:
+        """Return the first matching entity, or None if no results.
+
+        Args:
+            filters: Filter criteria.
+            sort_by: Field to sort by.
+
+        Returns:
+            The first entity, or None.
+        """
+        results = await self.collect(filters=filters, limit=1, sort_by=sort_by, page_size=1)
+        return results[0] if results else None
+
 
 class GettableMixin:
     """Mixin that provides generic get() functionality for retrieving single entities.
