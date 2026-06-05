@@ -10,17 +10,25 @@ import sys
 
 from loguru import logger
 
+_configured = False
+
+
 
 def configure_logging(level: str = "INFO", sink=sys.stderr):
     """
     Configures Loguru logger.
 
     Removes default handlers and adds a new one with the specified level and sink.
+    Idempotent — safe to call multiple times.
 
     Args:
         level: The minimum logging level (e.g., "DEBUG", "INFO", "WARNING").
         sink: The output sink (e.g., sys.stderr, "file.log").
     """
+    global _configured
+    if _configured:
+        return
+    _configured = True
     logger.remove()  # Remove default handler
     logger.add(
         sink,
@@ -30,7 +38,7 @@ def configure_logging(level: str = "INFO", sink=sys.stderr):
         backtrace=True,
         diagnose=True,
     )
-    logger.info(
+    logger.debug(
         f"Loguru logger configured with level={level.upper()} writing to {sink}"
     )
 

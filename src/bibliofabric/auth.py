@@ -163,7 +163,7 @@ class ClientCredentialsAuth:
             if self._access_token and not self._is_token_expired():
                 return self._access_token
 
-            logger.info(f"Fetching new access token from {self._token_url}")
+            logger.debug(f"Fetching new access token from {self._token_url}")
             client = await self._get_token_client()
             try:
                 response = await client.post(
@@ -183,7 +183,7 @@ class ClientCredentialsAuth:
                     self._token_expires_at = time.time() + expires_in - 30  # 30s buffer
                 else:
                     self._token_expires_at = None
-                logger.info("Successfully fetched new access token.")
+                logger.debug("Successfully fetched new access token.")
                 self._access_token = access_token
                 assert self._access_token is not None, "Access token should be set here"
                 return self._access_token

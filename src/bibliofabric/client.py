@@ -116,7 +116,7 @@ class BaseApiClient:
         # Initialize cache
         self._cache: TTLCache[str, Any] | None = None
         if self._settings.enable_caching and self._settings.cache_ttl_seconds > 0:
-            logger.info(
+            logger.debug(
                 f"Client-side caching enabled. Max size: {self._settings.cache_max_size}, "
                 f"TTL: {self._settings.cache_ttl_seconds}s"
             )
@@ -125,11 +125,11 @@ class BaseApiClient:
                 ttl=self._settings.cache_ttl_seconds,
             )
         else:
-            logger.info("Client-side caching is disabled.")
+            logger.debug("Client-side caching is disabled.")
 
         # Set up authentication strategy
         self._auth_strategy: AuthStrategy = auth_strategy or NoAuth()
-        logger.info(
+        logger.debug(
             f"Using authentication strategy: {type(self._auth_strategy).__name__}"
         )
 
@@ -328,9 +328,7 @@ class BaseApiClient:
                             retry_after_from_headers
                             or self._settings.rate_limit_retry_after_default
                         )
-                        logger.info(
-                            f"Rate limit hit (429). Raising RateLimitError. Retry will be handled by tenacity with appropriate wait. Wait duration hint from server: {wait_duration:.2f}s. Client open: {not self._http_client.is_closed if self._http_client else 'N/A'}"
-                        )
+                        logger.debug(f"Rate limit hit (429). Raising RateLimitError. Retry will be handled by tenacity with appropriate wait. Wait duration hint from server: {wait_duration:.2f}s. Client open: {not self._http_client.is_closed if self._http_client else 'N/A'}")
                     logger.error(
                         f"Raising RateLimitError after 429. Client open: {not self._http_client.is_closed if self._http_client else 'N/A'}"
                     )
@@ -384,9 +382,7 @@ class BaseApiClient:
                         retry_after_from_headers
                         or self._settings.rate_limit_retry_after_default
                     )
-                    logger.info(
-                        f"Rate limit hit (429) in HTTPStatusError. Waiting for {wait_duration:.2f}s."
-                    )
+                    logger.debug(f"Rate limit hit (429) in HTTPStatusError. Waiting for {wait_duration:.2f}s.")
                     await asyncio.sleep(wait_duration)
                 raise RateLimitError(
                     "API rate limit exceeded.", response=e.response, request=e.request
@@ -532,11 +528,9 @@ class BaseApiClient:
                             current_time = time.time()
                             wait_time = self._rate_limit_reset_timestamp - current_time
                             if wait_time > 0:
-                                logger.info(
-                                    f"Rate limit approaching/reached. "
-                                    f"Remaining: {self._rate_limit_remaining}/{self._rate_limit_limit}. "
-                                    f"Waiting for {wait_time:.2f}s until reset."
-                                )
+                                logger.debug(f"Rate limit approaching/reached. "
+                                f"Remaining: {self._rate_limit_remaining}/{self._rate_limit_limit}. "
+                                f"Waiting for {wait_time:.2f}s until reset.")
                                 await asyncio.sleep(wait_time)
                         elif self._rate_limit_remaining == 0:
                             logger.warning(
@@ -615,10 +609,8 @@ class BaseApiClient:
             if retry_state.next_action
             else 0
         )
-        logger.info(
-            f"Retrying request {request_info} in {sleep_time:.2f} seconds "
-            f"after {retry_state.attempt_number} attempt(s) due to: {type(exc).__name__} - {exc}"
-        )
+        logger.debug(f"Retrying request {request_info} in {sleep_time:.2f} seconds "
+        f"after {retry_state.attempt_number} attempt(s) due to: {type(exc).__name__} - {exc}")
 
     def _generate_cache_key(
         self, method: str, url: str, params: Mapping[str, Any] | None = None
@@ -770,22 +762,16 @@ class BaseApiClient:
         properly clean up resources like HTTP connections and authentication
         clients.
         """
-        logger.info(
-            f"BaseApiClient.aclose() called. Client ID: {id(self)}. HTTP client to close: {self._should_close_client and self._http_client is not None}. HTTP client closed: {self._http_client.is_closed if self._http_client else 'N/A'}"
-        )
+        logger.debug(f"BaseApiClient.aclose() called. Client ID: {id(self)}. HTTP client to close: {self._should_close_client and self._http_client is not None}. HTTP client closed: {self._http_client.is_closed if self._http_client else 'N/A'}")
         if (
             self._should_close_client
             and self._http_client
             and not self._http_client.is_closed
         ):
             await self._http_client.aclose()
-            logger.info(
-                f"BaseApiClient internal HTTP client closed. Client ID: {id(self)}."
-            )
+            logger.debug(f"BaseApiClient internal HTTP client closed. Client ID: {id(self)}.")
         elif self._http_client and self._http_client.is_closed:
-            logger.info(
-                f"BaseApiClient.aclose(): HTTP client was already closed. Client ID: {id(self)}"
-            )
+            logger.debug(f"BaseApiClient.aclose(): HTTP client was already closed. Client ID: {id(self)}")
         # Close auth strategy client if it has an async_close method
         if hasattr(self._auth_strategy, "async_close") and callable(
             self._auth_strategy.async_close
@@ -798,9 +784,7 @@ class BaseApiClient:
         Returns:
             Self: The client instance for use in async context.
         """
-        logger.info(
-            f"BaseApiClient.__aenter__() called. Client ID: {id(self)}. HTTP client closed: {self._http_client.is_closed if self._http_client else 'N/A'}"
-        )
+        logger.debug(f"BaseApiClient.__aenter__() called. Client ID: {id(self)}. HTTP client closed: {self._http_client.is_closed if self._http_client else 'N/A'}")
         return self
 
     async def __aexit__(
@@ -816,10 +800,6 @@ class BaseApiClient:
             exc_val: Exception value if an exception occurred.
             exc_tb: Exception traceback if an exception occurred.
         """
-        logger.info(
-            f"BaseApiClient.__aexit__() called. Client ID: {id(self)}. HTTP client closed before aclose: {self._http_client.is_closed if self._http_client else 'N/A'}"
-        )
+        logger.debug(f"BaseApiClient.__aexit__() called. Client ID: {id(self)}. HTTP client closed before aclose: {self._http_client.is_closed if self._http_client else 'N/A'}")
         await self.aclose()
-        logger.info(
-            f"BaseApiClient.__aexit__() finished. Client ID: {id(self)}. HTTP client closed after aclose: {self._http_client.is_closed if self._http_client else 'N/A'}"
-        )
+        logger.debug(f"BaseApiClient.__aexit__() finished. Client ID: {id(self)}. HTTP client closed after aclose: {self._http_client.is_closed if self._http_client else 'N/A'}")

@@ -69,6 +69,10 @@ def test_configure_logging_removes_existing_handlers():
 @pytest.fixture(autouse=True)
 def reset_logger_after_test():
     """Fixture to reset Loguru to a default state after each test in this module."""
+    import bibliofabric.log_config as _lc
+
+    _lc._configured = False
     yield
+    _lc._configured = False
     logger.remove()
     logger.add(sys.stderr, level="INFO")  # Restore a basic default handler
