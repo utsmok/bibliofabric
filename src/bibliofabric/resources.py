@@ -172,7 +172,9 @@ class BaseResourceClient:
             raise NotImplementedError(
                 f"{self.__class__.__name__} does not support search; count() unavailable"
             )
-        response = await self.search(page=1, page_size=1, filters=filters)  # ty: ignore[call-non-callable]
+        response = await self.search(
+            page=1, page_size=1, filters=filters
+        )  # ty: ignore[call-non-callable]
         if isinstance(response, BaseModel):
             header = getattr(response, "header", None)
             if header and hasattr(header, "numFound") and header.numFound is not None:
@@ -366,8 +368,10 @@ class SearchableMixin:
         if sort_by:
             self._validate_sort_field(sort_by.split()[0])
             params["sortBy"] = sort_by
-        logger.debug(f"Searching {self._entity_path}: page={params.get('page')}, size={params.get('pageSize')}, "
-        f"sort='{params.get('sortBy')}', filters={params}")
+        logger.debug(
+            f"Searching {self._entity_path}: page={params.get('page')}, size={params.get('pageSize')}, "
+            f"sort='{params.get('sortBy')}', filters={params}"
+        )
         try:
             response = await self._api_client.request(
                 "GET",
@@ -460,8 +464,10 @@ class CursorIterableMixin:
                     f"filters must be a Pydantic model or dictionary, got {type(filters)}"
                 )
 
-        logger.debug(f"Iterating {self._entity_path}: pageSize={page_size}, "
-        f"sort='{sort_by}', filters={filter_dict}")
+        logger.debug(
+            f"Iterating {self._entity_path}: pageSize={page_size}, "
+            f"sort='{sort_by}', filters={filter_dict}"
+        )
 
         # Build initial parameters with cursor pagination
         current_params: dict[
@@ -598,8 +604,10 @@ class PageIterableMixin:
             self._validate_sort_field(sort_by.split()[0])
             params["sortBy"] = sort_by
 
-        logger.debug(f"Iterating {self._entity_path} (page-based): pageSize={page_size}, "
-        f"sort='{sort_by}', filters={params}")
+        logger.debug(
+            f"Iterating {self._entity_path} (page-based): pageSize={page_size}, "
+            f"sort='{sort_by}', filters={params}"
+        )
 
         current_page = 1
 

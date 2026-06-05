@@ -36,10 +36,12 @@ def client(mock_api):
 @pytest.mark.asyncio
 async def test_collect_with_iterate(client, mock_api):
     """collect() should use iterate() if available."""
+
     # Add a mock iterate method
     async def fake_iterate(*, page_size=100, sort_by=None, filters=None):
         for i in range(5):
             yield {"id": i}
+
     client.iterate = fake_iterate
 
     results = await client.collect(limit=3)
@@ -84,9 +86,11 @@ async def test_count_no_numfound(client, mock_api):
 @pytest.mark.asyncio
 async def test_first(client, mock_api):
     """first() should return the first result or None."""
+
     async def fake_iterate(*, page_size=100, sort_by=None, filters=None):
         yield {"id": 1}
         yield {"id": 2}
+
     client.iterate = fake_iterate
 
     result = await client.first()
@@ -96,9 +100,11 @@ async def test_first(client, mock_api):
 @pytest.mark.asyncio
 async def test_first_empty(client, mock_api):
     """first() returns None when no results."""
+
     async def fake_iterate(*, page_size=100, sort_by=None, filters=None):
         return
         yield  # make it an async generator
+
     client.iterate = fake_iterate
 
     result = await client.first()

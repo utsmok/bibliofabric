@@ -84,14 +84,19 @@ async def test_gettable_no_entity_path_raises(mock_api_client, mock_unwrapper):
 
 
 @pytest.mark.asyncio
-async def test_gettable_direct_get_model_parse_fallback(mock_api_client, mock_unwrapper):
+async def test_gettable_direct_get_model_parse_fallback(
+    mock_api_client, mock_unwrapper
+):
     """Test direct get with model parsing failure returns raw data (lines 183-188)."""
     client = GettableDirectGetClient(mock_api_client, mock_unwrapper)
 
     mock_response = MagicMock()
     mock_response.json.return_value = {"id": "123", "wrong_field": "data"}
     mock_api_client.request = AsyncMock(return_value=mock_response)
-    mock_unwrapper.unwrap_single_item.return_value = {"id": "123", "wrong_field": "data"}
+    mock_unwrapper.unwrap_single_item.return_value = {
+        "id": "123",
+        "wrong_field": "data",
+    }
 
     result = await client.get("123")
     assert isinstance(result, dict)
@@ -131,7 +136,9 @@ async def test_searchable_no_entity_path_raises(mock_api_client, mock_unwrapper)
 async def test_searchable_invalid_filter_type_raises(mock_api_client, mock_unwrapper):
     """Test that search() raises when filters is invalid type (line 258)."""
     client = SearchableTestClient(mock_api_client, mock_unwrapper)
-    with pytest.raises(BibliofabricError, match="filters must be a Pydantic model or dictionary"):
+    with pytest.raises(
+        BibliofabricError, match="filters must be a Pydantic model or dictionary"
+    ):
         await client.search(filters="invalid")  # type: ignore
 
 
@@ -194,10 +201,14 @@ async def test_cursor_iterable_no_entity_path_raises(mock_api_client, mock_unwra
 
 
 @pytest.mark.asyncio
-async def test_cursor_iterable_invalid_filter_type_raises(mock_api_client, mock_unwrapper):
+async def test_cursor_iterable_invalid_filter_type_raises(
+    mock_api_client, mock_unwrapper
+):
     """Test that iterate() raises when filters is invalid type (line 358)."""
     client = CursorIterableTestClient(mock_api_client, mock_unwrapper)
-    with pytest.raises(BibliofabricError, match="filters must be a Pydantic model or dictionary"):
+    with pytest.raises(
+        BibliofabricError, match="filters must be a Pydantic model or dictionary"
+    ):
         async for _ in client.iterate(filters="invalid"):  # type: ignore
             pass
 
@@ -232,7 +243,9 @@ async def test_cursor_iterable_unexpected_error_wraps(mock_api_client, mock_unwr
 
 
 @pytest.mark.asyncio
-async def test_cursor_iterable_bibliofabric_error_reraise(mock_api_client, mock_unwrapper):
+async def test_cursor_iterable_bibliofabric_error_reraise(
+    mock_api_client, mock_unwrapper
+):
     """Test that BibliofabricError during iteration is re-raised as-is (line 436)."""
     client = CursorIterableTestClient(mock_api_client, mock_unwrapper)
     mock_api_client.request = AsyncMock(side_effect=BibliofabricError("original error"))
@@ -243,7 +256,9 @@ async def test_cursor_iterable_bibliofabric_error_reraise(mock_api_client, mock_
 
 
 @pytest.mark.asyncio
-async def test_cursor_iterable_pydantic_filter_conversion(mock_api_client, mock_unwrapper):
+async def test_cursor_iterable_pydantic_filter_conversion(
+    mock_api_client, mock_unwrapper
+):
     """Test that Pydantic model filters are properly converted in cursor iterable (line 354)."""
     client = CursorIterableTestClient(mock_api_client, mock_unwrapper)
 
@@ -283,10 +298,14 @@ async def test_page_iterable_no_entity_path_raises(mock_api_client, mock_unwrapp
 
 
 @pytest.mark.asyncio
-async def test_page_iterable_invalid_filter_type_raises(mock_api_client, mock_unwrapper):
+async def test_page_iterable_invalid_filter_type_raises(
+    mock_api_client, mock_unwrapper
+):
     """Test that iterate() raises when filters is invalid type (lines 489-494)."""
     client = PageIterableTestClient(mock_api_client, mock_unwrapper)
-    with pytest.raises(BibliofabricError, match="filters must be a Pydantic model or dictionary"):
+    with pytest.raises(
+        BibliofabricError, match="filters must be a Pydantic model or dictionary"
+    ):
         async for _ in client.iterate(filters=12345):  # type: ignore
             pass
 
@@ -309,7 +328,9 @@ async def test_page_iterable_with_sort_and_validation(mock_api_client, mock_unwr
 
 
 @pytest.mark.asyncio
-async def test_page_iterable_no_entity_model_yields_raw(mock_api_client, mock_unwrapper):
+async def test_page_iterable_no_entity_model_yields_raw(
+    mock_api_client, mock_unwrapper
+):
     """Test iteration without entity model yields raw dicts (lines 541-548)."""
     client = PageIterableTestClient(mock_api_client, mock_unwrapper)
     client._entity_model = None
@@ -355,7 +376,9 @@ async def test_page_iterable_unexpected_error_wraps(mock_api_client, mock_unwrap
 
 
 @pytest.mark.asyncio
-async def test_page_iterable_bibliofabric_error_reraise(mock_api_client, mock_unwrapper):
+async def test_page_iterable_bibliofabric_error_reraise(
+    mock_api_client, mock_unwrapper
+):
     """Test that BibliofabricError during page iteration is re-raised as-is (line 564)."""
     client = PageIterableTestClient(mock_api_client, mock_unwrapper)
     mock_api_client.request = AsyncMock(side_effect=BibliofabricError("original error"))
@@ -366,7 +389,9 @@ async def test_page_iterable_bibliofabric_error_reraise(mock_api_client, mock_un
 
 
 @pytest.mark.asyncio
-async def test_page_iterable_pydantic_filter_conversion(mock_api_client, mock_unwrapper):
+async def test_page_iterable_pydantic_filter_conversion(
+    mock_api_client, mock_unwrapper
+):
     """Test that Pydantic model filters are properly converted in page iterable (line 490)."""
     client = PageIterableTestClient(mock_api_client, mock_unwrapper)
 

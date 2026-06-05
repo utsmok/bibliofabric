@@ -7,11 +7,11 @@ the bibliofabric framework and its derived API clients.
 """
 
 import sys
+from typing import Any
 
 from loguru import logger
 
-_configured = False
-
+_state: dict[str, Any] = {}
 
 
 def configure_logging(level: str = "INFO", sink=sys.stderr):
@@ -25,10 +25,9 @@ def configure_logging(level: str = "INFO", sink=sys.stderr):
         level: The minimum logging level (e.g., "DEBUG", "INFO", "WARNING").
         sink: The output sink (e.g., sys.stderr, "file.log").
     """
-    global _configured
-    if _configured:
+    if _state.get("configured"):
         return
-    _configured = True
+    _state["configured"] = True
     logger.remove()  # Remove default handler
     logger.add(
         sink,

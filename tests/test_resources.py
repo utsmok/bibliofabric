@@ -149,7 +149,9 @@ async def test_gettable_mixin_get_success(
     result = await gettable_client.get(entity_id)
 
     mock_api_client.request.assert_awaited_once_with(
-        "GET", "test_entities", params={"id": entity_id, "pageSize": 1},
+        "GET",
+        "test_entities",
+        params={"id": entity_id, "pageSize": 1},
         base_url_override=None,
     )
     mock_unwrapper.unwrap_results.assert_called_once_with(
@@ -240,7 +242,9 @@ async def test_searchable_mixin_search_success(
         "custom_filter": "test",
     }
     mock_api_client.request.assert_awaited_once_with(
-        "GET", "test_entities", params=expected_params,
+        "GET",
+        "test_entities",
+        params=expected_params,
         base_url_override=None,
     )
     assert isinstance(result, MockSearchResponseModel)
@@ -322,11 +326,17 @@ async def test_cursor_iterable_mixin_iterate_success(
 
     args, kwargs = calls[0]
     assert args == ("GET", "test_entities")
-    assert kwargs == {"params": {"cursor": "*", "pageSize": 1, "active": True}, "base_url_override": None}
+    assert kwargs == {
+        "params": {"cursor": "*", "pageSize": 1, "active": True},
+        "base_url_override": None,
+    }
 
     args, kwargs = calls[1]
     assert args == ("GET", "test_entities")
-    assert kwargs == {"params": {"cursor": "cursor2", "pageSize": 1, "active": True}, "base_url_override": None}
+    assert kwargs == {
+        "params": {"cursor": "cursor2", "pageSize": 1, "active": True},
+        "base_url_override": None,
+    }
 
     assert mock_unwrapper.unwrap_results.call_count == 2
     assert mock_unwrapper.get_next_page_token.call_count == 2
@@ -349,7 +359,6 @@ async def test_cursor_iterable_mixin_iterate_no_entity_model(
 
     results = [item async for item in cursor_iterable_client.iterate()]
 
-
     assert len(results) == 1
     assert results[0] == page1_items_raw[0]  # Should be raw dict
 
@@ -371,7 +380,6 @@ async def test_cursor_iterable_mixin_iterate_parsing_error(
 
     results = [item async for item in cursor_iterable_client.iterate()]
 
-
     assert len(results) == 1
     assert results[0] == page1_items_invalid[0]
 
@@ -387,7 +395,6 @@ async def test_cursor_iterable_mixin_iterate_empty_initial_results(
 
     mock_unwrapper.unwrap_results.return_value = []
     mock_unwrapper.get_next_page_token.return_value = None
-
 
     results = [item async for item in cursor_iterable_client.iterate()]
 
@@ -453,9 +460,7 @@ async def test_validate_sort_field_raises_on_invalid(mock_api_client, mock_unwra
 
 
 @pytest.mark.asyncio
-async def test_validate_sort_field_default_allows_any(
-    mock_api_client, mock_unwrapper
-):
+async def test_validate_sort_field_default_allows_any(mock_api_client, mock_unwrapper):
     """Test that default _validate_sort_field (no-op) allows any sort field."""
     mock_raw_response_json = {"results": [], "numFound": 0}
     mock_response = MagicMock(spec=httpx.Response)
@@ -474,9 +479,7 @@ async def test_validate_sort_field_default_allows_any(
 
 
 @pytest.mark.asyncio
-async def test_gettable_mixin_direct_get_uses_path(
-    mock_api_client, mock_unwrapper
-):
+async def test_gettable_mixin_direct_get_uses_path(mock_api_client, mock_unwrapper):
     """Test that _supports_direct_get=True uses direct path GET /{path}/{id}."""
     entity_id = "123"
     mock_raw_item = {"id": entity_id, "value": "Direct Value"}
@@ -524,9 +527,7 @@ async def test_gettable_mixin_default_uses_search_by_id(
 
 
 @pytest.mark.asyncio
-async def test_page_iterable_mixin_basic_iteration(
-    mock_api_client, mock_unwrapper
-):
+async def test_page_iterable_mixin_basic_iteration(mock_api_client, mock_unwrapper):
     """Test that PageIterableMixin iterates pages 1, 2 and stops on empty page 3."""
     page1_items = [{"id": "1", "value": "A"}, {"id": "2", "value": "B"}]
     page2_items = [{"id": "3", "value": "C"}]
@@ -552,9 +553,7 @@ async def test_page_iterable_mixin_basic_iteration(
 
 
 @pytest.mark.asyncio
-async def test_page_iterable_mixin_stops_on_total(
-    mock_api_client, mock_unwrapper
-):
+async def test_page_iterable_mixin_stops_on_total(mock_api_client, mock_unwrapper):
     """Test that PageIterableMixin stops early when total results are reached."""
     page1_items = [{"id": "1", "value": "A"}, {"id": "2", "value": "B"}]
     page2_items = [{"id": "3", "value": "C"}]
@@ -578,9 +577,7 @@ async def test_page_iterable_mixin_stops_on_total(
 
 
 @pytest.mark.asyncio
-async def test_page_iterable_mixin_base_url_override(
-    mock_api_client, mock_unwrapper
-):
+async def test_page_iterable_mixin_base_url_override(mock_api_client, mock_unwrapper):
     """Test that _base_url_override is passed through in PageIterableMixin requests."""
     response_json = {"results": []}
     mock_response = MagicMock(spec=httpx.Response)

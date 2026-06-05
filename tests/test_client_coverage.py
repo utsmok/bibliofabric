@@ -80,7 +80,9 @@ async def test_ssl_context_fallback_on_certifi_error(mock_unwrapper, mock_settin
     mock_http_client = AsyncMock()
     mock_http_client.is_closed = False
     with (
-        patch("bibliofabric.client.certifi.where", side_effect=Exception("certifi fail")),
+        patch(
+            "bibliofabric.client.certifi.where", side_effect=Exception("certifi fail")
+        ),
         patch("bibliofabric.client.httpx.AsyncClient", return_value=mock_http_client),
     ):
         client = BaseApiClient(
@@ -227,7 +229,11 @@ async def test_request_body_logged_for_post(base_client, httpx_mock):
     httpx_mock.add_response(json={"id": "1"}, status_code=HTTP_STATUS_OK)
 
     response, _parsed = await base_client._execute_single_request(
-        RequestData(method="POST", url="https://api.example.com/test", json_data={"key": "value"}),
+        RequestData(
+            method="POST",
+            url="https://api.example.com/test",
+            json_data={"key": "value"},
+        ),
     )
     assert response.status_code == HTTP_STATUS_OK
 
@@ -258,7 +264,9 @@ async def test_post_request_hook_error_logged(base_client, httpx_mock):
 async def test_httpstatuserror_429_rate_limit(base_client):
     """Test httpx.HTTPStatusError with 429 triggers rate limit wait (lines 382-391)."""
     request = httpx.Request("GET", "https://api.example.com/test")
-    error_response = httpx.Response(HTTP_STATUS_TOO_MANY, request=request, headers={"Retry-After": "1"})
+    error_response = httpx.Response(
+        HTTP_STATUS_TOO_MANY, request=request, headers={"Retry-After": "1"}
+    )
 
     base_client._http_client = AsyncMock(spec=httpx.AsyncClient)
     base_client._http_client.send = AsyncMock(
@@ -312,7 +320,10 @@ async def test_bibliofabric_error_reraise_during_request(base_client):
     request = httpx.Request("GET", "https://api.example.com/test")
     base_client._http_client = AsyncMock(spec=httpx.AsyncClient)
     base_client._http_client.send = AsyncMock(
-        side_effect=APIError("test error", response=httpx.Response(HTTP_STATUS_BAD_REQUEST, request=request))
+        side_effect=APIError(
+            "test error",
+            response=httpx.Response(HTTP_STATUS_BAD_REQUEST, request=request),
+        )
     )
 
     with pytest.raises(APIError):
@@ -389,7 +400,9 @@ async def test_rate_limit_pre_request_wait_for_reset(base_client, httpx_mock):
 
     httpx_mock.add_response(json={"data": "ok"}, status_code=HTTP_STATUS_OK)
 
-    with patch("bibliofabric.client.asyncio.sleep", new_callable=AsyncMock) as mock_sleep:
+    with patch(
+        "bibliofabric.client.asyncio.sleep", new_callable=AsyncMock
+    ) as mock_sleep:
         await base_client._request_with_retry("GET", "/test")
         mock_sleep.assert_called()
 
@@ -404,9 +417,13 @@ async def test_rate_limit_pre_request_wait_default(base_client, httpx_mock):
 
     httpx_mock.add_response(json={"data": "ok"}, status_code=HTTP_STATUS_OK)
 
-    with patch("bibliofabric.client.asyncio.sleep", new_callable=AsyncMock) as mock_sleep:
+    with patch(
+        "bibliofabric.client.asyncio.sleep", new_callable=AsyncMock
+    ) as mock_sleep:
         await base_client._request_with_retry("GET", "/test")
-        mock_sleep.assert_called_with(base_client._settings.rate_limit_retry_after_default)
+        mock_sleep.assert_called_with(
+            base_client._settings.rate_limit_retry_after_default
+        )
 
 
 @pytest.mark.asyncio
@@ -418,9 +435,13 @@ async def test_rate_limit_remaining_zero_no_limit_header(base_client, httpx_mock
 
     httpx_mock.add_response(json={"data": "ok"}, status_code=HTTP_STATUS_OK)
 
-    with patch("bibliofabric.client.asyncio.sleep", new_callable=AsyncMock) as mock_sleep:
+    with patch(
+        "bibliofabric.client.asyncio.sleep", new_callable=AsyncMock
+    ) as mock_sleep:
         await base_client._request_with_retry("GET", "/test")
-        mock_sleep.assert_called_with(base_client._settings.rate_limit_retry_after_default)
+        mock_sleep.assert_called_with(
+            base_client._settings.rate_limit_retry_after_default
+        )
 
 
 # --- Auth errors in _request_with_retry (lines 565-570) ---
@@ -430,7 +451,9 @@ async def test_rate_limit_remaining_zero_no_limit_header(base_client, httpx_mock
 async def test_auth_error_in_request_with_retry(base_client):
     """Test AuthError propagation in _request_with_retry (line 565)."""
     base_client._auth_strategy = AsyncMock(spec=AuthStrategy)
-    base_client._auth_strategy.async_authenticate = AsyncMock(side_effect=AuthError("auth fail"))
+    base_client._auth_strategy.async_authenticate = AsyncMock(
+        side_effect=AuthError("auth fail")
+    )
 
     with pytest.raises(AuthError, match="auth fail"):
         await base_client._request_with_retry("GET", "/test")
@@ -440,7 +463,9 @@ async def test_auth_error_in_request_with_retry(base_client):
 async def test_unexpected_auth_error_in_request_with_retry(base_client):
     """Test unexpected exception during auth becomes BibliofabricError (lines 568-570)."""
     base_client._auth_strategy = AsyncMock(spec=AuthStrategy)
-    base_client._auth_strategy.async_authenticate = AsyncMock(side_effect=RuntimeError("boom"))
+    base_client._auth_strategy.async_authenticate = AsyncMock(
+        side_effect=RuntimeError("boom")
+    )
 
     with pytest.raises(BibliofabricError, match="Unexpected authentication error"):
         await base_client._request_with_retry("GET", "/test")
@@ -462,8 +487,12 @@ async def test_before_retry_sleep_no_outcome(base_client):
 
 def test_generate_cache_key_with_params(base_client):
     """Test cache key generation includes params (lines 643-644)."""
-    key1 = base_client._generate_cache_key("GET", "https://api.example.com/test", {"a": 1, "b": 2})
-    key2 = base_client._generate_cache_key("GET", "https://api.example.com/test", {"b": 2, "a": 1})
+    key1 = base_client._generate_cache_key(
+        "GET", "https://api.example.com/test", {"a": 1, "b": 2}
+    )
+    key2 = base_client._generate_cache_key(
+        "GET", "https://api.example.com/test", {"b": 2, "a": 1}
+    )
     assert key1 == key2
 
 
@@ -535,11 +564,15 @@ async def test_request_cache_miss_then_store_and_hit(base_client, httpx_mock):
     """Test full request flow: cache miss -> fetch -> store -> cache hit."""
     httpx_mock.add_response(json={"data": "first"}, status_code=HTTP_STATUS_OK)
 
-    result1 = await base_client.request("GET", "/cached_endpoint", expected_model=SimpleModel)
+    result1 = await base_client.request(
+        "GET", "/cached_endpoint", expected_model=SimpleModel
+    )
     assert isinstance(result1, SimpleModel)
     assert result1.data == "first"
 
-    result2 = await base_client.request("GET", "/cached_endpoint", expected_model=SimpleModel)
+    result2 = await base_client.request(
+        "GET", "/cached_endpoint", expected_model=SimpleModel
+    )
     assert isinstance(result2, SimpleModel)
     assert result2.data == "first"
     assert len(httpx_mock.get_requests()) == EXPECTED_SINGLE_REQUEST
@@ -554,8 +587,12 @@ async def test_post_request_not_cached(base_client, httpx_mock):
     httpx_mock.add_response(json={"data": "first"}, status_code=HTTP_STATUS_OK)
     httpx_mock.add_response(json={"data": "second"}, status_code=HTTP_STATUS_OK)
 
-    r1 = await base_client.request("POST", "/endpoint", json_data={"a": 1}, expected_model=SimpleModel)
-    r2 = await base_client.request("POST", "/endpoint", json_data={"a": 1}, expected_model=SimpleModel)
+    r1 = await base_client.request(
+        "POST", "/endpoint", json_data={"a": 1}, expected_model=SimpleModel
+    )
+    r2 = await base_client.request(
+        "POST", "/endpoint", json_data={"a": 1}, expected_model=SimpleModel
+    )
 
     assert r1.data == "first"
     assert r2.data == "second"
@@ -589,7 +626,11 @@ async def test_cache_store_parsed_model_type_mismatch(base_client):
     """Test cache store when parsed_model doesn't match expected_model type (line 743)."""
     base_client._request_with_retry = AsyncMock(
         return_value=(
-            httpx.Response(HTTP_STATUS_OK, json={"data": "ok"}, request=httpx.Request("GET", "https://api.example.com/test")),
+            httpx.Response(
+                HTTP_STATUS_OK,
+                json={"data": "ok"},
+                request=httpx.Request("GET", "https://api.example.com/test"),
+            ),
             {"data": "not_a_model"},
             1,
         )
