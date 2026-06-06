@@ -1,6 +1,6 @@
 [project]
 name = "bibliofabric"
-version = "0.3.1"
+version = "0.4.0"
 description = "Generic framework for building modern asynchronous API clients for bibliometric and scholarly data retrieval"
 readme = "README.md"
 authors = [
