@@ -594,3 +594,259 @@ async def test_page_iterable_mixin_base_url_override(mock_api_client, mock_unwra
     mock_api_client.request.assert_awaited_once()
     _, kwargs = mock_api_client.request.call_args
     assert kwargs.get("base_url_override") == "https://custom.api.com/v2"
+
+
+# --- Change 1: Configurable Parameter Names ---
+class OpenAlexStyleParams:
+    """Mixin group with OpenAlex-style parameter names for testing overrides."""
+
+    _param_page = "page"
+    _param_page_size = "per_page"
+    _param_sort = "sort"
+    _param_cursor = "cursor"
+    _param_id = "id"
+    _param_search = "search"
+
+
+class OpenAlexSearchClient(
+    OpenAlexStyleParams, SearchableMixin, ConcreteResourceClient
+):
+    pass
+
+
+class OpenAlexCursorClient(
+    OpenAlexStyleParams, CursorIterableMixin, ConcreteResourceClient
+):
+    pass
+
+
+class OpenAlexPageClient(
+    OpenAlexStyleParams, PageIterableMixin, ConcreteResourceClient
+):
+    pass
+
+
+class OpenAlexGetClient(OpenAlexStyleParams, GettableMixin, ConcreteResourceClient):
+    pass
+
+
+@pytest.mark.asyncio
+async def test_searchable_custom_param_names(mock_api_client, mock_unwrapper):
+    """SearchableMixin uses custom _param_page_size and _param_sort when overridden."""
+    mock_response = MagicMock(spec=httpx.Response)
+    mock_response.json.return_value = {"results": [], "total": 0}
+    mock_api_client.request.return_value = mock_response
+    client = OpenAlexSearchClient(mock_api_client, mock_unwrapper)
+    await client.search(page=2, page_size=50, sort_by="title asc")
+    call_kwargs = mock_api_client.request.await_args[1]
+    params = call_kwargs["params"]
+    assert params["per_page"] == 50  # custom name
+    assert params["page"] == 2  # same name
+    assert params["sort"] == "title asc"  # custom name
+    assert "pageSize" not in params
+    assert "sortBy" not in params
+
+
+@pytest.mark.asyncio
+async def test_cursor_iterable_custom_param_names(mock_api_client, mock_unwrapper):
+    """CursorIterableMixin uses custom _param_cursor and _param_page_size."""
+    page1 = [{"id": "1", "value": "A"}]
+    mock_response = MagicMock(spec=httpx.Response)
+    mock_response.json.return_value = {"results": page1}
+    mock_api_client.request.return_value = mock_response
+    mock_unwrapper.unwrap_results.return_value = page1
+    mock_unwrapper.get_next_page_token.return_value = None
+    client = OpenAlexCursorClient(mock_api_client, mock_unwrapper)
+    [_ async for _ in client.iterate(page_size=25, sort_by="date desc")]
+    call_kwargs = mock_api_client.request.await_args[1]
+    params = call_kwargs["params"]
+    assert params["cursor"] == "*"
+    assert params["per_page"] == 25  # custom name
+    assert params["sort"] == "date desc"  # custom name
+    assert "pageSize" not in params
+    assert "sortBy" not in params
+
+
+@pytest.mark.asyncio
+async def test_page_iterable_custom_param_names(mock_api_client, mock_unwrapper):
+    """PageIterableMixin uses custom _param_page, _param_page_size, _param_sort."""
+    mock_response = MagicMock(spec=httpx.Response)
+    mock_response.json.return_value = {"results": []}
+    mock_api_client.request.return_value = mock_response
+    mock_unwrapper.unwrap_results.return_value = []
+    client = OpenAlexPageClient(mock_api_client, mock_unwrapper)
+    [_ async for _ in client.iterate(page_size=10, sort_by="name")]
+    call_kwargs = mock_api_client.request.await_args[1]
+    params = call_kwargs["params"]
+    assert params["per_page"] == 10  # custom name
+    assert params["page"] == 1
+    assert params["sort"] == "name"  # custom name
+    assert "pageSize" not in params
+    assert "sortBy" not in params
+
+
+@pytest.mark.asyncio
+async def test_gettable_custom_param_names(mock_api_client, mock_unwrapper):
+    """GettableMixin.get() non-direct path uses custom _param_id and _param_page_size."""
+    entity = {"id": "W123", "value": "test"}
+    mock_response = MagicMock(spec=httpx.Response)
+    mock_response.json.return_value = {"results": [entity]}
+    mock_api_client.request.return_value = mock_response
+    mock_unwrapper.unwrap_results.return_value = [entity]
+    client = OpenAlexGetClient(mock_api_client, mock_unwrapper)
+    await client.get("W123")
+    call_kwargs = mock_api_client.request.await_args[1]
+    params = call_kwargs["params"]
+    assert params["id"] == "W123"
+    assert params["per_page"] == 1  # custom name
+    assert "pageSize" not in params
+
+
+@pytest.mark.asyncio
+async def test_default_param_names_unchanged(mock_api_client, mock_unwrapper):
+    """Default SearchableTestClient still uses original OpenAIRE param names."""
+    mock_response = MagicMock(spec=httpx.Response)
+    mock_response.json.return_value = {"results": [], "total": 0}
+    mock_api_client.request.return_value = mock_response
+    client = SearchableTestClient(mock_api_client, mock_unwrapper)
+    await client.search(page=1, page_size=20, sort_by="relevance")
+    call_kwargs = mock_api_client.request.await_args[1]
+    params = call_kwargs["params"]
+    assert params["page"] == 1
+    assert params["pageSize"] == 20
+    assert params["sortBy"] == "relevance"
+
+
+# --- Change 2: Pluggable Filter Serialization ---
+class OpenAlexFilterClient(SearchableMixin, ConcreteResourceClient):
+    """Client that overrides _serialize_filters for comma-separated filter strings."""
+
+    _param_page_size = "per_page"
+    _param_sort = "sort"
+
+    def _serialize_filters(self, filters):
+        base = super()._serialize_filters(filters)
+        if not base:
+            return {}
+        # OpenAlex-style: combine all filters into single "filter" param
+        parts = [f"{k}:{v}" for k, v in base.items()]
+        return {"filter": ",".join(parts)}
+
+
+@pytest.mark.asyncio
+async def test_custom_serialize_filters(mock_api_client, mock_unwrapper):
+    """Custom _serialize_filters produces OpenAlex-style filter string."""
+    mock_response = MagicMock(spec=httpx.Response)
+    mock_response.json.return_value = {"results": [], "meta": {"count": 0}}
+    mock_api_client.request.return_value = mock_response
+    client = OpenAlexFilterClient(mock_api_client, mock_unwrapper)
+
+    class WorkFilters(BaseModel):
+        type: str | None = None
+        author_id: str | None = None
+
+    filters = WorkFilters(type="article", author_id="A123")
+    await client.search(filters=filters)
+    call_kwargs = mock_api_client.request.await_args[1]
+    params = call_kwargs["params"]
+    assert "filter" in params
+    assert "type:article" in params["filter"]
+    assert "author_id:A123" in params["filter"]
+
+
+@pytest.mark.asyncio
+async def test_default_serialize_filters_unchanged(mock_api_client, mock_unwrapper):
+    """Default _serialize_filters produces individual params (backward compat)."""
+    mock_response = MagicMock(spec=httpx.Response)
+    mock_response.json.return_value = {"results": []}
+    mock_api_client.request.return_value = mock_response
+    client = SearchableTestClient(mock_api_client, mock_unwrapper)
+
+    class TestFilters(BaseModel):
+        type: str | None = None
+        year: int | None = None
+
+    await client.search(filters=TestFilters(type="publication", year=2024))
+    call_kwargs = mock_api_client.request.await_args[1]
+    params = call_kwargs["params"]
+    assert params["type"] == "publication"
+    assert params["year"] == 2024
+
+
+# --- Change 3: Optional search Parameter ---
+@pytest.mark.asyncio
+async def test_searchable_search_param(mock_api_client, mock_unwrapper):
+    """SearchableMixin.search() adds search param when provided."""
+    mock_response = MagicMock(spec=httpx.Response)
+    mock_response.json.return_value = {"results": [], "total": 0}
+    mock_api_client.request.return_value = mock_response
+    client = SearchableTestClient(mock_api_client, mock_unwrapper)
+    await client.search(search="machine learning")
+    call_kwargs = mock_api_client.request.await_args[1]
+    params = call_kwargs["params"]
+    assert params["search"] == "machine learning"
+
+
+@pytest.mark.asyncio
+async def test_searchable_search_param_omitted_when_none(
+    mock_api_client, mock_unwrapper
+):
+    """SearchableMixin.search() omits search param when None (default)."""
+    mock_response = MagicMock(spec=httpx.Response)
+    mock_response.json.return_value = {"results": [], "total": 0}
+    mock_api_client.request.return_value = mock_response
+    client = SearchableTestClient(mock_api_client, mock_unwrapper)
+    await client.search()
+    call_kwargs = mock_api_client.request.await_args[1]
+    params = call_kwargs["params"]
+    assert "search" not in params
+
+
+@pytest.mark.asyncio
+async def test_cursor_iterable_search_param(mock_api_client, mock_unwrapper):
+    """CursorIterableMixin.iterate() adds search param when provided."""
+    page1 = [{"id": "1", "value": "A"}]
+    mock_response = MagicMock(spec=httpx.Response)
+    mock_response.json.return_value = {"results": page1}
+    mock_api_client.request.return_value = mock_response
+    mock_unwrapper.unwrap_results.return_value = page1
+    mock_unwrapper.get_next_page_token.return_value = None
+    client = CursorIterableTestClient(mock_api_client, mock_unwrapper)
+    [_ async for _ in client.iterate(search="deep learning")]
+    call_kwargs = mock_api_client.request.await_args[1]
+    params = call_kwargs["params"]
+    assert params["search"] == "deep learning"
+
+
+@pytest.mark.asyncio
+async def test_page_iterable_search_param(mock_api_client, mock_unwrapper):
+    """PageIterableMixin.iterate() adds search param when provided."""
+    mock_response = MagicMock(spec=httpx.Response)
+    mock_response.json.return_value = {"results": []}
+    mock_api_client.request.return_value = mock_response
+    mock_unwrapper.unwrap_results.return_value = []
+    client = PageIterableTestClient(mock_api_client, mock_unwrapper)
+    [_ async for _ in client.iterate(search="quantum")]
+    call_kwargs = mock_api_client.request.await_args[1]
+    params = call_kwargs["params"]
+    assert params["search"] == "quantum"
+
+
+@pytest.mark.asyncio
+async def test_search_param_disabled_when_param_search_empty(
+    mock_api_client, mock_unwrapper
+):
+    """When _param_search is empty string, search param is not added."""
+
+    class NoSearchClient(SearchableMixin, ConcreteResourceClient):
+        _param_search = ""
+
+    mock_response = MagicMock(spec=httpx.Response)
+    mock_response.json.return_value = {"results": [], "total": 0}
+    mock_api_client.request.return_value = mock_response
+    client = NoSearchClient(mock_api_client, mock_unwrapper)
+    await client.search(search="ignored")
+    call_kwargs = mock_api_client.request.await_args[1]
+    params = call_kwargs["params"]
+    assert "search" not in params
+    assert "ignored" not in str(params)
