@@ -39,11 +39,19 @@ class ResourceClientProtocol(Protocol):
     )  # Pydantic model for the search/list response envelope
     _base_url_override: str | None
     _supports_direct_get: bool
+    _param_page: str
+    _param_page_size: str
+    _param_sort: str
+    _param_cursor: str
+    _param_id: str
+    _param_search: str
 
     @property
     def response_unwrapper(self) -> "ResponseUnwrapper": ...
-
     def _validate_sort_field(self, field: str) -> None: ...
+    def _serialize_filters(
+        self, filters: BaseModel | dict[str, Any] | None
+    ) -> dict[str, Any]: ...
 
 
 class BaseResourceClient:
@@ -68,6 +76,12 @@ class BaseResourceClient:
 
     _base_url_override: str | None = None
     _supports_direct_get: bool = False
+    _param_page: str = "page"
+    _param_page_size: str = "pageSize"
+    _param_sort: str = "sortBy"
+    _param_cursor: str = "cursor"
+    _param_id: str = "id"
+    _param_search: str = "search"
 
     def __init__(self, api_client: "BaseApiClient"):
         """Initialize the base resource client.
@@ -101,6 +115,19 @@ class BaseResourceClient:
         """
         ...  # noqa: PIE790
 
+    def _serialize_filters(
+        self, filters: BaseModel | dict[str, Any] | None
+    ) -> dict[str, Any]:
+        if filters is None:
+            return {}
+        if isinstance(filters, BaseModel):
+            return filters.model_dump(exclude_none=True, by_alias=True)
+        if isinstance(filters, dict):
+            return dict(filters)
+        raise BibliofabricError(
+            f"filters must be a Pydantic model or dictionary, got {type(filters)}"
+        )
+
     async def collect(
         self,
         *,
@@ -108,6 +135,7 @@ class BaseResourceClient:
         limit: int | None = None,
         sort_by: str | None = None,
         page_size: int = 100,
+        search: str | None = None,
     ) -> list[Any]:
         """Collect results into a list, optionally limited.
 
@@ -124,21 +152,33 @@ class BaseResourceClient:
             A list of entities (parsed models if ``_entity_model`` is set).
         """
         collected: list[Any] = []
+        iterate_kwargs: dict[str, Any] = {
+            "page_size": page_size,
+            "sort_by": sort_by,
+            "filters": filters,
+        }
+        if search is not None:
+            iterate_kwargs["search"] = search
         # Prefer iterate (handles all pagination types) if the subclass has it
         if hasattr(self, "iterate"):
             async for entity in self.iterate(  # ty: ignore[call-non-callable]
-                page_size=page_size, sort_by=sort_by, filters=filters
+                **iterate_kwargs
             ):
                 collected.append(entity)
                 if limit is not None and len(collected) >= limit:
                     break
         elif hasattr(self, "search"):
             # Fallback: single page search
+            search_kwargs: dict[str, Any] = {
+                "page": 1,
+                "page_size": min(limit or page_size, page_size),
+                "sort_by": sort_by,
+                "filters": filters,
+            }
+            if search is not None:
+                search_kwargs["search"] = search
             response = await self.search(  # ty: ignore[call-non-callable]
-                page=1,
-                page_size=min(limit or page_size, page_size),
-                sort_by=sort_by,
-                filters=filters,
+                **search_kwargs
             )
             if isinstance(response, BaseModel):
                 results = getattr(response, "results", None)
@@ -156,6 +196,7 @@ class BaseResourceClient:
         self,
         *,
         filters: BaseModel | dict[str, Any] | None = None,
+        search: str | None = None,
     ) -> int:
         """Return total number of matching entities without fetching all results.
 
@@ -173,7 +214,7 @@ class BaseResourceClient:
                 f"{self.__class__.__name__} does not support search; count() unavailable"
             )
         response = await self.search(
-            page=1, page_size=1, filters=filters
+            page=1, page_size=1, filters=filters, search=search
         )  # ty: ignore[call-non-callable]
         if isinstance(response, BaseModel):
             header = getattr(response, "header", None)
@@ -191,18 +232,20 @@ class BaseResourceClient:
         *,
         filters: BaseModel | dict[str, Any] | None = None,
         sort_by: str | None = None,
+        search: str | None = None,
     ) -> Any | None:
         """Return the first matching entity, or None if no results.
 
         Args:
             filters: Filter criteria.
             sort_by: Field to sort by.
+            search: Free-text search query.
 
         Returns:
             The first entity, or None.
         """
         results = await self.collect(
-            filters=filters, limit=1, sort_by=sort_by, page_size=1
+            filters=filters, limit=1, sort_by=sort_by, page_size=1, search=search
         )
         return results[0] if results else None
 
@@ -262,7 +305,7 @@ class GettableMixin:
                 entity_data = self.response_unwrapper.unwrap_single_item(response_data)
             else:
                 # Use search with ID parameter instead of direct GET
-                params = {"id": entity_id, "pageSize": 1}
+                params = {self._param_id: entity_id, self._param_page_size: 1}
                 response = await self._api_client.request(
                     "GET",
                     self._entity_path,
@@ -330,6 +373,7 @@ class SearchableMixin:
         page_size: int = 20,
         sort_by: str | None = None,
         filters: BaseModel | dict[str, Any] | None = None,
+        search: str | None = None,
     ) -> BaseModel | dict[str, Any]:
         """Search for entities with pagination support.
 
@@ -353,24 +397,18 @@ class SearchableMixin:
             )
 
         # Build query parameters
-        params: dict[str, Any] = {}
-        if filters:
-            if isinstance(filters, BaseModel):
-                params = filters.model_dump(exclude_none=True, by_alias=True)
-            elif isinstance(filters, dict):
-                params = dict(filters)  # copy to avoid mutating caller's dict
-            else:
-                raise BibliofabricError(
-                    f"filters must be a Pydantic model or dictionary, got {type(filters)}"
-                )
-        params["page"] = page
-        params["pageSize"] = page_size
+        params = self._serialize_filters(filters)
+        params[self._param_page] = page
+        params[self._param_page_size] = page_size
         if sort_by:
             self._validate_sort_field(sort_by.split()[0])
-            params["sortBy"] = sort_by
+            params[self._param_sort] = sort_by
+        if search is not None and self._param_search:
+            params[self._param_search] = search
         logger.debug(
-            f"Searching {self._entity_path}: page={params.get('page')}, size={params.get('pageSize')}, "
-            f"sort='{params.get('sortBy')}', filters={params}"
+            f"Searching {self._entity_path}: page={params.get(self._param_page)}, "
+            f"size={params.get(self._param_page_size)}, sort='{params.get(self._param_sort)}', "
+            f"filters={params}"
         )
         try:
             response = await self._api_client.request(
@@ -428,6 +466,7 @@ class CursorIterableMixin:
         page_size: int = 100,
         sort_by: str | None = None,
         filters: BaseModel | dict[str, Any] | None = None,
+        search: str | None = None,
     ) -> AsyncIterator[Any]:
         """Iterate through all entities matching the criteria using cursor pagination.
 
@@ -453,35 +492,26 @@ class CursorIterableMixin:
             )
 
         # Convert filters to dictionary if it's a Pydantic model
-        filter_dict: dict[str, Any] = {}
-        if filters:
-            if isinstance(filters, BaseModel):
-                filter_dict = filters.model_dump(exclude_none=True, by_alias=True)
-            elif isinstance(filters, dict):
-                filter_dict = filters
-            else:
-                raise BibliofabricError(
-                    f"filters must be a Pydantic model or dictionary, got {type(filters)}"
-                )
-
+        filter_dict = self._serialize_filters(filters)
         logger.debug(
             f"Iterating {self._entity_path}: pageSize={page_size}, "
             f"sort='{sort_by}', filters={filter_dict}"
         )
-
         # Build initial parameters with cursor pagination
         current_params: dict[
             str, Any
         ] = {  # Renamed to current_params for clarity in loop
-            "cursor": "*",  # Start cursor for iteration
-            "pageSize": page_size,
+            self._param_cursor: "*",  # Start cursor for iteration
+            self._param_page_size: page_size,
         }
 
         if sort_by:
-            current_params["sortBy"] = sort_by
+            current_params[self._param_sort] = sort_by
 
         if filter_dict:
             current_params.update(filter_dict)
+        if search is not None and self._param_search:
+            current_params[self._param_search] = search
 
         while True:
             try:
@@ -532,9 +562,9 @@ class CursorIterableMixin:
                     break
 
                 # Update cursor for next iteration
-                current_params["cursor"] = next_cursor
+                current_params[self._param_cursor] = next_cursor
                 # Remove page if it accidentally got in, cursor handles pagination
-                current_params.pop("page", None)
+                current_params.pop(self._param_page, None)
 
             except Exception as e:
                 if isinstance(e, BibliofabricError):
@@ -565,6 +595,7 @@ class PageIterableMixin:
         page_size: int = 100,
         sort_by: str | None = None,
         filters: BaseModel | dict[str, Any] | None = None,
+        search: str | None = None,
     ) -> AsyncIterator[Any]:
         """Iterate through all entities matching the criteria using page-based pagination.
 
@@ -589,20 +620,12 @@ class PageIterableMixin:
             )
 
         # Convert filters to dictionary if it's a Pydantic model
-        params: dict[str, Any] = {}
-        if filters:
-            if isinstance(filters, BaseModel):
-                params = filters.model_dump(exclude_none=True, by_alias=True)
-            elif isinstance(filters, dict):
-                params = dict(filters)
-            else:
-                raise BibliofabricError(
-                    f"filters must be a Pydantic model or dictionary, got {type(filters)}"
-                )
-
+        params = self._serialize_filters(filters)
         if sort_by:
             self._validate_sort_field(sort_by.split()[0])
-            params["sortBy"] = sort_by
+            params[self._param_sort] = sort_by
+        if search is not None and self._param_search:
+            params[self._param_search] = search
 
         logger.debug(
             f"Iterating {self._entity_path} (page-based): pageSize={page_size}, "
@@ -613,8 +636,8 @@ class PageIterableMixin:
 
         while True:
             try:
-                params["page"] = current_page
-                params["pageSize"] = page_size
+                params[self._param_page] = current_page
+                params[self._param_page_size] = page_size
 
                 logger.debug(
                     f"Iterating {self._entity_path} page {current_page} with params: {params}"
