@@ -5,7 +5,12 @@ from unittest.mock import patch
 import httpx
 import pytest
 
-from bibliofabric.auth import ClientCredentialsAuth, NoAuth, StaticTokenAuth
+from bibliofabric.auth import (
+    ClientCredentialsAuth,
+    NoAuth,
+    QueryParameterAuth,
+    StaticTokenAuth,
+)
 from bibliofabric.exceptions import AuthError, ConfigurationError
 
 
@@ -301,3 +306,51 @@ async def test_client_credentials_auth_token_no_expiry_assumed_valid():
         mock_fetch.assert_not_called()
 
     assert request.headers["Authorization"] == "Bearer persistent_token"
+
+
+# --- QueryParameterAuth Tests ---
+
+
+def test_query_parameter_auth_init():
+    """Test QueryParameterAuth initializes with key_name and key_value."""
+    auth = QueryParameterAuth(key_name="api_key", key_value="secret123")
+    assert auth._key_name == "api_key"
+    assert auth._key_value == "secret123"
+
+
+@pytest.mark.asyncio
+async def test_query_parameter_auth_appends_to_url():
+    """Test QueryParameterAuth appends key as query parameter."""
+    auth = QueryParameterAuth(key_name="api_key", key_value="secret123")
+    request = httpx.Request("GET", "http://example.com/works")
+    await auth.async_authenticate(request)
+    assert "api_key=secret123" in str(request.url)
+
+
+@pytest.mark.asyncio
+async def test_query_parameter_auth_preserves_existing_params():
+    """Test QueryParameterAuth preserves existing query parameters."""
+    auth = QueryParameterAuth(key_name="api_key", key_value="secret123")
+    request = httpx.Request("GET", "http://example.com/works?per_page=10")
+    await auth.async_authenticate(request)
+    url_str = str(request.url)
+    assert "per_page=10" in url_str
+    assert "api_key=secret123" in url_str
+
+
+@pytest.mark.asyncio
+async def test_query_parameter_auth_special_characters():
+    """Test QueryParameterAuth handles special characters in value."""
+    auth = QueryParameterAuth(key_name="token", key_value="abc+def=ghi")
+    request = httpx.Request("GET", "http://example.com")
+    await auth.async_authenticate(request)
+    assert "token" in str(request.url)
+    assert "abc" in str(request.url)
+
+
+@pytest.mark.asyncio
+async def test_query_parameter_auth_close():
+    """Test QueryParameterAuth close is a no-op."""
+    auth = QueryParameterAuth(key_name="api_key", key_value="secret123")
+    await auth.async_close()
+    # No exception means it passed

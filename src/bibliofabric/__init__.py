@@ -17,7 +17,13 @@ except PackageNotFoundError:
 __author__ = "Samuel Mok"
 __email__ = "s.mok@utwente.nl"
 
-from .auth import AuthStrategy, ClientCredentialsAuth, NoAuth, StaticTokenAuth
+from .auth import (
+    AuthStrategy,
+    ClientCredentialsAuth,
+    NoAuth,
+    QueryParameterAuth,
+    StaticTokenAuth,
+)
 from .client import BaseApiClient
 from .config import BaseApiSettings
 from .exceptions import (
@@ -64,6 +70,7 @@ __all__ = [
     "GettableMixin",
     "NoAuth",
     "PageIterableMixin",
+    "QueryParameterAuth",
     "ResponseUnwrapper",
     "SearchableMixin",
     "StaticTokenAuth",

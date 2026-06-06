@@ -17,6 +17,7 @@ class AuthStrategyType(Enum):
 
     NONE = "none"
     STATIC_TOKEN = "static_token"
+    QUERY_PARAMETER = "query_parameter"
     CLIENT_CREDENTIALS = "client_credentials"
 
 
@@ -95,6 +96,31 @@ class StaticTokenAuth:
 
     async def async_close(self) -> None:
         """No resources to close for StaticTokenAuth, this method is a no-op."""
+
+
+class QueryParameterAuth:
+    """Auth strategy that injects credentials as a URL query parameter.
+
+    Some APIs (e.g., OpenAlex) authenticate by requiring a specific query
+    parameter (like ``api_key``) on every request. This strategy appends
+    the parameter to the request URL.
+
+    Args:
+        key_name: The query parameter name (e.g., ``"api_key"``).
+        key_value: The credential value.
+    """
+
+    def __init__(self, key_name: str, key_value: str):
+        self._key_name = key_name
+        self._key_value = key_value
+
+    async def async_authenticate(self, request: httpx.Request) -> None:
+        """Append the API key as a query parameter to the request URL."""
+        request.url = request.url.copy_merge_params({self._key_name: self._key_value})
+        logger.trace(f"QueryParameterAuth: appended '{self._key_name}' to request URL.")
+
+    async def async_close(self) -> None:
+        """No resources to close for QueryParameterAuth."""
 
 
 class ClientCredentialsAuth:
