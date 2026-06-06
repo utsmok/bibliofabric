@@ -238,7 +238,7 @@ async def test_searchable_mixin_search_success(
     expected_params = {
         "page": 1,
         "pageSize": 10,
-        "sortBy": "id asc",
+        "sortBy": "id ASC",
         "custom_filter": "test",
     }
     mock_api_client.request.assert_awaited_once_with(
@@ -642,7 +642,7 @@ async def test_searchable_custom_param_names(mock_api_client, mock_unwrapper):
     params = call_kwargs["params"]
     assert params["per_page"] == 50  # custom name
     assert params["page"] == 2  # same name
-    assert params["sort"] == "title asc"  # custom name
+    assert params["sort"] == "title ASC"  # custom name
     assert "pageSize" not in params
     assert "sortBy" not in params
 
@@ -662,7 +662,7 @@ async def test_cursor_iterable_custom_param_names(mock_api_client, mock_unwrappe
     params = call_kwargs["params"]
     assert params["cursor"] == "*"
     assert params["per_page"] == 25  # custom name
-    assert params["sort"] == "date desc"  # custom name
+    assert params["sort"] == "date DESC"  # custom name
     assert "pageSize" not in params
     assert "sortBy" not in params
 

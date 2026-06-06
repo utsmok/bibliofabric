@@ -228,7 +228,7 @@ async def test_cursor_iterable_with_sort(mock_api_client, mock_unwrapper):
         pass
 
     call_args = mock_api_client.request.call_args
-    assert call_args[1]["params"]["sortBy"] == "title asc"
+    assert call_args[1]["params"]["sortBy"] == "title ASC"
 
 
 @pytest.mark.asyncio
@@ -324,7 +324,7 @@ async def test_page_iterable_with_sort_and_validation(mock_api_client, mock_unwr
         pass
 
     call_args = mock_api_client.request.call_args
-    assert call_args[1]["params"]["sortBy"] == "title desc"
+    assert call_args[1]["params"]["sortBy"] == "title DESC"
 
 
 @pytest.mark.asyncio

@@ -115,6 +115,25 @@ class BaseResourceClient:
         """
         ...  # noqa: PIE790
 
+    @staticmethod
+    def _normalize_sort(sort_by: str) -> str:
+        """Normalize sort expression to use uppercase direction.
+
+        Some APIs (e.g. OpenAIRE Graph v2) require the direction keyword
+        in uppercase (``DESC`` / ``ASC``). This helper ensures consistent
+        casing regardless of what the caller passes.
+
+        Args:
+            sort_by: Sort expression like ``"publicationDate desc"``.
+
+        Returns:
+            Normalized expression like ``"publicationDate DESC"``.
+        """
+        parts = sort_by.strip().split()
+        if len(parts) == 2:  # noqa: PLR2004
+            return f"{parts[0]} {parts[1].upper()}"
+        return sort_by
+
     def _serialize_filters(
         self, filters: BaseModel | dict[str, Any] | None
     ) -> dict[str, Any]:
@@ -402,7 +421,7 @@ class SearchableMixin:
         params[self._param_page_size] = page_size
         if sort_by:
             self._validate_sort_field(sort_by.split()[0])
-            params[self._param_sort] = sort_by
+            params[self._param_sort] = self._normalize_sort(sort_by)
         if search is not None and self._param_search:
             params[self._param_search] = search
         logger.debug(
@@ -506,7 +525,7 @@ class CursorIterableMixin:
         }
 
         if sort_by:
-            current_params[self._param_sort] = sort_by
+            current_params[self._param_sort] = self._normalize_sort(sort_by)
 
         if filter_dict:
             current_params.update(filter_dict)
@@ -623,7 +642,7 @@ class PageIterableMixin:
         params = self._serialize_filters(filters)
         if sort_by:
             self._validate_sort_field(sort_by.split()[0])
-            params[self._param_sort] = sort_by
+            params[self._param_sort] = self._normalize_sort(sort_by)
         if search is not None and self._param_search:
             params[self._param_search] = search
 
