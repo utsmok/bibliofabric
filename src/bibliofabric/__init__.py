@@ -46,6 +46,7 @@ from .resources import (
     PageIterableMixin,
     SearchableMixin,
 )
+from .safe_types import SafeList, SafeStr
 
 __all__ = [
     "__version__",
@@ -72,6 +73,8 @@ __all__ = [
     "PageIterableMixin",
     "QueryParameterAuth",
     "ResponseUnwrapper",
+    "SafeList",
+    "SafeStr",
     "SearchableMixin",
     "StaticTokenAuth",
 ]
