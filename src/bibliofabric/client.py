@@ -114,7 +114,7 @@ class BaseApiClient:
         self._retryable_status_codes: frozenset[int] = retryable_status_codes
 
         # Initialize cache
-        self._cache: TTLCache[str, Any] | None = None
+        self._cache: TTLCache | None = None
         if self._settings.enable_caching and self._settings.cache_ttl_seconds > 0:
             logger.debug(
                 f"Client-side caching enabled. Max size: {self._settings.cache_max_size}, "
