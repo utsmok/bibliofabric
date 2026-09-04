@@ -103,8 +103,7 @@ uv run mkdocs build                  # Build docs
 
 ## Known Issues & Gaps
 
-- **No published release yet.** Package is installable from git only.
-- **Single reference implementation.** AIREloom is the only known consumer. More would validate the abstractions.
+- **Few client implementations.** AIREloom (reference) and [aletheca](https://github.com/utsmok/aletheca) (OpenAlex) are the known consumers. More would validate the abstractions.
 - **No streaming support.** All responses are buffered in memory.
 - **Cache is in-process only.** `TTLCache` — no shared cache across processes.
 - **No request cancellation.** No explicit support for cancelling in-flight requests beyond closing the client.
