@@ -1125,3 +1125,28 @@ async def test_page_iterable_concurrency_falls_back_when_total_unknown(
 
     assert [r.id for r in results] == ["1", "2"]
     assert mock_api_client.request.await_count == 3
+
+
+@pytest.mark.asyncio
+async def test_minimal_subclass_uses_optional_attr_defaults(
+    mock_api_client, mock_unwrapper
+):
+    """A subclass defining only _entity_path works: model attrs default to None."""
+    mock_api_client._response_unwrapper = mock_unwrapper
+    page1 = [{"id": "1", "value": "A"}]
+    mock_response = MagicMock(spec=httpx.Response)
+    mock_response.json.return_value = {"results": page1}
+    mock_api_client.request.return_value = mock_response
+    mock_unwrapper.unwrap_results.return_value = page1
+    mock_unwrapper.get_next_page_token.return_value = None
+
+    class MinimalClient(CursorIterableMixin, BaseResourceClient):
+        _entity_path = "minimal"
+
+    client = MinimalClient(mock_api_client)
+    assert client._entity_model is None
+    assert client._search_response_model is None
+
+    results = [item async for item in client.iterate()]
+
+    assert results == page1  # raw dicts, no _entity_model parsing

@@ -127,6 +127,8 @@ class BaseResourceClient:
     reject.
     """
 
+    _entity_model: type[BaseModel] | None = None
+    _search_response_model: type[BaseModel] | None = None
     _base_url_override: str | None = None
     _supports_direct_get: bool = False
     _paging_strategy: PagingStrategy = "page"
