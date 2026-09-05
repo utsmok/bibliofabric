@@ -55,6 +55,10 @@ class BaseApiSettings(BaseSettings):
         default=60,
         description="Default wait time in seconds if Retry-After header is not present on 429",
     )
+    rate_limit_pacing: bool = Field(
+        default=False,
+        description="Enable proactive request pacing from X-RateLimit headers to avoid 429s",
+    )
 
     # --- Caching Settings ---
     enable_caching: bool = Field(

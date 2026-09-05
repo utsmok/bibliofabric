@@ -76,6 +76,8 @@ class BaseApiClient:
         _rate_limit_remaining: Last observed remaining requests in the current window.
         _rate_limit_reset_timestamp: Timestamp for when the rate limit window resets.
         _rate_limit_lock: Lock for synchronizing access to rate limit state.
+        _pacer_next_allowed: Earliest time (time.time() seconds) the next request may fire when pacing.
+        _pacer_spacing: Seconds between requests derived from the rate limit window when pacing.
     """
 
     DEFAULT_RETRYABLE_STATUS_CODES: frozenset[int] = frozenset(
@@ -142,6 +144,8 @@ class BaseApiClient:
         self._rate_limit_remaining: int | None = None
         self._rate_limit_reset_timestamp: float | None = None  # Unix timestamp
         self._rate_limit_lock = asyncio.Lock()
+        self._pacer_next_allowed: float = 0.0
+        self._pacer_spacing: float = 0.0
 
         logger.debug("BaseApiClient initialized.")
 
@@ -242,6 +246,25 @@ class BaseApiClient:
                             logger.warning(
                                 f"Could not parse Retry-After HTTP date '{retry_after_header}': {e}"
                             )
+                # Proactive pacing: derive per-request spacing (time-per-credit)
+                # from the advertised window when all three headers are known.
+                if (
+                    self._settings.rate_limit_pacing
+                    and self._rate_limit_limit is not None
+                    and self._rate_limit_remaining is not None
+                    and self._rate_limit_reset_timestamp is not None
+                ):
+                    now = time.time()
+                    if self._rate_limit_reset_timestamp > now:
+                        spacing = (self._rate_limit_reset_timestamp - now) / max(
+                            self._rate_limit_remaining, 1
+                        )
+                        self._pacer_spacing = spacing
+                        self._pacer_next_allowed = now + spacing
+                        logger.debug(
+                            f"Rate limit pacing: spacing requests {spacing:.3f}s apart "
+                            f"({self._rate_limit_remaining} remaining until window reset)."
+                        )
             except Exception as e:
                 logger.exception(f"Error parsing rate limit headers: {e}")
         return retry_after_seconds
@@ -554,6 +577,21 @@ class BaseApiClient:
                         f"Waiting for default: {self._settings.rate_limit_retry_after_default}s as a precaution."
                     )
                     await asyncio.sleep(self._settings.rate_limit_retry_after_default)
+            # Proactive pacing: spread requests evenly across the advertised
+            # window so 429s are rare. Sleep happens outside the lock; the slot
+            # is then reserved under the lock so concurrent callers serialize.
+            if self._settings.rate_limit_pacing:
+                async with self._rate_limit_lock:
+                    wait_seconds = self._pacer_next_allowed - time.time()
+                if wait_seconds > 0:
+                    logger.debug(
+                        f"Rate limit pacing: delaying request by {wait_seconds:.3f}s."
+                    )
+                    await asyncio.sleep(wait_seconds)
+                async with self._rate_limit_lock:
+                    self._pacer_next_allowed = (
+                        max(self._pacer_next_allowed, time.time()) + self._pacer_spacing
+                    )
 
         # Apply authentication *before* retry loop setup, fail fast on auth issues
         try:

@@ -1,14 +1,27 @@
 """Tests for the BaseApiClient in bibliofabric."""
 
+from io import StringIO
 from unittest.mock import AsyncMock, MagicMock
 
 import httpx
 import pytest
+from pydantic import BaseModel
 
+import bibliofabric.client
 from bibliofabric.auth import NoAuth
 from bibliofabric.client import BaseApiClient
 from bibliofabric.config import BaseApiSettings
-from bibliofabric.exceptions import APIError, TimeoutError
+from bibliofabric.exceptions import (
+    APIError,
+    AuthError,
+    BibliofabricRequestError,
+    NetworkError,
+    TimeoutError,
+)
+from bibliofabric.log_config import (
+    configure_logging as bfl_configure_logging,  # avoid name clash
+    logger as bibliofabric_logger,
+)
 from bibliofabric.models import ResponseUnwrapper
 
 
@@ -42,7 +55,7 @@ async def test_request_with_retry_success(base_api_client: BaseApiClient, httpx_
 
     response, _, attempts = await base_api_client._request_with_retry("GET", "/test")
 
-    assert response.status_code == 200
+    assert response.status_code == httpx.codes.OK
     assert response.json() == {"status": "ok"}
     assert attempts == 1
 
@@ -57,9 +70,10 @@ async def test_request_with_retry_failure_then_success(
 
     response, _, attempts = await base_api_client._request_with_retry("GET", "/test")
 
-    assert response.status_code == 200
+    assert response.status_code == httpx.codes.OK
     assert response.json() == {"status": "ok"}
-    assert attempts == 2
+    expected_attempts = 2  # one failure + one success
+    assert attempts == expected_attempts
 
 
 @pytest.mark.asyncio
@@ -81,8 +95,9 @@ async def test_rate_limit_handling(base_api_client: BaseApiClient, httpx_mock):
 
     response, _, attempts = await base_api_client._request_with_retry("GET", "/test")
 
-    assert response.status_code == 200
-    assert attempts == 2
+    assert response.status_code == httpx.codes.OK
+    expected_attempts = 2  # one 429 + one success
+    assert attempts == expected_attempts
 
 
 @pytest.mark.asyncio
@@ -384,7 +399,7 @@ async def test_request_delete_method(base_api_client_with_mock_retry, mock_unwra
     assert isinstance(
         response, httpx.Response
     )  # Should return raw response if no model
-    assert response.status_code == 204
+    assert response.status_code == httpx.codes.NO_CONTENT
 
 
 @pytest.mark.asyncio
@@ -460,7 +475,8 @@ async def test_caching_disabled_for_non_get_requests(
         json_data={"data": "payload"},
         expected_model=SimpleModel,
     )
-    assert base_api_client_with_cache._request_with_retry.call_count == 2
+    expected_calls = 2  # cache disabled: both POSTs hit the network
+    assert base_api_client_with_cache._request_with_retry.call_count == expected_calls
 
 
 @pytest.mark.asyncio
@@ -647,13 +663,6 @@ async def test_request_json_alias_for_json_data(
     assert "json" not in kwargs or kwargs["json"] is None
 
 
-from io import StringIO
-
-from bibliofabric.log_config import (
-    logger as bibliofabric_logger,  # Import the specific logger
-)
-
-
 @pytest.mark.asyncio
 async def test_request_both_json_and_json_data_uses_json_data(
     base_api_client_with_mock_retry, mock_unwrapper
@@ -673,7 +682,6 @@ async def test_request_both_json_and_json_data_uses_json_data(
 
     # Capture loguru output for this test
     log_capture_string = StringIO()
-    original_handlers = list(bibliofabric_logger._core.handlers.keys())
     bibliofabric_logger.remove()  # Remove existing handlers
     # Add a handler that writes to our StringIO, ensure it captures warnings
     handler_id = bibliofabric_logger.add(
@@ -705,13 +713,117 @@ async def test_request_both_json_and_json_data_uses_json_data(
     if (
         not bibliofabric_logger._core.handlers
     ):  # if it's empty after removing our test handler
-        from bibliofabric.log_config import (
-            configure_logging as bfl_configure_logging,  # avoid name clash
-        )
-
         bfl_configure_logging()  # Re-apply default config
 
 
-from pydantic import BaseModel
+# --- Rate limit pacing tests ---
 
-from bibliofabric.exceptions import AuthError, BibliofabricRequestError, NetworkError
+
+class FakeClock:
+    """Deterministic time.time/asyncio.sleep replacements for pacing tests."""
+
+    def __init__(self, start: float = 1000.0):
+        self.now = start
+        self.sleeps: list[float] = []
+
+    def time(self) -> float:
+        return self.now
+
+    async def sleep(self, seconds: float) -> None:
+        self.sleeps.append(seconds)
+        self.now += seconds
+
+
+@pytest.fixture
+def frozen_clock(monkeypatch):
+    """Patch client timekeeping with a fake clock and record every sleep."""
+    clock = FakeClock()
+    monkeypatch.setattr(bibliofabric.client.time, "time", clock.time)
+    monkeypatch.setattr(bibliofabric.client.asyncio, "sleep", clock.sleep)
+    return clock
+
+
+@pytest.fixture
+def pacing_client(mock_unwrapper):
+    """Fixture for a BaseApiClient with proactive rate limit pacing enabled."""
+    settings = BaseApiSettings(rate_limit_pacing=True)
+    return BaseApiClient(
+        base_url="https://api.example.com",
+        settings=settings,
+        response_unwrapper=mock_unwrapper,
+    )
+
+
+@pytest.mark.asyncio
+async def test_pacing_disabled_by_default_no_delay(
+    base_api_client: BaseApiClient, httpx_mock, frozen_clock: FakeClock
+):
+    """Pacing is off by default: full rate limit headers never delay requests."""
+    headers = {
+        "X-RateLimit-Limit": "10",
+        "X-RateLimit-Remaining": "9",
+        "X-RateLimit-Reset": "1090",
+    }
+    httpx_mock.add_response(status_code=200, json={"status": "ok"}, headers=headers)
+    httpx_mock.add_response(status_code=200, json={"status": "ok"}, headers=headers)
+
+    await base_api_client._request_with_retry("GET", "/first")
+    await base_api_client._request_with_retry("GET", "/second")
+
+    assert frozen_clock.sleeps == []
+    assert base_api_client._pacer_spacing == 0.0
+    assert base_api_client._pacer_next_allowed == 0.0
+
+
+@pytest.mark.asyncio
+async def test_pacing_delays_next_request_by_spacing(
+    pacing_client: BaseApiClient, httpx_mock, frozen_clock: FakeClock
+):
+    """With pacing on, a response advertising limit/remaining/reset spaces the next request."""
+    httpx_mock.add_response(
+        status_code=200,
+        json={"status": "ok"},
+        headers={
+            "X-RateLimit-Limit": "10",
+            "X-RateLimit-Remaining": "9",
+            "X-RateLimit-Reset": "1090",
+        },
+    )
+    httpx_mock.add_response(status_code=200, json={"status": "ok"})
+
+    response, _, attempts = await pacing_client._request_with_retry("GET", "/first")
+    assert attempts == 1
+    # Window of 90s with 9 credits left -> 10s between requests.
+    assert pacing_client._pacer_spacing == pytest.approx(10.0)
+    assert (
+        frozen_clock.sleeps == []
+    )  # First request is never delayed by its own response.
+
+    response, _, attempts = await pacing_client._request_with_retry("GET", "/second")
+    assert response.status_code == httpx.codes.OK
+    assert attempts == 1
+    assert frozen_clock.sleeps == [pytest.approx(10.0)]
+
+
+@pytest.mark.asyncio
+async def test_pacing_inert_without_full_header_set(
+    pacing_client: BaseApiClient, httpx_mock, frozen_clock: FakeClock
+):
+    """Responses missing any of limit/remaining/reset never arm the pacer."""
+    httpx_mock.add_response(
+        status_code=200,
+        json={"status": "ok"},
+        headers={"X-RateLimit-Remaining": "5"},
+    )
+    httpx_mock.add_response(
+        status_code=200,
+        json={"status": "ok"},
+        headers={"X-RateLimit-Limit": "10", "X-RateLimit-Remaining": "5"},
+    )
+
+    await pacing_client._request_with_retry("GET", "/first")
+    await pacing_client._request_with_retry("GET", "/second")
+
+    assert frozen_clock.sleeps == []
+    assert pacing_client._pacer_spacing == 0.0
+    assert pacing_client._pacer_next_allowed <= frozen_clock.now
