@@ -11,8 +11,10 @@ from multiple mixins as needed to provide the appropriate functionality for that
 specific resource type.
 """
 
-from collections.abc import AsyncIterator
-from typing import TYPE_CHECKING, Any, Protocol
+import asyncio
+import inspect
+from collections.abc import AsyncIterator, Callable, Iterator
+from typing import TYPE_CHECKING, Any, Literal, Protocol
 
 from pydantic import BaseModel
 
@@ -22,6 +24,36 @@ from .log_config import logger
 if TYPE_CHECKING:
     from .client import BaseApiClient
     from .models import ResponseUnwrapper
+
+PagingStrategy = Literal["page", "offset"]
+"""Paging style used by ``_paging_params``.
+
+``"page"`` sends ``_param_page``/``_param_page_size`` (OpenAIRE-style), while
+``"offset"`` sends ``_param_offset``/``_param_rows`` (Crossref-style), where
+page N maps to ``offset=(N-1)*page_size``.
+"""
+
+OnError = Literal["raw", "skip", "raise"]
+"""Handling for records that fail ``_entity_model`` validation during iteration."""
+
+
+async def _fire_on_page(
+    on_page: Callable[[int, str | None], Any] | None,
+    page: int,
+    next_cursor: str | None,
+) -> None:
+    """Invoke an ``on_page`` callback, awaiting its result if it is awaitable.
+
+    Args:
+        on_page: The callback (sync or coroutine function), or None.
+        page: 1-indexed number of the page that was just fetched and yielded.
+        next_cursor: Cursor token for the next page, or None on the final page.
+    """
+    if on_page is None:
+        return
+    result = on_page(page, next_cursor)
+    if inspect.isawaitable(result):
+        await result
 
 
 class ResourceClientProtocol(Protocol):
@@ -39,12 +71,15 @@ class ResourceClientProtocol(Protocol):
     )  # Pydantic model for the search/list response envelope
     _base_url_override: str | None
     _supports_direct_get: bool
-    _param_page: str
-    _param_page_size: str
-    _param_sort: str
-    _param_cursor: str
-    _param_id: str
-    _param_search: str
+    _paging_strategy: PagingStrategy
+    _param_page: str | None
+    _param_page_size: str | None
+    _param_sort: str | None
+    _param_cursor: str | None
+    _param_id: str | None
+    _param_search: str | None
+    _param_offset: str | None
+    _param_rows: str | None
 
     @property
     def response_unwrapper(self) -> "ResponseUnwrapper": ...
@@ -54,6 +89,14 @@ class ResourceClientProtocol(Protocol):
     def _serialize_filters(
         self, filters: BaseModel | dict[str, Any] | None
     ) -> dict[str, Any]: ...
+    def _paging_params(self, page: int, page_size: int) -> dict[str, Any]: ...
+    def _iter_parsed(
+        self,
+        results: list[dict[str, Any]],
+        *,
+        on_error: OnError,
+        failures: list[tuple[dict[str, Any], Exception]] | None,
+    ) -> Iterator[Any]: ...
 
 
 class BaseResourceClient:
@@ -74,16 +117,28 @@ class BaseResourceClient:
             that represents the structure of a search or list response envelope for
             this resource. If provided, `search()` will attempt to parse the entire
             response into this model.
+
+    Paging is controlled by ``_paging_strategy``: ``"page"`` (default) sends
+    ``_param_page``/``_param_page_size`` (e.g. OpenAIRE's ``page``/``pageSize``),
+    while ``"offset"`` sends ``_param_offset``/``_param_rows`` (Crossref-style,
+    where page N maps to ``offset=(N-1)*page_size``). Any ``_param_*`` attribute
+    set to ``None`` omits that query parameter entirely, which lets cursor-only
+    clients reuse ``search()`` without sending paging parameters the API would
+    reject.
     """
 
     _base_url_override: str | None = None
     _supports_direct_get: bool = False
-    _param_page: str = "page"
-    _param_page_size: str = "pageSize"
-    _param_sort: str = "sortBy"
-    _param_cursor: str = "cursor"
-    _param_id: str = "id"
-    _param_search: str = "search"
+    _paging_strategy: PagingStrategy = "page"
+    _param_page: str | None = "page"
+    _param_page_size: str | None = "pageSize"
+    _param_sort: str | None = "sortBy"
+    _param_cursor: str | None = "cursor"
+    _param_id: str | None = "id"
+    _param_search: str | None = "search"
+    # Offset ("rows") paging, e.g. Crossref; used when _paging_strategy = "offset".
+    _param_offset: str | None = "offset"
+    _param_rows: str | None = "rows"
 
     def __init__(self, api_client: "BaseApiClient"):
         """Initialize the base resource client.
@@ -148,6 +203,85 @@ class BaseResourceClient:
         raise BibliofabricError(
             f"filters must be a Pydantic model or dictionary, got {type(filters)}"
         )
+
+    def _paging_params(self, page: int, page_size: int) -> dict[str, Any]:
+        """Translate a logical (page, page_size) pair into query parameters.
+
+        The translation follows ``_paging_strategy``:
+
+        - ``"page"``: sends ``_param_page`` and ``_param_page_size`` (e.g.
+          OpenAIRE's ``page``/``pageSize``).
+        - ``"offset"``: Crossref-style paging, where page N becomes
+          ``offset=(N-1)*page_size`` sent as ``_param_offset`` and the page
+          size as ``_param_rows``.
+
+        Any parameter whose ``_param_*`` name is ``None`` is omitted entirely.
+
+        Args:
+            page: 1-indexed page number.
+            page_size: Number of results per page.
+
+        Returns:
+            Query parameters expressing the requested page.
+        """
+        params: dict[str, Any] = {}
+        if self._paging_strategy == "offset":
+            if self._param_offset is not None:
+                params[self._param_offset] = (page - 1) * page_size
+            if self._param_rows is not None:
+                params[self._param_rows] = page_size
+            return params
+        if self._param_page is not None:
+            params[self._param_page] = page
+        if self._param_page_size is not None:
+            params[self._param_page_size] = page_size
+        return params
+
+    def _iter_parsed(
+        self: ResourceClientProtocol,
+        results: list[dict[str, Any]],
+        *,
+        on_error: OnError = "raw",
+        failures: list[tuple[dict[str, Any], Exception]] | None = None,
+    ) -> Iterator[Any]:
+        """Parse raw records with ``_entity_model``, applying the failure policy.
+
+        Args:
+            results: Raw record dictionaries from a single page.
+            on_error: Handling for records that fail validation. ``"raw"``
+                (default) logs a warning and yields the raw dictionary,
+                ``"skip"`` logs a warning and drops the record (appending
+                ``(raw_dict, exception)`` to ``failures`` when provided), and
+                ``"raise"`` lets the validation error propagate.
+            failures: Caller-owned list that collects ``(raw_dict, exception)``
+                pairs for skipped records when ``on_error="skip"``.
+
+        Yields:
+            Parsed entity models (or raw dictionaries when ``_entity_model``
+            is None).
+        """
+        for result_data in results:
+            if self._entity_model is None:
+                yield result_data
+                continue
+            try:
+                yield self._entity_model.model_validate(result_data)
+            except Exception as e:
+                if on_error == "raise":
+                    raise
+                if on_error == "skip":
+                    logger.warning(
+                        f"Failed to parse entity data with {self._entity_model.__name__}: {e}. "
+                        "Skipping record."
+                    )
+                    if failures is not None:
+                        failures.append((result_data, e))
+                    continue
+                logger.warning(
+                    f"Failed to parse entity data with {self._entity_model.__name__}: {e}. "
+                    "Yielding raw data."
+                )
+                yield result_data
 
     async def collect(
         self,
@@ -326,7 +460,11 @@ class GettableMixin:
                 entity_data = self.response_unwrapper.unwrap_single_item(response_data)
             else:
                 # Use search with ID parameter instead of direct GET
-                params = {self._param_id: entity_id, self._param_page_size: 1}
+                params: dict[str, Any] = {}
+                if self._param_id is not None:
+                    params[self._param_id] = entity_id
+                if self._param_page_size is not None:
+                    params[self._param_page_size] = 1
                 response = await self._api_client.request(
                     "GET",
                     self._entity_path,
@@ -372,7 +510,8 @@ class SearchableMixin:
     """Mixin that provides generic search() functionality with pagination support.
 
     This mixin implements a standard pattern for searching entities with support
-    for page-based pagination, filtering, and sorting. It relies on the
+    for pagination (page-based, or Crossref-style offset/rows when
+    ``_paging_strategy = "offset"``), filtering, and sorting. It relies on the
     `ResponseUnwrapper` (via `BaseResourceClient`) to correctly parse the
     API's specific list response structure.
 
@@ -399,7 +538,10 @@ class SearchableMixin:
         """Search for entities with pagination support.
 
         Args:
-            page: Page number (1-indexed).
+            page: Page number (1-indexed). With ``_paging_strategy = "offset"``
+                (Crossref-style APIs) this is translated to
+                ``offset=(page-1)*page_size`` sent as ``_param_offset``, with
+                the size sent as ``_param_rows``.
             page_size: Number of results per page.
             sort_by: Field to sort by (e.g., 'title asc', 'date desc').
             filters: Filter criteria as a Pydantic model or dictionary.
@@ -417,19 +559,19 @@ class SearchableMixin:
                 f"{self.__class__.__name__} must define _entity_path"
             )
 
-        # Build query parameters
+        # Build query parameters (paging params follow _paging_strategy and any
+        # parameter whose _param_* name is None is omitted entirely)
         params = self._serialize_filters(filters)
-        params[self._param_page] = page
-        params[self._param_page_size] = page_size
+        params.update(self._paging_params(page, page_size))
         if sort_by:
             self._validate_sort_field(sort_by.split()[0])
-            params[self._param_sort] = self._normalize_sort(sort_by)
+            if self._param_sort is not None:
+                params[self._param_sort] = self._normalize_sort(sort_by)
         if search is not None and self._param_search:
             params[self._param_search] = search
         logger.debug(
-            f"Searching {self._entity_path}: page={params.get(self._param_page)}, "
-            f"size={params.get(self._param_page_size)}, sort='{params.get(self._param_sort)}', "
-            f"filters={params}"
+            f"Searching {self._entity_path}: page={page}, size={page_size}, "
+            f"sort='{sort_by}', filters={params}"
         )
         try:
             response = await self._api_client.request(
@@ -488,6 +630,11 @@ class CursorIterableMixin:
         sort_by: str | None = None,
         filters: BaseModel | dict[str, Any] | None = None,
         search: str | None = None,
+        *,
+        cursor: str | None = None,
+        on_error: OnError = "raw",
+        failures: list[tuple[dict[str, Any], Exception]] | None = None,
+        on_page: Callable[[int, str | None], Any] | None = None,
     ) -> AsyncIterator[Any]:
         """Iterate through all entities matching the criteria using cursor pagination.
 
@@ -499,6 +646,22 @@ class CursorIterableMixin:
             page_size: Number of results to fetch per API call during iteration.
             sort_by: Field to sort by.
             filters: Filter criteria as a Pydantic model or dictionary.
+            cursor: Cursor token to resume iteration from, e.g. the last cursor
+                reported via ``on_page`` by an interrupted harvest. None starts
+                from the beginning (``"*"``).
+            on_error: Handling for records that fail ``_entity_model``
+                validation. ``"raw"`` (default) logs a warning and yields the
+                raw dictionary, ``"skip"`` logs a warning and drops the record
+                (appending ``(raw_dict, exception)`` to ``failures`` when
+                provided), and ``"raise"`` lets the validation error propagate
+                (wrapped into ``BibliofabricError`` by the outer error handler).
+            failures: Caller-owned list collecting ``(raw_dict, exception)``
+                pairs for skipped records when ``on_error="skip"``.
+            on_page: Optional callback invoked after each page is fetched and
+                yielded, as ``(page_number, next_cursor)`` where ``next_cursor``
+                is the cursor of the next page, or None on the final page. May
+                be a coroutine function. Use it to checkpoint harvests, and
+                pass a saved cursor back in via ``cursor=`` to resume.
 
         Yields:
             Any: Individual entities, either as parsed Pydantic models (if
@@ -518,15 +681,15 @@ class CursorIterableMixin:
             f"Iterating {self._entity_path}: pageSize={page_size}, "
             f"sort='{sort_by}', filters={filter_dict}"
         )
-        # Build initial parameters with cursor pagination
-        current_params: dict[
-            str, Any
-        ] = {  # Renamed to current_params for clarity in loop
-            self._param_cursor: "*",  # Start cursor for iteration
-            self._param_page_size: page_size,
-        }
+        # Build initial parameters with cursor pagination; parameters whose
+        # _param_* name is None are omitted entirely.
+        current_params: dict[str, Any] = {}
+        if self._param_cursor is not None:
+            current_params[self._param_cursor] = cursor if cursor is not None else "*"
+        if self._param_page_size is not None:
+            current_params[self._param_page_size] = page_size
 
-        if sort_by:
+        if sort_by and self._param_sort is not None:
             current_params[self._param_sort] = self._normalize_sort(sort_by)
 
         if filter_dict:
@@ -534,6 +697,7 @@ class CursorIterableMixin:
         if search is not None and self._param_search:
             current_params[self._param_search] = search
 
+        page_count = 0
         while True:
             try:
                 logger.debug(
@@ -553,39 +717,38 @@ class CursorIterableMixin:
                 # Use the response unwrapper to get results and next cursor
                 results = self.response_unwrapper.unwrap_results(response_data)
                 next_cursor = self.response_unwrapper.get_next_page_token(response_data)
+                page_count += 1
 
                 if not results:
                     logger.debug(
                         f"No more results for {self._entity_path}, stopping iteration."
                     )
+                    await _fire_on_page(on_page, page_count, None)
                     break
 
-                # Yield each result
-                for result_data in results:
-                    # Parse with entity model if available
-                    if self._entity_model:
-                        try:
-                            yield self._entity_model.model_validate(result_data)
-                        except Exception as e:
-                            logger.warning(
-                                f"Failed to parse entity data with {self._entity_model.__name__}: {e}. "
-                                "Yielding raw data."
-                            )
-                            yield result_data
-                    else:
-                        yield result_data
+                # Yield each parsed result
+                for entity in self._iter_parsed(
+                    results, on_error=on_error, failures=failures
+                ):
+                    yield entity
 
                 # Check if there are more pages
                 if not next_cursor:
                     logger.debug(
                         f"No nextCursor for {self._entity_path}, stopping iteration."
                     )
+                    await _fire_on_page(on_page, page_count, None)
                     break
 
+                # Report the cursor that continues this iteration (checkpoint hook)
+                await _fire_on_page(on_page, page_count, next_cursor)
+
                 # Update cursor for next iteration
-                current_params[self._param_cursor] = next_cursor
+                if self._param_cursor is not None:
+                    current_params[self._param_cursor] = next_cursor
                 # Remove page if it accidentally got in, cursor handles pagination
-                current_params.pop(self._param_page, None)
+                if self._param_page is not None:
+                    current_params.pop(self._param_page, None)
 
             except Exception as e:
                 if isinstance(e, BibliofabricError):
@@ -602,7 +765,8 @@ class PageIterableMixin:
     """Mixin that provides generic iterate() functionality using page-based pagination.
 
     This mixin implements a standard pattern for iterating through all results
-    of a resource using page-based pagination (incrementing page numbers).
+    of a resource using page-based pagination (incrementing page numbers, or
+    Crossref-style offset/rows when ``_paging_strategy = "offset"``).
     It yields individual entities.
 
     To use this mixin, a class must:
@@ -617,16 +781,42 @@ class PageIterableMixin:
         sort_by: str | None = None,
         filters: BaseModel | dict[str, Any] | None = None,
         search: str | None = None,
+        *,
+        on_error: OnError = "raw",
+        failures: list[tuple[dict[str, Any], Exception]] | None = None,
+        on_page: Callable[[int, str | None], Any] | None = None,
+        concurrency: int = 1,
     ) -> AsyncIterator[Any]:
         """Iterate through all entities matching the criteria using page-based pagination.
 
         This method automatically handles pagination by incrementing the page number
-        to fetch successive pages of results. It yields individual entities.
+        (or the offset, for ``_paging_strategy = "offset"``) to fetch successive
+        pages of results. It yields individual entities.
 
         Args:
             page_size: Number of results to fetch per API call during iteration.
             sort_by: Field to sort by.
             filters: Filter criteria as a Pydantic model or dictionary.
+            on_error: Handling for records that fail ``_entity_model``
+                validation. ``"raw"`` (default) logs a warning and yields the
+                raw dictionary, ``"skip"`` logs a warning and drops the record
+                (appending ``(raw_dict, exception)`` to ``failures`` when
+                provided), and ``"raise"`` lets the validation error propagate
+                (wrapped into ``BibliofabricError`` by the error handler).
+            failures: Caller-owned list collecting ``(raw_dict, exception)``
+                pairs for skipped records when ``on_error="skip"``.
+            on_page: Optional callback invoked after each page is fetched and
+                yielded, as ``(page_number, None)`` — page-based paging has no
+                cursor token, so the page number is the checkpoint. May be a
+                coroutine function.
+            concurrency: Maximum number of page requests in flight at once
+                (default 1 = sequential). When greater than 1 and the total
+                result count is known (reported by the response unwrapper),
+                remaining pages are fetched in bounded chunks of
+                ``concurrency`` via ``asyncio.gather`` while results are still
+                yielded in page order, stopping at
+                ``ceil(total / page_size)`` pages. Falls back to sequential
+                iteration when the total is unknown.
 
         Yields:
             Any: Individual entities, either as parsed Pydantic models (if
@@ -641,33 +831,27 @@ class PageIterableMixin:
             )
 
         # Convert filters to dictionary if it's a Pydantic model
-        params = self._serialize_filters(filters)
+        base_params = self._serialize_filters(filters)
         if sort_by:
             self._validate_sort_field(sort_by.split()[0])
-            params[self._param_sort] = self._normalize_sort(sort_by)
+            if self._param_sort is not None:
+                base_params[self._param_sort] = self._normalize_sort(sort_by)
         if search is not None and self._param_search:
-            params[self._param_search] = search
+            base_params[self._param_search] = search
 
         logger.debug(
             f"Iterating {self._entity_path} (page-based): pageSize={page_size}, "
-            f"sort='{sort_by}', filters={params}"
+            f"sort='{sort_by}', filters={base_params}"
         )
 
-        current_page = 1
-
-        while True:
+        async def fetch_page(page: int) -> tuple[list[Any], int | None, bool]:
+            """Fetch one page, returning (parsed entities, total, has_results)."""
+            page_params = {**base_params, **self._paging_params(page, page_size)}
             try:
-                params[self._param_page] = current_page
-                params[self._param_page_size] = page_size
-
-                logger.debug(
-                    f"Iterating {self._entity_path} page {current_page} with params: {params}"
-                )
-
                 response = await self._api_client.request(
                     "GET",
                     self._entity_path,
-                    params=params.copy(),
+                    params=page_params,
                     base_url_override=self._base_url_override,
                 )
 
@@ -675,45 +859,68 @@ class PageIterableMixin:
 
                 # Use the response unwrapper to get results
                 results = self.response_unwrapper.unwrap_results(response_data)
-
-                if not results:
-                    logger.debug(
-                        f"No more results for {self._entity_path} at page {current_page}, stopping iteration."
-                    )
-                    break
-
-                # Yield each result
-                for result_data in results:
-                    if self._entity_model:
-                        try:
-                            yield self._entity_model.model_validate(result_data)
-                        except Exception as e:
-                            logger.warning(
-                                f"Failed to parse entity data with {self._entity_model.__name__}: {e}. "
-                                "Yielding raw data."
-                            )
-                            yield result_data
-                    else:
-                        yield result_data
-
-                # Check if there are more pages
+                entities = list(
+                    self._iter_parsed(results, on_error=on_error, failures=failures)
+                )
                 total = self.response_unwrapper.get_total_results(response_data)
-                if total is not None:
-                    fetched = current_page * page_size
-                    if fetched >= total:
-                        logger.debug(
-                            f"Fetched all {total} results for {self._entity_path}, stopping iteration."
-                        )
-                        break
-
-                current_page += 1
-
+                return entities, total, bool(results)
             except Exception as e:
                 if isinstance(e, BibliofabricError):
                     raise
                 logger.exception(
-                    f"Failed during iteration of {self._entity_path} with params {params}"
+                    f"Failed during iteration of {self._entity_path} with params {page_params}"
                 )
                 raise BibliofabricError(
                     f"Unexpected error during iteration of {self._entity_path}: {e}"
                 ) from e
+
+        current_page = 1
+
+        while True:
+            entities, total, has_results = await fetch_page(current_page)
+
+            if has_results:
+                for entity in entities:
+                    yield entity
+
+            await _fire_on_page(on_page, current_page, None)
+
+            if not has_results:
+                logger.debug(
+                    f"No more results for {self._entity_path} at page {current_page}, stopping iteration."
+                )
+                break
+
+            if total is not None and current_page * page_size >= total:
+                logger.debug(
+                    f"Fetched all {total} results for {self._entity_path}, stopping iteration."
+                )
+                break
+
+            if concurrency > 1 and total is not None:
+                # Total is known, so the remaining page numbers are computable:
+                # fetch them in bounded chunks while still yielding in order.
+                last_page = -(-total // page_size)  # ceil(total / page_size)
+                page_no = current_page + 1
+                while page_no <= last_page:
+                    chunk = range(page_no, min(page_no + concurrency, last_page + 1))
+                    pages = await asyncio.gather(*(fetch_page(p) for p in chunk))
+                    exhausted = False
+                    for page, (page_entities, _, page_has_results) in zip(
+                        chunk, pages, strict=True
+                    ):
+                        if page_has_results:
+                            for entity in page_entities:
+                                yield entity
+                        await _fire_on_page(on_page, page, None)
+                        if not page_has_results:
+                            exhausted = True
+                    if exhausted:
+                        logger.debug(
+                            f"No more results for {self._entity_path} at page {page}, stopping iteration."
+                        )
+                        break
+                    page_no = chunk[-1] + 1
+                break
+
+            current_page += 1

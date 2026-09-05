@@ -1,9 +1,11 @@
 # tests/test_resources.py
+# ruff: noqa: PLR2004  # magic counts in asserts are idiomatic in tests
+import asyncio
 from unittest.mock import AsyncMock, MagicMock
 
 import httpx
 import pytest
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError as PydanticValidationError
 
 from bibliofabric.client import BaseApiClient
 from bibliofabric.exceptions import BibliofabricError, ValidationError
@@ -309,11 +311,12 @@ async def test_cursor_iterable_mixin_iterate_success(
     mock_unwrapper.unwrap_results.side_effect = [page1_items, page2_items]
     mock_unwrapper.get_next_page_token.side_effect = ["cursor2", None]
 
-    results = []
-    async for item in cursor_iterable_client.iterate(
-        page_size=1, filters={"active": True}
-    ):
-        results.append(item)
+    results = [
+        item
+        async for item in cursor_iterable_client.iterate(
+            page_size=1, filters={"active": True}
+        )
+    ]
 
     assert len(results) == 2
     assert isinstance(results[0], MockEntityModel)
@@ -489,7 +492,7 @@ async def test_gettable_mixin_direct_get_uses_path(mock_api_client, mock_unwrapp
     mock_unwrapper.unwrap_single_item.return_value = mock_raw_item
 
     client = DirectGetTestClient(mock_api_client, mock_unwrapper)
-    result = await client.get(entity_id)
+    await client.get(entity_id)
 
     mock_api_client.request.assert_awaited_once()
     call_args, call_kwargs = mock_api_client.request.call_args
@@ -513,7 +516,7 @@ async def test_gettable_mixin_default_uses_search_by_id(
     mock_api_client.request.return_value = mock_response
     mock_unwrapper.unwrap_results.return_value = [mock_raw_item]
 
-    result = await gettable_client.get(entity_id)
+    await gettable_client.get(entity_id)
 
     mock_api_client.request.assert_awaited_once()
     _, kwargs = mock_api_client.request.call_args
@@ -850,3 +853,275 @@ async def test_search_param_disabled_when_param_search_empty(
     params = call_kwargs["params"]
     assert "search" not in params
     assert "ignored" not in str(params)
+
+
+# --- Issue 6: Pluggable Paging Strategy (page / offset+rows) ---
+class CrossrefStyleSearchClient(SearchableMixin, ConcreteResourceClient):
+    """Crossref-style client: pages via offset/rows and rejects page/pageSize."""
+
+    _paging_strategy = "offset"
+
+
+@pytest.mark.asyncio
+async def test_search_offset_strategy_sends_offset_rows(
+    mock_api_client, mock_unwrapper
+):
+    """Offset strategy translates page 3/size 25 into offset=50/rows=25."""
+    mock_response = MagicMock(spec=httpx.Response)
+    mock_response.json.return_value = {"results": [], "total": 0}
+    mock_api_client.request.return_value = mock_response
+    client = CrossrefStyleSearchClient(mock_api_client, mock_unwrapper)
+
+    await client.search(page=3, page_size=25)
+
+    params = mock_api_client.request.await_args[1]["params"]
+    assert params["offset"] == 50
+    assert params["rows"] == 25
+    assert "page" not in params
+    assert "pageSize" not in params
+
+
+@pytest.mark.asyncio
+async def test_page_iterable_offset_strategy(mock_api_client, mock_unwrapper):
+    """PageIterableMixin with offset strategy sends offset/rows and not page."""
+    page1 = [{"id": "1", "value": "A"}, {"id": "2", "value": "B"}]
+    page2 = [{"id": "3", "value": "C"}, {"id": "4", "value": "D"}]
+    responses = []
+    for items in [page1, page2]:
+        resp = MagicMock(spec=httpx.Response)
+        resp.json.return_value = {"results": items}
+        responses.append(resp)
+    mock_api_client.request.side_effect = responses
+    mock_unwrapper.unwrap_results.side_effect = [page1, page2]
+    mock_unwrapper.get_total_results.return_value = 4
+
+    class CrossrefStylePageClient(PageIterableMixin, ConcreteResourceClient):
+        _paging_strategy = "offset"
+
+    client = CrossrefStylePageClient(mock_api_client, mock_unwrapper)
+    results = [item async for item in client.iterate(page_size=2)]
+
+    assert [r.id for r in results] == ["1", "2", "3", "4"]
+    calls = mock_api_client.request.await_args_list
+    assert calls[0][1]["params"] == {"offset": 0, "rows": 2}
+    assert calls[1][1]["params"] == {"offset": 2, "rows": 2}
+
+
+# --- Issue 6: None param names omit query params ---
+@pytest.mark.asyncio
+async def test_search_omits_params_marked_none(mock_api_client, mock_unwrapper):
+    """A cursor-only client can reuse search(): page/pageSize omitted when None."""
+
+    class CursorOnlySearchClient(SearchableMixin, ConcreteResourceClient):
+        _param_page = None
+        _param_page_size = None
+
+    mock_response = MagicMock(spec=httpx.Response)
+    mock_response.json.return_value = {"results": [], "total": 0}
+    mock_api_client.request.return_value = mock_response
+    client = CursorOnlySearchClient(mock_api_client, mock_unwrapper)
+
+    await client.search(page=2, page_size=50)
+
+    params = mock_api_client.request.await_args[1]["params"]
+    assert params == {}
+
+
+@pytest.mark.asyncio
+async def test_cursor_iterable_omits_page_size_when_none(
+    mock_api_client, mock_unwrapper
+):
+    """CursorIterableMixin omits page_size when _param_page_size is None."""
+
+    class NoPageSizeCursorClient(CursorIterableMixin, ConcreteResourceClient):
+        _param_page_size = None
+
+    page1_items = [{"id": "1", "value": "A"}]
+    mock_response = MagicMock(spec=httpx.Response)
+    mock_response.json.return_value = {"results": page1_items}
+    mock_api_client.request.return_value = mock_response
+    mock_unwrapper.unwrap_results.return_value = page1_items
+    mock_unwrapper.get_next_page_token.return_value = None
+
+    client = NoPageSizeCursorClient(mock_api_client, mock_unwrapper)
+    results = [item async for item in client.iterate()]
+
+    assert len(results) == 1
+    params = mock_api_client.request.await_args[1]["params"]
+    assert params == {"cursor": "*"}
+
+
+# --- Issue 3: cursor resume + on_page checkpoint hook ---
+@pytest.mark.asyncio
+async def test_cursor_iterable_resume_from_cursor(mock_api_client, mock_unwrapper):
+    """Passing cursor= resumes iteration from a saved checkpoint token."""
+    page_items = [{"id": "9", "value": "Resumed"}]
+    mock_response = MagicMock(spec=httpx.Response)
+    mock_response.json.return_value = {"results": page_items}
+    mock_api_client.request.return_value = mock_response
+    mock_unwrapper.unwrap_results.return_value = page_items
+    mock_unwrapper.get_next_page_token.return_value = None
+
+    client = CursorIterableTestClient(mock_api_client, mock_unwrapper)
+    results = [item async for item in client.iterate(cursor="cursor7")]
+
+    assert results[0].id == "9"
+    params = mock_api_client.request.await_args[1]["params"]
+    assert params["cursor"] == "cursor7"
+
+
+@pytest.mark.asyncio
+async def test_cursor_iterable_on_page_callback(mock_api_client, mock_unwrapper):
+    """on_page receives (page_number, next_cursor) after each page; awaits coroutines."""
+    page1_items = [{"id": "1", "value": "A"}]
+    page2_items = [{"id": "2", "value": "B"}]
+    responses = []
+    for items, token in [(page1_items, "cursor2"), (page2_items, None)]:
+        resp = MagicMock(spec=httpx.Response)
+        resp.json.return_value = {"results": items, "header": {"nextCursor": token}}
+        responses.append(resp)
+    mock_api_client.request.side_effect = responses
+    mock_unwrapper.unwrap_results.side_effect = [page1_items, page2_items]
+    mock_unwrapper.get_next_page_token.side_effect = ["cursor2", None]
+
+    client = CursorIterableTestClient(mock_api_client, mock_unwrapper)
+    seen = []
+
+    async def checkpoint(page, next_cursor):
+        seen.append((page, next_cursor))
+
+    results = [item async for item in client.iterate(on_page=checkpoint)]
+
+    assert len(results) == 2
+    assert seen == [(1, "cursor2"), (2, None)]
+
+
+@pytest.mark.asyncio
+async def test_page_iterable_on_page_callback(mock_api_client, mock_unwrapper):
+    """on_page receives (page_number, None) for every page, including the last."""
+    page1_items = [{"id": "1", "value": "A"}]
+    page2_items = [{"id": "2", "value": "B"}]
+    responses = []
+    for items in [page1_items, page2_items]:
+        resp = MagicMock(spec=httpx.Response)
+        resp.json.return_value = {"results": items}
+        responses.append(resp)
+    mock_api_client.request.side_effect = responses
+    mock_unwrapper.unwrap_results.side_effect = [page1_items, page2_items]
+    mock_unwrapper.get_total_results.return_value = 2
+
+    client = PageIterableTestClient(mock_api_client, mock_unwrapper)
+    seen = []
+
+    results = [
+        item
+        async for item in client.iterate(
+            page_size=1, on_page=lambda page, cursor: seen.append((page, cursor))
+        )
+    ]
+
+    assert len(results) == 2
+    assert seen == [(1, None), (2, None)]
+
+
+# --- Issue 7: strict/skip/raw record error handling ---
+@pytest.mark.asyncio
+async def test_cursor_iterable_on_error_raise(mock_api_client, mock_unwrapper):
+    """on_error='raise' propagates validation failures wrapped in BibliofabricError."""
+    invalid_items = [{"bad": "shape"}]
+    mock_response = MagicMock(spec=httpx.Response)
+    mock_response.json.return_value = {"results": invalid_items}
+    mock_api_client.request.return_value = mock_response
+    mock_unwrapper.unwrap_results.return_value = invalid_items
+    mock_unwrapper.get_next_page_token.return_value = None
+
+    client = CursorIterableTestClient(mock_api_client, mock_unwrapper)
+    with pytest.raises(BibliofabricError) as excinfo:
+        [item async for item in client.iterate(on_error="raise")]
+
+    assert isinstance(excinfo.value.__cause__, PydanticValidationError)
+
+
+@pytest.mark.asyncio
+async def test_page_iterable_on_error_skip_collects_failures(
+    mock_api_client, mock_unwrapper
+):
+    """on_error='skip' drops bad records into failures and yields no raw dicts."""
+    page_items = [
+        {"id": "1", "value": "ok"},
+        {"bad": "shape"},
+        {"id": "3", "value": "also ok"},
+    ]
+    mock_response = MagicMock(spec=httpx.Response)
+    mock_response.json.return_value = {"results": page_items}
+    mock_api_client.request.return_value = mock_response
+    mock_unwrapper.unwrap_results.return_value = page_items
+    mock_unwrapper.get_total_results.return_value = 3
+
+    client = PageIterableTestClient(mock_api_client, mock_unwrapper)
+    failures: list[tuple[dict, Exception]] = []
+    results = [
+        item async for item in client.iterate(on_error="skip", failures=failures)
+    ]
+
+    assert [r.id for r in results] == ["1", "3"]
+    assert all(isinstance(r, MockEntityModel) for r in results)
+    assert len(failures) == 1
+    assert failures[0][0] == {"bad": "shape"}
+    assert isinstance(failures[0][1], PydanticValidationError)
+
+
+# --- Issue 4: bounded concurrent page fetching ---
+@pytest.mark.asyncio
+async def test_page_iterable_concurrency_ordered(mock_api_client, mock_unwrapper):
+    """concurrency>1 fetches pages in parallel chunks but yields them in order."""
+    pages_data = {
+        1: [{"id": "1", "value": "a"}, {"id": "2", "value": "b"}],
+        2: [{"id": "3", "value": "c"}, {"id": "4", "value": "d"}],
+        3: [{"id": "5", "value": "e"}, {"id": "6", "value": "f"}],
+    }
+    in_flight = 0
+    max_in_flight = 0
+
+    async def fake_request(method, path, params, base_url_override=None):
+        nonlocal in_flight, max_in_flight
+        in_flight += 1
+        max_in_flight = max(max_in_flight, in_flight)
+        await asyncio.sleep(0.01)
+        in_flight -= 1
+        resp = MagicMock(spec=httpx.Response)
+        resp.json.return_value = {"results": pages_data[params["page"]]}
+        return resp
+
+    mock_api_client.request = fake_request
+    mock_unwrapper.unwrap_results.side_effect = lambda data: data["results"]
+    mock_unwrapper.get_total_results.return_value = 6
+
+    client = PageIterableTestClient(mock_api_client, mock_unwrapper)
+    results = [item async for item in client.iterate(page_size=2, concurrency=2)]
+
+    assert [r.id for r in results] == ["1", "2", "3", "4", "5", "6"]
+    assert max_in_flight == 2
+
+
+@pytest.mark.asyncio
+async def test_page_iterable_concurrency_falls_back_when_total_unknown(
+    mock_api_client, mock_unwrapper
+):
+    """With unknown total, concurrency>1 falls back to sequential iteration."""
+    page1 = [{"id": "1", "value": "A"}]
+    page2 = [{"id": "2", "value": "B"}]
+    responses = []
+    for items in [page1, page2, []]:
+        resp = MagicMock(spec=httpx.Response)
+        resp.json.return_value = {"results": items}
+        responses.append(resp)
+    mock_api_client.request.side_effect = responses
+    mock_unwrapper.unwrap_results.side_effect = [page1, page2, []]
+    mock_unwrapper.get_total_results.return_value = None
+
+    client = PageIterableTestClient(mock_api_client, mock_unwrapper)
+    results = [item async for item in client.iterate(concurrency=5)]
+
+    assert [r.id for r in results] == ["1", "2"]
+    assert mock_api_client.request.await_count == 3
