@@ -1,3 +1,14 @@
+# Bibliofabric 0.5.2
+
+## Fixed
+
+- Raise `NotFoundError` for model-backed requests that receive a 404 response.
+- Redact query credentials such as `api_key` from request and exception logging.
+- Add opt-in validation-failure hooks carrying the raw response body or rejected
+  resource record and the validation exception.
+- Add `raw=True` passthrough support to `BaseApiClient.request()` and resource
+  `get()`/`search()` calls.
+
 # Bibliofabric Enhancement Plan: Multi-API Compatibility
 
 > **Goal**: Make bibliofabric's parameter handling configurable so downstream libraries (syntheca/OpenAlex, future libraries) can customize query param names, filter serialization, and auth — without duplicating mixin logic.

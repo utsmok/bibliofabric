@@ -16,6 +16,7 @@ from bibliofabric.exceptions import (
     APIError,
     AuthError,
     BibliofabricError,
+    NotFoundError,
     RateLimitError,
     TimeoutError,
 )
@@ -638,3 +639,71 @@ async def test_cache_store_parsed_model_type_mismatch(base_client):
 
     result = await base_client.request("GET", "/test", expected_model=SimpleModel)
     assert isinstance(result, httpx.Response)
+
+
+@pytest.mark.asyncio
+async def test_model_404_raises_not_found_error(base_client, httpx_mock):
+    httpx_mock.add_response(status_code=404)
+
+    with pytest.raises(NotFoundError) as exc_info:
+        await base_client.request("GET", "/missing", expected_model=SimpleModel)
+
+    assert exc_info.value.response is not None
+    assert exc_info.value.response.status_code == httpx.codes.NOT_FOUND
+
+
+def test_error_string_redacts_query_credentials():
+    request = httpx.Request("GET", "https://api.example.com/works?api_key=secret123")
+
+    error = APIError("request failed", request=request)
+
+    assert "secret123" not in str(error)
+    assert "api_key=***" in str(error)
+
+
+@pytest.mark.asyncio
+async def test_validation_error_hook_receives_raw_response(base_client, httpx_mock):
+    httpx_mock.add_response(json={"wrong": "shape"}, status_code=HTTP_STATUS_OK)
+    contexts = []
+
+    result = await base_client.request(
+        "GET",
+        "/invalid",
+        expected_model=SimpleModel,
+        on_validation_error=contexts.append,
+    )
+
+    assert isinstance(result, httpx.Response)
+    assert len(contexts) == 1
+    assert contexts[0].response is result
+    assert contexts[0].raw == result.content
+    assert contexts[0].error is not None
+
+
+@pytest.mark.asyncio
+async def test_settings_validation_error_hook_receives_raw_response(
+    base_client, httpx_mock
+):
+    httpx_mock.add_response(json={"wrong": "shape"}, status_code=HTTP_STATUS_OK)
+    contexts = []
+    base_client._settings.validation_error_hooks = [contexts.append]
+
+    await base_client.request("GET", "/invalid", expected_model=SimpleModel)
+
+    assert len(contexts) == 1
+    assert contexts[0].raw == contexts[0].response.content
+
+
+@pytest.mark.asyncio
+async def test_raw_request_skips_model_validation(base_client, httpx_mock):
+    httpx_mock.add_response(json={"wrong": "shape"}, status_code=HTTP_STATUS_OK)
+
+    result = await base_client.request(
+        "GET",
+        "/raw",
+        expected_model=SimpleModel,
+        raw=True,
+    )
+
+    assert isinstance(result, httpx.Response)
+    assert result.json() == {"wrong": "shape"}

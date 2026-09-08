@@ -17,6 +17,7 @@ from bibliofabric.resources import (
     PageIterableMixin,
     SearchableMixin,
 )
+from bibliofabric.types import ValidationErrorContext
 
 # --- Mocks and Fixtures ---
 
@@ -216,6 +217,67 @@ async def test_gettable_mixin_get_parsing_error(
     # Should log a warning and return raw data
     result = await gettable_client.get(entity_id)
     assert result == mock_raw_item_invalid
+
+
+@pytest.mark.asyncio
+async def test_get_validation_error_hook_receives_rejected_record(
+    gettable_client, mock_api_client, mock_unwrapper
+):
+    entity_id = "parse_error"
+    invalid_item = {"id": entity_id}
+    mock_response = MagicMock(spec=httpx.Response)
+    mock_response.json.return_value = {"results": [invalid_item]}
+    mock_api_client.request.return_value = mock_response
+    mock_unwrapper.unwrap_results.return_value = [invalid_item]
+    contexts: list[ValidationErrorContext] = []
+
+    result = await gettable_client.get(entity_id, on_validation_error=contexts.append)
+
+    assert result == invalid_item
+    assert len(contexts) == 1
+    assert contexts[0].raw == invalid_item
+    assert contexts[0].response is mock_response
+
+
+@pytest.mark.asyncio
+async def test_get_raw_returns_response(gettable_client, mock_api_client):
+    mock_response = MagicMock(spec=httpx.Response)
+    mock_api_client.request.return_value = mock_response
+
+    result = await gettable_client.get("123", raw=True)
+
+    assert result is mock_response
+    mock_api_client.request.assert_awaited_once_with(
+        "GET",
+        "test_entities",
+        params={"id": "123", "pageSize": 1},
+        base_url_override=None,
+        raw=True,
+    )
+
+
+@pytest.mark.asyncio
+async def test_cursor_validation_error_hook_receives_rejected_record(
+    cursor_iterable_client, mock_api_client, mock_unwrapper
+):
+    invalid_items = [{"id": "invalid"}]
+    mock_response = MagicMock(spec=httpx.Response)
+    mock_response.json.return_value = {"results": invalid_items}
+    mock_api_client.request.return_value = mock_response
+    mock_unwrapper.unwrap_results.return_value = invalid_items
+    mock_unwrapper.get_next_page_token.return_value = None
+    contexts: list[ValidationErrorContext] = []
+
+    results = [
+        item
+        async for item in cursor_iterable_client.iterate(
+            on_validation_error=contexts.append
+        )
+    ]
+
+    assert results == invalid_items
+    assert len(contexts) == 1
+    assert contexts[0].raw == invalid_items[0]
 
 
 # --- SearchableMixin Tests ---

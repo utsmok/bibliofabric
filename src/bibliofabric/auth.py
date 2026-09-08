@@ -7,6 +7,7 @@ import httpx
 
 from .exceptions import AuthError, ConfigurationError
 from .log_config import logger
+from .utils import sanitize_url
 
 
 class AuthStrategyType(Enum):
@@ -189,7 +190,9 @@ class ClientCredentialsAuth:
             if self._access_token and not self._is_token_expired():
                 return self._access_token
 
-            logger.debug(f"Fetching new access token from {self._token_url}")
+            logger.debug(
+                f"Fetching new access token from {sanitize_url(self._token_url)}"
+            )
             client = await self._get_token_client()
             try:
                 response = await client.post(

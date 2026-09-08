@@ -30,6 +30,12 @@ class WorksClient(
 
 Mixins are designed to be composed — inherit the ones you need.
 
+When model validation fails, resource `get()`, `search()`, and `iterate()` calls
+keep their existing fallback behavior and accept an `on_validation_error` callback.
+The callback receives a `ValidationErrorContext` with the rejected record or raw
+response body and the validation exception. Use `raw=True` with `get()` or
+`search()` when the HTTP response should be returned without parsing.
+
 ## API Reference
 
 ::: bibliofabric.resources

@@ -6,6 +6,7 @@ data structures for request information and type aliases for request hooks.
 """
 
 from collections.abc import Callable, Mapping
+from dataclasses import dataclass
 from typing import Any
 
 import httpx
@@ -34,6 +35,19 @@ class RequestData(BaseModel):
             data=self.data,
             headers=self.headers,
         )
+
+
+@dataclass(frozen=True, slots=True)
+class ValidationErrorContext:
+    """Context supplied when response model validation fails.
+
+    ``raw`` contains the unparsed response body for client-level validation
+    failures, or the rejected record for resource-level validation failures.
+    """
+
+    raw: Any
+    error: Exception
+    response: httpx.Response | None = None
 
 
 PreRequestHook = Callable[[str, str, dict[str, Any] | None, httpx.Headers], None]
@@ -70,3 +84,6 @@ Args:
 Return:
     None: Hooks are expected to perform side effects.
 """
+
+ValidationErrorHook = Callable[[ValidationErrorContext], Any]
+"""Hook called with the raw value and exception from model validation."""

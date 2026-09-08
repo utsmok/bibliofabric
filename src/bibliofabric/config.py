@@ -5,7 +5,7 @@ from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from . import __version__ as _VERSION
-from .types import PostRequestHook, PreRequestHook
+from .types import PostRequestHook, PreRequestHook, ValidationErrorHook
 
 
 class BaseApiSettings(BaseSettings):
@@ -80,6 +80,10 @@ class BaseApiSettings(BaseSettings):
     post_request_hooks: list[PostRequestHook] = Field(
         default_factory=list,
         description="List of hooks to call after a response is received and parsed.",
+    )
+    validation_error_hooks: list[ValidationErrorHook] = Field(
+        default_factory=list,
+        description="Hooks called with raw data when response model validation fails.",
     )
 
 

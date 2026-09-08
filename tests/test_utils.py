@@ -1,7 +1,7 @@
 # tests/test_utils.py
 from pydantic import BaseModel
 
-from bibliofabric.utils import DigMixin, safe_dig
+from bibliofabric.utils import DigMixin, safe_dig, sanitize_url
 
 
 class Inner(BaseModel):
@@ -61,3 +61,11 @@ class TestDigMixin:
         m = MyModel(inner=None)
         assert m.dig("inner", "name") is None
         assert m.dig("inner", "name", default="N/A") == "N/A"
+
+
+def test_sanitize_url_redacts_query_credentials():
+    url = "https://api.example.com/works?api_key=secret123&per_page=10"
+
+    assert sanitize_url(url) == (
+        "https://api.example.com/works?api_key=***&per_page=10"
+    )
