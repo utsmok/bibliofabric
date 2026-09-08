@@ -344,7 +344,9 @@ class BaseApiClient:
             if "User-Agent" not in request.headers or not request.headers["User-Agent"]:
                 request.headers["User-Agent"] = self._settings.user_agent
 
-            logger.debug(f"Sending request: {request.method} {sanitize_url(request.url)}")
+            logger.debug(
+                f"Sending request: {request.method} {sanitize_url(request.url)}"
+            )
             logger.trace(f"Request Headers: {request.headers}")
             if request.content:
                 logger.trace(f"Request Body: {request.content.decode()}")
@@ -386,25 +388,13 @@ class BaseApiClient:
                 )
 
             # Successful response, try parsing if expected_model is provided
-            if expected_model and not raw:
-                try:
-                    parsed_model = expected_model.model_validate(response.json())
-                except Exception as e:
-                    logger.warning(
-                        f"Response model validation failed for {sanitize_url(request.url)}: "
-                        f"{e}. "
-                        "Parsed model will be None."
-                    )
-                    raw_body = response.content
-                    await self._notify_validation_error(
-                        ValidationErrorContext(
-                            raw=raw_body,
-                            error=e,
-                            response=response,
-                        ),
-                        on_validation_error,
-                    )
-                    # parsed_model remains None
+            parsed_model = await self._parse_response_model(
+                response,
+                request,
+                expected_model,
+                raw=raw,
+                on_validation_error=on_validation_error,
+            )
 
             # --- Post-Request Hooks ---
             if self._settings.post_request_hooks:
@@ -472,7 +462,8 @@ class BaseApiClient:
         except httpx.RequestError as e:  # Other httpx request errors (e.g. connection, read timeouts if not httpx.TimeoutException)
             logger.error(f"HTTP request error for {sanitize_url(request.url)}: {e}")
             raise BibliofabricRequestError(
-                f"HTTP request error for {sanitize_url(request.url)}: {e}", request=request
+                f"HTTP request error for {sanitize_url(request.url)}: {e}",
+                request=request,
             ) from e
         except Exception as e:
             # If response was received before another exception, parse its headers
@@ -511,6 +502,35 @@ class BaseApiClient:
                     f"{getattr(hook, '__name__', str(hook))}: {hook_error}",
                     exc_info=True,
                 )
+
+    async def _parse_response_model(
+        self,
+        response: httpx.Response,
+        request: httpx.Request,
+        expected_model: type[Any] | None,
+        *,
+        raw: bool,
+        on_validation_error: ValidationErrorHook | None,
+    ) -> Any | None:
+        """Parse a response model and report failures without discarding the response."""
+        if expected_model is None or raw:
+            return None
+        try:
+            return expected_model.model_validate(response.json())
+        except Exception as error:
+            logger.warning(
+                f"Response model validation failed for {sanitize_url(request.url)}: "
+                f"{error}. Parsed model will be None."
+            )
+            await self._notify_validation_error(
+                ValidationErrorContext(
+                    raw=response.content,
+                    error=error,
+                    response=response,
+                ),
+                on_validation_error,
+            )
+            return None
 
     def _should_retry_request(self, retry_state: tenacity.RetryCallState) -> bool:
         """Predicate for tenacity: should we retry this request?

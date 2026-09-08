@@ -5,7 +5,6 @@ from __future__ import annotations
 import re
 from typing import Any
 
-
 _SENSITIVE_QUERY_PARAMETER = re.compile(
     r"([?&](?:access[_-]?token|api[_-]?key|client[_-]?secret|"
     r"password|secret|token|key)=)([^&#\s]*)",

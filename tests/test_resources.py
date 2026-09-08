@@ -231,9 +231,7 @@ async def test_get_validation_error_hook_receives_rejected_record(
     mock_unwrapper.unwrap_results.return_value = [invalid_item]
     contexts: list[ValidationErrorContext] = []
 
-    result = await gettable_client.get(
-        entity_id, on_validation_error=contexts.append
-    )
+    result = await gettable_client.get(entity_id, on_validation_error=contexts.append)
 
     assert result == invalid_item
     assert len(contexts) == 1
@@ -256,6 +254,30 @@ async def test_get_raw_returns_response(gettable_client, mock_api_client):
         base_url_override=None,
         raw=True,
     )
+
+
+@pytest.mark.asyncio
+async def test_cursor_validation_error_hook_receives_rejected_record(
+    cursor_iterable_client, mock_api_client, mock_unwrapper
+):
+    invalid_items = [{"id": "invalid"}]
+    mock_response = MagicMock(spec=httpx.Response)
+    mock_response.json.return_value = {"results": invalid_items}
+    mock_api_client.request.return_value = mock_response
+    mock_unwrapper.unwrap_results.return_value = invalid_items
+    mock_unwrapper.get_next_page_token.return_value = None
+    contexts: list[ValidationErrorContext] = []
+
+    results = [
+        item
+        async for item in cursor_iterable_client.iterate(
+            on_validation_error=contexts.append
+        )
+    ]
+
+    assert results == invalid_items
+    assert len(contexts) == 1
+    assert contexts[0].raw == invalid_items[0]
 
 
 # --- SearchableMixin Tests ---

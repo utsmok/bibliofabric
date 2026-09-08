@@ -39,8 +39,7 @@ class BibliofabricError(Exception):
         if isinstance(self.request, httpx.Request):
             # Fallback to request info if response is missing and request is valid
             return (
-                f"{sanitize_url(self.message)} "
-                f"(URL: {sanitize_url(self.request.url)})"
+                f"{sanitize_url(self.message)} (URL: {sanitize_url(self.request.url)})"
             )
         # Default message if neither response nor valid request is available
         return sanitize_url(self.message)
@@ -91,8 +90,7 @@ class TimeoutError(BibliofabricError):
     def __str__(self) -> str:
         if self.request:
             return (
-                f"{sanitize_url(self.message)} "
-                f"(URL: {sanitize_url(self.request.url)})"
+                f"{sanitize_url(self.message)} (URL: {sanitize_url(self.request.url)})"
             )
         return sanitize_url(self.message)
 
@@ -116,8 +114,7 @@ class NetworkError(BibliofabricError):
     def __str__(self) -> str:
         if self.request:
             return (
-                f"{sanitize_url(self.message)} "
-                f"(URL: {sanitize_url(self.request.url)})"
+                f"{sanitize_url(self.message)} (URL: {sanitize_url(self.request.url)})"
             )
         return sanitize_url(self.message)
 

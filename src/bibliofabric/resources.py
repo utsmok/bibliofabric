@@ -277,11 +277,12 @@ class BaseResourceClient:
             except Exception as e:
                 if on_validation_error is not None:
                     try:
-                        on_validation_error(ValidationErrorContext(raw=result_data, error=e))
+                        on_validation_error(
+                            ValidationErrorContext(raw=result_data, error=e)
+                        )
                     except Exception as hook_error:
                         logger.error(
-                            "Error executing validation error hook: "
-                            f"{hook_error}",
+                            f"Error executing validation error hook: {hook_error}",
                             exc_info=True,
                         )
                 if on_error == "raise":
@@ -491,7 +492,9 @@ class GettableMixin:
                 }
                 if raw:
                     request_kwargs["raw"] = True
-                response = await self._api_client.request("GET", direct_path, **request_kwargs)
+                response = await self._api_client.request(
+                    "GET", direct_path, **request_kwargs
+                )
                 if raw:
                     return response
                 response_data = response.json()
@@ -503,7 +506,7 @@ class GettableMixin:
                     params[self._param_id] = entity_id
                 if self._param_page_size is not None:
                     params[self._param_page_size] = 1
-                request_kwargs = {
+                request_kwargs: dict[str, Any] = {
                     "params": params,
                     "base_url_override": self._base_url_override,
                 }
@@ -542,8 +545,7 @@ class GettableMixin:
                             )
                         except Exception as hook_error:
                             logger.error(
-                                "Error executing validation error hook: "
-                                f"{hook_error}",
+                                f"Error executing validation error hook: {hook_error}",
                                 exc_info=True,
                             )
                     logger.warning(
@@ -669,8 +671,7 @@ class SearchableMixin:
                             )
                         except Exception as hook_error:
                             logger.error(
-                                "Error executing validation error hook: "
-                                f"{hook_error}",
+                                f"Error executing validation error hook: {hook_error}",
                                 exc_info=True,
                             )
                     logger.warning(
