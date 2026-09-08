@@ -47,6 +47,7 @@ from .resources import (
     SearchableMixin,
 )
 from .safe_types import SafeList, SafeStr
+from .types import ValidationErrorContext
 
 __all__ = [
     "__version__",
@@ -60,6 +61,7 @@ __all__ = [
     "APIError",
     "NotFoundError",
     "ValidationError",
+    "ValidationErrorContext",
     "RateLimitError",
     "TimeoutError",
     "NetworkError",

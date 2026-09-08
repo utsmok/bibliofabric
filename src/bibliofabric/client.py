@@ -8,6 +8,7 @@ completely API-agnostic way through the ResponseUnwrapper protocol.
 
 import asyncio
 import hashlib
+import inspect
 import json
 import ssl
 import time
@@ -35,12 +36,14 @@ from .exceptions import (
     BibliofabricError,
     BibliofabricRequestError,  # Added import
     NetworkError,
+    NotFoundError,
     RateLimitError,
     TimeoutError,
 )
 from .log_config import logger
 from .models import ResponseUnwrapper
-from .types import RequestData
+from .types import RequestData, ValidationErrorContext, ValidationErrorHook
+from .utils import sanitize_url
 
 
 class BaseApiClient:
@@ -270,13 +273,21 @@ class BaseApiClient:
         return retry_after_seconds
 
     async def _execute_single_request(
-        self, request_data: RequestData, expected_model: type[Any] | None = None
+        self,
+        request_data: RequestData,
+        expected_model: type[Any] | None = None,
+        *,
+        raw: bool = False,
+        on_validation_error: ValidationErrorHook | None = None,
     ) -> tuple[httpx.Response, Any | None]:
         """Execute a single HTTP request attempt, run hooks, and parse if model provided.
 
         Args:
             request_data: The request data including method, URL, params, etc.
             expected_model: Optional Pydantic model class for response validation.
+            raw: Skip model validation and return the response verbatim.
+            on_validation_error: Optional hook called with raw response content and
+                the validation exception.
 
         Returns:
             tuple[httpx.Response, Any | None]: The HTTP response and optionally
@@ -299,7 +310,7 @@ class BaseApiClient:
         if self._settings.pre_request_hooks:
             logger.debug(
                 f"Executing {len(self._settings.pre_request_hooks)} pre-request hooks "
-                f"for {request_data.method} {request_data.url}"
+                f"for {request_data.method} {sanitize_url(request_data.url)}"
             )
             for hook in self._settings.pre_request_hooks:
                 try:
@@ -333,7 +344,7 @@ class BaseApiClient:
             if "User-Agent" not in request.headers or not request.headers["User-Agent"]:
                 request.headers["User-Agent"] = self._settings.user_agent
 
-            logger.debug(f"Sending request: {request.method} {request.url}")
+            logger.debug(f"Sending request: {request.method} {sanitize_url(request.url)}")
             logger.trace(f"Request Headers: {request.headers}")
             if request.content:
                 logger.trace(f"Request Body: {request.content.decode()}")
@@ -341,7 +352,9 @@ class BaseApiClient:
             response = await self._http_client.send(request)
             retry_after_from_headers = await self._parse_rate_limit_headers(response)
 
-            logger.debug(f"Received response: {response.status_code} for {request.url}")
+            logger.debug(
+                f"Received response: {response.status_code} for {sanitize_url(request.url)}"
+            )
             logger.trace(f"Response Headers: {response.headers}")
 
             if response.status_code >= HTTPStatus.BAD_REQUEST:
@@ -358,19 +371,38 @@ class BaseApiClient:
                         f"Raising RateLimitError after 429. Client open: {not self._http_client.is_closed if self._http_client else 'N/A'}"
                     )
                     raise RateLimitError("API rate limit exceeded.", response=response)
+                if (
+                    response.status_code == HTTPStatus.NOT_FOUND
+                    and expected_model is not None
+                ):
+                    raise NotFoundError(
+                        "API resource was not found.",
+                        response=response,
+                        request=request,
+                    )
                 raise APIError(
                     f"API request failed with status {response.status_code}",
                     response=response,
                 )
 
             # Successful response, try parsing if expected_model is provided
-            if expected_model:
+            if expected_model and not raw:
                 try:
                     parsed_model = expected_model.model_validate(response.json())
                 except Exception as e:
                     logger.warning(
-                        f"Response model validation failed for {request.url}: {e}. "
+                        f"Response model validation failed for {sanitize_url(request.url)}: "
+                        f"{e}. "
                         "Parsed model will be None."
+                    )
+                    raw_body = response.content
+                    await self._notify_validation_error(
+                        ValidationErrorContext(
+                            raw=raw_body,
+                            error=e,
+                            response=response,
+                        ),
+                        on_validation_error,
                     )
                     # parsed_model remains None
 
@@ -378,7 +410,7 @@ class BaseApiClient:
             if self._settings.post_request_hooks:
                 logger.debug(
                     f"Executing {len(self._settings.post_request_hooks)} post-request hooks "
-                    f"for {request.method} {request.url}"
+                    f"for {request.method} {sanitize_url(request.url)}"
                 )
                 for hook in self._settings.post_request_hooks:
                     try:
@@ -399,7 +431,8 @@ class BaseApiClient:
                 )
 
             logger.error(
-                f"Request failed with status {e.response.status_code}: {e.request.url}"
+                f"Request failed with status {e.response.status_code}: "
+                f"{sanitize_url(e.request.url)}"
             )
             if e.response.status_code == HTTPStatus.TOO_MANY_REQUESTS:
                 if self._settings.enable_rate_limiting:
@@ -414,23 +447,32 @@ class BaseApiClient:
                 raise RateLimitError(
                     "API rate limit exceeded.", response=e.response, request=e.request
                 ) from e
+            if (
+                e.response.status_code == HTTPStatus.NOT_FOUND
+                and expected_model is not None
+            ):
+                raise NotFoundError(
+                    "API resource was not found.",
+                    response=e.response,
+                    request=e.request,
+                ) from e
             raise APIError(
                 f"API request failed with status {e.response.status_code}",
                 response=e.response,
                 request=e.request,
             ) from e
         except httpx.TimeoutException as e:
-            logger.error(f"Request timed out: {request.url}")
+            logger.error(f"Request timed out: {sanitize_url(request.url)}")
             raise TimeoutError("Request timed out", request=request) from e
         except httpx.NetworkError as e:  # Specific network errors
-            logger.error(f"Network error occurred for {request.url}: {e}")
+            logger.error(f"Network error occurred for {sanitize_url(request.url)}: {e}")
             raise NetworkError(
-                f"Network error for {request.url}: {e}", request=request
+                f"Network error for {sanitize_url(request.url)}: {e}", request=request
             ) from e
         except httpx.RequestError as e:  # Other httpx request errors (e.g. connection, read timeouts if not httpx.TimeoutException)
-            logger.error(f"HTTP request error for {request.url}: {e}")
+            logger.error(f"HTTP request error for {sanitize_url(request.url)}: {e}")
             raise BibliofabricRequestError(
-                f"HTTP request error for {request.url}: {e}", request=request
+                f"HTTP request error for {sanitize_url(request.url)}: {e}", request=request
             ) from e
         except Exception as e:
             # If response was received before another exception, parse its headers
@@ -438,7 +480,8 @@ class BaseApiClient:
                 await self._parse_rate_limit_headers(response)
 
             logger.exception(
-                f"Unexpected error during single request execution to {request.url}: {e}"
+                "Unexpected error during single request execution to "
+                f"{sanitize_url(request.url)}: {e}"
             )
             if isinstance(e, BibliofabricError):  # If it's already our error, re-raise
                 raise e
@@ -447,6 +490,27 @@ class BaseApiClient:
                 f"An unexpected error occurred during request execution: {e}",
                 request=request,
             ) from e
+
+    async def _notify_validation_error(
+        self,
+        context: ValidationErrorContext,
+        request_hook: ValidationErrorHook | None,
+    ) -> None:
+        """Invoke configured validation-failure hooks without masking the failure."""
+        hooks = [*self._settings.validation_error_hooks]
+        if request_hook is not None:
+            hooks.append(request_hook)
+        for hook in hooks:
+            try:
+                result = hook(context)
+                if inspect.isawaitable(result):
+                    await result
+            except Exception as hook_error:
+                logger.error(
+                    "Error executing validation error hook "
+                    f"{getattr(hook, '__name__', str(hook))}: {hook_error}",
+                    exc_info=True,
+                )
 
     def _should_retry_request(self, retry_state: tenacity.RetryCallState) -> bool:
         """Predicate for tenacity: should we retry this request?
@@ -466,7 +530,7 @@ class BaseApiClient:
             url = "N/A"
             request = getattr(exc, "request", None)
             if request:
-                url = str(getattr(request, "url", "N/A"))
+                url = sanitize_url(getattr(request, "url", "N/A"))
 
             # Retry on timeout, network, and rate limit errors
             if isinstance(exc, TimeoutError | NetworkError | RateLimitError):
@@ -501,6 +565,9 @@ class BaseApiClient:
         data: Mapping[str, Any] | None = None,
         base_url_override: str | None = None,
         expected_model: type[Any] | None = None,
+        *,
+        raw: bool = False,
+        on_validation_error: ValidationErrorHook | None = None,
     ) -> tuple[httpx.Response, Any | None, int]:
         """Make an HTTP request with configured retries for transient errors.
 
@@ -512,6 +579,9 @@ class BaseApiClient:
             data: Form data for request body.
             base_url_override: Optional override for the base URL.
             expected_model: Optional Pydantic model for response parsing.
+            raw: Skip model validation and return the response verbatim.
+            on_validation_error: Optional hook called with raw response content and
+                the validation exception.
 
         Returns:
             tuple[httpx.Response, Any | None, int]: The HTTP response, optionally
@@ -621,8 +691,16 @@ class BaseApiClient:
         )
 
         try:
+            execute_kwargs: dict[str, Any] = {}
+            if raw:
+                execute_kwargs["raw"] = True
+            if on_validation_error is not None:
+                execute_kwargs["on_validation_error"] = on_validation_error
             response, parsed_model = await retry_strategy(
-                self._execute_single_request, request_data, expected_model
+                self._execute_single_request,
+                request_data,
+                expected_model,
+                **execute_kwargs,
             )
             return response, parsed_model, retry_strategy.statistics["attempt_number"]
         except Exception as e:
@@ -645,6 +723,7 @@ class BaseApiClient:
             request = getattr(exc, "request", None)
             if request:
                 url = str(getattr(request, "url", "N/A"))
+                url = sanitize_url(url)
                 method = str(getattr(request, "method", "N/A"))
                 request_info = f"for {method} {url}"
 
@@ -696,6 +775,8 @@ class BaseApiClient:
         data: Mapping[str, Any] | None = None,
         expected_model: type[Any] | None = None,
         base_url_override: str | None = None,
+        raw: bool = False,
+        on_validation_error: ValidationErrorHook | None = None,
     ) -> httpx.Response | Any:
         """Perform an asynchronous HTTP request to the specified API path.
 
@@ -711,6 +792,9 @@ class BaseApiClient:
             data: Form data for request body.
             expected_model: Optional Pydantic model class for response validation.
             base_url_override: Optional override for the base URL.
+            raw: Return the response verbatim without model validation.
+            on_validation_error: Optional hook called with raw response content and
+                the validation exception.
 
         Returns:
             httpx.Response | Any: Raw httpx.Response if no expected_model provided,
@@ -731,7 +815,7 @@ class BaseApiClient:
         cache_key: str | None = None
 
         # --- Cache Check (for GET requests) ---
-        if self._cache is not None and method.upper() == "GET":
+        if self._cache is not None and method.upper() == "GET" and not raw:
             _target_base_url = (base_url_override or self._base_url).rstrip("/")
             full_url = f"{_target_base_url}/{path.lstrip('/')}"
             cache_key = self._generate_cache_key(method, full_url, params)
@@ -751,6 +835,11 @@ class BaseApiClient:
                     return cached_item  # cached_item is the parsed_model
 
         # --- Execute Request (if not a cache hit or not cacheable) ---
+        request_kwargs: dict[str, Any] = {}
+        if raw:
+            request_kwargs["raw"] = True
+        if on_validation_error is not None:
+            request_kwargs["on_validation_error"] = on_validation_error
         response, parsed_model, attempts = await self._request_with_retry(
             method=method,
             path=path,
@@ -759,12 +848,14 @@ class BaseApiClient:
             data=data,
             base_url_override=base_url_override,
             expected_model=expected_model,
+            **request_kwargs,
         )
 
         # --- Cache Store (for successful GET requests with a successfully parsed model) ---
         if (
             self._cache is not None
             and cache_key is not None  # Implies GET and cache enabled
+            and not raw
             and method.upper() == "GET"
             and HTTPStatus.OK
             <= response.status_code

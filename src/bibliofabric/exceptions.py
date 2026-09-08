@@ -2,6 +2,8 @@
 
 import httpx
 
+from .utils import sanitize_url
+
 
 class BibliofabricError(Exception):
     """Base exception class for all Bibliofabric errors."""
@@ -30,14 +32,18 @@ class BibliofabricError(Exception):
             # Prefer response info if available
             url_info = getattr(getattr(self.response, "request", None), "url", "N/A")
             return (
-                f"{self.message} (Status: {self.response.status_code}, URL: {url_info})"
+                f"{sanitize_url(self.message)} "
+                f"(Status: {self.response.status_code}, URL: {sanitize_url(url_info)})"
             )
         # Check type before accessing attribute
         if isinstance(self.request, httpx.Request):
             # Fallback to request info if response is missing and request is valid
-            return f"{self.message} (URL: {self.request.url})"
+            return (
+                f"{sanitize_url(self.message)} "
+                f"(URL: {sanitize_url(self.request.url)})"
+            )
         # Default message if neither response nor valid request is available
-        return self.message
+        return sanitize_url(self.message)
 
 
 class APIError(BibliofabricError):
@@ -84,8 +90,11 @@ class TimeoutError(BibliofabricError):
 
     def __str__(self) -> str:
         if self.request:
-            return f"{self.message} (URL: {self.request.url})"
-        return self.message
+            return (
+                f"{sanitize_url(self.message)} "
+                f"(URL: {sanitize_url(self.request.url)})"
+            )
+        return sanitize_url(self.message)
 
 
 class NetworkError(BibliofabricError):
@@ -106,8 +115,11 @@ class NetworkError(BibliofabricError):
 
     def __str__(self) -> str:
         if self.request:
-            return f"{self.message} (URL: {self.request.url})"
-        return self.message
+            return (
+                f"{sanitize_url(self.message)} "
+                f"(URL: {sanitize_url(self.request.url)})"
+            )
+        return sanitize_url(self.message)
 
 
 class ConfigurationError(BibliofabricError):

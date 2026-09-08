@@ -2,7 +2,20 @@
 
 from __future__ import annotations
 
+import re
 from typing import Any
+
+
+_SENSITIVE_QUERY_PARAMETER = re.compile(
+    r"([?&](?:access[_-]?token|api[_-]?key|client[_-]?secret|"
+    r"password|secret|token|key)=)([^&#\s]*)",
+    re.IGNORECASE,
+)
+
+
+def sanitize_url(url: object) -> str:
+    """Redact credentials from a URL before it is logged or displayed."""
+    return _SENSITIVE_QUERY_PARAMETER.sub(r"\1***", str(url))
 
 
 def safe_dig(obj: Any, *path: str, default: Any = None) -> Any:

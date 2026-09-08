@@ -16,10 +16,12 @@ import inspect
 from collections.abc import AsyncIterator, Callable, Iterator
 from typing import TYPE_CHECKING, Any, Literal, Protocol
 
+import httpx
 from pydantic import BaseModel
 
 from .exceptions import BibliofabricError
 from .log_config import logger
+from .types import ValidationErrorContext
 
 if TYPE_CHECKING:
     from .client import BaseApiClient
@@ -96,6 +98,7 @@ class ResourceClientProtocol(Protocol):
         *,
         on_error: OnError,
         failures: list[tuple[dict[str, Any], Exception]] | None,
+        on_validation_error: Callable[[ValidationErrorContext], None] | None = None,
     ) -> Iterator[Any]: ...
 
 
@@ -245,6 +248,7 @@ class BaseResourceClient:
         *,
         on_error: OnError = "raw",
         failures: list[tuple[dict[str, Any], Exception]] | None = None,
+        on_validation_error: Callable[[ValidationErrorContext], None] | None = None,
     ) -> Iterator[Any]:
         """Parse raw records with ``_entity_model``, applying the failure policy.
 
@@ -257,6 +261,8 @@ class BaseResourceClient:
                 ``"raise"`` lets the validation error propagate.
             failures: Caller-owned list that collects ``(raw_dict, exception)``
                 pairs for skipped records when ``on_error="skip"``.
+            on_validation_error: Optional synchronous hook called with the rejected
+                record and validation exception.
 
         Yields:
             Parsed entity models (or raw dictionaries when ``_entity_model``
@@ -269,6 +275,15 @@ class BaseResourceClient:
             try:
                 yield self._entity_model.model_validate(result_data)
             except Exception as e:
+                if on_validation_error is not None:
+                    try:
+                        on_validation_error(ValidationErrorContext(raw=result_data, error=e))
+                    except Exception as hook_error:
+                        logger.error(
+                            "Error executing validation error hook: "
+                            f"{hook_error}",
+                            exc_info=True,
+                        )
                 if on_error == "raise":
                     raise
                 if on_error == "skip":
@@ -293,6 +308,7 @@ class BaseResourceClient:
         sort_by: str | None = None,
         page_size: int = 100,
         search: str | None = None,
+        on_validation_error: Callable[[ValidationErrorContext], None] | None = None,
     ) -> list[Any]:
         """Collect results into a list, optionally limited.
 
@@ -316,6 +332,8 @@ class BaseResourceClient:
         }
         if search is not None:
             iterate_kwargs["search"] = search
+        if on_validation_error is not None:
+            iterate_kwargs["on_validation_error"] = on_validation_error
         # Prefer iterate (handles all pagination types) if the subclass has it
         if hasattr(self, "iterate"):
             async for entity in self.iterate(  # ty: ignore[call-non-callable]
@@ -334,6 +352,8 @@ class BaseResourceClient:
             }
             if search is not None:
                 search_kwargs["search"] = search
+            if on_validation_error is not None:
+                search_kwargs["on_validation_error"] = on_validation_error
             response = await self.search(  # ty: ignore[call-non-callable]
                 **search_kwargs
             )
@@ -390,6 +410,7 @@ class BaseResourceClient:
         filters: BaseModel | dict[str, Any] | None = None,
         sort_by: str | None = None,
         search: str | None = None,
+        on_validation_error: Callable[[ValidationErrorContext], None] | None = None,
     ) -> Any | None:
         """Return the first matching entity, or None if no results.
 
@@ -402,7 +423,12 @@ class BaseResourceClient:
             The first entity, or None.
         """
         results = await self.collect(
-            filters=filters, limit=1, sort_by=sort_by, page_size=1, search=search
+            filters=filters,
+            limit=1,
+            sort_by=sort_by,
+            page_size=1,
+            search=search,
+            on_validation_error=on_validation_error,
         )
         return results[0] if results else None
 
@@ -424,7 +450,13 @@ class GettableMixin:
        If None, raw dictionary data is returned.
     """
 
-    async def get(self: ResourceClientProtocol, entity_id: str) -> Any:
+    async def get(
+        self: ResourceClientProtocol,
+        entity_id: str,
+        *,
+        raw: bool = False,
+        on_validation_error: Callable[[ValidationErrorContext], None] | None = None,
+    ) -> Any:
         """Retrieve a single entity by its ID.
 
         This method performs a search operation with the entity ID to fetch
@@ -437,6 +469,7 @@ class GettableMixin:
         Returns:
             Any: The entity data, either as a parsed Pydantic model (if _entity_model
                 is defined) or as a raw dictionary.
+            When ``raw=True``, returns the unparsed HTTP response.
 
         Raises:
             BibliofabricError: If the entity is not found or if the API request fails.
@@ -452,12 +485,15 @@ class GettableMixin:
             if self._supports_direct_get:
                 # Direct GET by ID: construct path like "resource/{id}"
                 direct_path = f"{self._entity_path}/{entity_id}"
-                response = await self._api_client.request(
-                    "GET",
-                    direct_path,
-                    params=None,
-                    base_url_override=self._base_url_override,
-                )
+                request_kwargs: dict[str, Any] = {
+                    "params": None,
+                    "base_url_override": self._base_url_override,
+                }
+                if raw:
+                    request_kwargs["raw"] = True
+                response = await self._api_client.request("GET", direct_path, **request_kwargs)
+                if raw:
+                    return response
                 response_data = response.json()
                 entity_data = self.response_unwrapper.unwrap_single_item(response_data)
             else:
@@ -467,12 +503,17 @@ class GettableMixin:
                     params[self._param_id] = entity_id
                 if self._param_page_size is not None:
                     params[self._param_page_size] = 1
+                request_kwargs = {
+                    "params": params,
+                    "base_url_override": self._base_url_override,
+                }
+                if raw:
+                    request_kwargs["raw"] = True
                 response = await self._api_client.request(
-                    "GET",
-                    self._entity_path,
-                    params=params,
-                    base_url_override=self._base_url_override,
+                    "GET", self._entity_path, **request_kwargs
                 )
+                if raw:
+                    return response
                 response_data = response.json()
                 # Use the response unwrapper to get results
                 results = self.response_unwrapper.unwrap_results(response_data)
@@ -490,6 +531,21 @@ class GettableMixin:
                 try:
                     return self._entity_model.model_validate(entity_data)
                 except Exception as e:
+                    if on_validation_error is not None:
+                        try:
+                            on_validation_error(
+                                ValidationErrorContext(
+                                    raw=entity_data,
+                                    error=e,
+                                    response=response,
+                                )
+                            )
+                        except Exception as hook_error:
+                            logger.error(
+                                "Error executing validation error hook: "
+                                f"{hook_error}",
+                                exc_info=True,
+                            )
                     logger.warning(
                         f"Failed to parse entity data with {self._entity_model.__name__}: {e}. "
                         "Returning raw data."
@@ -536,7 +592,10 @@ class SearchableMixin:
         sort_by: str | None = None,
         filters: BaseModel | dict[str, Any] | None = None,
         search: str | None = None,
-    ) -> BaseModel | dict[str, Any]:
+        *,
+        raw: bool = False,
+        on_validation_error: Callable[[ValidationErrorContext], None] | None = None,
+    ) -> httpx.Response | BaseModel | dict[str, Any]:
         """Search for entities with pagination support.
 
         Args:
@@ -547,6 +606,10 @@ class SearchableMixin:
             page_size: Number of results per page.
             sort_by: Field to sort by (e.g., 'title asc', 'date desc').
             filters: Filter criteria as a Pydantic model or dictionary.
+            search: Optional free-text search query.
+            raw: Return the unparsed HTTP response.
+            on_validation_error: Optional synchronous hook called with the raw
+                response body and validation exception.
 
         Returns:
             Any: Search results, either as a parsed Pydantic model (if
@@ -576,12 +639,17 @@ class SearchableMixin:
             f"sort='{sort_by}', filters={params}"
         )
         try:
+            request_kwargs: dict[str, Any] = {
+                "params": params,
+                "base_url_override": self._base_url_override,
+            }
+            if raw:
+                request_kwargs["raw"] = True
             response = await self._api_client.request(
-                "GET",
-                self._entity_path,
-                params=params,
-                base_url_override=self._base_url_override,
+                "GET", self._entity_path, **request_kwargs
             )
+            if raw:
+                return response
 
             response_data = response.json()
 
@@ -590,6 +658,21 @@ class SearchableMixin:
                 try:
                     return self._search_response_model.model_validate(response_data)
                 except Exception as e:
+                    if on_validation_error is not None:
+                        try:
+                            on_validation_error(
+                                ValidationErrorContext(
+                                    raw=response.content,
+                                    error=e,
+                                    response=response,
+                                )
+                            )
+                        except Exception as hook_error:
+                            logger.error(
+                                "Error executing validation error hook: "
+                                f"{hook_error}",
+                                exc_info=True,
+                            )
                     logger.warning(
                         f"Failed to parse search response with {self._search_response_model.__name__}: {e}. "
                         "Returning raw data."
@@ -636,6 +719,7 @@ class CursorIterableMixin:
         cursor: str | None = None,
         on_error: OnError = "raw",
         failures: list[tuple[dict[str, Any], Exception]] | None = None,
+        on_validation_error: Callable[[ValidationErrorContext], None] | None = None,
         on_page: Callable[[int, str | None], Any] | None = None,
     ) -> AsyncIterator[Any]:
         """Iterate through all entities matching the criteria using cursor pagination.
@@ -659,6 +743,8 @@ class CursorIterableMixin:
                 (wrapped into ``BibliofabricError`` by the outer error handler).
             failures: Caller-owned list collecting ``(raw_dict, exception)``
                 pairs for skipped records when ``on_error="skip"``.
+            on_validation_error: Optional synchronous hook called with each rejected
+                record and validation exception.
             on_page: Optional callback invoked after each page is fetched and
                 yielded, as ``(page_number, next_cursor)`` where ``next_cursor``
                 is the cursor of the next page, or None on the final page. May
@@ -730,7 +816,10 @@ class CursorIterableMixin:
 
                 # Yield each parsed result
                 for entity in self._iter_parsed(
-                    results, on_error=on_error, failures=failures
+                    results,
+                    on_error=on_error,
+                    failures=failures,
+                    on_validation_error=on_validation_error,
                 ):
                     yield entity
 
@@ -786,6 +875,7 @@ class PageIterableMixin:
         *,
         on_error: OnError = "raw",
         failures: list[tuple[dict[str, Any], Exception]] | None = None,
+        on_validation_error: Callable[[ValidationErrorContext], None] | None = None,
         on_page: Callable[[int, str | None], Any] | None = None,
         concurrency: int = 1,
     ) -> AsyncIterator[Any]:
@@ -807,6 +897,8 @@ class PageIterableMixin:
                 (wrapped into ``BibliofabricError`` by the error handler).
             failures: Caller-owned list collecting ``(raw_dict, exception)``
                 pairs for skipped records when ``on_error="skip"``.
+            on_validation_error: Optional synchronous hook called with each rejected
+                record and validation exception.
             on_page: Optional callback invoked after each page is fetched and
                 yielded, as ``(page_number, None)`` — page-based paging has no
                 cursor token, so the page number is the checkpoint. May be a
@@ -862,7 +954,12 @@ class PageIterableMixin:
                 # Use the response unwrapper to get results
                 results = self.response_unwrapper.unwrap_results(response_data)
                 entities = list(
-                    self._iter_parsed(results, on_error=on_error, failures=failures)
+                    self._iter_parsed(
+                        results,
+                        on_error=on_error,
+                        failures=failures,
+                        on_validation_error=on_validation_error,
+                    )
                 )
                 total = self.response_unwrapper.get_total_results(response_data)
                 return entities, total, bool(results)

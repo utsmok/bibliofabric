@@ -10,6 +10,11 @@ Specific API clients (e.g., AIREloom's `AireloomClient`) subclass this and provi
 - **Caching**: Optional in-memory `TTLCache` for GET requests. Disabled by default.
 - **Rate Limiting**: Parses standard rate-limit headers (`X-RateLimit-*`, `Retry-After`) and throttles automatically.
 - **Hooks**: `pre_request_hooks` and `post_request_hooks` for logging, metrics, or custom logic.
+- **Validation capture**: `validation_error_hooks` and the per-request
+  `on_validation_error` hook receive a `ValidationErrorContext` containing the raw
+  response body and validation exception when model parsing fails.
+- **Raw passthrough**: pass `raw=True` to `request()` to skip model validation and
+  receive the original `httpx.Response`.
 - **Error Mapping**: Translates `httpx` exceptions into the bibliofabric exception hierarchy (`APIError`, `TimeoutError`, `NetworkError`, etc.).
 
 ## API Reference
