@@ -1,0 +1,30 @@
+---
+hide: true
+name: bibliofabric-family-release
+description: "Cut and verify a PyPI release for any bibliofabric-family repo via tag-driven CI, including release-day gotchas: unpinned uvx ty strictness drift, uv cache staleness after publish, pre-commit PATH breakage, main+tag push racing the docs deploy, consumer-repo regression passes"
+---
+
+# bibliofabric-family release procedure
+
+Cut and verify a PyPI release for any bibliofabric-family repo (bibliofabric, aletheca, AIREloom, stavrophora, ut-metadata app excluded). All four publish via `v*` tags: CI runs test matrix + docs + a publish job (three repos: `uv publish` with GitHub environment `pypi` + OIDC; stavrophora: `pypa/gh-action-pypi-publish@release/v1`).
+
+## Sequence
+
+1. Confirm the tree is clean and every fix that should ship is committed AND pushed (a local-only fix tag silently releases without it — happened once; the tag builds the pushed tree, not your working dir).
+2. Re-run the CI type gate locally with the SAME unpinned tool CI uses: `uvx ty check src/`. CI's `uvx ty` resolves latest, which is newer than any locally pinned ty — strictness drift broke two family releases in one day (invalid `TTLCache[str, Any]` annotation; undeclared protocol attributes). Fix findings properly (declare the missing attributes); prefer structural fixes over `# ty: ignore` suppressions.
+3. Bump `version` in pyproject.toml; add a changelog entry (aletheca: `docs/changelog.md`; AIREloom: `docs/changelog.md`; bibliofabric: none exists). Commit in the repo's style (`Release v0.4.3` / `chore(release): bump version to X`), push main, then `git tag vX.Y.Z && git push origin vX.Y.Z`.
+4. `gh run watch <run-id> --exit-status`, then verify the release is actually visible: `uv run --with httpx python -c "import httpx; print(httpx.get('https://pypi.org/pypi/<pkg>/json').json()['info']['version'])"`.
+5. Wheel-content proof for feature releases: `uv cache clean <pkg>`, then `uv run --no-project --with <pkg>==<ver> python -c "..."` in /tmp and introspect the new API surface (signatures/settings fields). Confirms the published wheel — not just the tag — carries the features.
+
+## Release-day gotchas (2026-09-04 session)
+
+- **uv's simple-index cache goes stale after a fresh publish** for minutes: `uv add pkg>=newver` fails with "only <=oldver available" and `--refresh-package` does NOT fix it (revalidation gets a 304 from a stale CDN edge). Fix: `uv cache clean <pkg>`, then add again. If the index is STILL stale after cleaning (can persist alongside a fresh JSON API), bypass the index entirely: pull the wheel URL from `https://pypi.org/pypi/<pkg>/json` (`urls[].url`) and `uv run --no-project --with <direct-wheel-url> python -c "..."` — proves the published artifact without waiting for the index edge.
+- **pre-commit hook shims break silently**: the installed hook's templated python path goes stale, and the `command -v pre-commit` fallback needs `~/.local/bin` on PATH — the persistent shell drops it mid-session. Prefix `export PATH="$HOME/.local/bin:$PATH";` on commit chains (or `--no-verify` for trivial release commits; CI re-runs the same gates).
+- **A failed-looking `gh run watch` exit may be an API blip** (especially with output redirected) — re-check with `gh run view <id> --json jobs` before diagnosing or re-tagging.
+- **Pushing main and the release tag together races the docs deploy**: both events trigger `mkdocs gh-deploy --force` on the same commit; one run wins, the other fails on the gh-pages ref update. The release itself is fine (tag run's publish + docs succeed) — just `gh run rerun <main-run-id> --failed` to green the main branch run. Durable fix shipped 2026-09-05 in bibliofabric's workflow: `concurrency: {group: gh-pages-deploy, cancel-in-progress: false}` on the docs job; mirror it in the other family repos.
+- **Never re-publish to fix a bad release**: the tag builds whatever commit it points at; delete + re-cut a tag ONLY when the tagged commit itself was wrong and the release never landed.
+- **aireloom version promotion**: prerelease (0.5.0a1) → stable is just `version = "0.5.0"` + changelog + tag; PyPI auto-demotes the a1 to prerelease. Releases cut from the `v3` branch are fine — tags trigger CI regardless of branch.
+- **Consumer-repo regression pass for framework releases**: a family consumer's pin may exclude the new version (AIREloom pinned `>=0.4.2,<0.5.0`), so its plain `uv run` tests the OLD code. Run its suite against the new wheel via `uv add "<pkg> @ file:///<wheel>"`, run tests, then `git checkout -- pyproject.toml uv.lock && uv sync` to restore byte-exact. `uv sync --override` does not exist in current uv.
+- **Upgrading a consumer across bibliofabric minors (no upstream changelog exists)**: recon via the local clone — `git -C /home/sam/dev/bibliofabric log --oneline vX..vY` plus a `def |class ` signature grep of the diff. Check protocol/attribute widening against consumer annotations: mutable protocol attributes are invariant, so narrowing `str | None` to `str` (e.g. aletheca's `_param_page_size: str = "per_page"`) breaks assignability. Fix by widening consumer annotations to match — zero runtime change.
+- **ty's "protocol member X is incompatible" can misattribute**: the named member may be a red herring for an attribute-narrowing failure elsewhere (2026-09-05: widening two attrs fixed an error naming `_iter_parsed`). Bisect with a scratch probe (`uvx ty check /tmp/probe.py --project <repo>`) converging toward the real class before editing src. Edit pin FIRST, then `uv lock`/`uv sync`, confirm via `importlib.metadata`, and run `uvx ty check src/` early — it's the fastest drift signal.
+- **Docs-only fixes discovered post-tag**: do NOT cancel the in-flight publish or retag (PyPI rejects re-uploaded filenames; a canceled run can half-publish). Docs aren't in the wheel — land the fix on main (redeploys the docs site within minutes), then reword the released changelog entry to state the timing explicitly ("fixed in a docs-only commit on main immediately after tagging") instead of back-asserting the fix into the released entry.
