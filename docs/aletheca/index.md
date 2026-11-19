@@ -1,6 +1,6 @@
 # Aletheca
 
-Aletheca is an async Python client for the [OpenAlex API](https://docs.openalex.org/), built on [bibliofabric](https://github.com/utsmok/bibliofabric). It types all nine entity endpoints (works, authors, sources, institutions, topics, keywords, publishers, funders, awards) with Pydantic models and serializes OpenAlex filter syntax for you.
+Aletheca is a Python client for the [OpenAlex API](https://docs.openalex.org/), built on [bibliofabric](https://github.com/utsmok/bibliofabric). It types all nine entity endpoints (works, authors, sources, institutions, topics, keywords, publishers, funders, awards) with Pydantic models and serializes OpenAlex filter syntax for you. It ships an async client and a generated sync twin with the same API.
 
 ## Install
 
@@ -49,6 +49,30 @@ asyncio.run(main())
 ```
 
 Every resource client exposes `get()`, `search()`, `iterate()`, `collect()`, `first()`, and `count()`. The works client adds OpenAlex-specific helpers: `batch_get_by_doi()`, `citing()`, `referenced()`, `group_by()`, `sample()`, and `search_scoped()`. The client itself offers free `autocomplete()` and `rate_limit()` endpoints.
+
+## Sync usage
+
+`AlethecaSyncClient` is generated from the async source and behaves the same: same parameters, errors, retries, paging, and rate limits. The resource twins are `WorksSyncClient`, `AuthorsSyncClient`, and so on, one `*SyncClient` class per endpoint. The sync client uses plain `httpx.Client` and never starts or touches an event loop, so it works in scripts, in Jupyter, in threads, and when called from inside a running event loop.
+
+```python
+from aletheca import AlethecaSyncClient
+
+with AlethecaSyncClient() as client:
+    work = client.works.get("W2741809807")
+    print(work.title, work.publication_year)
+
+    page = client.works.search(
+        {"is_oa": True}, query="photosynthesis", select=["id", "title"]
+    )
+    print(page.total, len(page.results))
+
+    for author in client.authors.iterate(
+        {"last_known_institutions.id": "I1290904741"}, limit=5
+    ):
+        print(author.display_name)
+```
+
+Use the async client in asyncio applications and for many concurrent requests. Use the sync client everywhere else. Both read `ALETHECA_API_KEY` and the other `ALETHECA_*` settings the same way.
 
 ## Settings
 

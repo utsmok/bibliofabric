@@ -25,6 +25,21 @@ Generated from the source with mkdocstrings.
         - request
         - is_retryable
 
+## Sync client
+
+::: aletheca.AlethecaSyncClient
+    options:
+      heading_level: 3
+      show_source: false
+      members:
+        - works
+        - autocomplete
+        - rate_limit
+
+The sync twins of the resource clients are exported from the package root
+(``WorksSyncClient``, ``AuthorsSyncClient``, and so on). They mirror the
+async resource clients method for method.
+
 ## Settings
 
 ::: aletheca.AlethecaSettings
@@ -37,10 +52,10 @@ Generated from the source with mkdocstrings.
 Each resource client inherits the generic operations from
 `bibliofabric.ResourceClient` (`get`, `search`, `iterate`,
 `collect`, `first`, `count`, `batch_get`) through
-`aletheca.dialect.OpenAlexResourceClient`. Only class-specific members are
+`aletheca._async.dialect.OpenAlexResourceClient`. Only class-specific members are
 shown here.
 
-::: aletheca.resources.works.WorksClient
+::: aletheca._async.works.WorksClient
     options:
       heading_level: 3
       show_source: false
@@ -55,21 +70,21 @@ shown here.
         - referenced
         - oa_pdf_urls
 
-::: aletheca.resources.authors.AuthorsClient
+::: aletheca._async.authors.AuthorsClient
     options:
       heading_level: 3
       show_source: false
       members:
         - batch_get_by_openalex_id
 
-::: aletheca.resources.locations.LocationsClient
+::: aletheca._async.locations.LocationsClient
     options:
       heading_level: 3
       show_source: false
       members:
         - normalize_id
 
-::: aletheca.resources.links.LinksClient
+::: aletheca._async.links.LinksClient
     options:
       heading_level: 3
       show_source: false
@@ -136,7 +151,11 @@ keys and allows extra fields.
       members:
         - OPENALEX_API_BASE_URL
         - MAX_OR_VALUES
-        - OpenAlexResourceClient
+
+::: aletheca._async.dialect.OpenAlexResourceClient
+    options:
+      heading_level: 3
+      show_source: false
 
 ::: aletheca._helpers.reconstruct_abstract
     options:
