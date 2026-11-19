@@ -1,4 +1,4 @@
-site_name: bibliofabric Docs
+site_name: bibliofabric family docs
 site_url: https://utsmok.github.io/bibliofabric/
 repo_url: https://github.com/utsmok/bibliofabric/
 site_author: S. Mok
@@ -14,27 +14,79 @@ theme:
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
+
 plugins:
   - search
   - mkdocstrings:
       handlers:
         python:
-          paths: [src]
+          paths: ["packages/bibliofabric/src", "packages/aireloom/src", "packages/aletheca/src", "packages/stavrophora/src"]
           options:
             show_root_heading: true
-nav:
-  - Home: index.md
-  - Quick start: client.md
-  - Errors and limits: errors.md
-  - API Reference:
-    - Resources: resources.md
-    - Paging: paging.md
-    - Unwrapping: unwrap.md
-    - Configuration: config.md
-    - Authentication: auth.md
-    - Identifiers: ids.md
-    - Types: types.md
-    - Exceptions: exceptions.md
-  - Contributing: contributing.md
+
 watch:
-  - src/bibliofabric
+  - packages/bibliofabric/src/bibliofabric
+  - packages/aireloom/src/aireloom
+  - packages/aletheca/src/aletheca
+  - packages/stavrophora/src/stavrophora
+
+nav:
+  - Overview: index.md
+  - bibliofabric:
+      - Home: bibliofabric/index.md
+      - Quick start: bibliofabric/client.md
+      - Errors and limits: bibliofabric/errors.md
+      - API reference:
+          - Resources: bibliofabric/resources.md
+          - Paging: bibliofabric/paging.md
+          - Unwrapping: bibliofabric/unwrap.md
+          - Configuration: bibliofabric/config.md
+          - Authentication: bibliofabric/auth.md
+          - Identifiers: bibliofabric/ids.md
+          - Types: bibliofabric/types.md
+          - Exceptions: bibliofabric/exceptions.md
+      - Contributing: bibliofabric/contributing.md
+  - aireloom:
+      - Home: aireloom/index.md
+      - Usage:
+          - Research products: aireloom/usage/research_products.md
+          - Projects, organizations, data sources, persons: aireloom/usage/projects.md
+          - Links: aireloom/usage/links.md
+          - Scholix: aireloom/usage/scholix.md
+      - Errors, retries, and rate limits: aireloom/errors.md
+      - Upstream quirks: aireloom/quirks.md
+      - API reference: aireloom/api.md
+      - Contributing: aireloom/contributing.md
+      - Changelog: https://github.com/utsmok/bibliofabric/blob/main/packages/aireloom/CHANGELOG.md
+  - aletheca:
+      - Home: aletheca/index.md
+      - Usage:
+          - Works: aletheca/usage/works.md
+          - Authors: aletheca/usage/authors.md
+          - Sources: aletheca/usage/sources.md
+          - Institutions: aletheca/usage/institutions.md
+          - Topics: aletheca/usage/topics.md
+          - Keywords: aletheca/usage/keywords.md
+          - Publishers: aletheca/usage/publishers.md
+          - Funders: aletheca/usage/funders.md
+          - Awards: aletheca/usage/awards.md
+          - Locations: aletheca/usage/locations.md
+          - Links: aletheca/usage/links.md
+      - Errors, retries, and rate limits: aletheca/errors.md
+      - Upstream quirks: aletheca/upstream-quirks.md
+      - API reference: aletheca/reference.md
+      - Contributing: aletheca/contributing.md
+      - Changelog: aletheca/changelog.md
+  - stavrophora:
+      - Home: stavrophora/index.md
+      - Usage:
+          - Works: stavrophora/works.md
+          - Journals: stavrophora/journals.md
+          - Funders: stavrophora/funders.md
+          - Members: stavrophora/members.md
+          - Types: stavrophora/types.md
+          - Prefixes: stavrophora/prefixes.md
+          - Licenses: stavrophora/licenses.md
+      - Errors, retries, rate limits: stavrophora/errors.md
+      - Crossref quirks: stavrophora/quirks.md
+      - API reference: stavrophora/reference.md
