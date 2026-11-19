@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased] - 0.3.0
 
+### Changed
+
+- Pacing is per request class (D-19): top-level `/works` searches run at
+  3 requests/s (`list` class), everything else — single records, scoped
+  `/.../works` routes, and all other routes — at 10 requests/s (`single`
+  class), with the 3 polite concurrency slots shared across classes. The
+  client no longer paces every request at the strictest rate. Configure the
+  classes with `rate_limits` / `STAVROPHORA_RATE_LIMITS` (JSON object).
+
 ### Added
 
 - `works.exists(doi)`: HEAD-based existence check that returns False on 404.

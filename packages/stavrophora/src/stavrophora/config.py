@@ -20,9 +20,11 @@ class StavrophoraSettings(BaseApiSettings):
         env_prefix="STAVROPHORA_", env_file=".env", extra="ignore"
     )
 
-    #: Defaults per D-15: the polite pool allows 3 list requests per second
-    #: with 3 concurrent requests; single-record routes would allow 10/s but
-    #: one limiter per client uses the strictest relevant rate.
+    #: Defaults per D-19 and the 2026-07 polite-pool split: top-level
+    #: ``/works`` searches are the ``list`` class at 3 requests/s, everything
+    #: else (single records, scoped ``/.../works`` routes, other routes) the
+    #: ``single`` class at 10 requests/s; ``max_concurrency`` is shared.
+    rate_limits: dict[str, float] = {"single": 10.0, "list": 3.0}
     max_requests_per_second: float | None = 3.0
     max_concurrency: int = 3
 

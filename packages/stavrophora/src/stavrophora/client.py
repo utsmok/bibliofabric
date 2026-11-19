@@ -1,9 +1,11 @@
 """StavrophoraClient — async client for the Crossref API."""
 
+import re
 from functools import cached_property
 
+import httpx
+from bibliofabric import BaseApiClient
 from bibliofabric.auth import AuthStrategy, HeaderAuth, NoAuth, QueryParameterAuth
-from bibliofabric.client import BaseApiClient
 
 from .config import StavrophoraSettings, get_settings
 from .resources.funders import FundersResource
@@ -40,9 +42,11 @@ class StavrophoraClient(BaseApiClient):
 
     Credentials are resolved in the constructor: an explicit ``auth_strategy``
     wins, then a Metadata Plus key (``crossref-api-key`` header), then
-    ``mailto`` (polite pool via query parameter). The settings default to
-    3 requests per second with 3 concurrent requests (the polite-pool list
-    limits).
+    ``mailto`` (polite pool via query parameter). The settings pace per
+    request class (D-19): top-level ``/works`` searches at 3 requests/s and
+    everything else (single records, scoped ``/.../works`` routes, all other
+    routes) at 10 requests/s, with 3 concurrent requests shared across
+    classes.
     """
 
     def __init__(
@@ -106,3 +110,15 @@ class StavrophoraClient(BaseApiClient):
     def licenses(self) -> LicensesResource:
         """The ``/licenses`` resource (list/iterate only)."""
         return LicensesResource(self)
+
+    #: Only the top-level ``/works`` route is array-class. Everything else —
+    #: single records, scoped ``/.../works`` routes, and all other routes —
+    #: reports the ``polite-single`` pool in Crossref's ``x-api-pool`` header
+    #: (2026-07-21 rate split; see the README and the phase 2 research).
+    _TOP_LEVEL_WORKS = re.compile(r"/v1/works$")
+
+    def rate_class(self, request: httpx.Request) -> str:
+        """Map the request onto Crossref's polite pools (D-19)."""
+        if self._TOP_LEVEL_WORKS.search(request.url.path):
+            return "list"
+        return "single"

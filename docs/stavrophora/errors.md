@@ -38,6 +38,6 @@ The polite pool limits depend on the request type (split introduced 2026-07):
 - 3 concurrent requests
 - Limits apply per `mailto` address
 
-Stavrophora paces every request at 3 per second with 3 concurrent slots, which stays under the strictest ceiling. Configure both through `STAVROPHORA_MAX_REQUESTS_PER_SECOND` and `STAVROPHORA_MAX_CONCURRENCY`. A Metadata Plus key raises the limit to 150 requests per second through the `crossref-api-key` header.
+Pacing follows the 2026-07 Crossref split per request class (D-19): top-level `/works` searches run in the `list` class at 3 requests per second; everything else (single records, scoped `/.../works` routes, and all other routes) runs in the `single` class at 10 requests per second. The concurrency bound (3 polite slots) is shared across classes. Configure each class through `STAVROPHORA_RATE_LIMITS` (a JSON object such as `{"single": 10.0, "list": 3.0}`) and the shared bound through `STAVROPHORA_MAX_CONCURRENCY`. A Metadata Plus key raises the limit to 150 requests per second through the `crossref-api-key` header.
 
 On 429 the client backs off and retries automatically.

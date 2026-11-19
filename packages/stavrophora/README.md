@@ -60,7 +60,7 @@ asyncio.run(main())
 
 `search()` returns a `bibliofabric.Page`: `.results` (typed models), `.total`, `.next_cursor`, and `.meta` (the raw envelope minus results, e.g. facets). 
 
-No authentication required. Pass a `mailto` (parameter or `STAVROPHORA_MAILTO` env var) to enter the polite pool: 3 requests/s for works lists, 10/s for single records and scoped works routes, 3 concurrent (since the 2026-07 split; the client paces everything at 3/s to stay under the works-list ceiling). A Metadata Plus key (`STAVROPHORA_PLUS_TOKEN` or `plus_token=`) is sent as `crossref-api-key: Bearer <key>` and replaces the query-parameter mailto as the auth strategy; the mailto still rides the User-Agent.
+No authentication required. Pass a `mailto` (parameter or `STAVROPHORA_MAILTO` env var) to enter the polite pool: the client paces per request class — 3 requests/s for top-level `/works` searches, 10 requests/s for single records, scoped works routes, and every other route — with 3 concurrent requests shared across classes (since the 2026-07 split). A Metadata Plus key (`STAVROPHORA_PLUS_TOKEN` or `plus_token=`) is sent as `crossref-api-key: Bearer <key>` and replaces the query-parameter mailto as the auth strategy; the mailto still rides the User-Agent.
 
 ## Basic Usage
 

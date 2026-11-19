@@ -2,7 +2,7 @@
 
 ``CrossrefDialect`` declares how Crossref expresses paging, sorting, search,
 and field selection; :class:`CrossrefResourceClient` adapts bibliofabric's
-generic :class:`~bibliofabric.resources.ResourceClient` to Crossref
+generic :class:`~bibliofabric.ResourceClient` to Crossref
 conventions:
 
 - one ``filter=key:value,...`` parameter (repeated keys OR, distinct keys AND)
@@ -17,9 +17,9 @@ from collections.abc import AsyncIterator, Callable, Mapping, Sequence
 from typing import Any, ClassVar
 from urllib.parse import quote
 
+from bibliofabric import OnError, ResourceClient
 from bibliofabric.exceptions import ConfigurationError
 from bibliofabric.paging import Page, QueryDialect
-from bibliofabric.resources import OnError, ResourceClient
 from pydantic import BaseModel
 
 #: Crossref rejects cursor requests that sort by publication dates with a
