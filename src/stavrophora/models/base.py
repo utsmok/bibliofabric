@@ -16,34 +16,6 @@ class EntityModel(BaseModel):
     model_config = ConfigDict(extra="allow", populate_by_name=True)
 
 
-class Message[EntityType: BaseModel](BaseModel):
-    """Body of a Crossref list response (the ``message`` envelope member)."""
-
-    total_results: int | None = Field(None, alias="total-results")
-    items_per_page: int | None = Field(None, alias="items-per-page")
-    next_cursor: str | None = Field(None, alias="next-cursor")
-    query: dict | None = None
-    facets: dict | None = None
-    items: list[EntityType] = Field(default_factory=list)
-
-    model_config = ConfigDict(extra="allow", populate_by_name=True)
-
-
-class ApiResponse[EntityType: BaseModel](BaseModel):
-    """Generic envelope for all Crossref responses.
-
-    Every Crossref response is ``{status, message-type, message-version,
-    message}``; list responses carry ``Message``-shaped ``message`` bodies.
-    """
-
-    status: str | None = None
-    message_type: str | None = Field(None, alias="message-type")
-    message_version: str | None = Field(None, alias="message-version")
-    message: Message[EntityType] = Field(default_factory=Message)
-
-    model_config = ConfigDict(extra="allow", populate_by_name=True)
-
-
 class CrossRefDate(EntityModel):
     """Crossref date object (``issued``, ``published``, ``created``, ...).
 
@@ -291,7 +263,6 @@ class UpdateTo(EntityModel):
 
 __all__ = [
     "Affiliation",
-    "ApiResponse",
     "Assertion",
     "AssertionGroup",
     "AwardInfo",
@@ -311,7 +282,6 @@ __all__ = [
     "JournalIssue",
     "LicenseRef",
     "Link",
-    "Message",
     "Reference",
     "RelationObject",
     "Resource",
