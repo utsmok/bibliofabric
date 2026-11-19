@@ -4,7 +4,7 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] - 0.4.0
+## [Unreleased] - 0.3.0
 
 ### Breaking
 
@@ -29,9 +29,9 @@ Rewritten onto the bibliofabric 0.6 core (`ResourceClient`, `QueryDialect`, `Pag
 - Client-side guards for API 400s: route-unsupported parameters (`sort`/`select`/`filter`/`query` per route), `offset + rows > 10000`, cursor + date sorts, `sample(n) > 100`.
 - Sixteen missing works filters (`gte-citation`/`lte-citation`, `project-id`, `ror-id`, event/approved/awarded dates, ...), `MemberFilters`, and `FunderFilters`.
 
-### Migration from 0.3.0
+### Migration from 0.2.1
 
-| 0.3.0 | 0.4.0 |
+| 0.2.1 | 0.3.0 |
 |---|---|
 | `async with StavrophoraSession(mailto=...) as session` | `async with StavrophoraClient(mailto=...) as client` |
 | `resp = await session.works.search(search="q"); resp.message.items` | `page = await client.works.search(query="q"); page.results` |
