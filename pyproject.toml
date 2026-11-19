@@ -40,7 +40,7 @@ docs = [
 ]
 
 [build-system]
-requires = ["uv_build>=0.9.22,<0.10.0"]
+requires = ["uv_build>=0.9.22,<0.12"]
 build-backend = "uv_build"
 
 [tool.uv.pip]
@@ -48,7 +48,7 @@ generate-hashes = true
 
 [tool.ruff]
 line-length = 88
-extend-exclude = ["tests/_legacy", "examples"]
+extend-exclude = ["archive"]
 
 [tool.ruff.format]
 docstring-code-format = true
@@ -92,7 +92,6 @@ pythonpath = [
   "src"
 ]
 testpaths = ["tests"]
-addopts = "--ignore=tests/_legacy"
 python_files = "test_*.py"
 python_functions = "test_*"
 asyncio_mode = "auto"
