@@ -29,6 +29,10 @@ Rewritten onto the bibliofabric 0.6 core (`ResourceClient`, `QueryDialect`, `Pag
 - Client-side guards for API 400s: route-unsupported parameters (`sort`/`select`/`filter`/`query` per route), `offset + rows > 10000`, cursor + date sorts, `sample(n) > 100`.
 - Sixteen missing works filters (`gte-citation`/`lte-citation`, `project-id`, `ror-id`, event/approved/awarded dates, ...), `MemberFilters`, and `FunderFilters`.
 
+### Fixed
+
+- Integer ids are accepted everywhere an identifier goes: `members.get(297)`, scoped routes, and batch lookup keys no longer require a string.
+
 ### Migration from 0.2.1
 
 | 0.2.1 | 0.3.0 |

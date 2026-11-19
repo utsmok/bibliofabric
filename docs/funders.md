@@ -6,8 +6,8 @@
 from stavrophora import FunderFilters
 
 funder = await client.funders.get("10.13039/100000001")
-funder.hierarchy_names       # child funder ids and names, on single records only
-funder.hierarchy             # nested child tree, on single records only
+funder.hierarchy_names  # child funder ids and names, on single records only
+funder.hierarchy  # nested child tree, on single records only
 
 page = await client.funders.search(
     FunderFilters(location="Netherlands"), query="university"

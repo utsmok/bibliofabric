@@ -46,7 +46,9 @@ async def test_explicit_auth_strategy_wins_over_credentials(httpx_mock):
     assert "mailto" not in request.url.params
 
 
-async def test_no_credentials_sends_no_auth(httpx_mock):
+async def test_no_credentials_sends_no_auth(httpx_mock, monkeypatch):
+    monkeypatch.delenv("STAVROPHORA_MAILTO", raising=False)
+    monkeypatch.delenv("STAVROPHORA_PLUS_TOKEN", raising=False)
     client = StavrophoraClient(settings=settings())
     async with client:
         request = await single_request(httpx_mock, client)

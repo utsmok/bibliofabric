@@ -4,7 +4,7 @@ Crossref serves no `/prefixes` list route, so prefixes are addressable only one 
 
 ```python
 prefix = await client.prefixes.get("10.1038")
-prefix.member               # "297"; the API returns a full URI, the model keeps the bare value
+prefix.member  # "297"; the API returns a full URI, the model keeps the bare value
 prefix.name
 
 page = await client.prefixes.works("10.1038").search()

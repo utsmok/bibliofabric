@@ -132,7 +132,7 @@ print(agency.agency.label)  # "Crossref"
 
 ## Configuration
 
-Settings load from env vars prefixed `STAVROPHORA_` (or `.env` / `secrets.env`):
+Settings load from env vars prefixed `STAVROPHORA_` (or a `.env` file):
 
 ```dotenv
 STAVROPHORA_MAILTO=s.mok@utwente.nl

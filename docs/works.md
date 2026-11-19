@@ -13,10 +13,10 @@ page = await client.works.search(
     page=1,
     page_size=20,
 )
-page.results        # list[Work]
-page.total          # message.total-results
-page.next_cursor    # cursor for the next page, or None
-page.meta           # the envelope minus the results (facets, totals)
+page.results  # list[Work]
+page.total  # message.total-results
+page.next_cursor  # cursor for the next page, or None
+page.meta  # the envelope minus the results (facets, totals)
 ```
 
 `sort` takes one field, optionally with `:asc` or `:desc`. Crossref accepts a single sort field; two fields raise `ConfigurationError`.
@@ -76,9 +76,9 @@ facets = await client.works.facets(filters, facets=("type-name",), count=10)
 `facets()` returns `{facet_name: {value: count}}` and drops Crossref's `value-count` per facet. `count` caps the values per facet (the API allows up to 1,000).
 
 ```python
-page = await client.works.sample(50)          # random draw, max 100
+page = await client.works.sample(50)  # random draw, max 100
 agency = await client.works.agency("10.1038/nature12373")
-agency.agency.id                              # "crossref"
+agency.agency.id  # "crossref"
 ```
 
 `sample(n)` sends `sample=n` without `rows` or `offset`, so the result is a random draw rather than the head of the result set.

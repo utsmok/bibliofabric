@@ -7,7 +7,7 @@ from stavrophora import MemberFilters
 
 member = await client.members.get(297)
 member.primary_name
-member.prefix                # list of {name, value} prefix entries
+member.prefix  # list of {name, value} prefix entries
 
 page = await client.members.search(MemberFilters(prefix="10.1038"))
 ```
