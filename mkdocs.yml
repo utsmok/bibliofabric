@@ -1,4 +1,3 @@
-
 site_name: bibliofabric Docs
 site_url: https://utsmok.github.io/bibliofabric/
 repo_url: https://github.com/utsmok/bibliofabric/
@@ -25,12 +24,16 @@ plugins:
             show_root_heading: true
 nav:
   - Home: index.md
+  - Quick start: client.md
+  - Errors and limits: errors.md
   - API Reference:
-    - Client: client.md
-    - Configuration: config.md
     - Resources: resources.md
-    - Models: models.md
+    - Paging: paging.md
+    - Unwrapping: unwrap.md
+    - Configuration: config.md
     - Authentication: auth.md
+    - Identifiers: ids.md
+    - Types: types.md
     - Exceptions: exceptions.md
   - Contributing: contributing.md
 watch:

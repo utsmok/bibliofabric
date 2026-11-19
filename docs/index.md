@@ -1,69 +1,39 @@
 # Bibliofabric
 
-A generic, extensible Python framework for building modern, asynchronous API clients for scholarly and bibliometric data sources.
+A generic, extensible Python framework for building asynchronous API clients
+for scholarly and bibliometric data sources.
 
-Built on `httpx` and `asyncio`, bibliofabric handles the boilerplate every API client needs — retries, caching, rate limiting, authentication, pagination, and error handling — so you can focus on the parts specific to your API.
+Built on `httpx` and `asyncio`, bibliofabric handles the boilerplate every API
+client needs: retries, throttling, authentication, paging, batch retrieval,
+error mapping, and typed resource clients. A client library only adds what is
+specific to its API.
 
-## Who Is This For?
+## Who is this for?
 
-bibliofabric is a **framework for developers building API client libraries**. It is not an end-user library. You would use bibliofabric to create a library like [AIREloom](https://github.com/utsmok/aireloom) (an OpenAIRE Graph client), which researchers and data scientists then use directly.
+bibliofabric is a framework for developers building API client libraries. It is
+not an end-user library. You would use it to build a library like
+[AIREloom](https://github.com/utsmok/aireloom) (OpenAIRE), which researchers
+then use directly.
 
-## Core Concepts
+## Core concepts
 
 | Component | Role |
 |---|---|
-| **`BaseApiClient`** | Generic async HTTP client — retries, caching, rate limiting, hooks |
-| **`AuthStrategy`** | Pluggable auth: NoAuth, static token, OAuth2 client credentials |
-| **`ResponseUnwrapper`** | Protocol for parsing API-specific JSON response envelopes |
-| **`Resource Mixins`** | Composable `GettableMixin`, `SearchableMixin`, `CursorIterableMixin`, `PageIterableMixin` |
-| **`BaseApiSettings`** | pydantic-settings configuration with env var support |
+| `BaseApiClient` | Generic async HTTP client: retries, throttling, auth, error mapping |
+| `QueryDialect` | Declares an API's paging, sort, search, and select parameters |
+| `ResourceClient[E]` | Typed client for one endpoint: get, search, iterate, count, batch_get |
+| `Page[E]` | Uniform search result envelope |
+| `ResponseUnwrapper` | Protocol for parsing API-specific JSON envelopes |
+| `AuthStrategy` | Pluggable auth: bearer, query parameter, header, OAuth2 |
+| `BaseApiSettings` | pydantic-settings configuration with env var support |
 
-## Quick Start
+Start with the [quick start in the README](https://github.com/utsmok/bibliofabric#building-a-client),
+then read:
 
-```python
-from bibliofabric.client import BaseApiClient
-from bibliofabric.config import BaseApiSettings
-from bibliofabric.models import ResponseUnwrapper
-from bibliofabric.resources import GettableMixin, BaseResourceClient
-
-# 1. Implement ResponseUnwrapper for your API
-class MyUnwrapper(ResponseUnwrapper):
-    def unwrap_results(self, response_json: dict) -> list[dict]:
-        return response_json.get("data", [])
-    # ... implement remaining protocol methods
-
-# 2. Compose resource clients with mixins
-class ItemsClient(GettableMixin, BaseResourceClient):
-    _entity_path = "items"
-
-# 3. Build your client
-class MyApiClient(BaseApiClient):
-    def __init__(self, **kwargs):
-        super().__init__(
-            base_url="https://api.example.com/v1",
-            response_unwrapper=MyUnwrapper(),
-            settings=BaseApiSettings(),
-            **kwargs,
-        )
-        self.items = ItemsClient(api_client=self)
-```
-
-For a complete, production-quality example, see [AIREloom](https://github.com/utsmok/aireloom) — an OpenAIRE Graph client built on bibliofabric.
-
-## Key Features
-
-- **Asynchronous by design** — built on `httpx` for non-blocking I/O
-- **Extensible** — protocols and mixins for any API shape
-- **Robust** — retries with exponential backoff, rate limit management, comprehensive error hierarchy
-- **Type-safe** — fully typed with Pydantic models and generic protocols
-
-## API Reference
-
-Browse the module documentation for detailed API signatures:
-
-- [Client](client.md) — `BaseApiClient` and the HTTP lifecycle
-- [Configuration](config.md) — `BaseApiSettings` and environment configuration
-- [Resources](resources.md) — mixins and `BaseResourceClient`
-- [Models](models.md) — `ResponseUnwrapper` protocol
-- [Authentication](auth.md) — auth strategies
-- [Exceptions](exceptions.md) — error hierarchy
+- [Client](client.md) — HTTP lifecycle, retries, throttling
+- [Resources](resources.md) — `ResourceClient` and its hooks
+- [Paging](paging.md) — dialects and `Page`
+- [Unwrapping](unwrap.md) — the response envelope protocol
+- [Errors, retries, limits](errors.md)
+- [Configuration](config.md), [Authentication](auth.md),
+  [Identifiers](ids.md), [Types](types.md), [Exceptions](exceptions.md)

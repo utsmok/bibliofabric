@@ -1,25 +1,33 @@
 # Client
 
-`BaseApiClient` is the core of the framework — a generic async HTTP client built on `httpx`. It manages the full request/response lifecycle: retries with exponential backoff, optional TTL caching for GET requests, rate-limit detection and throttling, pluggable authentication, and pre/post request hooks.
+`BaseApiClient` owns the HTTP lifecycle for every bibliofabric-family client: it
+builds requests against a base URL, applies an auth strategy, throttles
+concurrency and request rate, retries transient failures, and maps error
+statuses to the bibliofabric exception hierarchy. It never parses response
+models; resource clients do that through a `ResponseUnwrapper`.
 
-Specific API clients (e.g., AIREloom's `AireloomClient`) subclass this and provide a `ResponseUnwrapper` and a `base_url`. The framework handles the rest.
+## Behavior
 
-## Key Features
+- `request()` always returns an `httpx.Response` and raises on status >= 400:
+  404 is `NotFoundError`, 429 is `RateLimitError`, 401/403 is `AuthError`,
+  other statuses are `APIError`. Network failures raise `NetworkError` and
+  timeouts raise `TimeoutError`.
+- Retries cover 429, 500, 502, 503, 504, network failures, and timeouts, up to
+  `settings.max_retries`. The wait honors the `Retry-After` header (seconds or
+  HTTP date), capped at `settings.max_retry_wait`; otherwise it uses jittered
+  exponential backoff.
+- Override `is_retryable(response)` to veto retries, for example OpenAlex 429s
+  with `reason: "daily_budget"` in the error body (exposed as `err.body`).
+- Throttling is configured with `settings.max_requests_per_second` and
+  `settings.max_concurrency`. The limiter never sleeps while holding a lock
+  other requests need.
+- Debug logs use standard `logging` with credential query parameters and auth
+  headers redacted.
+- A caller-owned `http_client` passed to the constructor is not closed by
+  `aclose()`.
 
-- **Retries**: Configurable max attempts and backoff factor via `BaseApiSettings`. Retries on 429 and 5xx by default.
-- **Caching**: Optional in-memory `TTLCache` for GET requests. Disabled by default.
-- **Rate Limiting**: Parses standard rate-limit headers (`X-RateLimit-*`, `Retry-After`) and throttles automatically.
-- **Hooks**: `pre_request_hooks` and `post_request_hooks` for logging, metrics, or custom logic.
-- **Validation capture**: `validation_error_hooks` and the per-request
-  `on_validation_error` hook receive a `ValidationErrorContext` containing the raw
-  response body and validation exception when model parsing fails.
-- **Raw passthrough**: pass `raw=True` to `request()` to skip model validation and
-  receive the original `httpx.Response`.
-- **Error Mapping**: Translates `httpx` exceptions into the bibliofabric exception hierarchy (`APIError`, `TimeoutError`, `NetworkError`, etc.).
-
-## API Reference
+## API reference
 
 ::: bibliofabric.client
     options:
-      show_source: false
       show_root_heading: true

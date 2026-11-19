@@ -1,24 +1,41 @@
 # Configuration
 
-`BaseApiSettings` is a [pydantic-settings](https://docs.pydantic.dev/latest/concepts/pydantic_settings/) model that provides all tunable parameters for `BaseApiClient`. It reads from environment variables and `.env` / `secrets.env` files.
-
-API-specific clients inherit this class and set their own `env_prefix` (e.g., `AIRELOOM_` for AIREloom).
-
-## Quick Example
+`BaseApiSettings` is a [pydantic-settings](https://docs.pydantic.dev/latest/concepts/pydantic_settings/)
+model holding the client's tunables. Subclass it per API, set an `env_prefix`
+so the environment variables cannot collide across libraries, and add
+API-specific fields.
 
 ```python
-from bibliofabric.config import BaseApiSettings
+from pydantic_settings import SettingsConfigDict
 
-# All defaults — reads from env vars with no prefix
-settings = BaseApiSettings()
+from bibliofabric import BaseApiSettings
 
-# Override specific values
-settings = BaseApiSettings(request_timeout=60.0, max_retries=5)
+
+class FooSettings(BaseApiSettings):
+    model_config = SettingsConfigDict(
+        env_prefix="FOO_", env_file=".env", extra="ignore"
+    )
 ```
 
-## API Reference
+Each client library exposes one `get_settings()` function decorated with
+`functools.lru_cache` that returns its settings instance.
+
+| Field | Default | Meaning |
+|---|---|---|
+| `timeout` | 30.0 | Request timeout in seconds |
+| `max_retries` | 3 | Retries per request |
+| `max_retry_wait` | 60.0 | Upper bound on a single retry wait |
+| `max_requests_per_second` | None | Client-side rate limit; None disables it |
+| `max_concurrency` | 10 | Concurrent requests bound |
+| `user_agent` | None | Overrides the default User-Agent |
+| `mailto` | None | Contact address, added to the User-Agent |
+
+When `user_agent` is not set, the client builds
+`<package>/<version> (+<homepage>; mailto:<mailto>)` from the settings
+subclass's package metadata.
+
+## API reference
 
 ::: bibliofabric.config
     options:
-      show_source: false
       show_root_heading: true

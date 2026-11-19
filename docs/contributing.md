@@ -1,62 +1,40 @@
 # Contributing to Bibliofabric
 
-We welcome contributions! Whether you're fixing a bug, adding a feature, or improving documentation, your help is appreciated.
+## Set up your environment
 
-## How to Contribute
-
-- **Reporting Bugs:** File an issue on [GitHub Issues](https://github.com/utsmok/bibliofabric/issues) with the bibliofabric version, Python version, steps to reproduce, and expected vs. actual behavior.
-- **Suggesting Features:** Open an issue to discuss before implementing. This helps coordinate efforts and ensures alignment with the project's goals.
-- **Improving Documentation:** Docs live in `docs/` (MkDocs). Fixes and clarifications are always welcome.
-- **Writing Code:** Follow the development workflow below.
-
-## Development Workflow
-
-### 1. Set Up Your Environment
-
-This project uses `uv` for dependency management.
+This project uses `uv`:
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/bibliofabric.git
 cd bibliofabric
-uv sync --all-groups --all-extras
+uv sync --all-groups
 ```
 
-### 2. Make Changes
+## Gates
 
-Create a descriptive branch:
+Every change must pass the same gates CI runs:
 
 ```bash
-git checkout -b fix/issue-123-timeout-bug
+uv run ruff check            # lint src and tests
+uv run ruff format --check   # formatting
+uv run ty check src          # types, zero diagnostics
+uv run pytest                # tests
 ```
 
-### 3. Coding Standards
+`uv run ruff format` to format; `uv run ruff check --fix` for lint fixes. The
+`dev` group pins `ty` exactly so local and CI runs agree.
 
-- **Formatting & Linting:** We use [Ruff](https://docs.astral.sh/ruff/).
+## Conventions
 
-```bash
-uv run ruff format src/
-uv run ruff check src/ --fix
-```
+- Type hints on all public signatures; no `# type: ignore` in `src`.
+- Standard `logging` with module loggers; debug messages use `%s` formatting
+  and redact credentials (`bibliofabric.utils.sanitize_url`,
+  `sanitize_headers`).
+- Changes that affect consumers get a `CHANGELOG.md` entry.
+- Small, focused commits with conventional-commit messages, no AI attribution.
 
-- **Type Hints:** Use type hints on all public signatures.
-- **Docstrings:** Follow the Google Python Style Guide. Every public module, class, and function should have a docstring.
+## Submit a pull request
 
-### 4. Running Tests
-
-```bash
-uv run pytest tests/                 # All tests
-uv run pytest tests/test_client.py   # Specific file
-uv run pytest --cov=bibliofabric tests/  # With coverage
-```
-
-### 5. Submit a Pull Request
-
-1. Make small, focused commits with clear messages.
-2. Push to your fork and open a PR against `main` on `utsmok/bibliofabric`.
-3. Reference any related issues (e.g., "Closes #123").
-
-## Code of Conduct
-
-We expect all contributors to interact respectfully and constructively.
-
-Thank you for contributing to bibliofabric!
+1. Branch from `main`.
+2. Push and open a PR against `utsmok/bibliofabric`.
+3. Reference related issues, e.g. "Closes #123".

@@ -6,13 +6,13 @@ description: "Cut and verify a PyPI release for any bibliofabric-family repo via
 
 # bibliofabric-family release procedure
 
-Cut and verify a PyPI release for any bibliofabric-family repo (bibliofabric, aletheca, AIREloom, stavrophora, ut-metadata app excluded). All four publish via `v*` tags: CI runs test matrix + docs + a publish job (three repos: `uv publish` with GitHub environment `pypi` + OIDC; stavrophora: `pypa/gh-action-pypi-publish@release/v1`).
+Cut and verify a PyPI release for any bibliofabric-family repo (bibliofabric, aletheca, AIREloom, stavrophora, ut-metadata app excluded). All four publish via `v*` tags: CI runs test matrix + docs + a publish job (`uv build` + `pypa/gh-action-pypi-publish@release/v1` with GitHub environment `pypi` + OIDC).
 
 ## Sequence
 
 1. Confirm the tree is clean and every fix that should ship is committed AND pushed (a local-only fix tag silently releases without it — happened once; the tag builds the pushed tree, not your working dir).
-2. Re-run the CI type gate locally with the SAME unpinned tool CI uses: `uvx ty check src/`. CI's `uvx ty` resolves latest, which is newer than any locally pinned ty — strictness drift broke two family releases in one day (invalid `TTLCache[str, Any]` annotation; undeclared protocol attributes). Fix findings properly (declare the missing attributes); prefer structural fixes over `# ty: ignore` suppressions.
-3. Bump `version` in pyproject.toml; add a changelog entry (aletheca: `docs/changelog.md`; AIREloom: `docs/changelog.md`; bibliofabric: none exists). Commit in the repo's style (`Release v0.4.3` / `chore(release): bump version to X`), push main, then `git tag vX.Y.Z && git push origin vX.Y.Z`.
+2. Re-run the CI type gate locally with the tool CI uses: `uv run ty check src/` (since the 2026-11 overhaul, `ty` is pinned exactly in the `dev` group, so local and CI agree; before that, unpinned `uvx ty` drift broke two family releases in one day). Fix findings properly (declare the missing attributes); prefer structural fixes over `# ty: ignore` suppressions.
+3. Bump `version` in pyproject.toml; add a changelog entry (every family repo has a Keep a Changelog file now: bibliofabric `CHANGELOG.md`, aletheca/AIREloom `docs/changelog.md`). Commit in the repo's style (`Release v0.4.3` / `chore(release): bump version to X`), push main, then `git tag vX.Y.Z && git push origin vX.Y.Z`.
 4. `gh run watch <run-id> --exit-status`, then verify the release is actually visible: `uv run --with httpx python -c "import httpx; print(httpx.get('https://pypi.org/pypi/<pkg>/json').json()['info']['version'])"`.
 5. Wheel-content proof for feature releases: `uv cache clean <pkg>`, then `uv run --no-project --with <pkg>==<ver> python -c "..."` in /tmp and introspect the new API surface (signatures/settings fields). Confirms the published wheel — not just the tag — carries the features.
 

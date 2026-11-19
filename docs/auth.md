@@ -1,29 +1,31 @@
 # Authentication
 
-bibliofabric provides a pluggable authentication system based on the `AuthStrategy` protocol. Implementations modify outgoing `httpx.Request` objects in-place — typically by adding an `Authorization` header.
+Auth strategies implement the `AuthStrategy` protocol: `async_authenticate()`
+mutates the outgoing `httpx.Request`, `async_close()` releases resources.
 
-## Built-in Strategies
-
-| Strategy | Use Case |
+| Strategy | Use case |
 |---|---|
-| `NoAuth` | Public APIs, local development |
-| `StaticTokenAuth` | APIs that accept a pre-issued Bearer token |
-| `ClientCredentialsAuth` | OAuth2 client credentials grant (automatic token refresh) |
+| `NoAuth` | Public APIs (default) |
+| `StaticTokenAuth(token)` | Pre-issued bearer token |
+| `QueryParameterAuth(key_name, key_value)` | APIs authenticated by query parameter (OpenAlex `api_key`) |
+| `HeaderAuth(name, value)` | Static credential headers (Crossref Plus `Crossref-Plus-API-Token`) |
+| `ClientCredentialsAuth(client_id, client_secret, token_url)` | OAuth2 client-credentials flow |
 
-All strategies implement `async_authenticate(request)` and `async_close()`, making them interchangeable at runtime.
-
-## Quick Example
+`ClientCredentialsAuth` fetches a bearer token, reuses it until shortly before
+`expires_in`, refreshes it on expiry, and serializes concurrent fetches. Pass
+`user_agent=` so the token client identifies itself like the main client.
+Missing credentials raise `ConfigurationError`; a failed token fetch raises
+`AuthError`.
 
 ```python
-from bibliofabric.auth import StaticTokenAuth
+from bibliofabric import ClientCredentialsAuth
 
-auth = StaticTokenAuth(token="my-api-token")
-# Pass to BaseApiClient — auth is applied automatically before each request
+auth = ClientCredentialsAuth(client_id, client_secret, token_url, user_agent=ua)
+client = FooClient(auth=auth)
 ```
 
-## API Reference
+## API reference
 
 ::: bibliofabric.auth
     options:
-      show_source: false
       show_root_heading: true

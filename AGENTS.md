@@ -2,116 +2,80 @@
 
 ## What It Is
 
-Bibliofabric is a generic, async Python framework for building scholarly API client libraries. It provides the reusable infrastructure — HTTP client, auth, response parsing, pagination, caching, rate limiting, error handling — so that specific client implementations only need to define the API-specific parts.
-
-[AIREloom](https://github.com/utsmok/aireloom) (an OpenAIRE Graph + Scholix client) is the reference implementation.
-
-**Status:** Alpha. Architecture is settled; needs more client implementations for validation.
+Bibliofabric is the shared core of a family of scholarly API client libraries
+([AIREloom](https://github.com/utsmok/aireloom) for OpenAIRE,
+[aletheca](https://github.com/utsmok/aletheca) for OpenAlex,
+[stavrophora](https://github.com/utsmok/stavrophora) for Crossref). It owns
+HTTP, auth, retries, throttling, error mapping, paging, batch retrieval,
+identifier normalization, and typed resource clients. Each client library adds
+only what is specific to its API.
 
 ## Architecture
 
 ```
-BaseApiClient              # Generic async HTTP client (client.py)
-├── retries (tenacity)
-├── caching (TTLCache)
-├── rate limiting (header parsing + throttling)
-├── pre/post request hooks
-└── auth strategy injection
-    ├── NoAuth
-    ├── StaticTokenAuth
-    └── ClientCredentialsAuth (OAuth2)
+BaseApiClient            # async HTTP: retries, throttling, error mapping (client.py)
+├── auth strategy        # NoAuth, StaticTokenAuth, QueryParameterAuth,
+│                        # HeaderAuth, ClientCredentialsAuth (auth.py)
+├── limiter              # max_requests_per_second + max_concurrency
+└── retry policy         # is_retryable() veto, Retry-After-aware wait
 
-ResponseUnwrapper          # Protocol — API-specific response parsing (models.py)
-
-BaseResourceClient         # Base for per-endpoint clients (resources.py)
-├── GettableMixin           # get(entity_id)
-├── SearchableMixin         # search(params) — paginated
-├── CursorIterableMixin     # iterate(params) — cursor-based async iterator
-└── PageIterableMixin       # iterate(params) — page-based async iterator
-
-BaseApiSettings            # pydantic-settings config (config.py)
+QueryDialect             # frozen paging/sort/search/select declaration (paging.py)
+ResourceClient[E]        # generic typed endpoint client (resources.py)
+Page[E]                  # uniform search envelope (paging.py)
+ResponseUnwrapper        # protocol for API envelopes (unwrap.py)
+BaseApiSettings          # pydantic-settings config (config.py)
 ```
 
-### Key Layers
+## Module map
 
-| Layer | File | Role |
-|-------|------|------|
-| **Client** | `client.py` | `BaseApiClient` — generic async HTTP client. ~825 lines. Handles retries, caching, rate limiting, auth, hooks, error mapping. |
-| **Auth** | `auth.py` | `AuthStrategy` protocol + 3 implementations: `NoAuth`, `StaticTokenAuth`, `ClientCredentialsAuth`. |
-| **Models** | `models.py` | `ResponseUnwrapper` protocol — the key abstraction that makes the framework API-agnostic. |
-| **Resources** | `resources.py` | `BaseResourceClient` + 4 composable mixins for REST operations. |
-| **Config** | `config.py` | `BaseApiSettings` (pydantic-settings). Subclass with an `env_prefix` per API. |
-| **Exceptions** | `exceptions.py` | Hierarchical exceptions: `BibliofabricError` → `APIError`, `TimeoutError`, `NetworkError`, `AuthError`, etc. |
-| **Types** | `types.py` | `RequestData` model, `PreRequestHook` / `PostRequestHook` type aliases. |
-| **Logging** | `log_config.py` | Loguru-based logging configuration. |
+| Module | Contents |
+|---|---|
+| `client.py` | `BaseApiClient`: `request()` returns `httpx.Response`, raises typed errors; `is_retryable()` veto; `Retry-After`-aware retries; limiter |
+| `auth.py` | `AuthStrategy` protocol + `NoAuth`, `StaticTokenAuth`, `QueryParameterAuth`, `HeaderAuth`, `ClientCredentialsAuth` |
+| `config.py` | `BaseApiSettings` (timeout, retries, retry wait, limiter knobs, UA, mailto) |
+| `exceptions.py` | `BibliofabricError` hierarchy; `APIError.body` carries the parsed JSON error payload; `ValidationError` carries `raw`/`error`/`model_name` |
+| `paging.py` | `QueryDialect` (frozen), `Page[E]` |
+| `resources.py` | `ResourceClient[E]`: get/search/iterate/collect/first/count/batch_get + hooks (`build_filter_params`, `format_sort`, `build_batch_params`, `normalize_id`, `item_path`) |
+| `unwrap.py` | `ResponseUnwrapper` protocol: results/item/total/next_cursor/meta |
+| `ids.py` | `normalize_doi`, `is_doi`, `normalize_orcid`, `normalize_ror`, `normalize_issn`, `strip_url_prefix` |
+| `types.py` | `SafeStr`, `SafeList` annotated pydantic types |
+| `utils.py` | Internal log redaction: `sanitize_url`, `sanitize_headers` |
 
 ## Tech Stack
 
-- **Python 3.12+**, `uv` for dependency management
-- **httpx** — async HTTP
-- **tenacity** — retry logic
-- **pydantic v2** + **pydantic-settings** — models and config
-- **cachetools** — TTL cache
-- **loguru** — logging
-- **pytest** + **pytest-asyncio** + **pytest-httpx** — testing
-- **ruff** — linting/formatting
-- **mkdocs-material** + **mkdocstrings** — docs
-
-## Project Structure
-
-```
-src/bibliofabric/
-  __init__.py           # Package init, version from importlib.metadata
-  client.py             # BaseApiClient (~825 lines)
-  auth.py               # AuthStrategy protocol + 3 implementations
-  models.py             # ResponseUnwrapper protocol
-  resources.py          # BaseResourceClient + 4 mixins
-  config.py             # BaseApiSettings (pydantic-settings)
-  exceptions.py         # Exception hierarchy
-  types.py              # RequestData, hook type aliases
-  log_config.py         # Loguru configuration
-tests/
-  test_client.py        # BaseApiClient tests
-  test_auth.py          # Auth strategy tests
-  test_resources.py     # Mixin and resource client tests
-  test_models.py        # ResponseUnwrapper tests
-  test_log_config.py    # Logging config tests
-docs/                   # MkDocs documentation
-```
+- Python 3.12+, `uv`-managed, `uv_build` backend, `py.typed` shipped
+- httpx, pydantic v2 + pydantic-settings, tenacity
+- stdlib `logging` (no loguru; no handlers configured by the library)
+- dev group: pytest, pytest-asyncio, pytest-httpx, ruff (pinned), ty (pinned exactly)
+- docs group: mkdocs-material + mkdocstrings
 
 ## Development Commands
 
 ```bash
-uv sync --all-groups --all-extras    # Install everything
-uv run ruff check src/ --fix         # Lint
-uv run ruff format src/              # Format
-uv run pytest tests/                 # Run tests
-uv run pytest --cov=bibliofabric tests/  # Coverage
-uv run mkdocs serve                  # Local docs preview
-uv run mkdocs build                  # Build docs
+uv sync --all-groups     # install everything
+uv run ruff check        # lint src and tests (tests/_legacy excluded)
+uv run ruff format --check
+uv run ty check src      # zero diagnostics, no ignores
+uv run pytest            # tests/ (legacy suite in tests/_legacy is not collected)
+uv run mkdocs serve      # local docs preview
 ```
 
-## Key Patterns & Conventions
+## Key patterns
 
-- **All I/O is async.** Every method is `async def`. Use `async with` for client lifecycle.
-- **Protocol-based extensibility.** `ResponseUnwrapper` and `AuthStrategy` are `Protocol` classes — implement the interface, no inheritance required.
-- **Mixin composition.** Resource clients inherit from `BaseResourceClient` + needed mixins (`GettableMixin`, `SearchableMixin`, etc.). Class attributes (`_entity_path`, `_entity_model`) configure behavior.
-- **Pydantic settings.** `BaseApiSettings` reads from env vars and `.env` files. Subclass with `env_prefix` per API (e.g., `AIRELOOM_`).
-- **No generic `T` type param on `ResponseUnwrapper`.** It works with `dict[str, Any]` — type safety comes from Pydantic models in the consuming library.
-- **`extra="allow"`** is the norm for models (forward-compatible with API additions).
-- **Error mapping.** `httpx` exceptions are caught and re-raised as the bibliofabric hierarchy inside `BaseApiClient._execute_request`.
+- Async only. Clients are async context managers; caller-owned `http_client`s
+  are not closed by `aclose()`.
+- Errors by default: no raw fallbacks. Validation failures raise
+  `ValidationError` with the payload attached; harvesting tolerates bad records
+  via `iterate(on_error="skip", failures=[...])`.
+- Behavior is declared in frozen dataclasses (`QueryDialect`), not mutable
+  class attributes. Per-API variation lives in `ResourceClient` hook methods.
+- `batch_get(ids, field="id", batch_size=None, concurrency=4)` chunks,
+  normalizes, deduplicates, and keys by normalized id.
+- Debug logs redact `api_key`, tokens, and auth headers
+  (`sanitize_url` / `sanitize_headers`).
 
-## Known Issues & Gaps
+## Status
 
-- **Few client implementations.** AIREloom (reference) and [aletheca](https://github.com/utsmok/aletheca) (OpenAlex) are the known consumers. More would validate the abstractions.
-- **No streaming support.** All responses are buffered in memory.
-- **Cache is in-process only.** `TTLCache` — no shared cache across processes.
-- **No request cancellation.** No explicit support for cancelling in-flight requests beyond closing the client.
-
-## Reference Implementation
-
-See [AIREloom](https://github.com/utsmok/aireloom) at `~/dev/AIREloom` for a complete client built on bibliofabric:
-- `src/aireloom/client.py` — `AireloomClient(BaseApiClient)`
-- `src/aireloom/unwrapper.py` — `OpenAireUnwrapper(ResponseUnwrapper)`
-- `src/aireloom/resources/` — Mixin-based resource clients
-- `src/aireloom/config.py` — `ApiSettings(BaseApiSettings)` with `env_prefix="AIRELOOM_"`
+0.6.0 is the overhaul release. Legacy code and tests are quarantined:
+`tests/_legacy/` holds the pre-overhaul suite, excluded from collection and
+from ruff; it is deleted in Phase 2.

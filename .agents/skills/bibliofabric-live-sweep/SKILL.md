@@ -18,7 +18,7 @@ Write EVERY raw payload to `/tmp/<client>_sweep_artifacts/` (plus a `requests.js
 - Every resource × its supported ops: get / search / list; designed-to-raise ops (e.g. stavrophora `prefixes.search`) are asserted to raise without an HTTP call.
 - Scoped sub-resources (`journals.works(issn)`, `funders.works(id)`, `prefixes.works(prefix)`) with a scope-membership assertion.
 - Boundary tests: batch splits at its documented limit (stavrophora batch_get_by_doi: 50 keys → 51 inputs = exactly 2 requests); cursor iteration 3 pages with a no-duplicate assertion.
-- Family convention: `get()` returns the unwrapped model, `search()` returns the envelope — script accordingly.
+- Family convention: `get()` returns the unwrapped model, `search()` returns a `Page[E]` envelope — script accordingly.
 
 ## Evidence standard
 - Raw-vs-parsed compare for the richest models: one record fetched via httpx direct AND via the client, ~5 documented fields each, plus `extra="allow"` unknown-key absorption and SafeStr/SafeList coercion checks (null list → [], nulls stripped, None preserved).
@@ -29,4 +29,4 @@ Write EVERY raw payload to `/tmp/<client>_sweep_artifacts/` (plus a `requests.js
 Client bug → fix + mocked regression test + commit. API quirk → append to the README quirks section, tiny commit. Never "fix" the API side; never bump versions or publish.
 
 ## After fixes
-Mocked suite green; if a GitHub remote exists: push, then `gh run watch <run-id> --exit-status` and confirm every job — including any `--cov-fail-under` gate — is green before reporting done. First `mkdocs gh-deploy` push needs Pages enabled: `gh api repos/<owner>/<repo>/pages -X POST -f source='{"branch":"gh-pages","path":"/"}'`.
+Mocked suite green; if a GitHub remote exists: push, then `gh run watch <run-id> --exit-status` and confirm every job is green before reporting done (the family CI no longer runs a coverage gate). First `mkdocs gh-deploy` push needs Pages enabled: `gh api repos/<owner>/<repo>/pages -X POST -f source='{"branch":"gh-pages","path":"/"}'`.
