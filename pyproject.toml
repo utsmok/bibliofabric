@@ -1,14 +1,14 @@
 [project]
 name = "bibliofabric"
-version = "0.5.2"
-description = "Generic framework for building modern asynchronous API clients for bibliometric and scholarly data retrieval"
+version = "0.6.0"
+description = "Shared core for scholarly API clients: HTTP, auth, retries, paging, and typed resource clients"
 readme = "README.md"
 authors = [
     {name = "Samuel Mok", email = "s.mok@utwente.nl"}
 ]
 license = {text = "MIT"}
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
     "Framework :: AsyncIO",
@@ -17,11 +17,9 @@ classifiers = [
 requires-python = ">=3.12"
 dependencies = [
     "httpx>=0.27.0",
-    "tenacity>=9.1.2",
     "pydantic>=2.9.0",
     "pydantic-settings>=2.9.1",
-    "loguru>=0.7.0",
-    "cachetools>=5.3.0",
+    "tenacity>=9.0.0",
 ]
 
 [project.urls]
@@ -31,9 +29,9 @@ dependencies = [
 dev = [
     "pytest>=8.3.4",
     "pytest-asyncio>=0.26.0",
-    "pytest-cov>=6.1.1",
     "pytest-httpx>=0.35.0",
-    "python-dotenv>=1.1.0",
+    "ruff==0.17.6",
+    "ty==0.0.107",
 ]
 docs = [
     "mkdocs~=1.6.0",
@@ -41,21 +39,16 @@ docs = [
     "mkdocstrings[python]",
 ]
 
-lint = ["ruff>=0.8.0"]
-test = ["pytest", "pytest-randomly"]
-
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[tool.hatch.build.targets.wheel]
-packages = ["src/bibliofabric"]
+requires = ["uv_build>=0.9.22,<0.10.0"]
+build-backend = "uv_build"
 
 [tool.uv.pip]
 generate-hashes = true
 
 [tool.ruff]
 line-length = 88
+extend-exclude = ["tests/_legacy", "examples"]
 
 [tool.ruff.format]
 docstring-code-format = true
@@ -82,7 +75,7 @@ select = [
 ]
 
 [tool.ruff.lint.pylint]
-max-args = 10
+max-args = 12
 max-branches = 25
 max-statements = 75
 
@@ -92,12 +85,14 @@ combine-as-imports = true
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
+"tests/*" = ["PLR2004"]  # literal HTTP statuses and counts are the point of the assertions
 
 [tool.pytest.ini_options]
 pythonpath = [
   "src"
 ]
 testpaths = ["tests"]
+addopts = "--ignore=tests/_legacy"
 python_files = "test_*.py"
 python_functions = "test_*"
 asyncio_mode = "auto"
