@@ -4,10 +4,9 @@ import logging
 from collections.abc import AsyncIterator, Callable, Sequence
 from typing import Any
 
-from bibliofabric.client import BaseApiClient
+from bibliofabric import BaseApiClient, OnError
 from bibliofabric.ids import normalize_doi, normalize_orcid
 from bibliofabric.paging import Page
-from bibliofabric.resources import OnError
 
 from ..filters import LinksFilters, ResearchProductsFilters
 from ..models import Relation, RelationInfo, ResearchProduct

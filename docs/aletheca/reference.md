@@ -35,7 +35,7 @@ Generated from the source with mkdocstrings.
 ## Resource clients
 
 Each resource client inherits the generic operations from
-`bibliofabric.resources.ResourceClient` (`get`, `search`, `iterate`,
+`bibliofabric.ResourceClient` (`get`, `search`, `iterate`,
 `collect`, `first`, `count`, `batch_get`) through
 `aletheca.dialect.OpenAlexResourceClient`. Only class-specific members are
 shown here.

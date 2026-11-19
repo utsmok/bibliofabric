@@ -5,9 +5,9 @@ from collections.abc import Mapping, Sequence
 from typing import Any, ClassVar
 from urllib.parse import quote
 
+from bibliofabric import ResourceClient
 from bibliofabric.exceptions import ConfigurationError
 from bibliofabric.paging import QueryDialect
-from bibliofabric.resources import ResourceClient
 from pydantic import BaseModel
 
 from ..dialect import GRAPH_DIALECT

@@ -9,9 +9,8 @@ import logging
 from collections.abc import AsyncIterator, Callable
 from typing import Any
 
-from bibliofabric.client import BaseApiClient
+from bibliofabric import BaseApiClient, OnError, ResourceClient
 from bibliofabric.paging import Page
-from bibliofabric.resources import OnError, ResourceClient
 
 from ..dialect import SCHOLIX_DIALECT
 from ..filters import ScholixFilters

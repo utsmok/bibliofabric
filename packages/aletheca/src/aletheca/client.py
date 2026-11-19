@@ -6,13 +6,13 @@ from functools import cached_property
 from typing import Any
 
 import httpx
+from bibliofabric import BaseApiClient
 from bibliofabric.auth import (
     AuthStrategy,
     NoAuth,
     QueryParameterAuth,
     StaticTokenAuth,
 )
-from bibliofabric.client import BaseApiClient
 from bibliofabric.exceptions import AuthError
 
 from .config import (

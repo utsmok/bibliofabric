@@ -9,10 +9,10 @@ documented in the phase 2 research.
 from collections.abc import Mapping, Sequence
 from typing import Any
 
+from bibliofabric import ResourceClient
 from bibliofabric.exceptions import ConfigurationError
 from bibliofabric.ids import is_doi, normalize_doi
 from bibliofabric.paging import QueryDialect
-from bibliofabric.resources import ResourceClient
 from pydantic import BaseModel
 
 #: Base URL of the OpenAlex API.
@@ -69,7 +69,7 @@ class OpenAlexResourceClient[E: BaseModel](ResourceClient[E]):
     """Base for all OpenAlex resource clients.
 
     Encodes the OpenAlex API shape on top of bibliofabric's generic
-    :class:`bibliofabric.resources.ResourceClient`: the single ``filter=``
+    :class:`bibliofabric.ResourceClient`: the single ``filter=``
     parameter, pipe-joined OR batches of up to 100 ids, DOI/ORCID/ROR
     normalization, cursor iteration at ``per-page=100``, and a minimal-cost
     ``count()``.

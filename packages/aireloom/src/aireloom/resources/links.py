@@ -4,7 +4,7 @@ import logging
 from collections.abc import Mapping
 from typing import Any
 
-from bibliofabric.resources import ResourceClient
+from bibliofabric import ResourceClient
 from pydantic import BaseModel, ValidationError as PydanticValidationError
 
 from ..dialect import LINKS_DIALECT

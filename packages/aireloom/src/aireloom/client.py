@@ -5,8 +5,8 @@ import logging
 from typing import Any
 
 import httpx
+from bibliofabric import BaseApiClient
 from bibliofabric.auth import AuthStrategy, ClientCredentialsAuth, NoAuth
-from bibliofabric.client import BaseApiClient
 
 from .config import AireloomSettings, get_settings
 from .resources import (
