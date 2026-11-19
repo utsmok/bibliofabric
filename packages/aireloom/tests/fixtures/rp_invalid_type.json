@@ -1,0 +1,13 @@
+{
+ "header": {
+  "numFound": 1,
+  "page": 1,
+  "pageSize": 5
+ },
+ "results": [
+  {
+   "id": "bad::1",
+   "type": "bogus"
+  }
+ ]
+}

@@ -1,0 +1,256 @@
+{
+ "header": {
+  "page": 0,
+  "totalPages": 12,
+  "totalLinks": 116
+ },
+ "results": [
+  {
+   "source": {
+    "identifiers": [
+     {
+      "id": "50|doi_dedup___::80f29c8c8ba18c46c88a285b7e739dc3",
+      "idScheme": "openaireIdentifier",
+      "idUrl": "https://explore.openaire.eu/search/result?id=doi_dedup___::80f29c8c8ba18c46c88a285b7e739dc3"
+     },
+     {
+      "id": "10.1016/j.respol.2021.104226",
+      "idScheme": "doi",
+      "idUrl": "https://doi.org/10.1016/j.respol.2021.104226"
+     },
+     {
+      "id": "34083844",
+      "idScheme": "pmid",
+      "idUrl": "https://pubmed.ncbi.nlm.nih.gov/34083844"
+     },
+     {
+      "id": "PMC8024784",
+      "idScheme": "pmc",
+      "idUrl": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8024784"
+     },
+     {
+      "id": "50|doi_dedup___::80f29c8c8ba18c46c88a285b7e739dc3",
+      "idScheme": "openaireIdentifier",
+      "idUrl": "https://explore.openaire.eu/search/result?id=doi_dedup___::80f29c8c8ba18c46c88a285b7e739dc3"
+     }
+    ],
+    "title": "The fall of the innovation empire and its possible rise through open science",
+    "type": "publication",
+    "instanceType": "Article",
+    "publicationDate": "2021-06-01",
+    "authors": [
+     {
+      "name": "Gold, E. Richard",
+      "identifiers": []
+     }
+    ],
+    "collectedFrom": [
+     {
+      "name": "Research Policy",
+      "identifiers": [
+       {
+        "id": "10|issn___print::a22009529648a2b4127d366f747e0391",
+        "idScheme": "OpenAIRE Identifier",
+        "idUrl": "https://explore.openaire.eu/search/dataprovider?datasourceId=issn___print::a22009529648a2b4127d366f747e0391"
+       }
+      ]
+     },
+     {
+      "name": "PubMed Central",
+      "identifiers": [
+       {
+        "id": "10|opendoar____::eda80a3d5b344bc40f3bc04f65b7a357",
+        "idScheme": "OpenAIRE Identifier",
+        "idUrl": "https://explore.openaire.eu/search/dataprovider?datasourceId=opendoar____::eda80a3d5b344bc40f3bc04f65b7a357"
+       }
+      ]
+     },
+     {
+      "name": "Unknown Repository",
+      "identifiers": [
+       {
+        "id": "10|openaire____::55045bd2a65019fd8e6741a755395c8c",
+        "idScheme": "OpenAIRE Identifier",
+        "idUrl": "https://explore.openaire.eu/search/dataprovider?datasourceId=openaire____::55045bd2a65019fd8e6741a755395c8c"
+       }
+      ]
+     }
+    ]
+   },
+   "target": {
+    "identifiers": [
+     {
+      "id": "50|doi_dedup___::a424e158447a7370d5faed281ab49d95",
+      "idScheme": "openaireIdentifier",
+      "idUrl": "https://explore.openaire.eu/search/result?id=doi_dedup___::a424e158447a7370d5faed281ab49d95"
+     },
+     {
+      "id": "10.2139/ssrn.2250887",
+      "idScheme": "doi",
+      "idUrl": "https://doi.org/10.2139/ssrn.2250887"
+     },
+     {
+      "id": "10.2139/ssrn.2250887",
+      "idScheme": "doi",
+      "idUrl": "https://dx.doi.org/10.2139/ssrn.2250887"
+     },
+     {
+      "id": "10.1093/icc/dtt042",
+      "idScheme": "doi",
+      "idUrl": "https://doi.org/10.1093/icc/dtt042"
+     },
+     {
+      "id": "10.1093/icc/dtt042",
+      "idScheme": "doi",
+      "idUrl": "https://dx.doi.org/10.1093/icc/dtt042"
+     },
+     {
+      "id": "10.2139/ssrn.2255797",
+      "idScheme": "doi",
+      "idUrl": "https://doi.org/10.2139/ssrn.2255797"
+     },
+     {
+      "id": "10.2139/ssrn.2255797",
+      "idScheme": "doi",
+      "idUrl": "https://dx.doi.org/10.2139/ssrn.2255797"
+     },
+     {
+      "id": "2013/ULB-DIPOT:oai:dipot.ulb.ac.be:2013/179213",
+      "idScheme": "handle",
+      "idUrl": "http://hdl.handle.net/2013/ULB-DIPOT:oai:dipot.ulb.ac.be:2013/179213"
+     },
+     {
+      "id": "20.500.14299/111707",
+      "idScheme": "handle",
+      "idUrl": "https://hdl.handle.net/20.500.14299/111707"
+     },
+     {
+      "id": "11343/33314",
+      "idScheme": "handle",
+      "idUrl": "https://hdl.handle.net/11343/33314"
+     },
+     {
+      "id": "50|doi_dedup___::a424e158447a7370d5faed281ab49d95",
+      "idScheme": "openaireIdentifier",
+      "idUrl": "https://explore.openaire.eu/search/result?id=doi_dedup___::a424e158447a7370d5faed281ab49d95"
+     }
+    ],
+    "title": "On the Origins of the Worldwide Surge in Patenting: An Industry Perspective on the R&amp;D-Patent Relationship",
+    "type": "publication",
+    "instanceType": "Article",
+    "publicationDate": "2013-01-01",
+    "authors": [
+     {
+      "name": "Danguy, J",
+      "identifiers": []
+     },
+     {
+      "name": "De Rassenfosse, G",
+      "identifiers": [
+       {
+        "id": "0000-0002-7862-0918",
+        "idScheme": "orcid",
+        "idUrl": null
+       }
+      ]
+     },
+     {
+      "name": "van Pottelsberghe de la Potterie, B",
+      "identifiers": []
+     }
+    ],
+    "collectedFrom": [
+     {
+      "name": "SSRN Electronic Journal",
+      "identifiers": [
+       {
+        "id": "10|issn__online::40ce99e275066b606ac04ff2dc8de65a",
+        "idScheme": "OpenAIRE Identifier",
+        "idUrl": "https://explore.openaire.eu/search/dataprovider?datasourceId=issn__online::40ce99e275066b606ac04ff2dc8de65a"
+       }
+      ]
+     },
+     {
+      "name": "Industrial and Corporate Change",
+      "identifiers": [
+       {
+        "id": "10|issn___print::b58f5fedd51deab79b68ed1f4247dd0c",
+        "idScheme": "OpenAIRE Identifier",
+        "idUrl": "https://explore.openaire.eu/search/dataprovider?datasourceId=issn___print::b58f5fedd51deab79b68ed1f4247dd0c"
+       }
+      ]
+     },
+     {
+      "name": "Unknown Repository",
+      "identifiers": [
+       {
+        "id": "10|openaire____::55045bd2a65019fd8e6741a755395c8c",
+        "idScheme": "OpenAIRE Identifier",
+        "idUrl": "https://explore.openaire.eu/search/dataprovider?datasourceId=openaire____::55045bd2a65019fd8e6741a755395c8c"
+       }
+      ]
+     },
+     {
+      "name": "DI-fusion",
+      "identifiers": [
+       {
+        "id": "10|opendoar____::c5866e93cab1776890fe343c9e7063fb",
+        "idScheme": "OpenAIRE Identifier",
+        "idUrl": "https://explore.openaire.eu/search/dataprovider?datasourceId=opendoar____::c5866e93cab1776890fe343c9e7063fb"
+       }
+      ]
+     },
+     {
+      "name": "Infoscience - EPFL institutional repository",
+      "identifiers": [
+       {
+        "id": "10|opendoar____::eecca5b6365d9607ee5a9d336962c534",
+        "idScheme": "OpenAIRE Identifier",
+        "idUrl": "https://explore.openaire.eu/search/dataprovider?datasourceId=opendoar____::eecca5b6365d9607ee5a9d336962c534"
+       }
+      ]
+     },
+     {
+      "name": "Research Papers in Economics",
+      "identifiers": [
+       {
+        "id": "10|opendoar____::5e9f92a01c986bafcabbafd145520b13",
+        "idScheme": "OpenAIRE Identifier",
+        "idUrl": "https://explore.openaire.eu/search/dataprovider?datasourceId=opendoar____::5e9f92a01c986bafcabbafd145520b13"
+       }
+      ]
+     },
+     {
+      "name": "DI-fusion : dépôt institutionnel de l'Université libre de Bruxelles (ULB)",
+      "identifiers": [
+       {
+        "id": "10|opendoar____::c5866e93cab1776890fe343c9e7063fb",
+        "idScheme": "OpenAIRE Identifier",
+        "idUrl": "https://explore.openaire.eu/search/dataprovider?datasourceId=opendoar____::c5866e93cab1776890fe343c9e7063fb"
+       }
+      ]
+     },
+     {
+      "name": "The University of Melbourne: Digital Repository",
+      "identifiers": [
+       {
+        "id": "10|opendoar____::2f2b265625d76a6704b08093c652fd79",
+        "idScheme": "OpenAIRE Identifier",
+        "idUrl": "https://explore.openaire.eu/search/dataprovider?datasourceId=opendoar____::2f2b265625d76a6704b08093c652fd79"
+       }
+      ]
+     }
+    ]
+   },
+   "relType": {
+    "name": "cites",
+    "typeSchema": "datacite"
+   },
+   "provenance": [
+    "Crossref",
+    "OpenAIRE",
+    "OpenCitations"
+   ]
+  }
+ ]
+}

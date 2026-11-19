@@ -1,0 +1,59 @@
+{
+ "header": {
+  "numFound": 505971,
+  "page": 1,
+  "pageSize": 2
+ },
+ "results": [
+  {
+   "legalShortName": null,
+   "legalName": "Saamelaisalueen Koulutuskeskus",
+   "websiteUrl": null,
+   "alternativeNames": null,
+   "country": {
+    "code": "FI",
+    "label": "Finland"
+   },
+   "id": "aka_________::68a8490599608360356c196492f5a4b7",
+   "pids": null,
+   "originalIds": [
+    "aka_________::Saamelaisalueen Koulutuskeskus"
+   ],
+   "fundings": [
+    {
+     "funder": {
+      "id": "aka_________::AKA",
+      "shortname": "AKA",
+      "name": "Research Council of Finland",
+      "jurisdiction": {
+       "code": "FI",
+       "label": "Finland"
+      },
+      "pid": null
+     },
+     "level0": {
+      "id": null,
+      "description": null,
+      "name": null
+     },
+     "level1": {
+      "id": null,
+      "description": null,
+      "name": null
+     },
+     "level2": {
+      "id": null,
+      "description": null,
+      "name": null
+     }
+    }
+   ],
+   "collectedFrom": [
+    {
+     "key": "openaire____::ddcdf7dcef98c2a7626bbb11d1a7b534",
+     "value": "Research.fi"
+    }
+   ]
+  }
+ ]
+}

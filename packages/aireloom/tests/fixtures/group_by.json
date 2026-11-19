@@ -1,0 +1,18 @@
+{
+ "header": {
+  "numFound": 398473000,
+  "maxScore": 1.0,
+  "queryTime": 3391,
+  "page": 1,
+  "pageSize": 10
+ },
+ "results": [],
+ "facets": {
+  "type": {
+   "publication": 241566601,
+   "dataset": 112182103,
+   "other": 43420301,
+   "software": 1303995
+  }
+ }
+}

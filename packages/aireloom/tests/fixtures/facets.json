@@ -1,0 +1,301 @@
+{
+ "header": {
+  "numFound": 241566601,
+  "page": 1,
+  "pageSize": 1
+ },
+ "results": [
+  {
+   "authors": [
+    {
+     "id": null,
+     "fullName": "Augereau, Anne",
+     "name": "Anne",
+     "surname": "Augereau",
+     "rank": 1,
+     "pid": {
+      "id": {
+       "scheme": "orcid_pending",
+       "value": "0000-0002-8626-3236"
+      },
+      "provenance": null
+     }
+    }
+   ],
+   "openAccessColor": "hybrid",
+   "publiclyFunded": false,
+   "eoscIfGuidelines": null,
+   "type": "publication",
+   "language": {
+    "code": "fra/fre",
+    "label": "French"
+   },
+   "countries": null,
+   "subjects": [
+    {
+     "subject": {
+      "scheme": "keyword",
+      "value": "biologie"
+     },
+     "provenance": null
+    },
+    {
+     "subject": {
+      "scheme": "keyword",
+      "value": "préhistoire"
+     },
+     "provenance": null
+    },
+    {
+     "subject": {
+      "scheme": "keyword",
+      "value": "cultural variations"
+     },
+     "provenance": null
+    },
+    {
+     "subject": {
+      "scheme": "keyword",
+      "value": "biology"
+     },
+     "provenance": null
+    },
+    {
+     "subject": {
+      "scheme": "keyword",
+      "value": "social invariants"
+     },
+     "provenance": null
+    },
+    {
+     "subject": {
+      "scheme": "keyword",
+      "value": "domination masculine"
+     },
+     "provenance": null
+    },
+    {
+     "subject": {
+      "scheme": "keyword",
+      "value": "invariants sociaux"
+     },
+     "provenance": null
+    },
+    {
+     "subject": {
+      "scheme": "keyword",
+      "value": "prehistory"
+     },
+     "provenance": null
+    },
+    {
+     "subject": {
+      "scheme": "keyword",
+      "value": "variations culturelles"
+     },
+     "provenance": null
+    },
+    {
+     "subject": {
+      "scheme": "FOS",
+      "value": "0601 history and archaeology"
+     },
+     "provenance": null
+    },
+    {
+     "subject": {
+      "scheme": "FOS",
+      "value": "06 humanities and the arts"
+     },
+     "provenance": null
+    },
+    {
+     "subject": {
+      "scheme": "keyword",
+      "value": "male domination"
+     },
+     "provenance": null
+    },
+    {
+     "subject": {
+      "scheme": "keyword",
+      "value": "[SHS]Humanities and Social Sciences"
+     },
+     "provenance": null
+    }
+   ],
+   "mainTitle": "The fundamental structures of prehistoric societies",
+   "subTitle": null,
+   "descriptions": [
+    "Bernard Lahire montre dans Les structures fondamentales des sociétés humaines que deux contraintes biologiques – la procréation sexuée et l’altricialité prolongée – façonnent durablement les organisations sociales humaines. Elles génèrent des rapports de dépendance et de domination, complétés par des invariants sociaux (parenté, division du travail, hiérarchies d’âge, transmission culturelle) qui structurent toutes les sociétés tout en laissant place à d’importantes variations culturelles. Pour la préhistoire, ce cadre fournit un outil essentiel : face à des données lacunaires, il permet de resserrer les hypothèses et d’ancrer les analyses dans les continuités du vivant. L’ouvrage éclaire également l’origine structurelle de la domination masculine, sans nier la capacité des sociétés humaines à en moduler ou dépasser les effets. En offrant une « carte » des invariants sociaux, Lahire apporte ainsi un appui théorique majeur aux recherches préhistoriques.",
+    "In Les structures fondamentales des sociétés humaines, Bernard Lahire shows that two biological constraints– sexual procreation and prolonged altriciality–permanently shape human social organisations. They generate relationships of dependence and domination, complemented by social invariants (kinship, division of labour, age hierarchies, cultural transmission) that structure all societies while leaving room for significant cultural variation. For prehistory, this framework provides an essential tool: in the face of incomplete data, it enables us to narrow down our hypotheses and anchor our analyses in the continuities of life. The book also sheds light on the structural origins of male domination, without denying the ability of human societies to modulate or overcome its effects. By offering a “map” of social invariants, Lahire provides major theoretical support for prehistoric research."
+   ],
+   "publicationDate": "2026-01-16",
+   "publisher": "Presses de l’Inalco",
+   "embargoEndDate": null,
+   "sources": null,
+   "formats": [
+    "application/pdf"
+   ],
+   "contributors": null,
+   "coverages": null,
+   "bestAccessRight": {
+    "code": "c_abf2",
+    "label": "OPEN",
+    "scheme": "http://vocabularies.coar-repositories.org/documentation/access_rights/"
+   },
+   "container": null,
+   "documentationUrls": null,
+   "codeRepositoryUrl": null,
+   "programmingLanguage": null,
+   "contactPeople": null,
+   "contactGroups": null,
+   "tools": null,
+   "size": null,
+   "version": null,
+   "geoLocations": null,
+   "id": "06cdd3ff4700::3c8734759ca685b966b1d737c37daeed",
+   "originalIds": [
+    "oai:episciences.org:societes-plurielles:17330",
+    "50|06cdd3ff4700::3c8734759ca685b966b1d737c37daeed"
+   ],
+   "pids": null,
+   "dateOfCollection": null,
+   "lastUpdateTimeStamp": null,
+   "indicators": {
+    "citationImpact": {
+     "citationCount": 0.0,
+     "influence": 2.1323419e-09,
+     "popularity": 2.5059315e-09,
+     "impulse": 0.0,
+     "citationClass": "C5",
+     "influenceClass": "C5",
+     "impulseClass": "C5",
+     "popularityClass": "C5"
+    }
+   },
+   "projects": null,
+   "organizations": [
+    {
+     "legalName": "Technologie et Ethnologie des Mondes PréhistoriqueS",
+     "acronym": "Technologie et Ethnologie des Mondes PréhistoriqueS",
+     "id": "pending_org_::94eb18f9a788f630a798527c00d8d687",
+     "pids": [
+      {
+       "scheme": "ROR",
+       "value": "https://ror.org/02my5hx05"
+      },
+      {
+       "scheme": "RNSR",
+       "value": "RNSR:202224230W"
+      },
+      {
+       "scheme": "wikidata",
+       "value": "Q131418772"
+      }
+     ],
+     "countries": [
+      {
+       "code": "FR",
+       "label": "France"
+      }
+     ],
+     "websiteurl": null
+    },
+    {
+     "legalName": "Institut National de Recherches Archéologiques Préventives",
+     "acronym": "Inrap",
+     "id": "openorgs____::8523b3fb228142acad01759e703cbaa8",
+     "pids": [
+      {
+       "scheme": "ROR",
+       "value": "https://ror.org/04andmq85"
+      },
+      {
+       "scheme": "PIC",
+       "value": "957238487"
+      },
+      {
+       "scheme": "RNSR",
+       "value": "RNSR:201923180T"
+      },
+      {
+       "scheme": "ISNI",
+       "value": "0000000121590925"
+      },
+      {
+       "scheme": "GRID",
+       "value": "grid.466734.4"
+      }
+     ],
+     "countries": [
+      {
+       "code": "FR",
+       "label": "France"
+      }
+     ],
+     "websiteurl": "http://www.inrap.fr/"
+    }
+   ],
+   "communities": [
+    {
+     "code": "eosc",
+     "label": "EOSC",
+     "provenance": null
+    }
+   ],
+   "collectedFrom": [
+    {
+     "key": "openaire____::6824b298c96ba906a3e6a70593affbf5",
+     "value": "Episciences"
+    }
+   ],
+   "instances": [
+    {
+     "alternateIdentifiers": [
+      {
+       "scheme": "doi",
+       "value": "10.46298/societes-plurielles.2026.17330"
+      }
+     ],
+     "license": "CC BY NC",
+     "accessRight": {
+      "code": "c_abf2",
+      "label": "OPEN",
+      "scheme": "http://vocabularies.coar-repositories.org/documentation/access_rights/",
+      "openAccessRoute": null
+     },
+     "type": "Article",
+     "urls": [
+      "https://societes-plurielles.episciences.org/17330",
+      "https://doi.org/10.46298/societes-plurielles.2026.17330"
+     ],
+     "publicationDate": "2026-01-16",
+     "refereed": "nonPeerReviewed",
+     "hostedBy": {
+      "key": "openaire____::6824b298c96ba906a3e6a70593affbf5",
+      "value": "Episciences"
+     },
+     "collectedFrom": {
+      "key": "openaire____::6824b298c96ba906a3e6a70593affbf5",
+      "value": "Episciences"
+     }
+    }
+   ],
+   "links": [],
+   "otherTitles": null,
+   "inDiamondJournal": false,
+   "green": false,
+   "isGreen": false,
+   "isInDiamondJournal": false
+  }
+ ],
+ "facets": {
+  "type": {
+   "publication": 241566601,
+   "dataset": 112182103,
+   "other": 43420301,
+   "software": 1303995
+  }
+ }
+}
