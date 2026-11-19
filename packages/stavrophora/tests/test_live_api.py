@@ -8,7 +8,6 @@ Deselected by default (``-m 'not live_api'``). Run with a polite-pool email:
 import os
 
 import pytest
-
 from stavrophora import StavrophoraClient, WorksFilters
 
 pytestmark = pytest.mark.live_api

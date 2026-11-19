@@ -1,10 +1,9 @@
 """Query building, iteration, count, and batch_get across the three dialects."""
 
 import pytest
-from pydantic import BaseModel
-
 from bibliofabric.exceptions import ConfigurationError, ValidationError
 from bibliofabric.paging import Page
+from pydantic import BaseModel
 
 from .conftest import (
     BASE_URL,

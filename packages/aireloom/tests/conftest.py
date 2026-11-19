@@ -10,7 +10,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 from aireloom import AireloomClient, AireloomSettings
 
 GRAPH_URL = "https://graph.test"

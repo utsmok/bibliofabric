@@ -4,7 +4,6 @@ import json
 from pathlib import Path
 
 import pytest
-
 from stavrophora import StavrophoraClient, StavrophoraSettings
 
 FIXTURES = Path(__file__).parent / "fixtures"

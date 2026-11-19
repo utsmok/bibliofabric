@@ -5,7 +5,6 @@ import time
 
 import httpx
 import pytest
-
 from bibliofabric.auth import (
     ClientCredentialsAuth,
     HeaderAuth,

@@ -1,9 +1,9 @@
 """Credential wiring: what each credential form puts on the wire."""
 
 from bibliofabric.auth import StaticTokenAuth
-
 from stavrophora import StavrophoraClient, StavrophoraSettings
-from tests.conftest import works_envelope
+
+from .conftest import works_envelope
 
 EMPTY = works_envelope([])
 

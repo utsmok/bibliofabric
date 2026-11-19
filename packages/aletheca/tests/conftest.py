@@ -8,7 +8,6 @@ import json
 from pathlib import Path
 
 import pytest
-
 from aletheca import AlethecaClient, AlethecaSettings
 
 BASE_URL = "https://api.openalex.org"

@@ -1,7 +1,6 @@
 """Outgoing request shape: paths, params, filter syntax, paging, batching."""
 
 import pytest
-
 from aletheca import ConfigurationError, WorksFilters
 
 from .conftest import entity, envelope, load_fixture

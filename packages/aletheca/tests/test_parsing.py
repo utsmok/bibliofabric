@@ -1,7 +1,6 @@
 """Parsing of real OpenAlex payloads into the typed models."""
 
 import pytest
-
 from aletheca import GroupByBucket
 
 from .conftest import load_fixture

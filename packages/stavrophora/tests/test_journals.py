@@ -1,6 +1,6 @@
 """Journals helpers: the DOI-per-year breakdown."""
 
-from tests.conftest import fixture
+from .conftest import fixture
 
 
 async def test_dois_by_year_parses_the_breakdown_pairs(httpx_mock, client):

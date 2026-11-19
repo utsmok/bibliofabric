@@ -1,9 +1,9 @@
 """Cursor pagination over the Crossref envelope, resume, and count."""
 
 import pytest
-
 from stavrophora import WorksFilters
-from tests.conftest import fixture, work, works_envelope
+
+from .conftest import fixture, work, works_envelope
 
 
 async def test_iterate_walks_cursor_pages(httpx_mock, client):

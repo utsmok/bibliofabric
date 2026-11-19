@@ -2,9 +2,9 @@
 
 import pytest
 from bibliofabric.exceptions import ConfigurationError
-
 from stavrophora import WorksFilters
-from tests.conftest import fixture, works_envelope
+
+from .conftest import fixture, works_envelope
 
 FIXTURE_DESCENDANTS = fixture("funder_get.json")["message"]["descendants"]
 

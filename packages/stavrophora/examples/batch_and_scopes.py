@@ -4,7 +4,6 @@ import asyncio
 import os
 
 from bibliofabric.exceptions import NotFoundError
-
 from stavrophora import StavrophoraClient
 
 

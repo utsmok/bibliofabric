@@ -1,7 +1,7 @@
 """Parsing of real payloads for the journals, funders, members, types,
 prefixes, and licenses routes."""
 
-from tests.conftest import fixture
+from .conftest import fixture
 
 
 async def test_journal_get_accepts_scalar_title(httpx_mock, client):

@@ -7,7 +7,6 @@ read-only calls.
 """
 
 import pytest
-
 from aireloom import AireloomClient, LinksFilters, ScholixFilters, relation_inverse
 
 pytestmark = pytest.mark.live_api

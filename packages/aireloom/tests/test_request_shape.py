@@ -2,7 +2,6 @@
 select, paging parameters, count, facets, and group_by."""
 
 import pytest
-
 from aireloom import (
     AireloomClient,
     ConfigurationError,

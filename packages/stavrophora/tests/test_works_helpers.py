@@ -3,7 +3,7 @@
 import pytest
 from bibliofabric.exceptions import ConfigurationError
 
-from tests.conftest import fixture, work, works_envelope
+from .conftest import fixture, work, works_envelope
 
 
 def chunk_filter(params) -> list[str]:

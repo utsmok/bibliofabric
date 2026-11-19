@@ -2,9 +2,9 @@
 
 import pytest
 from bibliofabric.exceptions import ConfigurationError
-
 from stavrophora import FunderFilters, MemberFilters
-from tests.conftest import works_envelope
+
+from .conftest import works_envelope
 
 
 @pytest.mark.parametrize(

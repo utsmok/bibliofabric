@@ -8,7 +8,6 @@ fixture in ``tests/fixtures`` was trimmed from.
 import os
 
 import pytest
-
 from aletheca import AlethecaClient, AlethecaSettings
 
 from .conftest import load_fixture

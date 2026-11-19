@@ -1,7 +1,6 @@
 """Error mapping, the retry veto, and iteration failure handling."""
 
 import pytest
-
 from aletheca import (
     AlethecaClient,
     NotFoundError,

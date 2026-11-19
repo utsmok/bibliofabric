@@ -1,8 +1,7 @@
 """Credential wiring: Keycloak client-credentials flow and anonymous mode."""
 
-from bibliofabric.auth import NoAuth
-
 from aireloom import AireloomClient, AireloomSettings
+from bibliofabric.auth import NoAuth
 
 from .conftest import TOKEN_URL, json_response, load, make_settings
 

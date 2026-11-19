@@ -1,7 +1,5 @@
 """Safe typed fields, identifier normalizers, and the User-Agent default."""
 
-from pydantic import BaseModel
-
 from bibliofabric.ids import (
     is_doi,
     normalize_doi,
@@ -11,6 +9,7 @@ from bibliofabric.ids import (
     strip_url_prefix,
 )
 from bibliofabric.types import SafeList, SafeStr
+from pydantic import BaseModel
 
 
 class Lists(BaseModel):

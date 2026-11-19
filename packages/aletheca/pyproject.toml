@@ -22,87 +22,8 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/utsmok/aletheca"
-
-# Temporary while bibliofabric 0.6.0 is unreleased; remove before release.
-[tool.uv.sources]
-bibliofabric = { git = "https://github.com/utsmok/bibliofabric", branch = "overhaul-2026-11" }
-
-[dependency-groups]
-dev = [
-    "pytest>=8.3.4",
-    "pytest-asyncio>=0.26.0",
-    "pytest-httpx>=0.35.0",
-    "ruff==0.17.6",
-    "ty==0.0.107",
-]
-docs = [
-    "mkdocs~=1.6.0",
-    "mkdocs-material~=9.5.0",
-    "mkdocstrings[python]",
-]
+"Homepage" = "https://github.com/utsmok/bibliofabric/tree/main/packages/aletheca"
 
 [build-system]
 requires = ["uv_build>=0.9.22,<0.12"]
 build-backend = "uv_build"
-
-[tool.uv.pip]
-generate-hashes = true
-
-[tool.ruff]
-line-length = 88
-extend-exclude = ["archive"]
-
-[tool.ruff.format]
-docstring-code-format = true
-docstring-code-line-length = 60
-
-[tool.ruff.lint]
-select = [
-    "E4",
-    "E7",
-    "E9",
-    "F",
-    "I",     # isort
-    "B",     # bugbear -- flake8 bugfinder
-    "Q",     # correct quotes usage
-    "PTH",   # Replace os functions with pathlib functions
-    "SIM",   # Simplify statements
-    "RET",   # Return value related rules
-    "PIE",   # misc flake8 rules
-    "FBT",   # boolean traps
-    "PERF",  # performance optimization
-    "PL",    # pylint
-    "UP",    # check for deprecated ways of coding
-    "FURB",
-]
-
-[tool.ruff.lint.pylint]
-max-args = 12
-max-branches = 25
-max-statements = 75
-max-returns = 10
-
-[tool.ruff.lint.isort]
-combine-as-imports = true
-
-# Aletheca-specific additions on top of the shared ruff config: examples and
-# the verify script use notebook-style deferred imports and illustrative
-# magic values.
-[tool.ruff.lint.per-file-ignores]
-"__init__.py" = ["F401"]
-"tests/**/*.py" = ["PLR2004"]
-
-[tool.pytest.ini_options]
-pythonpath = [
-  "src"
-]
-testpaths = ["tests"]
-python_files = "test_*.py"
-python_functions = "test_*"
-asyncio_mode = "auto"
-asyncio_default_fixture_loop_scope = "function"
-markers = [
-    "live_api: marks tests that hit the live OpenAlex API (requires API key, skipped in CI)",
-]
-addopts = "-m 'not live_api'"

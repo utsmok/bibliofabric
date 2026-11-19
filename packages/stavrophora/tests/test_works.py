@@ -2,9 +2,9 @@
 
 import pytest
 from bibliofabric.exceptions import ConfigurationError
-
 from stavrophora import WorksFilters
-from tests.conftest import fixture, work, works_envelope
+
+from .conftest import fixture, work, works_envelope
 
 
 async def test_search_request_shape(httpx_mock, client):

@@ -1,9 +1,8 @@
 """Credential wiring: where the API key travels on the wire."""
 
 import pytest
-from bibliofabric.auth import NoAuth
-
 from aletheca import AlethecaClient, APIError, AuthError
+from bibliofabric.auth import NoAuth
 
 from .conftest import entity
 

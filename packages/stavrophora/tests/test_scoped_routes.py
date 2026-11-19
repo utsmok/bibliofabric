@@ -1,9 +1,9 @@
 """Scoped works routes: path building and identifier normalization per parent."""
 
 import pytest
-
 from stavrophora import WorksFilters
-from tests.conftest import fixture, works_envelope
+
+from .conftest import fixture, works_envelope
 
 
 @pytest.mark.parametrize(

@@ -9,13 +9,12 @@ from typing import Any, ClassVar
 
 import httpx
 import pytest
-from pydantic import BaseModel
-
 from bibliofabric.client import BaseApiClient
 from bibliofabric.config import BaseApiSettings
 from bibliofabric.ids import normalize_doi
 from bibliofabric.paging import QueryDialect
 from bibliofabric.resources import ResourceClient
+from pydantic import BaseModel
 
 BASE_URL = "https://fake.test/api"
 
