@@ -1,83 +1,34 @@
-"""Utility helpers for the bibliofabric framework."""
-
-from __future__ import annotations
+"""Internal redaction helpers for logs and exception messages."""
 
 import re
-from typing import Any
+from collections.abc import Mapping
 
 _SENSITIVE_QUERY_PARAMETER = re.compile(
     r"([?&](?:access[_-]?token|api[_-]?key|client[_-]?secret|"
-    r"password|secret|token|key)=)([^&#\s]*)",
+    r"password|secret|token|key|sig|signature)=)([^&#\s]*)",
     re.IGNORECASE,
 )
 
+_SENSITIVE_HEADER_MARKERS = ("authorization", "token", "key", "secret")
+
 
 def sanitize_url(url: object) -> str:
-    """Redact credentials from a URL before it is logged or displayed."""
+    """Redact credential query parameters from a URL before it is logged."""
     return _SENSITIVE_QUERY_PARAMETER.sub(r"\1***", str(url))
 
 
-def safe_dig(obj: Any, *path: str, default: Any = None) -> Any:
-    """Safely traverse nested attribute/dict paths.
+def sanitize_headers(headers: Mapping[str, str]) -> dict[str, str]:
+    """Return a copy of ``headers`` with credential values replaced by ``***``.
 
-    Traverses a chain of attributes (on objects) or keys (on dicts).
-    Returns ``default`` if any step fails (missing attribute/key, None value).
-
-    Args:
-        obj: Root object or dict.
-        *path: Sequence of attribute/key names to traverse.
-        default: Value to return on failure (default None).
-
-    Returns:
-        The value at the end of the path, or ``default``.
-
-    Examples::
-
-        safe_dig(
-            product, "container", "name"
-        )  # returns "" or the name
-        safe_dig(
-            product,
-            "indicators",
-            "citationImpact",
-            "citationCount",
-            default=0,
+    ``mailto`` and other contact parameters are not considered secrets and are
+    left in place.
+    """
+    redacted: dict[str, str] = {}
+    for name, value in headers.items():
+        lowered = name.lower()
+        redacted[name] = (
+            "***"
+            if any(marker in lowered for marker in _SENSITIVE_HEADER_MARKERS)
+            else value
         )
-    """
-    current = obj
-    for key in path:
-        if current is None:
-            return default
-        if isinstance(current, dict):
-            if key not in current:
-                return default
-            current = current[key]
-        else:
-            current = getattr(current, key, default)
-            if current is default:
-                return default
-    return current
-
-
-class DigMixin:
-    """Mixin that adds a ``.dig()`` method to any Pydantic model.
-
-    Usage::
-
-        class MyModel(BaseModel, DigMixin): ...
-
-
-        model.dig("container", "name")  # safe chained access
-    """
-
-    def dig(self, *path: str, default: Any = None) -> Any:
-        """Safely traverse nested attributes.
-
-        Args:
-            *path: Attribute names to traverse.
-            default: Value to return on failure.
-
-        Returns:
-            Value at path, or ``default``.
-        """
-        return safe_dig(self, *path, default=default)
+    return redacted

@@ -1,17 +1,15 @@
-"""Bibliofabric: Generic framework for building modern asynchronous API clients.
+"""bibliofabric: shared core for scholarly API client libraries.
 
-This package provides the core infrastructure for building bibliometric and scholarly
-data retrieval clients. It includes generic HTTP client functionality, authentication
-strategies, caching, rate limiting, and reusable resource mixins.
-
-The framework is designed to be extended by specific API client implementations
-(like aireloom for OpenAIRE) while centralizing common functionality.
+The framework owns HTTP, auth, retries, throttling, error mapping, paging,
+batch retrieval, identifier normalization, and typed resource clients. Concrete
+client libraries (aireloom, aletheca, stavrophora) supply the API-specific
+settings, dialect, unwrapper, models, and resource subclasses.
 """
 
-try:
-    from importlib.metadata import PackageNotFoundError, version as _get_version
+from importlib.metadata import PackageNotFoundError, version as _package_version
 
-    __version__ = _get_version("bibliofabric")
+try:
+    __version__ = _package_version("bibliofabric")
 except PackageNotFoundError:
     __version__ = "0.0.0"
 __author__ = "Samuel Mok"
@@ -20,6 +18,7 @@ __email__ = "s.mok@utwente.nl"
 from .auth import (
     AuthStrategy,
     ClientCredentialsAuth,
+    HeaderAuth,
     NoAuth,
     QueryParameterAuth,
     StaticTokenAuth,
@@ -30,7 +29,6 @@ from .exceptions import (
     APIError,
     AuthError,
     BibliofabricError,
-    BibliofabricRequestError,
     ConfigurationError,
     NetworkError,
     NotFoundError,
@@ -38,45 +36,49 @@ from .exceptions import (
     TimeoutError,
     ValidationError,
 )
-from .models import ResponseUnwrapper
-from .resources import (
-    BaseResourceClient,
-    CursorIterableMixin,
-    GettableMixin,
-    PageIterableMixin,
-    SearchableMixin,
+from .ids import (
+    is_doi,
+    normalize_doi,
+    normalize_issn,
+    normalize_orcid,
+    normalize_ror,
+    strip_url_prefix,
 )
-from .safe_types import SafeList, SafeStr
-from .types import ValidationErrorContext
+from .paging import Page, QueryDialect
+from .resources import ResourceClient
+from .types import SafeList, SafeStr
+from .unwrap import ResponseUnwrapper
 
 __all__ = [
-    "__version__",
     "__author__",
     "__email__",
+    "__version__",
+    "APIError",
+    "AuthError",
     "AuthStrategy",
     "BaseApiClient",
     "BaseApiSettings",
-    "BaseResourceClient",
     "BibliofabricError",
-    "APIError",
-    "NotFoundError",
-    "ValidationError",
-    "ValidationErrorContext",
-    "RateLimitError",
-    "TimeoutError",
-    "NetworkError",
-    "ConfigurationError",
-    "AuthError",
-    "BibliofabricRequestError",
     "ClientCredentialsAuth",
-    "CursorIterableMixin",
-    "GettableMixin",
+    "ConfigurationError",
+    "HeaderAuth",
+    "NetworkError",
     "NoAuth",
-    "PageIterableMixin",
-    "QueryParameterAuth",
+    "NotFoundError",
+    "Page",
+    "QueryDialect",
+    "RateLimitError",
+    "ResourceClient",
     "ResponseUnwrapper",
     "SafeList",
     "SafeStr",
-    "SearchableMixin",
     "StaticTokenAuth",
+    "TimeoutError",
+    "ValidationError",
+    "is_doi",
+    "normalize_doi",
+    "normalize_issn",
+    "normalize_orcid",
+    "normalize_ror",
+    "strip_url_prefix",
 ]

@@ -1,105 +1,59 @@
-# bibliofabric/config.py
-from functools import lru_cache
+"""Client settings shared by bibliofabric-family clients.
 
-from pydantic import Field
+Subclass :class:`BaseApiSettings` per API and set ``model_config`` with your
+own ``env_prefix`` (for example ``SettingsConfigDict(env_prefix="ALETHECA_",
+env_file=".env", extra="ignore")``). Add API-specific fields on the subclass.
+"""
+
+from importlib.metadata import PackageNotFoundError, distribution
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
-from . import __version__ as _VERSION
-from .types import PostRequestHook, PreRequestHook, ValidationErrorHook
 
 
 class BaseApiSettings(BaseSettings):
-    """
-    Manages user-configurable settings for API clients built on bibliofabric,
-    primarily loaded from environment variables or a .env file.
-
-    This base class provides generic configuration options for HTTP client behavior,
-    caching, rate limiting, and request hooks that can be inherited by specific
-    API client implementations.
-    """
+    """Tunable client behavior, loaded from environment variables and ``.env``."""
 
     model_config = SettingsConfigDict(
-        env_file=(".env", "secrets.env"),  # Look in both .env and secrets.env
-        env_file_encoding="utf-8",
-        # Environment variables should be prefixed by the specific implementation
-        env_prefix="",  # To be overridden by inheriting classes
-        extra="ignore",  # Ignore extra fields found in environment
-        case_sensitive=False,  # Allow flexible casing in environment variables
-        arbitrary_types_allowed=True,  # Allow hook callables
+        env_file=".env", env_file_encoding="utf-8", extra="ignore"
     )
 
-    # --- Client Behavior Settings ---
-    request_timeout: float = Field(
-        default=30.0, description="Default request timeout in seconds"
-    )
-    max_retries: int = Field(
-        default=3, description="Maximum number of retries for failed requests"
-    )
-    backoff_factor: float = Field(
-        default=0.5, description="Backoff factor for retries (seconds)"
-    )
-    user_agent: str = Field(
-        default=f"bibliofabric/{_VERSION}",
-        description="User-Agent header for requests",
-    )
+    timeout: float = 30.0
+    max_retries: int = 3
+    max_retry_wait: float = 60.0
+    max_requests_per_second: float | None = None
+    max_concurrency: int = 10
+    user_agent: str | None = None
+    mailto: str | None = None
 
-    # --- Rate Limiting Settings ---
-    enable_rate_limiting: bool = Field(
-        default=True, description="Enable/disable API rate limiting features"
-    )
-    rate_limit_buffer_percentage: float = Field(
-        default=0.1,
-        description="Buffer percentage to consider rate limit approaching (e.g., 0.1 for 10%)",
-    )
-    rate_limit_retry_after_default: int = Field(
-        default=60,
-        description="Default wait time in seconds if Retry-After header is not present on 429",
-    )
-    rate_limit_pacing: bool = Field(
-        default=False,
-        description="Enable proactive request pacing from X-RateLimit headers to avoid 429s",
-    )
+    def effective_user_agent(self) -> str:
+        """Return ``user_agent`` or the default built from package metadata.
 
-    # --- Caching Settings ---
-    enable_caching: bool = Field(
-        default=False, description="Enable/disable client-side caching"
-    )
-    cache_ttl_seconds: int = Field(
-        default=300,
-        description="Default TTL for cache entries in seconds (e.g., 300 for 5 minutes)",
-    )
-    cache_max_size: int = Field(
-        default=128, description="Maximum number of items in the LRU cache"
-    )
-
-    # --- Hook Settings ---
-    pre_request_hooks: list[PreRequestHook] = Field(
-        default_factory=list,
-        description="List of hooks to call before a request is made.",
-    )
-    post_request_hooks: list[PostRequestHook] = Field(
-        default_factory=list,
-        description="List of hooks to call after a response is received and parsed.",
-    )
-    validation_error_hooks: list[ValidationErrorHook] = Field(
-        default_factory=list,
-        description="Hooks called with raw data when response model validation fails.",
-    )
-
-
-# Create a single, cached instance of settings
-@lru_cache
-def get_base_settings() -> BaseApiSettings:
-    """
-    Provides access to the base API settings.
-
-    Settings are loaded from environment variables or .env/secrets.env files.
-    The instance is cached for performance.
-
-    Note: This function provides only the base settings. Specific API client
-    implementations should provide their own settings factory functions.
-
-    Returns:
-        BaseApiSettings: The base API settings instance.
-    """
-    return BaseApiSettings()
+        The default has the form ``<package>/<version> (+<homepage>;
+        mailto:<mailto>)``. ``mailto`` is included only when set, and the
+        parenthesized part is omitted when neither homepage nor mailto exists.
+        """
+        if self.user_agent is not None:
+            return self.user_agent
+        package = type(self).__module__.partition(".")[0]
+        version = "0.0.0"
+        homepage = ""
+        try:
+            dist = distribution(package)
+            version = dist.version
+            for entry in dist.metadata.get_all("Project-URL") or []:
+                name, _, url = entry.partition(",")
+                if name.strip().lower() == "homepage":
+                    homepage = url.strip()
+                    break
+            if not homepage:
+                homepage = dist.metadata.get("Home-page") or ""
+        except PackageNotFoundError:
+            pass
+        if homepage or self.mailto:
+            inner = "; ".join(
+                part
+                for part in (homepage, f"mailto:{self.mailto}" if self.mailto else "")
+                if part
+            )
+            return f"{package}/{version} (+{inner})"
+        return f"{package}/{version}"

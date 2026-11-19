@@ -1,89 +1,37 @@
-# bibliofabric/types.py
-"""Core type definitions and data structures for the bibliofabric framework.
+"""Annotated pydantic types for tolerant API field access.
 
-This module defines common types used throughout the library, such as
-data structures for request information and type aliases for request hooks.
+``SafeStr`` coerces ``None`` to ``""``. ``SafeList`` coerces ``None`` to ``[]``,
+strips null entries from lists, and turns a scalar string into a single-element
+list instead of a character list. Coercion runs before pydantic validation, so
+defaults still apply when the API omits the field.
 """
 
-from collections.abc import Callable, Mapping
-from dataclasses import dataclass
-from typing import Any
+from collections.abc import Iterable
+from typing import Annotated, Any, TypeVar
 
-import httpx
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BeforeValidator
 
-
-class RequestData(BaseModel):
-    """Encapsulates data for a single HTTP request attempt."""
-
-    method: str
-    url: str
-    params: Mapping[str, Any] | None = None
-    json_data: Any | None = None
-    data: Mapping[str, Any] | None = None
-    headers: dict[str, str] = Field(default_factory=dict)
-
-    model_config = ConfigDict(extra="allow")
-
-    def build_request(self) -> httpx.Request:
-        """Builds an httpx.Request object from the stored data."""
-        return httpx.Request(
-            method=self.method,
-            url=self.url,
-            params=self.params,
-            json=self.json_data,
-            data=self.data,
-            headers=self.headers,
-        )
+T = TypeVar("T")
 
 
-@dataclass(frozen=True, slots=True)
-class ValidationErrorContext:
-    """Context supplied when response model validation fails.
-
-    ``raw`` contains the unparsed response body for client-level validation
-    failures, or the rejected record for resource-level validation failures.
-    """
-
-    raw: Any
-    error: Exception
-    response: httpx.Response | None = None
+def _safe_list_value(value: Any) -> Any:
+    if value is None:
+        return []
+    if isinstance(value, str | bytes):
+        return [value]
+    if isinstance(value, dict) or not isinstance(value, Iterable):
+        # Let pydantic raise a clear error for scalars that are not strings.
+        return value
+    return [item for item in value if item is not None]
 
 
-PreRequestHook = Callable[[str, str, dict[str, Any] | None, httpx.Headers], None]
-"""Type alias for a pre-request hook.
+def _safe_str_value(value: Any) -> Any:
+    return "" if value is None else value
 
-Pre-request hooks are functions called before an HTTP request is sent.
-They can be used to modify request parameters, headers, or perform other
-actions like logging.
 
-Args:
-    method (str): The HTTP method of the request (e.g., "GET", "POST").
-    url (str): The full URL of the request.
-    params (dict[str, Any] | None): A mutable dictionary of query parameters.
-        Hooks can modify this dictionary in place.
-    headers (httpx.Headers): A mutable `httpx.Headers` object. Hooks can
-        modify this object in place.
-Return:
-    None: Hooks are expected to modify arguments in-place or perform side effects.
-"""
+SafeList = Annotated[list[T], BeforeValidator(_safe_list_value)]
+"""List field that coerces ``None`` to ``[]``, strips null entries, and wraps
+scalar strings into ``[value]``."""
 
-PostRequestHook = Callable[[httpx.Response, Any, int], None]
-"""Type alias for a post-request hook.
-
-Post-request hooks are functions called after an HTTP response is received
-and processed (including potential parsing into a model). They can be used
-for custom logging, response validation, or triggering further actions.
-
-Args:
-    response (httpx.Response): The raw `httpx.Response` object.
-    parsed_model (Any): The response data parsed into a Pydantic model, if
-        an `expected_model` was provided to the request and parsing was successful.
-        Otherwise, this will be `None`.
-    attempts (int): The number of attempts made to get a successful response.
-Return:
-    None: Hooks are expected to perform side effects.
-"""
-
-ValidationErrorHook = Callable[[ValidationErrorContext], Any]
-"""Hook called with the raw value and exception from model validation."""
+SafeStr = Annotated[str, BeforeValidator(_safe_str_value)]
+"""String field that coerces ``None`` to ``""``."""

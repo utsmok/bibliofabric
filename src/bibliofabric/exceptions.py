@@ -1,4 +1,11 @@
-"""Custom exception classes for the Bibliofabric library."""
+"""Exception hierarchy for bibliofabric-family clients.
+
+Every exception carries the ``httpx.Request``/``httpx.Response`` of the failed
+call when they are available, and redacts credential query parameters from URLs
+in its string form.
+"""
+
+from typing import Any
 
 import httpx
 
@@ -6,134 +13,96 @@ from .utils import sanitize_url
 
 
 class BibliofabricError(Exception):
-    """Base exception class for all Bibliofabric errors."""
+    """Base class for all bibliofabric errors."""
 
     def __init__(
         self,
         message: str,
         *,
-        response: httpx.Response | None = None,
         request: httpx.Request | None = None,
-    ):
-        """Initializes the base exception.
-
-        Args:
-            message: The error message.
-            response: Optional httpx.Response object associated with the error.
-            request: Optional httpx.Request object associated with the error.
-        """
+        response: httpx.Response | None = None,
+    ) -> None:
         super().__init__(message)
         self.message = message
-        self.response = response
         self.request = request
+        self.response = response
 
     def __str__(self) -> str:
-        if self.response:
-            # Prefer response info if available
-            url_info = getattr(getattr(self.response, "request", None), "url", "N/A")
-            return (
-                f"{sanitize_url(self.message)} "
-                f"(Status: {self.response.status_code}, URL: {sanitize_url(url_info)})"
+        message = sanitize_url(self.message)
+        if self.response is not None:
+            url = getattr(self.response, "request", None)
+            suffix = (
+                f" (status: {self.response.status_code}, URL: {sanitize_url(url.url)})"
+                if url is not None
+                else ""
             )
-        # Check type before accessing attribute
-        if isinstance(self.request, httpx.Request):
-            # Fallback to request info if response is missing and request is valid
-            return (
-                f"{sanitize_url(self.message)} (URL: {sanitize_url(self.request.url)})"
-            )
-        # Default message if neither response nor valid request is available
-        return sanitize_url(self.message)
-
-
-class APIError(BibliofabricError):
-    """Represents a generic error returned by an API (non-specific 4xx/5xx)."""
-
-    # No additional methods needed currently
-
-
-class NotFoundError(APIError):
-    """Represents a resource not found error (404 Not Found)."""
-
-    # No additional methods needed currently
-
-
-class ValidationError(BibliofabricError):
-    """Represents a request validation error (e.g., invalid parameters, 400 Bad Request).
-
-    Can also be raised for client-side validation issues before sending request.
-    """
-
-    # No additional methods needed currently
-
-
-class RateLimitError(APIError):
-    """Represents hitting the API rate limit (429 Too Many Requests)."""
-
-    # No additional methods needed currently
-
-
-class TimeoutError(BibliofabricError):
-    """Represents a request timeout error.
-
-    This error is raised when an HTTP request does not complete within the configured timeout.
-    """
-
-    def __init__(self, message: str, *, request: httpx.Request | None = None):
-        """Initializes the TimeoutError.
-
-        Args:
-            message: The error message.
-            request: The httpx.Request object associated with the timeout.
-        """
-        super().__init__(message, request=request, response=None)
-
-    def __str__(self) -> str:
-        if self.request:
-            return (
-                f"{sanitize_url(self.message)} (URL: {sanitize_url(self.request.url)})"
-            )
-        return sanitize_url(self.message)
-
-
-class NetworkError(BibliofabricError):
-    """Represents a network connection error (e.g., DNS resolution failure, connection refused).
-
-    This error indicates a problem in establishing or maintaining a network connection
-    to the server during an HTTP request.
-    """
-
-    def __init__(self, message: str, *, request: httpx.Request | None = None):
-        """Initializes the NetworkError.
-
-        Args:
-            message: The error message.
-            request: The httpx.Request object associated with the network error.
-        """
-        super().__init__(message, request=request, response=None)
-
-    def __str__(self) -> str:
-        if self.request:
-            return (
-                f"{sanitize_url(self.message)} (URL: {sanitize_url(self.request.url)})"
-            )
-        return sanitize_url(self.message)
+            return f"{message}{suffix}"
+        if self.request is not None:
+            return f"{message} (URL: {sanitize_url(self.request.url)})"
+        return message
 
 
 class ConfigurationError(BibliofabricError):
-    """Represents an error in the library's configuration."""
-
-    def __init__(self, message: str):
-        # Configuration errors typically don't have an HTTP response
-        super().__init__(message, response=None)
+    """The library was misconfigured (missing credentials, disabled feature)."""
 
 
 class AuthError(BibliofabricError):
-    """Raised when an authentication error occurs, e.g., fetching a token fails."""
+    """Authentication failed, e.g. fetching an OAuth token."""
 
 
-class BibliofabricRequestError(BibliofabricError):
-    """Represents an error during the HTTP request process itself.
+class NetworkError(BibliofabricError):
+    """A network failure occurred (DNS, connection refused, reset)."""
 
-    This can be due to network issues, timeouts, or HTTP errors from the server
-    that are not covered by more specific exceptions like RateLimitError or NotFoundError.
+
+class TimeoutError(BibliofabricError, TimeoutError):
+    """The request exceeded its timeout; also a builtin ``TimeoutError``."""
+
+
+class APIError(BibliofabricError):
+    """The API answered with an error status that has no dedicated subclass.
+
+    ``body`` holds the parsed JSON error payload when the response body was
+    JSON (for example OpenAlex's ``{"reason": "daily_budget"}``), else ``None``.
     """
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        body: Any = None,
+        request: httpx.Request | None = None,
+        response: httpx.Response | None = None,
+    ) -> None:
+        super().__init__(message, request=request, response=response)
+        self.body = body
+
+
+class NotFoundError(APIError):
+    """The API answered 404 Not Found."""
+
+
+class RateLimitError(APIError):
+    """The API answered 429 Too Many Requests."""
+
+
+class ValidationError(BibliofabricError):
+    """A response record failed pydantic validation.
+
+    Carries the raw payload (``raw``), the pydantic error (``error``) and the
+    name of the model that rejected the payload (``model_name``).
+    """
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        raw: object,
+        error: Exception,
+        model_name: str | None = None,
+        request: httpx.Request | None = None,
+        response: httpx.Response | None = None,
+    ) -> None:
+        super().__init__(message, request=request, response=response)
+        self.raw = raw
+        self.error = error
+        self.model_name = model_name

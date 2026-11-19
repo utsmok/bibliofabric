@@ -1,1026 +1,515 @@
-"""Generic resource mixins for the bibliofabric framework.
+"""Generic typed resource client over a ``BaseApiClient``.
 
-This module provides reusable base classes and mixins that abstract common API
-resource operations like getting single entities, searching with pagination, and
-cursor-based iteration. These mixins work with the BaseApiClient and
-ResponseUnwrapper protocol to provide a consistent interface across different
-API implementations.
-
-The mixins are designed to be composable - a concrete resource client can inherit
-from multiple mixins as needed to provide the appropriate functionality for that
-specific resource type.
+Subclass :class:`ResourceClient` per endpoint: declare ``path``, ``model``, and
+``dialect``, then override the hook methods where the API deviates from the
+defaults (filter syntax, sort format, batch parameter shape, id handling).
 """
 
 import asyncio
 import inspect
-from collections.abc import AsyncIterator, Callable, Iterator
-from typing import TYPE_CHECKING, Any, Literal, Protocol
+import logging
+from collections.abc import AsyncIterator, Callable, Mapping, Sequence
+from typing import Any, ClassVar, Literal
+from urllib.parse import quote
 
-import httpx
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError as PydanticValidationError
 
-from .exceptions import BibliofabricError
-from .log_config import logger
-from .types import ValidationErrorContext
+from .client import BaseApiClient
+from .exceptions import ConfigurationError, ValidationError
+from .paging import Page, QueryDialect
 
-if TYPE_CHECKING:
-    from .client import BaseApiClient
-    from .models import ResponseUnwrapper
+logger = logging.getLogger(__name__)
 
-PagingStrategy = Literal["page", "offset"]
-"""Paging style used by ``_paging_params``.
-
-``"page"`` sends ``_param_page``/``_param_page_size`` (OpenAIRE-style), while
-``"offset"`` sends ``_param_offset``/``_param_rows`` (Crossref-style), where
-page N maps to ``offset=(N-1)*page_size``.
-"""
-
-OnError = Literal["raw", "skip", "raise"]
-"""Handling for records that fail ``_entity_model`` validation during iteration."""
+OnError = Literal["raise", "skip"]
 
 
 async def _fire_on_page(
     on_page: Callable[[int, str | None], Any] | None,
-    page: int,
+    page_number: int,
     next_cursor: str | None,
 ) -> None:
-    """Invoke an ``on_page`` callback, awaiting its result if it is awaitable.
-
-    Args:
-        on_page: The callback (sync or coroutine function), or None.
-        page: 1-indexed number of the page that was just fetched and yielded.
-        next_cursor: Cursor token for the next page, or None on the final page.
-    """
+    """Invoke an ``on_page`` callback, awaiting its result if it is awaitable."""
     if on_page is None:
         return
-    result = on_page(page, next_cursor)
+    result = on_page(page_number, next_cursor)
     if inspect.isawaitable(result):
         await result
 
 
-class ResourceClientProtocol(Protocol):
-    """Protocol that defines the interface expected by resource mixins.
+class ResourceClient[E: BaseModel]:
+    """Typed client for one API resource.
 
-    This protocol ensures that classes using the mixins have the required
-    attributes and methods that the mixins depend on.
+    Class attributes:
+
+    - ``path``: endpoint path relative to the client's base URL, e.g. ``"works"``.
+    - ``model``: the pydantic model a single entity validates against.
+    - ``dialect``: the :class:`QueryDialect` of the API (usually shared).
+    - ``filters_model``: optional declaration of the accepted filter model.
+    - ``batch_size``: ids per ``batch_get`` chunk; ``0`` disables ``batch_get``.
     """
 
-    _api_client: "BaseApiClient"
-    _entity_path: str  # The relative API path for the resource, e.g., "publications"
-    _entity_model: type[BaseModel] | None  # Pydantic model for a single entity
-    _search_response_model: (
-        type[BaseModel] | None
-    )  # Pydantic model for the search/list response envelope
-    _base_url_override: str | None
-    _supports_direct_get: bool
-    _paging_strategy: PagingStrategy
-    _param_page: str | None
-    _param_page_size: str | None
-    _param_sort: str | None
-    _param_cursor: str | None
-    _param_id: str | None
-    _param_search: str | None
-    _param_offset: str | None
-    _param_rows: str | None
+    path: ClassVar[str]
+    model: type[E]
+    dialect: ClassVar[QueryDialect]
+    filters_model: ClassVar[type[BaseModel] | None] = None
+    batch_size: ClassVar[int] = 50
 
-    @property
-    def response_unwrapper(self) -> "ResponseUnwrapper": ...
-    def _validate_sort_field(self, field: str) -> None: ...
-    @staticmethod
-    def _normalize_sort(sort_by: str) -> str: ...
-    def _serialize_filters(
-        self, filters: BaseModel | dict[str, Any] | None
-    ) -> dict[str, Any]: ...
-    def _paging_params(self, page: int, page_size: int) -> dict[str, Any]: ...
-    def _iter_parsed(
-        self,
-        results: list[dict[str, Any]],
-        *,
-        on_error: OnError,
-        failures: list[tuple[dict[str, Any], Exception]] | None,
-        on_validation_error: Callable[[ValidationErrorContext], None] | None = None,
-    ) -> Iterator[Any]: ...
+    def __init__(self, client: BaseApiClient) -> None:
+        self._client = client
 
+    # --- hooks ---------------------------------------------------------
 
-class BaseResourceClient:
-    """Base class for all resource clients in the bibliofabric framework.
+    def build_filter_params(
+        self, filters: BaseModel | Mapping[str, Any] | None
+    ) -> dict[str, str]:
+        """Convert filter criteria into query parameters.
 
-    This class provides the foundation for resource clients by holding a
-    reference to the main API client and providing access to the response
-    unwrapper. All resource mixins expect to be used with this base class.
-
-    Attributes:
-        _api_client: The main `BaseApiClient` instance used for making HTTP requests.
-        _entity_path: The specific API endpoint path for this resource (e.g., "items",
-            "users"). This must be defined by concrete subclasses.
-        _entity_model: Optional Pydantic model (`type[BaseModel] | None`) that represents
-            a single entity of this resource. If provided, methods like `get()`
-            and `iterate()` will attempt to parse results into this model.
-        _search_response_model: Optional Pydantic model (`type[BaseModel] | None`)
-            that represents the structure of a search or list response envelope for
-            this resource. If provided, `search()` will attempt to parse the entire
-            response into this model.
-
-    Paging is controlled by ``_paging_strategy``: ``"page"`` (default) sends
-    ``_param_page``/``_param_page_size`` (e.g. OpenAIRE's ``page``/``pageSize``),
-    while ``"offset"`` sends ``_param_offset``/``_param_rows`` (Crossref-style,
-    where page N maps to ``offset=(N-1)*page_size``). Any ``_param_*`` attribute
-    set to ``None`` omits that query parameter entirely, which lets cursor-only
-    clients reuse ``search()`` without sending paging parameters the API would
-    reject.
-    """
-
-    _entity_model: type[BaseModel] | None = None
-    _search_response_model: type[BaseModel] | None = None
-    _base_url_override: str | None = None
-    _supports_direct_get: bool = False
-    _paging_strategy: PagingStrategy = "page"
-    _param_page: str | None = "page"
-    _param_page_size: str | None = "pageSize"
-    _param_sort: str | None = "sortBy"
-    _param_cursor: str | None = "cursor"
-    _param_id: str | None = "id"
-    _param_search: str | None = "search"
-    # Offset ("rows") paging, e.g. Crossref; used when _paging_strategy = "offset".
-    _param_offset: str | None = "offset"
-    _param_rows: str | None = "rows"
-
-    def __init__(self, api_client: "BaseApiClient"):
-        """Initialize the base resource client.
-
-        Args:
-            api_client: An instance of BaseApiClient for making HTTP requests.
+        The default dumps pydantic models (excluding ``None`` fields, using
+        aliases) and stringifies values. Override for APIs that encode filters
+        as a single structured parameter.
         """
-        self._api_client = api_client
-        logger.debug(f"{self.__class__.__name__} initialized")
-
-    @property
-    def response_unwrapper(self) -> "ResponseUnwrapper":
-        """Get the response unwrapper from the API client.
-
-        Returns:
-            ResponseUnwrapper: The response unwrapper instance from the API client.
-        """
-        return self._api_client._response_unwrapper
-
-    def _validate_sort_field(self, field: str) -> None:
-        """Validate a sort field name. Override in subclasses for custom validation.
-
-        Default implementation does nothing (no validation).
-        Consumers can override to check against allowed fields.
-
-        Args:
-            field: The sort field name to validate.
-
-        Raises:
-            ValidationError: If the sort field is invalid.
-        """
-        ...  # noqa: PIE790
-
-    @staticmethod
-    def _normalize_sort(sort_by: str) -> str:
-        """Normalize sort expression to use uppercase direction.
-
-        Some APIs (e.g. OpenAIRE Graph v2) require the direction keyword
-        in uppercase (``DESC`` / ``ASC``). This helper ensures consistent
-        casing regardless of what the caller passes.
-
-        Args:
-            sort_by: Sort expression like ``"publicationDate desc"``.
-
-        Returns:
-            Normalized expression like ``"publicationDate DESC"``.
-        """
-        parts = sort_by.strip().split()
-        if len(parts) == 2:  # noqa: PLR2004
-            return f"{parts[0]} {parts[1].upper()}"
-        return sort_by
-
-    def _serialize_filters(
-        self, filters: BaseModel | dict[str, Any] | None
-    ) -> dict[str, Any]:
         if filters is None:
             return {}
         if isinstance(filters, BaseModel):
-            return filters.model_dump(exclude_none=True, by_alias=True)
-        if isinstance(filters, dict):
-            return dict(filters)
-        raise BibliofabricError(
-            f"filters must be a Pydantic model or dictionary, got {type(filters)}"
+            dumped = filters.model_dump(exclude_none=True, by_alias=True)
+        else:
+            dumped = dict(filters)
+        return {
+            str(key): value if isinstance(value, str) else str(value)
+            for key, value in dumped.items()
+        }
+
+    def format_sort(self, sort: str | Sequence[str]) -> dict[str, str]:
+        """Convert a sort request into query parameters.
+
+        The default sends ``<sort_param>: <value>``, joining sequences with a
+        comma. Override for APIs that split field and direction into separate
+        parameters (e.g. ``{"sort": "score", "order": "desc"}``).
+        """
+        if self.dialect.sort_param is None:
+            return {}
+        value = sort if isinstance(sort, str) else ",".join(sort)
+        return {self.dialect.sort_param: value}
+
+    def build_batch_params(self, field: str, values: Sequence[str]) -> dict[str, Any]:
+        """Build the query parameters for one ``batch_get`` chunk.
+
+        The default repeats the key once per value. Override for APIs that
+        require an OR-list syntax in a single parameter.
+        """
+        return {field: list(values)}
+
+    def normalize_id(self, value: str) -> str:
+        """Canonicalize an identifier before use in paths, batches, and keys."""
+        return value.strip()
+
+    def item_path(self, id: str) -> str:
+        """Return the single-entity path for ``id``, URL-encoding it."""
+        return f"{self.path}/{quote(self.normalize_id(id), safe='')}"
+
+    # --- operations ----------------------------------------------------
+
+    async def get(self, id: str) -> E:
+        """Fetch one entity by id; 404 raises :class:`NotFoundError`."""
+        response = await self._client.request("GET", self.item_path(id))
+        body = response.json()
+        data = self._client.unwrapper.item(body)
+        return self._validate(data, request=response.request, response=response)
+
+    async def search(
+        self,
+        filters: BaseModel | Mapping[str, Any] | None = None,
+        *,
+        query: str | None = None,
+        sort: str | Sequence[str] | None = None,
+        select: Sequence[str] | None = None,
+        page: int | None = None,
+        page_size: int | None = None,
+        cursor: str | None = None,
+        params: Mapping[str, Any] | None = None,
+    ) -> Page[E]:
+        """Fetch one page of results as a typed :class:`Page`.
+
+        ``params`` is the escape hatch for API extras (facets, ``sample``,
+        ``seed``); typed wrappers for them belong on client subclasses.
+        """
+        query_params = self._search_params(
+            filters=filters,
+            query=query,
+            sort=sort,
+            select=select,
+            page=page,
+            page_size=page_size,
+            cursor=cursor,
+            params=params,
+        )
+        response = await self._client.request("GET", self.path, params=query_params)
+        body = response.json()
+        unwrapper = self._client.unwrapper
+        results = [
+            self._validate(record, request=response.request, response=response)
+            for record in unwrapper.results(body)
+        ]
+        return Page(
+            results=results,
+            total=unwrapper.total(body),
+            next_cursor=unwrapper.next_cursor(body),
+            page=page,
+            meta=unwrapper.meta(body),
         )
 
-    def _paging_params(self, page: int, page_size: int) -> dict[str, Any]:
-        """Translate a logical (page, page_size) pair into query parameters.
-
-        The translation follows ``_paging_strategy``:
-
-        - ``"page"``: sends ``_param_page`` and ``_param_page_size`` (e.g.
-          OpenAIRE's ``page``/``pageSize``).
-        - ``"offset"``: Crossref-style paging, where page N becomes
-          ``offset=(N-1)*page_size`` sent as ``_param_offset`` and the page
-          size as ``_param_rows``.
-
-        Any parameter whose ``_param_*`` name is ``None`` is omitted entirely.
-
-        Args:
-            page: 1-indexed page number.
-            page_size: Number of results per page.
-
-        Returns:
-            Query parameters expressing the requested page.
-        """
-        params: dict[str, Any] = {}
-        if self._paging_strategy == "offset":
-            if self._param_offset is not None:
-                params[self._param_offset] = (page - 1) * page_size
-            if self._param_rows is not None:
-                params[self._param_rows] = page_size
-            return params
-        if self._param_page is not None:
-            params[self._param_page] = page
-        if self._param_page_size is not None:
-            params[self._param_page_size] = page_size
-        return params
-
-    def _iter_parsed(
-        self: ResourceClientProtocol,
-        results: list[dict[str, Any]],
+    def iterate(
+        self,
+        filters: BaseModel | Mapping[str, Any] | None = None,
         *,
-        on_error: OnError = "raw",
+        query: str | None = None,
+        sort: str | Sequence[str] | None = None,
+        select: Sequence[str] | None = None,
+        page_size: int | None = None,
+        limit: int | None = None,
+        cursor: str | None = None,
+        on_error: OnError = "raise",
         failures: list[tuple[dict[str, Any], Exception]] | None = None,
-        on_validation_error: Callable[[ValidationErrorContext], None] | None = None,
-    ) -> Iterator[Any]:
-        """Parse raw records with ``_entity_model``, applying the failure policy.
+        on_page: Callable[[int, str | None], Any] | None = None,
+        params: Mapping[str, Any] | None = None,
+    ) -> AsyncIterator[E]:
+        """Iterate over all matching entities.
 
-        Args:
-            results: Raw record dictionaries from a single page.
-            on_error: Handling for records that fail validation. ``"raw"``
-                (default) logs a warning and yields the raw dictionary,
-                ``"skip"`` logs a warning and drops the record (appending
-                ``(raw_dict, exception)`` to ``failures`` when provided), and
-                ``"raise"`` lets the validation error propagate.
-            failures: Caller-owned list that collects ``(raw_dict, exception)``
-                pairs for skipped records when ``on_error="skip"``.
-            on_validation_error: Optional synchronous hook called with the rejected
-                record and validation exception.
-
-        Yields:
-            Parsed entity models (or raw dictionaries when ``_entity_model``
-            is None).
+        Uses cursor paging when ``dialect.cursor_param`` is set, otherwise page
+        or offset paging. Stops at ``limit``, on an empty page, or when the
+        unwrapper reports no next cursor. ``on_page(page_number, next_cursor)``
+        checkpoints progress; passing a saved cursor back via ``cursor=``
+        resumes a cursor-mode harvest. Records that fail validation raise
+        :class:`ValidationError`, or are dropped and recorded in ``failures``
+        with ``on_error="skip"``.
         """
-        for result_data in results:
-            if self._entity_model is None:
-                yield result_data
-                continue
-            try:
-                yield self._entity_model.model_validate(result_data)
-            except Exception as e:
-                if on_validation_error is not None:
-                    try:
-                        on_validation_error(
-                            ValidationErrorContext(raw=result_data, error=e)
-                        )
-                    except Exception as hook_error:
-                        logger.error(
-                            f"Error executing validation error hook: {hook_error}",
-                            exc_info=True,
-                        )
-                if on_error == "raise":
-                    raise
-                if on_error == "skip":
-                    logger.warning(
-                        f"Failed to parse entity data with {self._entity_model.__name__}: {e}. "
-                        "Skipping record."
-                    )
-                    if failures is not None:
-                        failures.append((result_data, e))
-                    continue
-                logger.warning(
-                    f"Failed to parse entity data with {self._entity_model.__name__}: {e}. "
-                    "Yielding raw data."
-                )
-                yield result_data
+        cursor_param = self.dialect.cursor_param
+        if cursor_param is not None:
+            return self._iterate_cursor(
+                cursor_param,
+                filters=filters,
+                query=query,
+                sort=sort,
+                select=select,
+                page_size=page_size,
+                limit=limit,
+                cursor=cursor,
+                on_error=on_error,
+                failures=failures,
+                on_page=on_page,
+                params=params,
+            )
+        return self._iterate_pages(
+            filters=filters,
+            query=query,
+            sort=sort,
+            select=select,
+            page_size=page_size,
+            limit=limit,
+            on_error=on_error,
+            failures=failures,
+            on_page=on_page,
+            params=params,
+        )
 
     async def collect(
         self,
+        filters: BaseModel | Mapping[str, Any] | None = None,
         *,
-        filters: BaseModel | dict[str, Any] | None = None,
         limit: int | None = None,
-        sort_by: str | None = None,
-        page_size: int = 100,
-        search: str | None = None,
-        on_validation_error: Callable[[ValidationErrorContext], None] | None = None,
-    ) -> list[Any]:
-        """Collect results into a list, optionally limited.
-
-        Uses the subclass's ``iterate()`` method if available, otherwise falls back
-        to a single ``search()`` call.
-
-        Args:
-            filters: Filter criteria.
-            limit: Maximum number of results to collect. None = collect all.
-            sort_by: Field to sort by.
-            page_size: Number of results per page during iteration.
-
-        Returns:
-            A list of entities (parsed models if ``_entity_model`` is set).
-        """
-        collected: list[Any] = []
-        iterate_kwargs: dict[str, Any] = {
-            "page_size": page_size,
-            "sort_by": sort_by,
-            "filters": filters,
-        }
-        if search is not None:
-            iterate_kwargs["search"] = search
-        if on_validation_error is not None:
-            iterate_kwargs["on_validation_error"] = on_validation_error
-        # Prefer iterate (handles all pagination types) if the subclass has it
-        if hasattr(self, "iterate"):
-            async for entity in self.iterate(  # ty: ignore[call-non-callable]
-                **iterate_kwargs
-            ):
-                collected.append(entity)
-                if limit is not None and len(collected) >= limit:
-                    break
-        elif hasattr(self, "search"):
-            # Fallback: single page search
-            search_kwargs: dict[str, Any] = {
-                "page": 1,
-                "page_size": min(limit or page_size, page_size),
-                "sort_by": sort_by,
-                "filters": filters,
-            }
-            if search is not None:
-                search_kwargs["search"] = search
-            if on_validation_error is not None:
-                search_kwargs["on_validation_error"] = on_validation_error
-            response = await self.search(  # ty: ignore[call-non-callable]
-                **search_kwargs
+        query: str | None = None,
+        sort: str | Sequence[str] | None = None,
+        select: Sequence[str] | None = None,
+        page_size: int | None = None,
+        cursor: str | None = None,
+        on_error: OnError = "raise",
+        failures: list[tuple[dict[str, Any], Exception]] | None = None,
+        on_page: Callable[[int, str | None], Any] | None = None,
+        params: Mapping[str, Any] | None = None,
+    ) -> list[E]:
+        """Collect ``iterate()`` output into a list, optionally bounded."""
+        collected: list[E] = [
+            entity
+            async for entity in self.iterate(
+                filters,
+                query=query,
+                sort=sort,
+                select=select,
+                page_size=page_size,
+                limit=limit,
+                cursor=cursor,
+                on_error=on_error,
+                failures=failures,
+                on_page=on_page,
+                params=params,
             )
-            if isinstance(response, BaseModel):
-                results = getattr(response, "results", None)
-                if results:
-                    collected = list(results)[:limit] if limit else list(results)
-            elif isinstance(response, dict):
-                collected = (
-                    response.get("results", [])[:limit]
-                    if limit
-                    else response.get("results", [])
-                )
+        ]
         return collected
-
-    async def count(
-        self,
-        *,
-        filters: BaseModel | dict[str, Any] | None = None,
-        search: str | None = None,
-    ) -> int:
-        """Return total number of matching entities without fetching all results.
-
-        Performs a minimal search (page_size=1) and reads the total from
-        the response header.
-
-        Args:
-            filters: Filter criteria.
-
-        Returns:
-            Total count of matching entities, or 0 if unavailable.
-        """
-        if not hasattr(self, "search"):
-            raise NotImplementedError(
-                f"{self.__class__.__name__} does not support search; count() unavailable"
-            )
-        response = await self.search(
-            page=1, page_size=1, filters=filters, search=search
-        )  # ty: ignore[call-non-callable]
-        if isinstance(response, BaseModel):
-            header = getattr(response, "header", None)
-            if header and hasattr(header, "numFound") and header.numFound is not None:
-                return header.numFound
-        elif isinstance(response, dict):
-            header = response.get("header", {})
-            total = header.get("numFound")
-            if total is not None:
-                return int(total)
-        return 0
 
     async def first(
         self,
-        *,
-        filters: BaseModel | dict[str, Any] | None = None,
-        sort_by: str | None = None,
-        search: str | None = None,
-        on_validation_error: Callable[[ValidationErrorContext], None] | None = None,
-    ) -> Any | None:
-        """Return the first matching entity, or None if no results.
-
-        Args:
-            filters: Filter criteria.
-            sort_by: Field to sort by.
-            search: Free-text search query.
-
-        Returns:
-            The first entity, or None.
-        """
-        results = await self.collect(
-            filters=filters,
-            limit=1,
-            sort_by=sort_by,
-            page_size=1,
-            search=search,
-            on_validation_error=on_validation_error,
-        )
+        filters: BaseModel | Mapping[str, Any] | None = None,
+        **kwargs: Any,
+    ) -> E | None:
+        """Return the first matching entity, or ``None`` when there is none."""
+        results = await self.collect(filters, limit=1, **kwargs)
         return results[0] if results else None
 
-
-class GettableMixin:
-    """Mixin that provides generic get() functionality for retrieving single entities.
-
-    This mixin implements a standard pattern for fetching individual entities by ID.
-    It typically uses a search operation filtered by the entity's ID, as some APIs
-    may not offer direct GET-by-ID endpoints, or this approach offers more
-    consistency.
-
-    To use this mixin, a class must:
-    1. Inherit from `BaseResourceClient` (or a class that provides the
-       `ResourceClientProtocol` attributes).
-    2. Define `_entity_path: str` specifying the API endpoint path for the resource.
-    3. Optionally, define `_entity_model: type[BaseModel] | None`. If provided,
-       the retrieved entity data will be parsed into an instance of this model.
-       If None, raw dictionary data is returned.
-    """
-
-    async def get(
-        self: ResourceClientProtocol,
-        entity_id: str,
+    async def count(
+        self,
+        filters: BaseModel | Mapping[str, Any] | None = None,
         *,
-        raw: bool = False,
-        on_validation_error: Callable[[ValidationErrorContext], None] | None = None,
-    ) -> Any:
-        """Retrieve a single entity by its ID.
-
-        This method performs a search operation with the entity ID to fetch
-        a single entity. It uses the response unwrapper to extract the entity
-        data from the API response.
-
-        Args:
-            entity_id: The unique identifier of the entity to retrieve.
-
-        Returns:
-            Any: The entity data, either as a parsed Pydantic model (if _entity_model
-                is defined) or as a raw dictionary.
-            When ``raw=True``, returns the unparsed HTTP response.
-
-        Raises:
-            BibliofabricError: If the entity is not found or if the API request fails.
-        """
-        if not self._entity_path:
-            raise BibliofabricError(
-                f"{self.__class__.__name__} must define _entity_path"
-            )
-
-        logger.debug(f"Fetching entity with ID: {entity_id}")
-
-        try:
-            if self._supports_direct_get:
-                # Direct GET by ID: construct path like "resource/{id}"
-                direct_path = f"{self._entity_path}/{entity_id}"
-                request_kwargs: dict[str, Any] = {
-                    "params": None,
-                    "base_url_override": self._base_url_override,
-                }
-                if raw:
-                    request_kwargs["raw"] = True
-                response = await self._api_client.request(
-                    "GET", direct_path, **request_kwargs
-                )
-                if raw:
-                    return response
-                response_data = response.json()
-                entity_data = self.response_unwrapper.unwrap_single_item(response_data)
-            else:
-                # Use search with ID parameter instead of direct GET
-                params: dict[str, Any] = {}
-                if self._param_id is not None:
-                    params[self._param_id] = entity_id
-                if self._param_page_size is not None:
-                    params[self._param_page_size] = 1
-                request_kwargs: dict[str, Any] = {
-                    "params": params,
-                    "base_url_override": self._base_url_override,
-                }
-                if raw:
-                    request_kwargs["raw"] = True
-                response = await self._api_client.request(
-                    "GET", self._entity_path, **request_kwargs
-                )
-                if raw:
-                    return response
-                response_data = response.json()
-                # Use the response unwrapper to get results
-                results = self.response_unwrapper.unwrap_results(response_data)
-                if not results:
-                    entity_name = (
-                        self._entity_model.__name__ if self._entity_model else "Entity"
-                    )
-                    raise BibliofabricError(
-                        f"{entity_name} with ID '{entity_id}' not found."
-                    )
-                # Get the first (and should be only) result
-                entity_data = results[0]
-            # Parse with entity model if available
-            if self._entity_model:
-                try:
-                    return self._entity_model.model_validate(entity_data)
-                except Exception as e:
-                    if on_validation_error is not None:
-                        try:
-                            on_validation_error(
-                                ValidationErrorContext(
-                                    raw=entity_data,
-                                    error=e,
-                                    response=response,
-                                )
-                            )
-                        except Exception as hook_error:
-                            logger.error(
-                                f"Error executing validation error hook: {hook_error}",
-                                exc_info=True,
-                            )
-                    logger.warning(
-                        f"Failed to parse entity data with {self._entity_model.__name__}: {e}. "
-                        "Returning raw data."
-                    )
-                    return entity_data
-            return entity_data
-
-        except Exception as e:
-            if isinstance(e, BibliofabricError):
-                raise
-            logger.exception(
-                f"Failed to fetch entity {entity_id} from {self._entity_path}"
-            )
-            raise BibliofabricError(
-                f"Unexpected error fetching entity {entity_id}: {e}"
-            ) from e
-
-
-class SearchableMixin:
-    """Mixin that provides generic search() functionality with pagination support.
-
-    This mixin implements a standard pattern for searching entities with support
-    for pagination (page-based, or Crossref-style offset/rows when
-    ``_paging_strategy = "offset"``), filtering, and sorting. It relies on the
-    `ResponseUnwrapper` (via `BaseResourceClient`) to correctly parse the
-    API's specific list response structure.
-
-    To use this mixin, a class must:
-    1. Inherit from `BaseResourceClient` (or a class that provides the
-       `ResourceClientProtocol` attributes).
-    2. Define `_entity_path: str` specifying the API endpoint path for the resource.
-    3. Optionally, define `_search_response_model: type[BaseModel] | None`.
-       If provided, the entire search response (including pagination details and
-       results) will be parsed into an instance of this model. If None, the raw
-       JSON response dictionary is returned.
-    4. Optionally, override `_validate_sort_field()` in your resource client
-       if you want to validate the `sort_by` parameter against allowed fields.
-    """
-
-    async def search(
-        self: ResourceClientProtocol,
-        page: int = 1,
-        page_size: int = 20,
-        sort_by: str | None = None,
-        filters: BaseModel | dict[str, Any] | None = None,
-        search: str | None = None,
-        *,
-        raw: bool = False,
-        on_validation_error: Callable[[ValidationErrorContext], None] | None = None,
-    ) -> httpx.Response | BaseModel | dict[str, Any]:
-        """Search for entities with pagination support.
-
-        Args:
-            page: Page number (1-indexed). With ``_paging_strategy = "offset"``
-                (Crossref-style APIs) this is translated to
-                ``offset=(page-1)*page_size`` sent as ``_param_offset``, with
-                the size sent as ``_param_rows``.
-            page_size: Number of results per page.
-            sort_by: Field to sort by (e.g., 'title asc', 'date desc').
-            filters: Filter criteria as a Pydantic model or dictionary.
-            search: Optional free-text search query.
-            raw: Return the unparsed HTTP response.
-            on_validation_error: Optional synchronous hook called with the raw
-                response body and validation exception.
-
-        Returns:
-            Any: Search results, either as a parsed Pydantic model (if
-                _search_response_model is defined) or as raw response data.
-
-        Raises:
-            BibliofabricError: If the API request fails.
-        """
-
-        if not self._entity_path:
-            raise BibliofabricError(
-                f"{self.__class__.__name__} must define _entity_path"
-            )
-
-        # Build query parameters (paging params follow _paging_strategy and any
-        # parameter whose _param_* name is None is omitted entirely)
-        params = self._serialize_filters(filters)
-        params.update(self._paging_params(page, page_size))
-        if sort_by:
-            self._validate_sort_field(sort_by.split()[0])
-            if self._param_sort is not None:
-                params[self._param_sort] = self._normalize_sort(sort_by)
-        if search is not None and self._param_search:
-            params[self._param_search] = search
-        logger.debug(
-            f"Searching {self._entity_path}: page={page}, size={page_size}, "
-            f"sort='{sort_by}', filters={params}"
+        query: str | None = None,
+        params: Mapping[str, Any] | None = None,
+    ) -> int:
+        """Return the total number of matching entities, fetching a minimal page."""
+        query_params = self._search_params(
+            filters=filters,
+            query=query,
+            page_size=1,
+            cursor=self.dialect.cursor_start,
+            params=params,
         )
-        try:
-            request_kwargs: dict[str, Any] = {
-                "params": params,
-                "base_url_override": self._base_url_override,
-            }
-            if raw:
-                request_kwargs["raw"] = True
-            response = await self._api_client.request(
-                "GET", self._entity_path, **request_kwargs
-            )
-            if raw:
-                return response
+        response = await self._client.request("GET", self.path, params=query_params)
+        return self._client.unwrapper.total(response.json()) or 0
 
-            response_data = response.json()
-
-            # Parse with search response model if available
-            if self._search_response_model:
-                try:
-                    return self._search_response_model.model_validate(response_data)
-                except Exception as e:
-                    if on_validation_error is not None:
-                        try:
-                            on_validation_error(
-                                ValidationErrorContext(
-                                    raw=response.content,
-                                    error=e,
-                                    response=response,
-                                )
-                            )
-                        except Exception as hook_error:
-                            logger.error(
-                                f"Error executing validation error hook: {hook_error}",
-                                exc_info=True,
-                            )
-                    logger.warning(
-                        f"Failed to parse search response with {self._search_response_model.__name__}: {e}. "
-                        "Returning raw data."
-                    )
-                    return response_data
-
-            return response_data
-
-        except Exception as e:
-            if isinstance(e, BibliofabricError):
-                raise
-            logger.exception(
-                f"Failed to search {self._entity_path} with params {params}"
-            )
-            raise BibliofabricError(
-                f"Unexpected error searching {self._entity_path}: {e}"
-            ) from e
-
-
-class CursorIterableMixin:
-    """Mixin that provides generic iterate() functionality using cursor-based pagination.
-
-    This mixin implements a standard pattern for iterating through all results
-    of a resource using cursor-based pagination. It automatically handles fetching
-    subsequent pages by using the `nextCursor` (or equivalent) provided by the API,
-    as interpreted by the `ResponseUnwrapper`. It yields individual entities.
-
-    To use this mixin, a class must:
-    1. Inherit from `BaseResourceClient` (or a class that provides the
-       `ResourceClientProtocol` attributes, including access to a `ResponseUnwrapper`).
-    2. Define `_entity_path: str` specifying the API endpoint path for the resource.
-    3. Optionally, define `_entity_model: type[BaseModel] | None`. If provided,
-       each yielded entity will be parsed into an instance of this model.
-       If None, raw dictionary data for each entity is yielded.
-    """
-
-    async def iterate(
-        self: ResourceClientProtocol,
-        page_size: int = 100,
-        sort_by: str | None = None,
-        filters: BaseModel | dict[str, Any] | None = None,
-        search: str | None = None,
+    async def batch_get(
+        self,
+        ids: Sequence[str],
         *,
+        field: str = "id",
+        batch_size: int | None = None,
+        concurrency: int = 4,
+    ) -> dict[str, E]:
+        """Fetch entities for many ids in bounded, concurrent chunks.
+
+        Ids are normalized with :meth:`normalize_id` and deduplicated, split
+        into chunks of ``batch_size`` (or the class default), fetched
+        concurrently under ``concurrency``, and returned keyed by normalized
+        id. Missing ids are absent from the result. Result keys come from the
+        entity's own ``field`` attribute, falling back to ``id``.
+        """
+        size = self.batch_size if batch_size is None else batch_size
+        if size <= 0:
+            raise ConfigurationError(
+                f"{type(self).__name__}.batch_get is disabled (batch_size=0)."
+            )
+        keys = list(dict.fromkeys(self.normalize_id(value) for value in ids))
+        chunks = [keys[start : start + size] for start in range(0, len(keys), size)]
+        semaphore = asyncio.Semaphore(concurrency)
+        results: dict[str, E] = {}
+
+        async def fetch_chunk(chunk: list[str]) -> None:
+            async with semaphore:
+                query_params = self.build_batch_params(field, chunk)
+                query_params[self.dialect.page_size_param] = min(
+                    len(chunk), self.dialect.max_page_size
+                )
+                response = await self._client.request(
+                    "GET", self.path, params=query_params
+                )
+                for record in self._client.unwrapper.results(response.json()):
+                    entity = self._validate(record, response=response)
+                    key = self._record_key(entity, field)
+                    if key is not None:
+                        results[key] = entity
+
+        await asyncio.gather(*(fetch_chunk(chunk) for chunk in chunks))
+        return results
+
+    # --- internals -----------------------------------------------------
+
+    def _search_params(
+        self,
+        *,
+        filters: BaseModel | Mapping[str, Any] | None,
+        query: str | None = None,
+        sort: str | Sequence[str] | None = None,
+        select: Sequence[str] | None = None,
+        page: int | None = None,
+        page_size: int | None = None,
         cursor: str | None = None,
-        on_error: OnError = "raw",
-        failures: list[tuple[dict[str, Any], Exception]] | None = None,
-        on_validation_error: Callable[[ValidationErrorContext], None] | None = None,
-        on_page: Callable[[int, str | None], Any] | None = None,
-    ) -> AsyncIterator[Any]:
-        """Iterate through all entities matching the criteria using cursor pagination.
-
-        This method automatically handles pagination by using cursors to fetch
-        successive pages of results. It yields individual entities as they are
-        retrieved from each page.
-
-        Args:
-            page_size: Number of results to fetch per API call during iteration.
-            sort_by: Field to sort by.
-            filters: Filter criteria as a Pydantic model or dictionary.
-            cursor: Cursor token to resume iteration from, e.g. the last cursor
-                reported via ``on_page`` by an interrupted harvest. None starts
-                from the beginning (``"*"``).
-            on_error: Handling for records that fail ``_entity_model``
-                validation. ``"raw"`` (default) logs a warning and yields the
-                raw dictionary, ``"skip"`` logs a warning and drops the record
-                (appending ``(raw_dict, exception)`` to ``failures`` when
-                provided), and ``"raise"`` lets the validation error propagate
-                (wrapped into ``BibliofabricError`` by the outer error handler).
-            failures: Caller-owned list collecting ``(raw_dict, exception)``
-                pairs for skipped records when ``on_error="skip"``.
-            on_validation_error: Optional synchronous hook called with each rejected
-                record and validation exception.
-            on_page: Optional callback invoked after each page is fetched and
-                yielded, as ``(page_number, next_cursor)`` where ``next_cursor``
-                is the cursor of the next page, or None on the final page. May
-                be a coroutine function. Use it to checkpoint harvests, and
-                pass a saved cursor back in via ``cursor=`` to resume.
-
-        Yields:
-            Any: Individual entities, either as parsed Pydantic models (if
-                _entity_model is defined) or as raw dictionaries.
-
-        Raises:
-            BibliofabricError: If the API request fails during iteration.
-        """
-        if not self._entity_path:
-            raise BibliofabricError(
-                f"{self.__class__.__name__} must define _entity_path"
-            )
-
-        # Convert filters to dictionary if it's a Pydantic model
-        filter_dict = self._serialize_filters(filters)
-        logger.debug(
-            f"Iterating {self._entity_path}: pageSize={page_size}, "
-            f"sort='{sort_by}', filters={filter_dict}"
+        params: Mapping[str, Any] | None,
+    ) -> dict[str, Any]:
+        dialect = self.dialect
+        query_params: dict[str, Any] = dict(self.build_filter_params(filters))
+        size = (
+            dialect.default_page_size
+            if page_size is None
+            else min(page_size, dialect.max_page_size)
         )
-        # Build initial parameters with cursor pagination; parameters whose
-        # _param_* name is None are omitted entirely.
-        current_params: dict[str, Any] = {}
-        if self._param_cursor is not None:
-            current_params[self._param_cursor] = cursor if cursor is not None else "*"
-        if self._param_page_size is not None:
-            current_params[self._param_page_size] = page_size
+        query_params[dialect.page_size_param] = size
+        if cursor is not None and dialect.cursor_param is not None:
+            query_params[dialect.cursor_param] = cursor
+        elif dialect.offset_param is not None:
+            effective_page = dialect.page_start if page is None else page
+            query_params[dialect.offset_param] = (
+                effective_page - dialect.page_start
+            ) * size
+        elif dialect.page_param is not None:
+            query_params[dialect.page_param] = (
+                dialect.page_start if page is None else page
+            )
+        if query is not None and dialect.query_param is not None:
+            query_params[dialect.query_param] = query
+        if select and dialect.select_param is not None:
+            query_params[dialect.select_param] = ",".join(select)
+        if sort is not None:
+            query_params.update(self.format_sort(sort))
+        if params is not None:
+            query_params.update(params)
+        return query_params
 
-        if sort_by and self._param_sort is not None:
-            current_params[self._param_sort] = self._normalize_sort(sort_by)
-
-        if filter_dict:
-            current_params.update(filter_dict)
-        if search is not None and self._param_search:
-            current_params[self._param_search] = search
-
-        page_count = 0
-        while True:
-            try:
-                logger.debug(
-                    f"Iterating {self._entity_path} with params: {current_params}"
-                )
-
-                # Pass a copy of params to avoid issues with mock call_args_list
-                response = await self._api_client.request(
-                    "GET",
-                    self._entity_path,
-                    params=current_params.copy(),
-                    base_url_override=self._base_url_override,
-                )
-
-                response_data = response.json()
-
-                # Use the response unwrapper to get results and next cursor
-                results = self.response_unwrapper.unwrap_results(response_data)
-                next_cursor = self.response_unwrapper.get_next_page_token(response_data)
-                page_count += 1
-
-                if not results:
-                    logger.debug(
-                        f"No more results for {self._entity_path}, stopping iteration."
-                    )
-                    await _fire_on_page(on_page, page_count, None)
-                    break
-
-                # Yield each parsed result
-                for entity in self._iter_parsed(
-                    results,
-                    on_error=on_error,
-                    failures=failures,
-                    on_validation_error=on_validation_error,
-                ):
-                    yield entity
-
-                # Check if there are more pages
-                if not next_cursor:
-                    logger.debug(
-                        f"No nextCursor for {self._entity_path}, stopping iteration."
-                    )
-                    await _fire_on_page(on_page, page_count, None)
-                    break
-
-                # Report the cursor that continues this iteration (checkpoint hook)
-                await _fire_on_page(on_page, page_count, next_cursor)
-
-                # Update cursor for next iteration
-                if self._param_cursor is not None:
-                    current_params[self._param_cursor] = next_cursor
-                # Remove page if it accidentally got in, cursor handles pagination
-                if self._param_page is not None:
-                    current_params.pop(self._param_page, None)
-
-            except Exception as e:
-                if isinstance(e, BibliofabricError):
-                    raise
-                logger.exception(
-                    f"Failed during iteration of {self._entity_path} with params {current_params}"
-                )
-                raise BibliofabricError(
-                    f"Unexpected error during iteration of {self._entity_path}: {e}"
-                ) from e
-
-
-class PageIterableMixin:
-    """Mixin that provides generic iterate() functionality using page-based pagination.
-
-    This mixin implements a standard pattern for iterating through all results
-    of a resource using page-based pagination (incrementing page numbers, or
-    Crossref-style offset/rows when ``_paging_strategy = "offset"``).
-    It yields individual entities.
-
-    To use this mixin, a class must:
-    1. Inherit from `BaseResourceClient` (or provide the ResourceClientProtocol attributes).
-    2. Define `_entity_path: str` specifying the API endpoint path for the resource.
-    3. Optionally, define `_entity_model: type[BaseModel] | None` for per-entity parsing.
-    """
-
-    async def iterate(
-        self: ResourceClientProtocol,
-        page_size: int = 100,
-        sort_by: str | None = None,
-        filters: BaseModel | dict[str, Any] | None = None,
-        search: str | None = None,
+    def _validate(
+        self,
+        data: dict[str, Any],
         *,
-        on_error: OnError = "raw",
-        failures: list[tuple[dict[str, Any], Exception]] | None = None,
-        on_validation_error: Callable[[ValidationErrorContext], None] | None = None,
-        on_page: Callable[[int, str | None], Any] | None = None,
-        concurrency: int = 1,
-    ) -> AsyncIterator[Any]:
-        """Iterate through all entities matching the criteria using page-based pagination.
+        request: Any = None,
+        response: Any = None,
+    ) -> E:
+        try:
+            return self.model.model_validate(data)
+        except PydanticValidationError as error:
+            raise ValidationError(
+                f"Failed to validate {self.model.__name__}: {error}",
+                raw=data,
+                error=error,
+                model_name=self.model.__name__,
+                request=request,
+                response=response,
+            ) from error
 
-        This method automatically handles pagination by incrementing the page number
-        (or the offset, for ``_paging_strategy = "offset"``) to fetch successive
-        pages of results. It yields individual entities.
-
-        Args:
-            page_size: Number of results to fetch per API call during iteration.
-            sort_by: Field to sort by.
-            filters: Filter criteria as a Pydantic model or dictionary.
-            on_error: Handling for records that fail ``_entity_model``
-                validation. ``"raw"`` (default) logs a warning and yields the
-                raw dictionary, ``"skip"`` logs a warning and drops the record
-                (appending ``(raw_dict, exception)`` to ``failures`` when
-                provided), and ``"raise"`` lets the validation error propagate
-                (wrapped into ``BibliofabricError`` by the error handler).
-            failures: Caller-owned list collecting ``(raw_dict, exception)``
-                pairs for skipped records when ``on_error="skip"``.
-            on_validation_error: Optional synchronous hook called with each rejected
-                record and validation exception.
-            on_page: Optional callback invoked after each page is fetched and
-                yielded, as ``(page_number, None)`` — page-based paging has no
-                cursor token, so the page number is the checkpoint. May be a
-                coroutine function.
-            concurrency: Maximum number of page requests in flight at once
-                (default 1 = sequential). When greater than 1 and the total
-                result count is known (reported by the response unwrapper),
-                remaining pages are fetched in bounded chunks of
-                ``concurrency`` via ``asyncio.gather`` while results are still
-                yielded in page order, stopping at
-                ``ceil(total / page_size)`` pages. Falls back to sequential
-                iteration when the total is unknown.
-
-        Yields:
-            Any: Individual entities, either as parsed Pydantic models (if
-                _entity_model is defined) or as raw dictionaries.
-
-        Raises:
-            BibliofabricError: If the API request fails during iteration.
-        """
-        if not self._entity_path:
-            raise BibliofabricError(
-                f"{self.__class__.__name__} must define _entity_path"
-            )
-
-        # Convert filters to dictionary if it's a Pydantic model
-        base_params = self._serialize_filters(filters)
-        if sort_by:
-            self._validate_sort_field(sort_by.split()[0])
-            if self._param_sort is not None:
-                base_params[self._param_sort] = self._normalize_sort(sort_by)
-        if search is not None and self._param_search:
-            base_params[self._param_search] = search
-
-        logger.debug(
-            f"Iterating {self._entity_path} (page-based): pageSize={page_size}, "
-            f"sort='{sort_by}', filters={base_params}"
-        )
-
-        async def fetch_page(page: int) -> tuple[list[Any], int | None, bool]:
-            """Fetch one page, returning (parsed entities, total, has_results)."""
-            page_params = {**base_params, **self._paging_params(page, page_size)}
-            try:
-                response = await self._api_client.request(
-                    "GET",
-                    self._entity_path,
-                    params=page_params,
-                    base_url_override=self._base_url_override,
+    def _parse_or_handle(
+        self,
+        record: dict[str, Any],
+        *,
+        on_error: OnError,
+        failures: list[tuple[dict[str, Any], Exception]] | None,
+    ) -> E | None:
+        """Validate a record; on failure raise, or skip and record it."""
+        try:
+            return self.model.model_validate(record)
+        except PydanticValidationError as error:
+            if on_error == "skip":
+                if failures is not None:
+                    failures.append((record, error))
+                logger.warning(
+                    "Skipping record that failed %s validation: %s",
+                    self.model.__name__,
+                    error,
                 )
+                return None
+            raise ValidationError(
+                f"Failed to validate {self.model.__name__}: {error}",
+                raw=record,
+                error=error,
+                model_name=self.model.__name__,
+            ) from error
 
-                response_data = response.json()
+    def _record_key(self, entity: E, field: str) -> str | None:
+        value = getattr(entity, field, None)
+        if value is None:
+            value = getattr(entity, "id", None)
+        if value is None:
+            return None
+        return self.normalize_id(str(value))
 
-                # Use the response unwrapper to get results
-                results = self.response_unwrapper.unwrap_results(response_data)
-                entities = list(
-                    self._iter_parsed(
-                        results,
-                        on_error=on_error,
-                        failures=failures,
-                        on_validation_error=on_validation_error,
-                    )
-                )
-                total = self.response_unwrapper.get_total_results(response_data)
-                return entities, total, bool(results)
-            except Exception as e:
-                if isinstance(e, BibliofabricError):
-                    raise
-                logger.exception(
-                    f"Failed during iteration of {self._entity_path} with params {page_params}"
-                )
-                raise BibliofabricError(
-                    f"Unexpected error during iteration of {self._entity_path}: {e}"
-                ) from e
-
-        current_page = 1
-
+    async def _iterate_cursor(
+        self,
+        cursor_param: str,
+        *,
+        filters: BaseModel | Mapping[str, Any] | None,
+        query: str | None,
+        sort: str | Sequence[str] | None,
+        select: Sequence[str] | None,
+        page_size: int | None,
+        limit: int | None,
+        cursor: str | None,
+        on_error: OnError,
+        failures: list[tuple[dict[str, Any], Exception]] | None,
+        on_page: Callable[[int, str | None], Any] | None,
+        params: Mapping[str, Any] | None,
+    ) -> AsyncIterator[E]:
+        dialect = self.dialect
+        current = cursor if cursor is not None else dialect.cursor_start
+        page_number = 0
+        fetched = 0
         while True:
-            entities, total, has_results = await fetch_page(current_page)
-
-            if has_results:
-                for entity in entities:
-                    yield entity
-
-            await _fire_on_page(on_page, current_page, None)
-
-            if not has_results:
-                logger.debug(
-                    f"No more results for {self._entity_path} at page {current_page}, stopping iteration."
+            query_params = self._search_params(
+                filters=filters,
+                query=query,
+                sort=sort,
+                select=select,
+                page=None,
+                page_size=page_size,
+                cursor=current,
+                params=params,
+            )
+            response = await self._client.request("GET", self.path, params=query_params)
+            body = response.json()
+            unwrapper = self._client.unwrapper
+            results = unwrapper.results(body)
+            next_cursor = unwrapper.next_cursor(body)
+            page_number += 1
+            stopped = False
+            for record in results:
+                entity = self._parse_or_handle(
+                    record, on_error=on_error, failures=failures
                 )
-                break
+                if entity is None:
+                    continue
+                yield entity
+                fetched += 1
+                if limit is not None and fetched >= limit:
+                    stopped = True
+                    break
+            await _fire_on_page(on_page, page_number, next_cursor)
+            if stopped or not results or next_cursor is None:
+                return
+            current = next_cursor
 
-            if total is not None and current_page * page_size >= total:
-                logger.debug(
-                    f"Fetched all {total} results for {self._entity_path}, stopping iteration."
+    async def _iterate_pages(
+        self,
+        *,
+        filters: BaseModel | Mapping[str, Any] | None,
+        query: str | None,
+        sort: str | Sequence[str] | None,
+        select: Sequence[str] | None,
+        page_size: int | None,
+        limit: int | None,
+        on_error: OnError,
+        failures: list[tuple[dict[str, Any], Exception]] | None,
+        on_page: Callable[[int, str | None], Any] | None,
+        params: Mapping[str, Any] | None,
+    ) -> AsyncIterator[E]:
+        page = self.dialect.page_start
+        fetched = 0
+        while True:
+            query_params = self._search_params(
+                filters=filters,
+                query=query,
+                sort=sort,
+                select=select,
+                page=page,
+                page_size=page_size,
+                params=params,
+            )
+            response = await self._client.request("GET", self.path, params=query_params)
+            body = response.json()
+            unwrapper = self._client.unwrapper
+            results = unwrapper.results(body)
+            total = unwrapper.total(body)
+            for record in results:
+                entity = self._parse_or_handle(
+                    record, on_error=on_error, failures=failures
                 )
-                break
-
-            if concurrency > 1 and total is not None:
-                # Total is known, so the remaining page numbers are computable:
-                # fetch them in bounded chunks while still yielding in order.
-                last_page = -(-total // page_size)  # ceil(total / page_size)
-                page_no = current_page + 1
-                while page_no <= last_page:
-                    chunk = range(page_no, min(page_no + concurrency, last_page + 1))
-                    pages = await asyncio.gather(*(fetch_page(p) for p in chunk))
-                    exhausted = False
-                    for page, (page_entities, _, page_has_results) in zip(
-                        chunk, pages, strict=True
-                    ):
-                        if page_has_results:
-                            for entity in page_entities:
-                                yield entity
-                        await _fire_on_page(on_page, page, None)
-                        if not page_has_results:
-                            exhausted = True
-                    if exhausted:
-                        logger.debug(
-                            f"No more results for {self._entity_path} at page {page}, stopping iteration."
-                        )
-                        break
-                    page_no = chunk[-1] + 1
-                break
-
-            current_page += 1
+                if entity is None:
+                    continue
+                yield entity
+                fetched += 1
+                if limit is not None and fetched >= limit:
+                    return
+            await _fire_on_page(on_page, page, None)
+            if not results or (total is not None and fetched >= total):
+                return
+            page += 1
