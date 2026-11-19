@@ -1,0 +1,78 @@
+"""Pydantic models for the Institution entity."""
+
+from bibliofabric import SafeList, SafeStr
+from pydantic import Field
+from pydantic.config import ConfigDict
+
+from .base import BaseEntity
+from .common import (
+    Geo,
+    International,
+    Role,
+    SummaryStats,
+    TopicCount,
+    TopicShare,
+    YearCount,
+)
+from .dehydrated import DehydratedConcept, RelatedInstitution
+from .ids import InstitutionIds
+
+
+class Repository(BaseEntity):
+    """Repository linked to an institution."""
+
+    host_organization: SafeStr | None = None
+    host_organization_lineage: SafeList[str] = Field(default_factory=list)
+    host_organization_name: SafeStr | None = None
+
+    model_config = ConfigDict(extra="allow")
+
+
+class Institution(BaseEntity):
+    """An OpenAlex Institution entity."""
+
+    ids: InstitutionIds | None = None
+    is_super_system: bool | None = None
+    type: str | None = None
+
+    associated_institutions: SafeList[RelatedInstitution] = Field(default_factory=list)
+    country_code: SafeStr | None = None
+    counts_by_year: SafeList[YearCount] = Field(default_factory=list)
+    display_name_acronyms: SafeList[str] = Field(default_factory=list)
+    display_name_alternatives: SafeList[str] = Field(default_factory=list)
+    geo: Geo | None = None
+    homepage_url: SafeStr | None = None
+    image_thumbnail_url: SafeStr | None = None
+    image_url: SafeStr | None = None
+    international: International | None = None
+    lineage: SafeList[str] = Field(default_factory=list)
+    repositories: SafeList[Repository] = Field(default_factory=list)
+    roles: SafeList[Role] = Field(default_factory=list)
+    ror: SafeStr | None = None
+    works_count: int | None = None
+    cited_by_count: int | None = None
+    # Common fields
+    created_date: str | None = None
+    updated_date: str | None = None
+    works_api_url: str | None = None
+    awards_api_url: SafeStr | None = None
+    awards_count: int | None = None
+    works_count_with_children: int | None = None
+    works_count_with_children_and_predecessors: int | None = None
+    summary_stats: SummaryStats | None = None
+    status: SafeStr | None = None
+
+    # Deprecated: x_concepts → use topics
+    x_concepts: SafeList[DehydratedConcept] = Field(
+        default_factory=list,
+        description="Deprecated upstream: replaced by topics, but still returned.",
+    )
+
+    # Topics
+    topics: SafeList[TopicCount] = Field(default_factory=list)
+    topic_share: SafeList[TopicShare] = Field(default_factory=list)
+
+    # Undocumented
+    type_id: SafeStr | None = None
+
+    model_config = ConfigDict(extra="allow")

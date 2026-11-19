@@ -1,0 +1,55 @@
+"""Scoped works routes: path building and identifier normalization per parent."""
+
+import pytest
+from stavrophora import WorksFilters
+
+from .conftest import fixture, works_envelope
+
+
+@pytest.mark.parametrize(
+    ("scope", "expected_path"),
+    [
+        (lambda c: c.journals.works("20493630"), "/v1/journals/2049-3630/works"),
+        (lambda c: c.journals.works("2049-3630"), "/v1/journals/2049-3630/works"),
+        (
+            lambda c: c.funders.works("10.13039/100000001"),
+            "/v1/funders/10.13039/100000001/works",
+        ),
+        (
+            lambda c: c.funders.works("https://doi.org/10.13039/100000001"),
+            "/v1/funders/10.13039/100000001/works",
+        ),
+        (lambda c: c.members.works(297), "/v1/members/297/works"),
+        (lambda c: c.members.works("297"), "/v1/members/297/works"),
+        (lambda c: c.types.works("journal-article"), "/v1/types/journal-article/works"),
+        (lambda c: c.prefixes.works("10.1038"), "/v1/prefixes/10.1038/works"),
+    ],
+)
+async def test_scoped_route_paths(httpx_mock, client, scope, expected_path):
+    httpx_mock.add_response(json=works_envelope([]))
+    await scope(client).search()
+    assert httpx_mock.get_requests()[0].url.path == expected_path
+
+
+async def test_scoped_routes_accept_the_full_works_parameter_set(httpx_mock, client):
+    httpx_mock.add_response(json=works_envelope([]))
+    scope = client.members.works(297)
+    await scope.search(
+        WorksFilters(type="journal-article"),
+        query="immuno",
+        sort="is-referenced-by-count:desc",
+        select=["DOI", "title"],
+    )
+    params = httpx_mock.get_requests()[0].url.params
+    assert params["filter"] == "type:journal-article"
+    assert params["query"] == "immuno"
+    assert params["sort"] == "is-referenced-by-count"
+    assert params["order"] == "desc"
+    assert params["select"] == "DOI,title"
+
+
+async def test_scoped_journal_works_parse(httpx_mock, client):
+    httpx_mock.add_response(json=fixture("journal_works.json"))
+    page = await client.journals.works("20493630").search()
+    assert len(page.results) == 1
+    assert page.results[0].doi == "10.1109/tip.2009.2037465"

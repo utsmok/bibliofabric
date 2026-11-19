@@ -1,0 +1,14 @@
+[
+ {
+  "relation": "Cites",
+  "inverse": "IsCitedBy",
+  "description": "This resource cites another resource.",
+  "descriptionInverse": "This resource is cited by another resource."
+ },
+ {
+  "relation": "IsSourceOf",
+  "inverse": "IsDerivedFrom",
+  "description": "This resource is the source of another resource.",
+  "descriptionInverse": "This resource is derived from another resource."
+ }
+]

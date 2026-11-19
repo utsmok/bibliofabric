@@ -1,0 +1,52 @@
+"""Batch lookups: OR expressions, chunk splitting, DOI normalization."""
+
+from .conftest import json_response, load, params_of
+
+
+def _page_of(records: list[dict]) -> dict:
+    return {"header": {"numFound": len(records)}, "results": records}
+
+
+async def test_batch_get_single_chunk(httpx_mock, client):
+    records = [
+        {"id": "corda_____he::a", "acronym": "A"},
+        {"id": "corda_____he::b", "acronym": "B"},
+    ]
+    httpx_mock.add_response(**json_response(_page_of(records)))
+    fetched = await client.projects.batch_get(["corda_____he::a", "corda_____he::b"])
+    request = httpx_mock.get_request()
+    assert request.url.path == "/v4/projects"
+    params = params_of(request)
+    assert params["filter"] == "id:corda_____he::a|corda_____he::b"
+    assert params["page_size"] == "2"
+    assert set(fetched) == {"corda_____he::a", "corda_____he::b"}
+
+
+async def test_batch_get_splits_into_chunks(httpx_mock, client):
+    httpx_mock.add_response(**json_response(_page_of([])))
+    httpx_mock.add_response(**json_response(_page_of([])))
+    await client.projects.batch_get(
+        ["p::1", "p::2", "p::3"], batch_size=2, concurrency=2
+    )
+    filters = sorted(
+        params_of(request)["filter"] for request in httpx_mock.get_requests()
+    )
+    assert filters == ["id:p::1|p::2", "id:p::3"]
+
+
+async def test_batch_get_by_doi_normalizes_keys(httpx_mock, client):
+    record = load("rp_by_id.json")
+    record["pids"] = [{"scheme": "doi", "value": "10.1234/ABC"}]
+    httpx_mock.add_response(**json_response(_page_of([record])))
+    fetched = await client.research_products.batch_get_by_doi(
+        ["10.1234/ABC", "https://doi.org/10.1234/abc"]
+    )
+    params = params_of(httpx_mock.get_request())
+    assert params["filter"] == "ids.doi:10.1234/abc"
+    assert list(fetched) == ["10.1234/abc"]
+
+
+async def test_batch_missing_ids_absent(httpx_mock, client):
+    httpx_mock.add_response(**json_response(_page_of([])))
+    fetched = await client.projects.batch_get(["p::missing"])
+    assert fetched == {}

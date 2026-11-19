@@ -1,0 +1,31 @@
+{
+ "header": {
+  "numFound": 3964,
+  "page": 1,
+  "pageSize": 5
+ },
+ "results": [
+  {
+   "id": "dedup_wf_002::288a07aa5a6b71815aadfc57207c5167",
+   "type": "other",
+   "mainTitle": "Yogyakarta International Airport Infrastructure Article",
+   "publicationDate": "2022-06-13",
+   "authors": [
+    {
+     "id": null,
+     "fullName": "Alisya Ihsani Purnomo, Belvada Arya Gustantya, Dimas Budi Ramadhan, Puspita Fathya Ammaliasari, Rhisma Juliandari",
+     "name": "Belvada Arya Gustantya",
+     "surname": "Alisya Ihsani Purnomo, Belvada Arya Gustantya, Dimas Budi Ramadhan, Puspita Fathya Ammaliasari, Rhisma Juliandari",
+     "rank": 1,
+     "pid": {
+      "id": {
+       "scheme": "orcid_pending",
+       "value": "0000-0002-1825-0097"
+      },
+      "provenance": null
+     }
+    }
+   ]
+  }
+ ]
+}

@@ -1,117 +1,86 @@
-# Bibliofabric — Project Guide
+# AGENTS.md
 
-## What It Is
+Guidelines for AI agents and contributors working in the bibliofabric
+monorepo.
 
-Bibliofabric is a generic, async Python framework for building scholarly API client libraries. It provides the reusable infrastructure — HTTP client, auth, response parsing, pagination, caching, rate limiting, error handling — so that specific client implementations only need to define the API-specific parts.
+## Rules
 
-[AIREloom](https://github.com/utsmok/aireloom) (an OpenAIRE Graph + Scholix client) is the reference implementation.
+- Use `uv` for everything (`uv run`, `uv sync`); never bare `python` or `pip`.
+- Conventional commits (`feat:`, `fix:`, `docs:`, `chore:`, ...), short and
+  imperative. No AI attribution in commits.
+- Never print or commit secrets; live-test credentials come from `.env`
+  files that are git-ignored.
+- All four packages are async-only; stdlib `logging` only (no loguru).
+- Errors raise; there are no raw-dict fallbacks. Validation failures raise
+  `bibliofabric.ValidationError` with the payload attached.
+- `ty` gate is zero diagnostics and zero ignore comments. Fix findings by
+  declaring attributes properly; never suppress.
 
-**Status:** Alpha. Architecture is settled; needs more client implementations for validation.
+## Layout
 
-## Architecture
+| Path | Contents |
+|---|---|
+| `packages/bibliofabric` | core framework (`src/bibliofabric`) |
+| `packages/aireloom` | OpenAIRE client |
+| `packages/aletheca` | OpenAlex client |
+| `packages/stavrophora` | Crossref client |
+| `docs/<name>/` | that package's docs pages, one mkdocs site at the root |
+| `archive/<name>/` | historical documents from the standalone repos |
+| `.agents/skills/` | agent procedures (release, sibling client, live sweep) |
 
-```
-BaseApiClient              # Generic async HTTP client (client.py)
-├── retries (tenacity)
-├── caching (TTLCache)
-├── rate limiting (header parsing + throttling)
-├── pre/post request hooks
-└── auth strategy injection
-    ├── NoAuth
-    ├── StaticTokenAuth
-    └── ClientCredentialsAuth (OAuth2)
+Each `packages/<name>/AGENTS.md` records package-specific facts (architecture,
+upstream quirks, testing patterns). Tooling lives only at the root:
 
-ResponseUnwrapper          # Protocol — API-specific response parsing (models.py)
+- one virtual workspace root `pyproject.toml` (workspace members, `[tool.uv.sources]`
+  `bibliofabric = { workspace = true }`, shared `dev` and `docs` groups, ruff and
+  pytest config; `ty` needs no config),
+- one root `uv.lock`, one root `.python-version` (3.12),
+- one CI workflow (`.github/workflows/ci.yml`), one `.pre-commit-config.yaml`,
+- one mkdocs site (`mkdocs.yml`, mkdocstrings paths into all four `src` trees).
 
-BaseResourceClient         # Base for per-endpoint clients (resources.py)
-├── GettableMixin           # get(entity_id)
-├── SearchableMixin         # search(params) — paginated
-├── CursorIterableMixin     # iterate(params) — cursor-based async iterator
-└── PageIterableMixin       # iterate(params) — page-based async iterator
+## Commands
 
-BaseApiSettings            # pydantic-settings config (config.py)
-```
-
-### Key Layers
-
-| Layer | File | Role |
-|-------|------|------|
-| **Client** | `client.py` | `BaseApiClient` — generic async HTTP client. ~825 lines. Handles retries, caching, rate limiting, auth, hooks, error mapping. |
-| **Auth** | `auth.py` | `AuthStrategy` protocol + 3 implementations: `NoAuth`, `StaticTokenAuth`, `ClientCredentialsAuth`. |
-| **Models** | `models.py` | `ResponseUnwrapper` protocol — the key abstraction that makes the framework API-agnostic. |
-| **Resources** | `resources.py` | `BaseResourceClient` + 4 composable mixins for REST operations. |
-| **Config** | `config.py` | `BaseApiSettings` (pydantic-settings). Subclass with an `env_prefix` per API. |
-| **Exceptions** | `exceptions.py` | Hierarchical exceptions: `BibliofabricError` → `APIError`, `TimeoutError`, `NetworkError`, `AuthError`, etc. |
-| **Types** | `types.py` | `RequestData` model, `PreRequestHook` / `PostRequestHook` type aliases. |
-| **Logging** | `log_config.py` | Loguru-based logging configuration. |
-
-## Tech Stack
-
-- **Python 3.12+**, `uv` for dependency management
-- **httpx** — async HTTP
-- **tenacity** — retry logic
-- **pydantic v2** + **pydantic-settings** — models and config
-- **cachetools** — TTL cache
-- **loguru** — logging
-- **pytest** + **pytest-asyncio** + **pytest-httpx** — testing
-- **ruff** — linting/formatting
-- **mkdocs-material** + **mkdocstrings** — docs
-
-## Project Structure
-
-```
-src/bibliofabric/
-  __init__.py           # Package init, version from importlib.metadata
-  client.py             # BaseApiClient (~825 lines)
-  auth.py               # AuthStrategy protocol + 3 implementations
-  models.py             # ResponseUnwrapper protocol
-  resources.py          # BaseResourceClient + 4 mixins
-  config.py             # BaseApiSettings (pydantic-settings)
-  exceptions.py         # Exception hierarchy
-  types.py              # RequestData, hook type aliases
-  log_config.py         # Loguru configuration
-tests/
-  test_client.py        # BaseApiClient tests
-  test_auth.py          # Auth strategy tests
-  test_resources.py     # Mixin and resource client tests
-  test_models.py        # ResponseUnwrapper tests
-  test_log_config.py    # Logging config tests
-docs/                   # MkDocs documentation
-```
-
-## Development Commands
+Run everything from the repository root:
 
 ```bash
-uv sync --all-groups --all-extras    # Install everything
-uv run ruff check src/ --fix         # Lint
-uv run ruff format src/              # Format
-uv run pytest tests/                 # Run tests
-uv run pytest --cov=bibliofabric tests/  # Coverage
-uv run mkdocs serve                  # Local docs preview
-uv run mkdocs build                  # Build docs
+uv sync --all-packages --all-groups   # install all packages plus dev/docs groups
+uv run pytest                         # all four suites (46+48+66+83 tests)
+uv run pytest packages/aletheca/tests # one package's suite
+uv run pytest -m live_api             # live API smoke tests (needs credentials in .env)
+uv run ruff check                     # lint all packages
+uv run ruff format --check            # formatting gate
+uv run ty check packages/*/src        # type gate
+uv run mkdocs build --strict          # docs gate
+uv build --package <name>             # build one package (wheel contains py.typed)
 ```
 
-## Key Patterns & Conventions
+Client packages depend on `bibliofabric>=0.6,<0.7`; inside the workspace uv
+resolves that to the sibling package (`[tool.uv.sources]` at the root).
 
-- **All I/O is async.** Every method is `async def`. Use `async with` for client lifecycle.
-- **Protocol-based extensibility.** `ResponseUnwrapper` and `AuthStrategy` are `Protocol` classes — implement the interface, no inheritance required.
-- **Mixin composition.** Resource clients inherit from `BaseResourceClient` + needed mixins (`GettableMixin`, `SearchableMixin`, etc.). Class attributes (`_entity_path`, `_entity_model`) configure behavior.
-- **Pydantic settings.** `BaseApiSettings` reads from env vars and `.env` files. Subclass with `env_prefix` per API (e.g., `AIRELOOM_`).
-- **No generic `T` type param on `ResponseUnwrapper`.** It works with `dict[str, Any]` — type safety comes from Pydantic models in the consuming library.
-- **`extra="allow"`** is the norm for models (forward-compatible with API additions).
-- **Error mapping.** `httpx` exceptions are caught and re-raised as the bibliofabric hierarchy inside `BaseApiClient._execute_request`.
+## Release flow
 
-## Known Issues & Gaps
+1. Bump `version` in `packages/<name>/pyproject.toml` and add a Keep a
+   Changelog entry to that package's `CHANGELOG.md`. Commit and push `main`.
+2. Tag `<name>-v<version>` (example: `aletheca-v0.4.1`) and push the tag.
+   A plain `v<version>` tag still publishes bibliofabric.
+3. CI runs lint + the test matrix, then a publish job that runs
+   `uv build --package <name>` and uploads via OIDC to the `pypi`
+   environment. One site deploys docs on pushes to `main`.
+4. Verify the release is on PyPI before advertising it; `uv`'s index cache
+   can lag a fresh publish for minutes (`uv cache clean <pkg>` if `uv add`
+   claims the new version is unavailable).
 
-- **Few client implementations.** AIREloom (reference) and [aletheca](https://github.com/utsmok/aletheca) (OpenAlex) are the known consumers. More would validate the abstractions.
-- **No streaming support.** All responses are buffered in memory.
-- **Cache is in-process only.** `TTLCache` — no shared cache across processes.
-- **No request cancellation.** No explicit support for cancelling in-flight requests beyond closing the client.
+Per-package release notes go in that package's changelog only; the root
+README table lists versions and needs a row update only when a package is
+added or renamed.
 
-## Reference Implementation
+## Adding a package
 
-See [AIREloom](https://github.com/utsmok/aireloom) at `~/dev/AIREloom` for a complete client built on bibliofabric:
-- `src/aireloom/client.py` — `AireloomClient(BaseApiClient)`
-- `src/aireloom/unwrapper.py` — `OpenAireUnwrapper(ResponseUnwrapper)`
-- `src/aireloom/resources/` — Mixin-based resource clients
-- `src/aireloom/config.py` — `ApiSettings(BaseApiSettings)` with `env_prefix="AIRELOOM_"`
+Create `packages/<new-name>/` with the family shape (`src/<new_name>/` with
+`client.py`, `config.py`, `dialect.py`, `unwrapper.py`, `filters.py`,
+`models/`, `resources/`; `tests/` with pytest-httpx; `py.typed`; README and
+CHANGELOG). The `packages/*` workspace glob picks it up automatically; add a
+docs section to the root `mkdocs.yml` nav, a row to the README table, a
+matrix entry in `ci.yml`, and a PyPI trusted publisher entry for the new
+package name. See `.agents/skills/bibliofabric-sibling-client/` for the full
+procedure.
