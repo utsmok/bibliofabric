@@ -1,0 +1,38 @@
+site_name: Stavrophora Docs
+site_url: https://utsmok.github.io/stavrophora/
+repo_url: https://github.com/utsmok/stavrophora/
+site_author: S. Mok
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+
+nav:
+  - Home: index.md
+  - Usage:
+      - works: works.md
+      - journals: journals.md
+      - funders: funders.md
+      - members: members.md
+      - types: types.md
+      - prefixes: prefixes.md
+      - licenses: licenses.md
+  - Errors, retries, rate limits: errors.md
+  - Crossref quirks: quirks.md
+  - API reference: reference.md
+watch:
+  - src/stavrophora
