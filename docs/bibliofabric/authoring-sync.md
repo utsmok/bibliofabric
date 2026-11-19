@@ -46,9 +46,9 @@ module paths.
 ## 3. Naming rule
 
 Every class defined in an `_async` module `X` becomes `SyncX` in the twin,
-except client entry points: `<Name>Client` becomes `<Name>SyncClient`
-(`AlethecaClient` -> `AlethecaSyncClient`, `AireloomClient` ->
-`AireloomSyncClient`, `StavrophoraClient` -> `StavrophoraSyncClient`). The
+except classes whose name ends in `Client`: `<Name>Client` becomes
+`<Name>SyncClient` (`AlethecaClient` -> `AlethecaSyncClient`,
+`WorksClient` -> `WorksSyncClient`, `StavrophoraClient` -> `StavrophoraSyncClient`). The
 core framework classes are fixed exceptions: `BaseApiClient` ->
 `SyncBaseApiClient`, `ResourceClient` -> `SyncResourceClient`. Private helper
 classes (leading underscore) keep their name. You do not configure any of
