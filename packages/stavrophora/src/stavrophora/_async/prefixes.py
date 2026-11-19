@@ -9,8 +9,8 @@ from urllib.parse import quote
 
 from bibliofabric.exceptions import ConfigurationError
 
-from ..dialect import CrossrefResourceClient
 from ..models import Prefix
+from .dialect import CrossrefResourceClient
 from .works import ScopedWorksResource
 
 
