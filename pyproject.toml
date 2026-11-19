@@ -47,7 +47,6 @@ build-backend = "uv_build"
 
 [tool.ruff]
 line-length = 88
-extend-exclude = ["tests/_legacy"]
 
 [tool.ruff.format]
 docstring-code-format = true
@@ -97,4 +96,4 @@ asyncio_default_fixture_loop_scope = "function"
 markers = [
     "live_api: marks tests that hit the live Crossref API (skipped by default)",
 ]
-addopts = "-m 'not live_api' --ignore=tests/_legacy"
+addopts = "-m 'not live_api'"
