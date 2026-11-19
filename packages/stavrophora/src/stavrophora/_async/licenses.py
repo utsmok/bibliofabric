@@ -4,8 +4,8 @@ Crossref has no single-license route (verified live: ``/licenses/{id}``
 returns 404); only the list endpoint exists.
 """
 
-from ..dialect import CrossrefResourceClient
 from ..models import License
+from .dialect import CrossrefResourceClient
 
 
 class LicensesResource(CrossrefResourceClient[License]):

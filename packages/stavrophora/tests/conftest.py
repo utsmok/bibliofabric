@@ -1,10 +1,7 @@
-"""Shared fixtures: a client with the pacing gate disabled, and probe fixtures."""
+"""Shared payload builders and fixture bodies used by both test variants."""
 
 import json
 from pathlib import Path
-
-import pytest
-from stavrophora import StavrophoraClient, StavrophoraSettings
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
@@ -12,20 +9,6 @@ FIXTURES = Path(__file__).parent / "fixtures"
 def fixture(name: str) -> dict:
     """Load a trimmed real response body from ``tests/fixtures``."""
     return json.loads((FIXTURES / name).read_text())
-
-
-@pytest.fixture
-def settings() -> StavrophoraSettings:
-    # max_requests_per_second=None skips the pacing gate so mocked tests stay fast
-    return StavrophoraSettings(
-        mailto="tester@example.org", max_requests_per_second=None, max_concurrency=8
-    )
-
-
-@pytest.fixture
-async def client(settings):
-    async with StavrophoraClient(settings=settings) as client:
-        yield client
 
 
 def works_envelope(items: list[dict], **message: object) -> dict:

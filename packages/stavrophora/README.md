@@ -1,8 +1,8 @@
-# Stavrophora: Asynchronous Python client for the Crossref API
+# Stavrophora: Python client for the Crossref API
 
 Samuel Mok -- s.mok@utwente.nl -- 2026
 
-Stavrophora is an async Python client for the [Crossref REST API](https://www.crossref.org/documentation/retrieve-metadata/rest-api/), built on [bibliofabric](https://github.com/utsmok/bibliofabric).
+Stavrophora is a Python client for the [Crossref REST API](https://www.crossref.org/documentation/retrieve-metadata/rest-api/), built on [bibliofabric](https://github.com/utsmok/bibliofabric). It ships an async variant and a generated sync twin (`StavrophoraSyncClient`).
 
 **License:** MIT
 
@@ -15,6 +15,7 @@ Stavrophora is an async Python client for the [Crossref REST API](https://www.cr
 - **Batch DOI lookup** -- comma-separated repeated `filter=doi:` keys (Crossref's supported OR form)
 - **Scoped works** -- `client.journals.works(issn)`, `client.funders.works(id)`, `client.members.works(id)`, `client.prefixes.works(prefix)`, `client.types.works(type)`
 - **Facets and sampling** -- `client.works.facets(...)` returns `{facet: {value: count}}`; `client.works.sample(n)` draws up to 100 random works
+- **Sync twin** -- `StavrophoraSyncClient` and the `Sync*` resource classes are generated from the async source; same parameters, same errors, same pacing, no event loop required
 - **Route-aware parameters** -- works-only parameters (`sort`, `select`, filters) are rejected client-side on routes that would answer 400
 
 ## Installation
@@ -57,6 +58,28 @@ async def main():
 
 asyncio.run(main())
 ```
+
+The same calls with the sync twin, in a plain script or a notebook:
+
+```python
+from stavrophora import StavrophoraSyncClient
+
+with StavrophoraSyncClient(mailto="you@example.org") as client:
+    work = client.works.get("10.1038/nature12373")
+    print(work.title[0], work.issued.date_parts)
+
+    page = client.works.search(
+        WorksFilters(type="journal-article"),
+        query="crow nesting",
+        sort="is-referenced-by-count:desc",
+        select=["DOI", "title", "is-referenced-by-count"],
+        page_size=5,
+    )
+    for item in page.results:
+        print(item.doi, item.is_referenced_by_count)
+```
+
+The sync client never starts or touches an event loop, so it also works when called from inside a running one.
 
 `search()` returns a `bibliofabric.Page`: `.results` (typed models), `.total`, `.next_cursor`, and `.meta` (the raw envelope minus results, e.g. facets). 
 

@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- Sync twins: `StavrophoraSyncClient` and the `Sync*` resource classes, generated from the async source with `scripts/unasync.py`. Same parameters, errors, paging, and per-class pacing as the async client; the sync client never touches an event loop, so it works in scripts, notebooks, and inside a running event loop.
 - `works.exists(doi)`: HEAD-based existence check that returns False on 404.
 - `works.latest_version(doi)`: resolves a DOI to the newest record in its Crossmark update chain via `updated-by`.
 - `funders.descendants(funder_id)` and `include_descendants=True` on `funders.works()`, which ORs the descendant funder ids into the `funder` filter.

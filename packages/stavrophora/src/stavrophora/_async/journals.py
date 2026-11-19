@@ -4,8 +4,8 @@ from urllib.parse import quote
 
 from bibliofabric.ids import normalize_issn
 
-from ..dialect import CrossrefResourceClient
 from ..models import Journal
+from .dialect import CrossrefResourceClient
 from .works import ScopedWorksResource
 
 

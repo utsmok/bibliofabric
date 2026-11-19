@@ -2,8 +2,8 @@
 
 from urllib.parse import quote
 
-from ..dialect import CrossrefResourceClient
 from ..models import CrossRefType
+from .dialect import CrossrefResourceClient
 from .works import ScopedWorksResource
 
 
