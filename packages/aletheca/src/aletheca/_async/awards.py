@@ -1,7 +1,7 @@
 """Client for the OpenAlex awards endpoint."""
 
-from ..dialect import OpenAlexResourceClient
 from ..models import Award
+from .dialect import OpenAlexResourceClient
 
 
 class AwardsClient(OpenAlexResourceClient[Award]):

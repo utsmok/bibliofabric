@@ -10,7 +10,7 @@ import os
 import pytest
 from aletheca import AlethecaClient, AlethecaSettings
 
-from .conftest import load_fixture
+from ..conftest import load_fixture
 
 pytestmark = pytest.mark.live_api
 
@@ -82,6 +82,12 @@ async def test_oa_pdf_urls_smoke(live_client):
 
 async def test_count_smoke(live_client):
     assert await live_client.works.count({"is_oa": True}) > 0
+
+
+async def test_batch_smoke(live_client):
+    works = await live_client.works.batch_get_by_doi(["10.7717/peerj.4375"])
+    assert "10.7717/peerj.4375" in works
+    assert works["10.7717/peerj.4375"].id
 
 
 async def test_iterate_smoke(live_client):

@@ -5,7 +5,7 @@ import json
 
 from aletheca import Link, LocationRecord
 
-from .conftest import envelope, load_fixture
+from ..conftest import envelope, load_fixture
 
 LOCATION = load_fixture("location.json")
 LINKS_PAGE = load_fixture("links_page.json")

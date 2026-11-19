@@ -7,8 +7,8 @@ from bibliofabric.exceptions import ConfigurationError
 from bibliofabric.paging import Page
 from pydantic import BaseModel
 
-from ..dialect import OpenAlexResourceClient
 from ..models import GroupByBucket, Work
+from .dialect import OpenAlexResourceClient
 
 VALID_CORPUS_VALUES = ("core", "expansion", "all")
 MAX_SAMPLE_SIZE = 10_000

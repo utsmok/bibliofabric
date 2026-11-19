@@ -8,7 +8,7 @@ from aletheca import (
     ValidationError,
 )
 
-from .conftest import entity, envelope
+from ..conftest import entity, envelope
 
 
 def retrying(settings) -> AlethecaClient:

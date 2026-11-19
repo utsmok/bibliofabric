@@ -1,7 +1,7 @@
 """Client for the OpenAlex keywords endpoint."""
 
-from ..dialect import OpenAlexResourceClient
 from ..models import Keyword
+from .dialect import OpenAlexResourceClient
 
 
 class KeywordsClient(OpenAlexResourceClient[Keyword]):

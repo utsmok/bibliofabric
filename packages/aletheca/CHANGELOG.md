@@ -10,6 +10,14 @@ Rewritten onto bibliofabric 0.6 (one generic `ResourceClient` + `QueryDialect`
 per API, `Page[E]` results, stdlib logging, no loguru, no sessions). Breaking
 changes are listed under each heading.
 
+### Added
+
+- Sync support: `AlethecaSyncClient` and one `*SyncClient` twin per resource
+  (for example `WorksSyncClient`), generated from the async source by
+  `scripts/unasync.py`. Same parameters, errors, retries, paging, and rate
+  limits; the sync client never touches an event loop, so it works in plain
+  scripts, in Jupyter, in threads, and inside a running event loop.
+
 ### Removed
 
 - `AlethecaSession` and `session.queries.*`; use `AlethecaClient` and the

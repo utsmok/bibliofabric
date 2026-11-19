@@ -1,14 +1,16 @@
-"""Shared fixtures: an AlethecaClient wired through pytest-httpx.
+"""Shared fixtures and payload builders used by both test variants.
 
 Settings are built with every relevant field explicit (and ``_env_file=None``)
-so the suite never depends on the developer's shell or ``.env``.
+so the suite never depends on the developer's shell or ``.env``. The variant
+``client`` fixtures live in ``tests/_async/conftest.py`` (and its generated
+``tests/_sync`` twin).
 """
 
 import json
 from pathlib import Path
 
 import pytest
-from aletheca import AlethecaClient, AlethecaSettings
+from aletheca import AlethecaSettings
 
 BASE_URL = "https://api.openalex.org"
 FIXTURES = Path(__file__).parent / "fixtures"
@@ -31,11 +33,6 @@ def settings():
         max_retry_wait=0.05,
         timeout=5.0,
     )
-
-
-@pytest.fixture
-def client(settings):
-    return AlethecaClient(settings=settings)
 
 
 def envelope(results: list, *, count: int = 1, next_cursor: str | None = None) -> dict:

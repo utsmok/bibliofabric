@@ -3,7 +3,7 @@
 import pytest
 from aletheca import ConfigurationError, WorksFilters
 
-from .conftest import entity, envelope, load_fixture
+from ..conftest import entity, envelope, load_fixture
 
 WORK = load_fixture("work.json")
 
