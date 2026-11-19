@@ -23,6 +23,8 @@ class QueryDialect:
     page_size_param: str
     max_page_size: int
     default_page_size: int = 25
+    iterate_page_size: int | None = None
+    """Page size ``iterate()`` uses when the caller passes none; falls back to ``default_page_size``."""
     page_param: str | None = "page"
     page_start: int = 1
     offset_param: str | None = None

@@ -435,6 +435,8 @@ class ResourceClient[E: BaseModel]:
         params: Mapping[str, Any] | None,
     ) -> AsyncIterator[E]:
         dialect = self.dialect
+        if page_size is None:
+            page_size = dialect.iterate_page_size
         current = cursor if cursor is not None else dialect.cursor_start
         page_number = 0
         fetched = 0
@@ -454,6 +456,8 @@ class ResourceClient[E: BaseModel]:
             unwrapper = self._client.unwrapper
             results = unwrapper.results(body)
             next_cursor = unwrapper.next_cursor(body)
+            if next_cursor == current:  # Solr-style APIs echo the cursor when exhausted
+                next_cursor = None
             page_number += 1
             stopped = False
             for record in results:
@@ -486,6 +490,8 @@ class ResourceClient[E: BaseModel]:
         on_page: Callable[[int, str | None], Any] | None,
         params: Mapping[str, Any] | None,
     ) -> AsyncIterator[E]:
+        if page_size is None:
+            page_size = self.dialect.iterate_page_size
         page = self.dialect.page_start
         fetched = 0
         while True:

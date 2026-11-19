@@ -118,6 +118,24 @@ async def test_iterate_cursor_resume(httpx_mock, make_client):
     assert [widget.id for widget in collected] == ["w3"]
 
 
+async def test_iterate_cursor_stops_when_api_echoes_cursor(httpx_mock, make_client):
+    # Solr-backed APIs return the request cursor unchanged once results run out.
+    httpx_mock.add_response(
+        url=f"{BASE_URL}/works?pageSize=2&cursor=c2",
+        json=_json_page([{"id": "w3"}], total=3, next_cursor="c2"),
+    )
+    client = make_client()
+    checkpoints: list[tuple[int, str | None]] = []
+    collected = [
+        widget
+        async for widget in CursorWidgets(client).iterate(
+            page_size=2, cursor="c2", on_page=lambda n, c: checkpoints.append((n, c))
+        )
+    ]
+    assert [widget.id for widget in collected] == ["w3"]
+    assert checkpoints == [(1, None)]
+
+
 async def test_iterate_cursor_limit(httpx_mock, make_client):
     httpx_mock.add_response(
         url=f"{BASE_URL}/works?pageSize=2&cursor=*",
