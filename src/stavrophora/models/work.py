@@ -114,6 +114,10 @@ class Work(EntityModel):
     #: ``{relation-type: [{id, id-type, asserted-by}]}``; relation types are open-ended
     relation: dict[str, SafeList[RelationObject]] | None = None
     update_policy: SafeStr | None = Field(None, alias="update-policy")
+    #: works that updated this one (later versions, corrections, ...);
+    #: present on the older records of an update chain
+    updated_by: SafeList[UpdateTo] = Field(default_factory=list, alias="updated-by")
+    #: works this one updated (earlier versions); present on the newer records
     update_to: SafeList[UpdateTo] = Field(default_factory=list, alias="update-to")
     group_title: SafeStr | None = Field(None, alias="group-title")
     clinical_trial_number: SafeList[ClinicalTrialNumber] = Field(

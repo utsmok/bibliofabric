@@ -3,7 +3,7 @@
 from collections.abc import Mapping, Sequence
 from typing import Any
 
-from bibliofabric.exceptions import ConfigurationError
+from bibliofabric.exceptions import ConfigurationError, NotFoundError
 from bibliofabric.ids import normalize_doi
 from bibliofabric.paging import Page
 from pydantic import BaseModel
@@ -32,6 +32,44 @@ class WorksResource(CrossrefResourceClient[Work]):
     def normalize_id(self, value: str | int) -> str:
         """Return the bare lowercase DOI (DOIs are case-insensitive)."""
         return normalize_doi(str(value))
+
+    async def exists(self, doi: str) -> bool:
+        """Return True when the DOI is registered at Crossref.
+
+        Sends a HEAD request, which Crossref documents as an existence
+        check, so no record body is transferred. Unknown DOIs answer 404
+        and return False.
+        """
+        try:
+            await self._client.request("HEAD", self.item_path(doi))
+        except NotFoundError:
+            return False
+        return True
+
+    async def latest_version(self, doi: str) -> Work:
+        """Resolve a DOI to the newest record in its Crossmark update chain.
+
+        Older records of an update chain carry ``updated-by`` entries naming
+        the works that updated them, each with a timestamp. This follows the
+        entry with the latest timestamp until a record carries no further
+        updates and returns it. A DOI without update data is returned
+        unchanged after one request.
+        """
+        work = await self.get(doi)
+        seen = {self.normalize_id(doi)}
+        while work.updated_by:
+            newest = max(
+                work.updated_by,
+                key=lambda entry: (
+                    (entry.updated.timestamp or 0) if entry.updated else 0
+                ),
+            )
+            target = newest.doi
+            if not target or self.normalize_id(target) in seen:
+                break
+            seen.add(self.normalize_id(target))
+            work = await self.get(target)
+        return work
 
     async def agency(self, doi: str) -> WorkAgency:
         """Look up the DOI registration agency for a work."""

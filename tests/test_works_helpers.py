@@ -104,3 +104,34 @@ async def test_agency_requests_the_agency_route(httpx_mock, client):
     assert agency.doi == "10.1038/nature12373"
     assert agency.agency.id == "crossref"
     assert agency.agency.label == "Crossref"
+
+
+async def test_exists_sends_head_and_reports_404(httpx_mock, client):
+    httpx_mock.add_response(status_code=200)
+    assert await client.works.exists("https://doi.org/10.1038/Nature12373") is True
+    request = httpx_mock.get_requests()[0]
+    assert request.method == "HEAD"
+    assert request.url.path == "/v1/works/10.1038/nature12373"
+
+    httpx_mock.add_response(status_code=404, text="Resource not found.")
+    assert await client.works.exists("10.9999/nope") is False
+
+
+async def test_latest_version_follows_updated_by_to_the_head_record(httpx_mock, client):
+    httpx_mock.add_response(json=fixture("work_updated.json"))
+    httpx_mock.add_response(json=fixture("work_version.json"))
+    latest = await client.works.latest_version("10.12688/f1000research.141553.1")
+    assert [r.url.path for r in httpx_mock.get_requests()] == [
+        "/v1/works/10.12688/f1000research.141553.1",
+        "/v1/works/10.12688/f1000research.141553.3",
+    ]
+    assert latest.doi == "10.12688/f1000research.141553.3"
+
+
+async def test_latest_version_returns_records_without_updates_unchanged(
+    httpx_mock, client
+):
+    httpx_mock.add_response(json=fixture("work_version.json"))
+    latest = await client.works.latest_version("10.12688/f1000research.141553.3")
+    assert len(httpx_mock.get_requests()) == 1
+    assert latest.doi == "10.12688/f1000research.141553.3"

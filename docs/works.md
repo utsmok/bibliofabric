@@ -66,6 +66,20 @@ works["10.1038/nature12373"]
 
 The helper batches 50 DOIs per request through the repeated-key OR form, runs the batches concurrently, and returns a dict keyed by bare lowercase DOI. DOIs that return nothing are absent from the dict.
 
+## Existence checks and versions
+
+```python
+registered = await client.works.exists("10.1038/nature12373")
+```
+
+`exists()` sends a HEAD request, which Crossref documents as an existence check, so no record body is transferred. It returns `False` for unknown DOIs (404).
+
+```python
+work = await client.works.latest_version("10.12688/f1000research.141553.1")
+```
+
+`latest_version()` resolves a DOI to the newest record in its Crossmark update chain. Older records carry `updated-by` entries naming the works that updated them; the helper follows the entry with the latest timestamp until a record carries no further updates and returns it. A DOI without update data is returned unchanged.
+
 ## Facets, sample, agency
 
 ```python
