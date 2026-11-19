@@ -7,6 +7,7 @@ try:
 except PackageNotFoundError:
     __version__ = "0.0.0"
 
+from bibliofabric import Page
 from bibliofabric.exceptions import (
     APIError,
     AuthError,
@@ -20,9 +21,10 @@ from bibliofabric.exceptions import (
 )
 
 from .client import StavrophoraClient
+from .config import StavrophoraSettings, get_settings
+from .filters import FunderFilters, MemberFilters, WorksFilters
 from .models import (
     Agency,
-    ApiResponse,
     Contributor,
     CrossRefDate,
     CrossRefType,
@@ -33,18 +35,15 @@ from .models import (
     License,
     LicenseRef,
     Member,
-    Message,
     Prefix,
     Work,
     WorkAgency,
 )
-from .session import StavrophoraSession
 
 __all__ = [
     "__version__",
     "Agency",
     "APIError",
-    "ApiResponse",
     "AuthError",
     "BibliofabricError",
     "ConfigurationError",
@@ -52,21 +51,25 @@ __all__ = [
     "CrossRefDate",
     "CrossRefType",
     "Funder",
+    "FunderFilters",
     "FunderRef",
+    "get_settings",
     "IssnType",
     "Journal",
     "License",
     "LicenseRef",
     "Member",
-    "Message",
+    "MemberFilters",
     "NetworkError",
     "NotFoundError",
+    "Page",
     "Prefix",
     "RateLimitError",
     "StavrophoraClient",
-    "StavrophoraSession",
+    "StavrophoraSettings",
     "TimeoutError",
     "ValidationError",
     "Work",
     "WorkAgency",
+    "WorksFilters",
 ]

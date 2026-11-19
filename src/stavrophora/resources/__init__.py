@@ -1,20 +1,20 @@
-"""Resource clients for Crossref API endpoints."""
+"""Typed resource clients for the Crossref routes."""
 
-from .funders_client import FundersClient
-from .journals_client import JournalsClient
-from .licenses_client import LicensesClient
-from .members_client import MembersClient
-from .prefixes_client import PrefixesClient
-from .types_client import TypesClient
-from .works_client import ScopedWorksClient, WorksClient
+from .funders import FundersResource
+from .journals import JournalsResource
+from .licenses import LicensesResource
+from .members import MembersResource
+from .prefixes import PrefixesResource
+from .types import TypesResource
+from .works import ScopedWorksResource, WorksResource
 
 __all__ = [
-    "FundersClient",
-    "JournalsClient",
-    "LicensesClient",
-    "MembersClient",
-    "PrefixesClient",
-    "ScopedWorksClient",
-    "TypesClient",
-    "WorksClient",
+    "FundersResource",
+    "JournalsResource",
+    "LicensesResource",
+    "MembersResource",
+    "PrefixesResource",
+    "ScopedWorksResource",
+    "TypesResource",
+    "WorksResource",
 ]

@@ -1,42 +1,23 @@
-"""Endpoint path constants and Pydantic filter models for the Crossref API."""
+"""Pydantic filter models for the Crossref API.
+
+Crossref filter syntax: ``filter=field:value,field:value`` — repeated keys
+act as OR (``filter=doi:a,doi:b``), different keys as AND. The field lists
+mirror the live API's advertised filters (verified 2026-11); unknown filters
+are accepted through ``extra="allow"`` and serialized with their literal
+name.
+"""
 
 from pydantic import BaseModel, ConfigDict, Field
 
-# Endpoint paths
-WORKS = "works"
-JOURNALS = "journals"
-FUNDERS = "funders"
-MEMBERS = "members"
-TYPES = "types"
-PREFIXES = "prefixes"
-LICENSES = "licenses"
 
-#: Valid sort fields for ``sort=`` (Crossref accepts a fixed set).
-SORT_FIELDS = (
-    "score",
-    "relevance",
-    "updated",
-    "deposited",
-    "indexed",
-    "published",
-    "published-print",
-    "published-online",
-    "issued",
-    "is-referenced-by-count",
-    "references-count",
-)
+class _CrossrefFilters(BaseModel):
+    """Shared config: kebab-case wire names, unknown filters preserved."""
+
+    model_config = ConfigDict(extra="allow", populate_by_name=True)
 
 
-class WorksFilters(BaseModel):
-    """Filter model for the Works endpoint.
-
-    Crossref filter syntax: ``filter=field:value,field:value`` — repeated
-    keys act as OR (``filter=doi:a,doi:b``), different keys as AND.
-
-    The field list mirrors the live API's advertised filters
-    (verified 2026-09); unknown filters are accepted through
-    ``extra="allow"`` and serialized with their literal name.
-    """
+class WorksFilters(_CrossrefFilters):
+    """Filter model for the works routes (top-level and scoped)."""
 
     # Type / classification
     type: str | None = None
@@ -50,6 +31,7 @@ class WorksFilters(BaseModel):
     issn: str | None = None
     isbn: str | None = None
     orcid: str | None = None
+    ror_id: str | None = Field(None, alias="ror-id")
     prefix: str | None = None
     member: str | None = None
     container_title: str | None = Field(None, alias="container-title")
@@ -57,8 +39,9 @@ class WorksFilters(BaseModel):
     article_number: str | None = Field(None, alias="article-number")
     archive: str | None = None
     content_domain: str | None = Field(None, alias="content-domain")
+    project_id: str | None = Field(None, alias="project-id")
 
-    # Publication dates (YYYY-MM-DD, or YYYY-MM, or YYYY)
+    # Publication dates (YYYY, YYYY-MM, or YYYY-MM-DD)
     from_pub_date: str | None = Field(None, alias="from-pub-date")
     until_pub_date: str | None = Field(None, alias="until-pub-date")
     from_print_pub_date: str | None = Field(None, alias="from-print-pub-date")
@@ -69,10 +52,19 @@ class WorksFilters(BaseModel):
     until_issued_date: str | None = Field(None, alias="until-issued-date")
     from_accepted_date: str | None = Field(None, alias="from-accepted-date")
     until_accepted_date: str | None = Field(None, alias="until-accepted-date")
+    from_approved_date: str | None = Field(None, alias="from-approved-date")
+    until_approved_date: str | None = Field(None, alias="until-approved-date")
+    from_awarded_date: str | None = Field(None, alias="from-awarded-date")
+    until_awarded_date: str | None = Field(None, alias="until-awarded-date")
     from_posted_date: str | None = Field(None, alias="from-posted-date")
     until_posted_date: str | None = Field(None, alias="until-posted-date")
+    from_event_start_date: str | None = Field(None, alias="from-event-start-date")
+    until_event_start_date: str | None = Field(None, alias="until-event-start-date")
+    from_event_end_date: str | None = Field(None, alias="from-event-end-date")
+    until_event_end_date: str | None = Field(None, alias="until-event-end-date")
 
-    # System dates — incremental sync
+    # System dates — incremental sync (prefer created/deposit windows: cursor
+    # result sets under index-date windows are not stable since 2026-08-24)
     from_index_date: str | None = Field(None, alias="from-index-date")
     until_index_date: str | None = Field(None, alias="until-index-date")
     from_created_date: str | None = Field(None, alias="from-created-date")
@@ -86,6 +78,10 @@ class WorksFilters(BaseModel):
     update_type: str | None = Field(None, alias="update-type")
     updates: str | None = None
     is_update: bool | None = Field(None, alias="is-update")
+
+    # Citation thresholds
+    gte_citation: int | None = Field(None, alias="gte-citation")
+    lte_citation: int | None = Field(None, alias="lte-citation")
 
     # Funding
     funder: str | None = None
@@ -108,9 +104,15 @@ class WorksFilters(BaseModel):
     relation_object_type: str | None = Field(None, alias="relation.object-type")
     relation_type: str | None = Field(None, alias="relation.type")
 
+    # Publisher assertions
+    assertion: str | None = None
+    assertion_group: str | None = Field(None, alias="assertion-group")
+    clinical_trial_number: str | None = Field(None, alias="clinical-trial-number")
+
     # Boolean presence filters
     has_abstract: bool | None = Field(None, alias="has-abstract")
     has_affiliation: bool | None = Field(None, alias="has-affiliation")
+    has_affiliation_ror_id: bool | None = Field(None, alias="has-affiliation-ror-id")
     has_authenticated_orcid: bool | None = Field(None, alias="has-authenticated-orcid")
     has_archive: bool | None = Field(None, alias="has-archive")
     has_assertion: bool | None = Field(None, alias="has-assertion")
@@ -135,4 +137,19 @@ class WorksFilters(BaseModel):
     has_update_policy: bool | None = Field(None, alias="has-update-policy")
     has_alias: bool | None = Field(None, alias="has-alias")
 
-    model_config = ConfigDict(extra="allow", populate_by_name=True)
+
+class MemberFilters(_CrossrefFilters):
+    """Filter model for ``/members`` (probe-verified 2026-11)."""
+
+    prefix: str | None = None
+    backfile_doi_count: str | None = Field(None, alias="backfile-doi-count")
+    current_doi_count: str | None = Field(None, alias="current-doi-count")
+
+
+class FunderFilters(_CrossrefFilters):
+    """Filter model for ``/funders``; ``location`` is a case-sensitive country name."""
+
+    location: str | None = None
+
+
+__all__ = ["FunderFilters", "MemberFilters", "WorksFilters"]

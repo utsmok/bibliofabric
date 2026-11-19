@@ -1,6 +1,6 @@
-"""Crossref-specific response unwrapper implementation.
+"""Crossref-specific response unwrapper.
 
-Handles the Crossref JSON response structure::
+Teaches bibliofabric how to navigate the Crossref JSON envelope::
 
     {
         "status": "ok",
@@ -15,38 +15,44 @@ Handles the Crossref JSON response structure::
     }
 
 Single-item routes (``/works/{doi}``, ``/journals/{issn}``, ...) put the
-entity itself in ``message``.
+entity itself in ``message``; the remaining envelope metadata (facets,
+totals, cursors) surfaces through :meth:`CrossrefUnwrapper.meta`.
 """
 
 from typing import Any
 
-from bibliofabric.models import ResponseUnwrapper
+from bibliofabric.unwrap import ResponseUnwrapper
 
 
 class CrossrefUnwrapper(ResponseUnwrapper):
     """Crossref implementation of the ResponseUnwrapper protocol."""
 
     @staticmethod
-    def _message(response_json: dict[str, Any]) -> dict[str, Any]:
+    def _message(body: dict[str, Any]) -> dict[str, Any]:
         """Return the ``message`` body, tolerating list-valued error bodies."""
-        message = response_json.get("message")
+        message = body.get("message")
         return message if isinstance(message, dict) else {}
 
-    def unwrap_results(self, response_json: dict[str, Any]) -> list[dict[str, Any]]:
+    def results(self, body: Any) -> list[dict[str, Any]]:
         """Extract the list of results from ``message.items``."""
-        return self._message(response_json).get("items", [])
+        return self._message(body).get("items", [])
 
-    def unwrap_single_item(self, response_json: dict[str, Any]) -> dict[str, Any]:
-        """Extract a single item. Crossref GET /{route}/{id} returns it in ``message``."""
-        return self._message(response_json)
+    def item(self, body: Any) -> dict[str, Any]:
+        """Extract a single item; Crossref GET ``/{route}/{id}`` returns it in ``message``."""
+        return self._message(body)
 
-    def get_next_page_token(self, response_json: dict[str, Any]) -> str | None:
-        """Extract the next cursor from ``message.next-cursor``."""
-        return self._message(response_json).get("next-cursor")
-
-    def get_total_results(self, response_json: dict[str, Any]) -> int | None:
+    def total(self, body: Any) -> int | None:
         """Extract the total count from ``message.total-results``."""
-        total = self._message(response_json).get("total-results")
-        if total is not None:
-            return int(total)
-        return None
+        total = self._message(body).get("total-results")
+        return int(total) if total is not None else None
+
+    def next_cursor(self, body: Any) -> str | None:
+        """Extract the next cursor from ``message.next-cursor``."""
+        cursor = self._message(body).get("next-cursor")
+        return str(cursor) if cursor is not None else None
+
+    def meta(self, body: Any) -> dict[str, Any]:
+        """Return the ``message`` body minus the results (facets, totals)."""
+        meta = dict(self._message(body))
+        meta.pop("items", None)
+        return meta
