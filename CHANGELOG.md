@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased] - 0.3.0
 
+### Added
+
+- `works.exists(doi)`: HEAD-based existence check that returns False on 404.
+- `works.latest_version(doi)`: resolves a DOI to the newest record in its Crossmark update chain via `updated-by`.
+- `funders.descendants(funder_id)` and `include_descendants=True` on `funders.works()`, which ORs the descendant funder ids into the `funder` filter.
+- `journals.dois_by_year(issn)`: DOI counts per issued year from the journal record's breakdowns.
+
 ### Breaking
 
 Rewritten onto the bibliofabric 0.6 core (`ResourceClient`, `QueryDialect`, `Page`). Summary of breaking changes:

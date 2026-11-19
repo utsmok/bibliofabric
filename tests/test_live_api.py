@@ -78,6 +78,16 @@ async def test_works_batch_get_by_doi(live_client):
     assert set(works) == {"10.1038/nature12373", "10.1093/hesc/9780198807506.003.0005"}
 
 
+async def test_works_exists(live_client):
+    assert await live_client.works.exists("10.1038/nature12373") is True
+    assert await live_client.works.exists("10.9999/stavrophora-smoke") is False
+
+
+async def test_works_latest_version(live_client):
+    latest = await live_client.works.latest_version("10.12688/f1000research.141553.2")
+    assert latest.doi != "10.12688/f1000research.141553.2"
+
+
 async def test_journals(live_client):
     journal = await live_client.journals.get("20493630")
     assert journal.primary_title
@@ -85,11 +95,25 @@ async def test_journals(live_client):
     assert page.results
 
 
+async def test_journals_dois_by_year(live_client):
+    counts = await live_client.journals.dois_by_year("20493630")
+    assert sum(counts.values()) > 0
+
+
 async def test_funders(live_client):
     funder = await live_client.funders.get("10.13039/100000001")
     assert funder.name == "National Science Foundation"
     page = await live_client.funders.search(query="boeing", page_size=2)
     assert page.results
+
+
+async def test_funders_descendants(live_client):
+    descendants = await live_client.funders.descendants("10.13039/100000002")
+    assert descendants
+    page = await live_client.funders.works(
+        "10.13039/100000002", include_descendants=True
+    ).search(page_size=2)
+    assert len(page.results) == 2
 
 
 async def test_members(live_client):
