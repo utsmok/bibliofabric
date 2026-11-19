@@ -1,0 +1,144 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+    tags: ["*-v*", "v*"]
+  pull_request:
+    branches: ["main"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install & setup uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: uv sync --locked --all-packages --all-groups
+
+      - name: Lint with ruff
+        run: uv run ruff check
+
+      - name: Check formatting with ruff
+        run: uv run ruff format --check
+
+      - name: Type check with ty
+        run: uv run ty check packages/*/src
+
+  test:
+    runs-on: ubuntu-latest
+    needs: lint
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [bibliofabric, aireloom, aletheca, stavrophora]
+        python-version: ["3.12", "3.13"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install & setup uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: uv sync --locked --all-packages --all-groups
+
+      - name: Test with pytest
+        run: uv run pytest packages/${{ matrix.package }}/tests
+
+  docs:
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    concurrency:
+      group: gh-pages-deploy
+      cancel-in-progress: false
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install & setup uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: uv sync --locked --all-packages --all-groups
+
+      - name: Build & deploy docs
+        run: uv run mkdocs gh-deploy --force
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    environment:
+      name: pypi
+    permissions:
+      id-token: write
+
+    steps:
+      - name: Determine package from tag
+        run: |
+          tag="${GITHUB_REF_NAME}"
+          if [[ "$tag" == *-v* ]]; then
+            pkg="${tag%-v*}"
+          else
+            # Plain "v<version>" tags release the core package.
+            pkg="bibliofabric"
+          fi
+          echo "package=$pkg" >> "$GITHUB_OUTPUT"
+        id: package
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install & setup uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build wheel and sdist
+        run: uv build --package ${{ steps.package.outputs.package }}
+
+      - name: Publish package to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
