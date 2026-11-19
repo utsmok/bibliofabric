@@ -24,6 +24,17 @@ class JournalsResource(CrossrefResourceClient[Journal]):
         """Return the hyphenated uppercase ISSN form."""
         return normalize_issn(str(value))
 
+    async def dois_by_year(self, issn: str) -> dict[int, int]:
+        """Return DOI counts per issued year from the journal record.
+
+        Reads ``breakdowns.dois-by-issued-year`` from ``/journals/{issn}``.
+        Returns an empty dict when the record carries no breakdown.
+        """
+        journal = await self.get(issn)
+        if journal.breakdowns is None:
+            return {}
+        return dict(journal.breakdowns.dois_by_issued_year)
+
     def works(self, issn: str) -> ScopedWorksResource:
         """Return a works client bound to ``journals/{issn}/works``.
 
