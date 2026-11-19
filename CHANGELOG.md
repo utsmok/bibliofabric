@@ -56,6 +56,12 @@ release: aireloom 0.8.0, aletheca 0.4.0, stavrophora 0.3.0; they pin
 - `bibliofabric.ids`: `normalize_doi`, `is_doi`, `strip_url_prefix`,
   `normalize_orcid`, `normalize_ror`, `normalize_issn`.
 - `bibliofabric.paging`: `QueryDialect` and `Page[E]`.
+- `QueryDialect.iterate_page_size`: the page size `iterate()` uses when the
+  caller passes none.
+- `ResourceClient(client, path=...)`: per-instance paths for routes bound to a
+  parent id, such as `members/{id}/works`.
+- Cursor iteration stops when the API returns the request cursor unchanged
+  (Solr-style exhaustion).
 - `SafeList` now wraps a scalar string into `[value]` instead of a character
   list.
 - Default `User-Agent` built from package metadata:
