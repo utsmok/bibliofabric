@@ -45,6 +45,6 @@ wrappers for those belong on resource subclasses.
 
 ## API reference
 
-::: bibliofabric.resources
+::: bibliofabric._async.resources
     options:
       show_root_heading: true

@@ -28,6 +28,6 @@ models; resource clients do that through a `ResponseUnwrapper`.
 
 ## API reference
 
-::: bibliofabric.client
+::: bibliofabric._async.client
     options:
       show_root_heading: true

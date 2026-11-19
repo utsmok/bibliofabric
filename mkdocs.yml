@@ -35,6 +35,7 @@ nav:
   - bibliofabric:
       - Home: bibliofabric/index.md
       - Quick start: bibliofabric/client.md
+      - Sync usage: bibliofabric/sync.md
       - Errors and limits: bibliofabric/errors.md
       - API reference:
           - Resources: bibliofabric/resources.md
@@ -46,6 +47,7 @@ nav:
           - Types: bibliofabric/types.md
           - Exceptions: bibliofabric/exceptions.md
       - Contributing: bibliofabric/contributing.md
+      - Writing a client with sync support: bibliofabric/authoring-sync.md
   - aireloom:
       - Home: aireloom/index.md
       - Usage:
