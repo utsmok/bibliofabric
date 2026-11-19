@@ -47,6 +47,7 @@ build-backend = "uv_build"
 
 [tool.ruff]
 line-length = 88
+extend-exclude = ["tests/_legacy"]
 
 [tool.ruff.format]
 docstring-code-format = true
