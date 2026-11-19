@@ -107,6 +107,20 @@ class ResourceClient[E: BaseModel]:
         """Canonicalize an identifier before use in paths, batches, and keys."""
         return value.strip()
 
+    def record_keys(self, entity: E, field: str) -> list[str]:
+        """Return every normalized ``field`` value of ``entity``.
+
+        ``batch_get`` keys each entity by whichever of these values was
+        requested, so records carrying several ids (for example deduplicated
+        records with many DOIs) land under the id the caller asked for.
+        Override when the values live somewhere other than ``entity.<field>``.
+        """
+        value = getattr(entity, field, None)
+        if value is None:
+            value = getattr(entity, "id", None)
+        values = value if isinstance(value, list) else [value]
+        return [self.normalize_id(str(item)) for item in values if item is not None]
+
     def item_path(self, id: str) -> str:
         """Return the single-entity path for ``id``, URL-encoding it."""
         return f"{self.path}/{quote(self.normalize_id(id), safe='')}"
@@ -290,8 +304,8 @@ class ResourceClient[E: BaseModel]:
         Ids are normalized with :meth:`normalize_id` and deduplicated, split
         into chunks of ``batch_size`` (or the class default), fetched
         concurrently under ``concurrency``, and returned keyed by normalized
-        id. Missing ids are absent from the result. Result keys come from the
-        entity's own ``field`` attribute, falling back to ``id``.
+        id. Missing ids are absent from the result. Each entity is keyed by
+        the requested ids found among :meth:`record_keys`.
         """
         size = self.batch_size if batch_size is None else batch_size
         if size <= 0:
@@ -312,11 +326,12 @@ class ResourceClient[E: BaseModel]:
                 response = await self._client.request(
                     "GET", self.path, params=query_params
                 )
+                requested = set(chunk)
                 for record in self._client.unwrapper.results(response.json()):
                     entity = self._validate(record, response=response)
-                    key = self._record_key(entity, field)
-                    if key is not None:
-                        results[key] = entity
+                    for key in self.record_keys(entity, field):
+                        if key in requested:
+                            results[key] = entity
 
         await asyncio.gather(*(fetch_chunk(chunk) for chunk in chunks))
         return results
@@ -409,14 +424,6 @@ class ResourceClient[E: BaseModel]:
                 error=error,
                 model_name=self.model.__name__,
             ) from error
-
-    def _record_key(self, entity: E, field: str) -> str | None:
-        value = getattr(entity, field, None)
-        if value is None:
-            value = getattr(entity, "id", None)
-        if value is None:
-            return None
-        return self.normalize_id(str(value))
 
     async def _iterate_cursor(
         self,

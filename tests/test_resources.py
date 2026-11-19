@@ -296,6 +296,24 @@ async def test_batch_get_normalizes_keys(httpx_mock, make_client):
     assert result["10.1234/abc"].id == "w9"
 
 
+async def test_batch_get_keys_multi_valued_records_by_requested_id(
+    httpx_mock, make_client
+):
+    # Deduplicated records carry several DOIs; the result must use the one asked for.
+    httpx_mock.add_response(
+        url=f"{BASE_URL}/works?doi=10.1/b&pageSize=1",
+        json=_json_page([{"id": "w1", "doi": "10.1/a"}]),
+    )
+
+    class MultiDoiWidgets(DoiWidgets):
+        def record_keys(self, entity: Widget, field: str) -> list[str]:
+            return [self.normalize_id(doi) for doi in ("10.1/a", "10.1/B")]
+
+    client = make_client()
+    result = await MultiDoiWidgets(client).batch_get(["10.1/b"], field="doi")
+    assert set(result) == {"10.1/b"}
+
+
 async def test_batch_get_disabled(httpx_mock, make_client):
     client = make_client()
 
