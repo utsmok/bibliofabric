@@ -1,0 +1,18 @@
+{
+ "status": "ok",
+ "message-type": "license-list",
+ "message-version": "1.0.0",
+ "message": {
+  "total-results": 29758,
+  "items": [
+   {
+    "URL": "HTTPS://CREATIVECOMMONS.ORG/LICENSES/BY/4.0/",
+    "work-count": 1
+   },
+   {
+    "URL": "Http://creativecommons.org/license/by-nc/4.0.",
+    "work-count": 100
+   }
+  ]
+ }
+}

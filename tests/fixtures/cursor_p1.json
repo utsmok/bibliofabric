@@ -1,0 +1,435 @@
+{
+ "status": "ok",
+ "message-type": "work-list",
+ "message-version": "1.0.0",
+ "message": {
+  "facets": {},
+  "next-cursor": "MTAyNzU2NTg5NTAwMCwxMC4xMDA3JTJGczAwMjY3OTkwMDA2Mw==",
+  "total-results": 641402,
+  "items": [
+   {
+    "indexed": {
+     "date-parts": [
+      [
+       2026,
+       11,
+       9
+      ]
+     ],
+     "date-time": "2026-11-09T00:23:26Z",
+     "timestamp": 1794183806024,
+     "version": "4.8.0"
+    },
+    "reference-count": 0,
+    "publisher": "Springer Science and Business Media LLC",
+    "issue": "4",
+    "license": [
+     {
+      "start": {
+       "date-parts": [
+        [
+         1997,
+         7,
+         1
+        ]
+       ],
+       "date-time": "1997-07-01T00:00:00Z",
+       "timestamp": 867715200000
+      },
+      "content-version": "tdm",
+      "delay-in-days": 0,
+      "URL": "https://www.springernature.com/gp/researchers/text-and-data-mining"
+     },
+     {
+      "start": {
+       "date-parts": [
+        [
+         1997,
+         7,
+         1
+        ]
+       ],
+       "date-time": "1997-07-01T00:00:00Z",
+       "timestamp": 867715200000
+      },
+      "content-version": "vor",
+      "delay-in-days": 0,
+      "URL": "https://www.springernature.com/gp/researchers/text-and-data-mining"
+     }
+    ],
+    "content-domain": {
+     "domain": [
+      "link.springer.com"
+     ],
+     "crossmark-restriction": false
+    },
+    "short-container-title": [
+     "Environmental Management"
+    ],
+    "published-print": {
+     "date-parts": [
+      [
+       1997,
+       7
+      ]
+     ]
+    },
+    "DOI": "10.1007/s002679900045",
+    "type": "journal-article",
+    "created": {
+     "date-parts": [
+      [
+       2002,
+       7,
+       25
+      ]
+     ],
+     "date-time": "2002-07-25T02:58:15Z",
+     "timestamp": 1027565895000
+    },
+    "page": "493-504",
+    "update-policy": "https://doi.org/10.1007/springer_crossmark_policy",
+    "source": "Crossref",
+    "is-referenced-by-count": 0,
+    "title": [
+     "Climate Convention Implementation: An Opportunity for the Pacific Island Nations to Move Toward Sustainable Energy Systems"
+    ],
+    "prefix": "10.1007",
+    "volume": "21",
+    "author": [
+     {
+      "given": "Xiaojiang",
+      "family": "Yu",
+      "sequence": "first",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Ros",
+      "family": "Taplin",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Alistair J.",
+      "family": "Gilmour",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     }
+    ],
+    "member": "297",
+    "published-online": {
+     "date-parts": [
+      [
+       1997,
+       7,
+       1
+      ]
+     ]
+    },
+    "container-title": [
+     "Environmental Management"
+    ],
+    "language": "en",
+    "link": [
+     {
+      "URL": "https://link.springer.com/content/pdf/10.1007/s002679900045.pdf",
+      "content-type": "application/pdf",
+      "content-version": "vor",
+      "intended-application": "text-mining"
+     },
+     {
+      "URL": "https://link.springer.com/article/10.1007/s002679900045",
+      "content-type": "text/html",
+      "content-version": "vor",
+      "intended-application": "text-mining"
+     },
+     {
+      "URL": "http://link.springer.com/content/pdf/10.1007/s002679900045",
+      "content-type": "unspecified",
+      "content-version": "vor",
+      "intended-application": "similarity-checking"
+     },
+     {
+      "URL": "https://link.springer.com/content/pdf/10.1007/s002679900045.pdf",
+      "content-type": "application/pdf",
+      "content-version": "vor",
+      "intended-application": "similarity-checking"
+     }
+    ],
+    "deposited": {
+     "date-parts": [
+      [
+       2026,
+       11,
+       9
+      ]
+     ],
+     "date-time": "2026-11-09T00:12:56Z",
+     "timestamp": 1794183176000
+    },
+    "score": 5.378592,
+    "resource": {
+     "primary": {
+      "URL": "https://link.springer.com/article/10.1007/s002679900045"
+     }
+    },
+    "issued": {
+     "date-parts": [
+      [
+       1997,
+       7
+      ]
+     ]
+    },
+    "references-count": 0,
+    "journal-issue": {
+     "issue": "4",
+     "published-print": {
+      "date-parts": [
+       [
+        1997,
+        7
+       ]
+      ]
+     }
+    },
+    "alternative-id": [
+     "1787"
+    ],
+    "URL": "https://doi.org/10.1007/s002679900045",
+    "ISSN": [
+     "0364-152X",
+     "1432-1009"
+    ],
+    "issn-type": [
+     {
+      "value": "0364-152X",
+      "type": "print"
+     },
+     {
+      "value": "1432-1009",
+      "type": "electronic"
+     }
+    ],
+    "published": {
+     "date-parts": [
+      [
+       1997,
+       7
+      ]
+     ]
+    },
+    "assertion": [
+     {
+      "value": "1 July 1997",
+      "order": 1,
+      "name": "first_online",
+      "label": "First Online",
+      "group": {
+       "name": "ArticleHistory",
+       "label": "Article History"
+      }
+     }
+    ]
+   },
+   {
+    "indexed": {
+     "date-parts": [
+      [
+       2022,
+       4,
+       3
+      ]
+     ],
+     "date-time": "2022-04-03T03:56:18Z",
+     "timestamp": 1648958178512
+    },
+    "reference-count": 0,
+    "publisher": "Springer Science and Business Media LLC",
+    "issue": "5",
+    "license": [
+     {
+      "start": {
+       "date-parts": [
+        [
+         1997,
+         9,
+         1
+        ]
+       ],
+       "date-time": "1997-09-01T00:00:00Z",
+       "timestamp": 873072000000
+      },
+      "content-version": "tdm",
+      "delay-in-days": 0,
+      "URL": "http://www.springer.com/tdm"
+     }
+    ],
+    "content-domain": {
+     "domain": [],
+     "crossmark-restriction": false
+    },
+    "short-container-title": [
+     "Environmental Management"
+    ],
+    "published-print": {
+     "date-parts": [
+      [
+       1997,
+       9,
+       1
+      ]
+     ]
+    },
+    "DOI": "10.1007/s002679900063",
+    "type": "journal-article",
+    "created": {
+     "date-parts": [
+      [
+       2002,
+       7,
+       25
+      ]
+     ],
+     "date-time": "2002-07-25T02:58:15Z",
+     "timestamp": 1027565895000
+    },
+    "page": "733-745",
+    "source": "Crossref",
+    "is-referenced-by-count": 3,
+    "title": [
+     "The Importance of Contexts in Strategies of Environmental Organizations with Regard to Climate Change"
+    ],
+    "prefix": "10.1007",
+    "volume": "21",
+    "author": [
+     {
+      "given": "Ruud",
+      "family": "Pleune",
+      "sequence": "first",
+      "affiliation": [],
+      "role": [
+       {
+        "role": "author",
+        "vocabulary": "crossref"
+       }
+      ]
+     }
+    ],
+    "member": "297",
+    "container-title": [
+     "Environmental Management"
+    ],
+    "link": [
+     {
+      "URL": "http://link.springer.com/content/pdf/10.1007/s002679900063.pdf",
+      "content-type": "application/pdf",
+      "content-version": "vor",
+      "intended-application": "text-mining"
+     },
+     {
+      "URL": "http://link.springer.com/article/10.1007/s002679900063/fulltext.html",
+      "content-type": "text/html",
+      "content-version": "vor",
+      "intended-application": "text-mining"
+     },
+     {
+      "URL": "http://link.springer.com/content/pdf/10.1007/s002679900063",
+      "content-type": "unspecified",
+      "content-version": "vor",
+      "intended-application": "similarity-checking"
+     }
+    ],
+    "deposited": {
+     "date-parts": [
+      [
+       2019,
+       5,
+       24
+      ]
+     ],
+     "date-time": "2019-05-24T13:16:11Z",
+     "timestamp": 1558703771000
+    },
+    "score": 5.8203135,
+    "resource": {
+     "primary": {
+      "URL": "http://link.springer.com/10.1007/s002679900063"
+     }
+    },
+    "issued": {
+     "date-parts": [
+      [
+       1997,
+       9,
+       1
+      ]
+     ]
+    },
+    "references-count": 0,
+    "journal-issue": {
+     "issue": "5",
+     "published-print": {
+      "date-parts": [
+       [
+        1997,
+        9,
+        1
+       ]
+      ]
+     }
+    },
+    "alternative-id": [
+     "X4WLGEN9BMT6E6Y8"
+    ],
+    "URL": "https://doi.org/10.1007/s002679900063",
+    "ISSN": [
+     "0364-152X",
+     "1432-1009"
+    ],
+    "issn-type": [
+     {
+      "value": "0364-152X",
+      "type": "print"
+     },
+     {
+      "value": "1432-1009",
+      "type": "electronic"
+     }
+    ],
+    "published": {
+     "date-parts": [
+      [
+       1997,
+       9,
+       1
+      ]
+     ]
+    }
+   }
+  ],
+  "items-per-page": 2,
+  "query": {
+   "start-index": 0,
+   "search-terms": "climate"
+  }
+ }
+}

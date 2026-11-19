@@ -20,9 +20,9 @@ class JournalsResource(CrossrefResourceClient[Journal]):
     model = Journal
     supports_query = True
 
-    def normalize_id(self, value: str) -> str:
+    def normalize_id(self, value: str | int) -> str:
         """Return the hyphenated uppercase ISSN form."""
-        return normalize_issn(value)
+        return normalize_issn(str(value))
 
     def works(self, issn: str) -> ScopedWorksResource:
         """Return a works client bound to ``journals/{issn}/works``.

@@ -22,9 +22,9 @@ class FundersResource(CrossrefResourceClient[Funder]):
     supports_query = True
     supports_filter = True
 
-    def normalize_id(self, value: str) -> str:
+    def normalize_id(self, value: str | int) -> str:
         """Return the bare lowercase funder DOI."""
-        return normalize_doi(value)
+        return normalize_doi(str(value))
 
     def works(self, funder_id: str) -> ScopedWorksResource:
         """Return a works client bound to ``funders/{id}/works``.

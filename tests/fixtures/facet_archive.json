@@ -1,0 +1,28 @@
+{
+ "status": "ok",
+ "message-type": "work-list",
+ "message-version": "1.0.0",
+ "message": {
+  "facets": {
+   "archive": {
+    "value-count": 7,
+    "values": {
+     "Portico": 39391,
+     "Internet Archive": 941,
+     "CLOCKSS": 585,
+     "LOCKSS": 375,
+     "DWT": 112,
+     "KB": 108,
+     "BL": 9
+    }
+   }
+  },
+  "total-results": 641402,
+  "items": [],
+  "items-per-page": 0,
+  "query": {
+   "start-index": 0,
+   "search-terms": "climate"
+  }
+ }
+}

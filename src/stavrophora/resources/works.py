@@ -29,9 +29,9 @@ class WorksResource(CrossrefResourceClient[Work]):
     supports_select = True
     batch_size = 50
 
-    def normalize_id(self, value: str) -> str:
+    def normalize_id(self, value: str | int) -> str:
         """Return the bare lowercase DOI (DOIs are case-insensitive)."""
-        return normalize_doi(value)
+        return normalize_doi(str(value))
 
     async def agency(self, doi: str) -> WorkAgency:
         """Look up the DOI registration agency for a work."""

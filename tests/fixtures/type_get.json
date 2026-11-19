@@ -1,0 +1,9 @@
+{
+ "status": "ok",
+ "message-type": "type",
+ "message-version": "1.0.0",
+ "message": {
+  "id": "journal-article",
+  "label": "Journal Article"
+ }
+}

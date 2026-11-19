@@ -136,9 +136,9 @@ class CrossrefResourceClient[E: BaseModel](ResourceClient[E]):
         """Encode one batch chunk as ORed repeated filter keys."""
         return {"filter": _serialize_filters({field: list(values)})}
 
-    def normalize_id(self, value: str) -> str:
-        """Canonicalize an identifier; the works resources normalize DOIs."""
-        return value.strip()
+    def normalize_id(self, value: str | int) -> str:
+        """Canonicalize an identifier; member and type ids may be ints."""
+        return str(value).strip()
 
     def item_path(self, id: str) -> str:
         """Return the single-entity path; the slash inside DOIs stays raw."""
