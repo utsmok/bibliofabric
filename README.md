@@ -93,7 +93,9 @@ Crossref has **no publisher filter** (400, verified live); scope by `prefix`, `m
 
 ```python
 async for work in client.works.iterate(
-    filters={"from-created-date": "2026-08-01"}, page_size=1000, on_page=checkpoint,
+    filters={"from-created-date": "2026-08-01"},
+    page_size=1000,
+    on_page=checkpoint,
 ):
     process(work)
 ```
