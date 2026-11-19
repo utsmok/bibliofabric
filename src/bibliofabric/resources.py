@@ -42,20 +42,24 @@ class ResourceClient[E: BaseModel]:
     Class attributes:
 
     - ``path``: endpoint path relative to the client's base URL, e.g. ``"works"``.
+      Pass ``path=`` to the constructor for routes bound to a parent id,
+      e.g. ``"members/297/works"``.
     - ``model``: the pydantic model a single entity validates against.
     - ``dialect``: the :class:`QueryDialect` of the API (usually shared).
     - ``filters_model``: optional declaration of the accepted filter model.
     - ``batch_size``: ids per ``batch_get`` chunk; ``0`` disables ``batch_get``.
     """
 
-    path: ClassVar[str]
+    path: str
     model: type[E]
     dialect: ClassVar[QueryDialect]
     filters_model: ClassVar[type[BaseModel] | None] = None
     batch_size: ClassVar[int] = 50
 
-    def __init__(self, client: BaseApiClient) -> None:
+    def __init__(self, client: BaseApiClient, *, path: str | None = None) -> None:
         self._client = client
+        if path is not None:
+            self.path = path
 
     # --- hooks ---------------------------------------------------------
 
