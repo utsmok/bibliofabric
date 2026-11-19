@@ -23,5 +23,16 @@ plugins:
 
 nav:
   - Home: index.md
+  - Usage:
+      - works: works.md
+      - journals: journals.md
+      - funders: funders.md
+      - members: members.md
+      - types: types.md
+      - prefixes: prefixes.md
+      - licenses: licenses.md
+  - Errors, retries, rate limits: errors.md
+  - Crossref quirks: quirks.md
+  - API reference: reference.md
 watch:
   - src/stavrophora
