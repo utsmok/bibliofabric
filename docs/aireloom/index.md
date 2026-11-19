@@ -38,6 +38,38 @@ quota, set `AIRELOOM_OPENAIRE_CLIENT_ID` and
 the client then fetches a bearer token from the OpenAIRE Keycloak endpoint
 and reuses it until it expires.
 
+## Sync usage
+
+AIREloom ships two variants of every client class. The async code is the
+single source of truth; the sync twins are generated from it with
+[unasync](https://github.com/python-unasync/unasync) and committed.
+
+| Async | Sync |
+|---|---|
+| `AireloomClient` | `AireloomSyncClient` |
+| `ResearchProductsResource` | `SyncResearchProductsResource` |
+| `ScholixResource` | `SyncScholixResource` |
+
+Use the async client inside `asyncio` applications. Use the sync client in
+scripts and notebooks, or from code that runs inside a running event loop:
+it uses `httpx.Client`, `time.sleep`, and threads, and never starts or
+touches an event loop.
+
+```python
+from aireloom import AireloomSyncClient
+
+with AireloomSyncClient() as client:
+    page = client.research_products.search(query="quantum dots", page_size=10)
+    for product in page.results:
+        print(product.id, product.mainTitle)
+```
+
+Both variants take the same parameters, raise the same errors, retry and
+page the same way, and enforce the same rate limits. Every resource
+attribute of `AireloomSyncClient` (`research_products`, `projects`,
+`organizations`, `data_sources`, `persons`, `scholix`) exposes the matching
+`Sync*` resource class.
+
 ## The client
 
 | Attribute | Resource | Host |

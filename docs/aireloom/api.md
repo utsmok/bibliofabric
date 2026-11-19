@@ -18,13 +18,24 @@ Generated from the docstrings with mkdocstrings.
 
 ## Resources
 
-::: aireloom.resources.ResearchProductsResource
-::: aireloom.resources.ProjectsResource
-::: aireloom.resources.OrganizationsResource
-::: aireloom.resources.DataSourcesResource
-::: aireloom.resources.PersonsResource
-::: aireloom.resources.LinksResource
-::: aireloom.resources.ScholixResource
+::: aireloom._async.resources.ResearchProductsResource
+::: aireloom._async.resources.ProjectsResource
+::: aireloom._async.resources.OrganizationsResource
+::: aireloom._async.resources.DataSourcesResource
+::: aireloom._async.resources.PersonsResource
+::: aireloom._async.resources.LinksResource
+::: aireloom._async.resources.ScholixResource
+
+## Sync client
+
+The sync twins mirror the async classes above; they take the same parameters
+and raise the same errors. See [Sync usage](index.md#sync-usage).
+
+::: aireloom.AireloomSyncClient
+    options:
+      members:
+        - request
+        - close
 
 ## Filter models
 
