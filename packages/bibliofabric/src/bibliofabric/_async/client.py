@@ -42,8 +42,10 @@ def _retry_after_seconds(response: httpx.Response) -> float | None:
     if header is None:
         return None
     header = header.strip()
-    if header.isdigit():
-        return float(header)
+    try:
+        return max(0.0, float(header))
+    except ValueError:
+        pass
     try:
         when = parsedate_to_datetime(header)
     except (TypeError, ValueError):
