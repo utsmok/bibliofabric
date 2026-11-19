@@ -27,9 +27,3 @@ classifiers = [
 [build-system]
 requires = ["uv_build>=0.9.22,<0.12"]
 build-backend = "uv_build"
-
-# The aletheca sources subclass core classes imported from the package root;
-# the generator only renames classes defined in this package, so map the
-# core entry points explicitly for the generated twins.
-[tool.unasync]
-replacements = { "BaseApiClient" = "SyncBaseApiClient", "ResourceClient" = "SyncResourceClient" }

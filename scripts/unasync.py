@@ -81,8 +81,8 @@ def collect_sources(package: Path) -> list[Path]:
     """List every file that generates a sync twin, sorted for stable output."""
     files = [
         path
-        for path in (package / "src").rglob("_async/*.py")
-        if path.name != "_concurrency.py"
+        for path in (package / "src").rglob("*.py")
+        if "_async" in path.parts and path.name != "_concurrency.py"
     ]
     tests_async = package / "tests" / "_async"
     if tests_async.is_dir():
@@ -197,6 +197,7 @@ def main() -> int:
             continue
         replacements = {
             **STANDARD_REPLACEMENTS,
+            **CORE_CLASS_RENAMES,  # client packages subclass the core classes
             **extra_replacements(package),
             **class_renames(files),
         }

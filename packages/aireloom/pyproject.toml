@@ -26,8 +26,3 @@ classifiers = [
 [build-system]
 requires = ["uv_build>=0.9.22,<0.12"]
 build-backend = "uv_build"
-
-[tool.unasync]
-# The core framework classes are defined outside this package, so the
-# generator's class-rename derivation never sees them; map them explicitly.
-replacements = { "BaseApiClient" = "SyncBaseApiClient", "ResourceClient" = "SyncResourceClient" }
