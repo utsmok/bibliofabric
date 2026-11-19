@@ -4,7 +4,7 @@ Samuel Mok -- s.mok@utwente.nl -- 2025-2026
 
 Aletheca is an async Python client for the [OpenAlex API](https://docs.openalex.org/), built on [bibliofabric](https://github.com/utsmok/bibliofabric).
 
-**Docs:** [utsmok.github.io/aletheca](https://utsmok.github.io/aletheca/) -- **PyPI:** [aletheca](https://pypi.org/project/aletheca/) -- **License:** MIT
+**Docs:** [utsmok.github.io/bibliofabric/aletheca](https://utsmok.github.io/bibliofabric/aletheca/) -- **PyPI:** [aletheca](https://pypi.org/project/aletheca/) -- **License:** MIT
 
 ## Features
 
@@ -89,7 +89,7 @@ async with AlethecaClient(api_key="your_api_key") as client:
 
 The key is sent as the `api_key` query parameter by default; pass `auth_scheme="bearer"` (or set `ALETHECA_AUTH_SCHEME=bearer`) to send it as an `Authorization: Bearer` header instead.
 
-→ **Full guide:** [docs index](https://utsmok.github.io/aletheca/) and [errors, retries, and rate limits](https://utsmok.github.io/aletheca/errors/)
+→ **Full guide:** [docs index](https://utsmok.github.io/bibliofabric/aletheca/) and [errors, retries, and rate limits](https://utsmok.github.io/bibliofabric/aletheca/errors/)
 
 ## Basic Usage
 
@@ -126,11 +126,11 @@ refs = await client.works.referenced("W2741809801", limit=100)
 print(f"{len(citations)} citing works, {len(refs)} references fetched")
 ```
 
-→ **Full guide:** [Works](https://utsmok.github.io/aletheca/usage/works/) · [all entity pages](https://utsmok.github.io/aletheca/) · [API reference](https://utsmok.github.io/aletheca/reference/)
+→ **Full guide:** [Works](https://utsmok.github.io/bibliofabric/aletheca/usage/works/) · [all entity pages](https://utsmok.github.io/bibliofabric/aletheca/) · [API reference](https://utsmok.github.io/bibliofabric/aletheca/reference/)
 
 ## Known OpenAlex API Issues
 
-Verified findings: [`docs/upstream-quirks.md`](docs/upstream-quirks.md).
+Verified findings: [`docs/upstream-quirks.md`](../../docs/aletheca/upstream-quirks.md).
 
 - **OpenAPI spec is substantially incomplete** -- 50+ fields returned by the live API are missing from the spec schemas across all entity types. Several spec fields don't exist in the live API.
 - **Wrong field names in spec** -- `content_url` (spec) vs `content_urls` (live), `grants_count` (spec) vs `awards_count` (live)
@@ -142,17 +142,17 @@ Verified findings: [`docs/upstream-quirks.md`](docs/upstream-quirks.md).
 
 ## Development
 
+Aletheca lives in the bibliofabric uv workspace at `packages/aletheca`. From the repository root:
+
 ```bash
-uv sync --all-groups     # install everything
-uv run ruff check --fix  # lint
-uv run ruff format       # format
-uv run ty check src      # type check
-uv run pytest            # offline tests; add -m live_api for live smoke tests
-uv build                 # build package
-uv run mkdocs serve      # local docs
+uv sync --all-packages --all-groups  # install everything
+uv run pytest packages/aletheca/tests  # offline tests; add -m live_api for live smoke tests
+uv build --package aletheca           # build package
 ```
 
-Contributions welcome -- see [Contributing](https://utsmok.github.io/aletheca/contributing/).
+Shared tooling (ruff, ty, pytest, mkdocs) is configured once at the workspace root; see the root `AGENTS.md`.
+
+Contributions welcome -- see [Contributing](https://utsmok.github.io/bibliofabric/aletheca/contributing/).
 
 ## License
 

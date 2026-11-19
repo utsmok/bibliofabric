@@ -37,13 +37,10 @@ StavrophoraClient (client.py, extends bibliofabric.BaseApiClient)
 
 ## Tech Stack
 
-- **Python 3.12+**, `uv` for dependency management
-- **bibliofabric 0.6** (git branch `overhaul-2026-11` until release)
+- Python 3.12+, managed by the workspace `uv` setup
+- **bibliofabric 0.6** (resolved from `packages/bibliofabric` in this workspace)
 - **pydantic v2** + **pydantic-settings** for models and config
 - **httpx** for async HTTP (via bibliofabric); stdlib `logging`
-- **pytest** + **pytest-asyncio** + **pytest-httpx** for testing
-- **ruff** for linting/formatting, **ty** for type checking
-- **mkdocs-material** + **mkdocstrings** for docs
 
 ## Project Structure
 
@@ -55,20 +52,14 @@ src/stavrophora/
 tests/                   # pytest-httpx behavior suite; fixtures/ = trimmed live payloads
 tests/test_live_api.py   # live_api-marked smoke tests, deselected by default
 examples/                # runnable snippets against the public API
-docs/ + mkdocs.yml       # docs site (mkdocs build --strict must pass)
+docs (workspace `docs/stavrophora/`)  # docs site pages (mkdocs build --strict must pass)
 ```
 
 ## Development Commands
 
-```bash
-uv sync --all-groups               # Install everything
-uv run ruff check                  # Lint
-uv run ruff format --check         # Format check
-uv run ty check src                # Type check
-uv run pytest                      # Unit suite (live tests deselected)
-STAVROPHORA_MAILTO=... uv run pytest -m live_api   # Live smoke tests
-uv run mkdocs build --strict       # Docs site
-```
+Workspace commands live in the root `AGENTS.md`. Package-specific: the suite
+is `packages/stavrophora/tests`, and live smoke tests need
+`STAVROPHORA_MAILTO=... uv run pytest -m live_api`.
 
 ## Key Patterns & Conventions
 
@@ -82,4 +73,4 @@ uv run mkdocs build --strict       # Docs site
 
 - Pacing is a flat 3 requests/s; Crossref's 2026-07 split allows 10/s for single records. A request-class-aware limiter is a core change request, not yet implemented (see the phase 2 migration report).
 - Metadata Plus auth is verified by construction only; no live Plus key was available.
-- Live-verified quirks (rate limits, route gaps, paging caps) live in `docs/quirks.md`.
+- Live-verified quirks (rate limits, route gaps, paging caps) live in `docs/stavrophora/quirks.md` (workspace root).

@@ -36,21 +36,16 @@ Iteration over graph entities defaults to 100 per page
 
 ## Commands
 
-```bash
-uv sync --all-groups        # install
-uv run ruff check           # lint (archive/ excluded)
-uv run ruff format --check
-uv run ty check src
-uv run pytest               # mocked suite; live_api deselected by addopts
-uv run pytest -m live_api   # live smoke, needs credentials from .env
-uv run mkdocs build --strict
-```
+Tooling is shared at the workspace root (see the root `AGENTS.md`). The
+package-specific bit: live smoke tests need OpenAIRE credentials from a
+`.env` file, and the suite is `packages/aireloom/tests`.
 
 Conventional commits, `uv` only, no AI attribution.
 
 ## Upstream behavior to remember
 
-See `docs/quirks.md` for the full list. The ones that bite during
+See `docs/quirks.md` (workspace path `docs/aireloom/quirks.md`) for the full
+list. The ones that bite during
 development: Scholix V3 accepts date filters but returns zero rows (route
 those queries to V2), the links route silently truncates `pageSize >= 100`
 to 10 results, pages there are not pinned, and V3 by-id paths 404 when the

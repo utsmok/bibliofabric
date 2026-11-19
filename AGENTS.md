@@ -1,81 +1,86 @@
-# Bibliofabric — Project Guide
+# AGENTS.md
 
-## What It Is
+Guidelines for AI agents and contributors working in the bibliofabric
+monorepo.
 
-Bibliofabric is the shared core of a family of scholarly API client libraries
-([AIREloom](https://github.com/utsmok/aireloom) for OpenAIRE,
-[aletheca](https://github.com/utsmok/aletheca) for OpenAlex,
-[stavrophora](https://github.com/utsmok/stavrophora) for Crossref). It owns
-HTTP, auth, retries, throttling, error mapping, paging, batch retrieval,
-identifier normalization, and typed resource clients. Each client library adds
-only what is specific to its API.
+## Rules
 
-## Architecture
+- Use `uv` for everything (`uv run`, `uv sync`); never bare `python` or `pip`.
+- Conventional commits (`feat:`, `fix:`, `docs:`, `chore:`, ...), short and
+  imperative. No AI attribution in commits.
+- Never print or commit secrets; live-test credentials come from `.env`
+  files that are git-ignored.
+- All four packages are async-only; stdlib `logging` only (no loguru).
+- Errors raise; there are no raw-dict fallbacks. Validation failures raise
+  `bibliofabric.ValidationError` with the payload attached.
+- `ty` gate is zero diagnostics and zero ignore comments. Fix findings by
+  declaring attributes properly; never suppress.
 
-```
-BaseApiClient            # async HTTP: retries, throttling, error mapping (client.py)
-├── auth strategy        # NoAuth, StaticTokenAuth, QueryParameterAuth,
-│                        # HeaderAuth, ClientCredentialsAuth (auth.py)
-├── limiter              # max_requests_per_second + max_concurrency
-└── retry policy         # is_retryable() veto, Retry-After-aware wait
+## Layout
 
-QueryDialect             # frozen paging/sort/search/select declaration (paging.py)
-ResourceClient[E]        # generic typed endpoint client (resources.py)
-Page[E]                  # uniform search envelope (paging.py)
-ResponseUnwrapper        # protocol for API envelopes (unwrap.py)
-BaseApiSettings          # pydantic-settings config (config.py)
-```
-
-## Module map
-
-| Module | Contents |
+| Path | Contents |
 |---|---|
-| `client.py` | `BaseApiClient`: `request()` returns `httpx.Response`, raises typed errors; `is_retryable()` veto; `Retry-After`-aware retries; limiter |
-| `auth.py` | `AuthStrategy` protocol + `NoAuth`, `StaticTokenAuth`, `QueryParameterAuth`, `HeaderAuth`, `ClientCredentialsAuth` |
-| `config.py` | `BaseApiSettings` (timeout, retries, retry wait, limiter knobs, UA, mailto) |
-| `exceptions.py` | `BibliofabricError` hierarchy; `APIError.body` carries the parsed JSON error payload; `ValidationError` carries `raw`/`error`/`model_name` |
-| `paging.py` | `QueryDialect` (frozen), `Page[E]` |
-| `resources.py` | `ResourceClient[E]`: get/search/iterate/collect/first/count/batch_get + hooks (`build_filter_params`, `format_sort`, `build_batch_params`, `normalize_id`, `item_path`) |
-| `unwrap.py` | `ResponseUnwrapper` protocol: results/item/total/next_cursor/meta |
-| `ids.py` | `normalize_doi`, `is_doi`, `normalize_orcid`, `normalize_ror`, `normalize_issn`, `strip_url_prefix` |
-| `types.py` | `SafeStr`, `SafeList` annotated pydantic types |
-| `utils.py` | Internal log redaction: `sanitize_url`, `sanitize_headers` |
+| `packages/bibliofabric` | core framework (`src/bibliofabric`) |
+| `packages/aireloom` | OpenAIRE client |
+| `packages/aletheca` | OpenAlex client |
+| `packages/stavrophora` | Crossref client |
+| `docs/<name>/` | that package's docs pages, one mkdocs site at the root |
+| `archive/<name>/` | historical documents from the standalone repos |
+| `.agents/skills/` | agent procedures (release, sibling client, live sweep) |
 
-## Tech Stack
+Each `packages/<name>/AGENTS.md` records package-specific facts (architecture,
+upstream quirks, testing patterns). Tooling lives only at the root:
 
-- Python 3.12+, `uv`-managed, `uv_build` backend, `py.typed` shipped
-- httpx, pydantic v2 + pydantic-settings, tenacity
-- stdlib `logging` (no loguru; no handlers configured by the library)
-- dev group: pytest, pytest-asyncio, pytest-httpx, ruff (pinned), ty (pinned exactly)
-- docs group: mkdocs-material + mkdocstrings
+- one virtual workspace root `pyproject.toml` (workspace members, `[tool.uv.sources]`
+  `bibliofabric = { workspace = true }`, shared `dev` and `docs` groups, ruff and
+  pytest config; `ty` needs no config),
+- one root `uv.lock`, one root `.python-version` (3.12),
+- one CI workflow (`.github/workflows/ci.yml`), one `.pre-commit-config.yaml`,
+- one mkdocs site (`mkdocs.yml`, mkdocstrings paths into all four `src` trees).
 
-## Development Commands
+## Commands
+
+Run everything from the repository root:
 
 ```bash
-uv sync --all-groups     # install everything
-uv run ruff check        # lint src and tests (tests/_legacy excluded)
-uv run ruff format --check
-uv run ty check src      # zero diagnostics, no ignores
-uv run pytest            # tests/ (legacy suite in tests/_legacy is not collected)
-uv run mkdocs serve      # local docs preview
+uv sync --all-packages --all-groups   # install all packages plus dev/docs groups
+uv run pytest                         # all four suites (46+48+66+83 tests)
+uv run pytest packages/aletheca/tests # one package's suite
+uv run pytest -m live_api             # live API smoke tests (needs credentials in .env)
+uv run ruff check                     # lint all packages
+uv run ruff format --check            # formatting gate
+uv run ty check packages/*/src        # type gate
+uv run mkdocs build --strict          # docs gate
+uv build --package <name>             # build one package (wheel contains py.typed)
 ```
 
-## Key patterns
+Client packages depend on `bibliofabric>=0.6,<0.7`; inside the workspace uv
+resolves that to the sibling package (`[tool.uv.sources]` at the root).
 
-- Async only. Clients are async context managers; caller-owned `http_client`s
-  are not closed by `aclose()`.
-- Errors by default: no raw fallbacks. Validation failures raise
-  `ValidationError` with the payload attached; harvesting tolerates bad records
-  via `iterate(on_error="skip", failures=[...])`.
-- Behavior is declared in frozen dataclasses (`QueryDialect`), not mutable
-  class attributes. Per-API variation lives in `ResourceClient` hook methods.
-- `batch_get(ids, field="id", batch_size=None, concurrency=4)` chunks,
-  normalizes, deduplicates, and keys by normalized id.
-- Debug logs redact `api_key`, tokens, and auth headers
-  (`sanitize_url` / `sanitize_headers`).
+## Release flow
 
-## Status
+1. Bump `version` in `packages/<name>/pyproject.toml` and add a Keep a
+   Changelog entry to that package's `CHANGELOG.md`. Commit and push `main`.
+2. Tag `<name>-v<version>` (example: `aletheca-v0.4.1`) and push the tag.
+   A plain `v<version>` tag still publishes bibliofabric.
+3. CI runs lint + the test matrix, then a publish job that runs
+   `uv build --package <name>` and uploads via OIDC to the `pypi`
+   environment. One site deploys docs on pushes to `main`.
+4. Verify the release is on PyPI before advertising it; `uv`'s index cache
+   can lag a fresh publish for minutes (`uv cache clean <pkg>` if `uv add`
+   claims the new version is unavailable).
 
-0.6.0 is the overhaul release. Legacy code and tests are quarantined:
-`tests/_legacy/` holds the pre-overhaul suite, excluded from collection and
-from ruff; it is deleted in Phase 2.
+Per-package release notes go in that package's changelog only; the root
+README table lists versions and needs a row update only when a package is
+added or renamed.
+
+## Adding a package
+
+Create `packages/<new-name>/` with the family shape (`src/<new_name>/` with
+`client.py`, `config.py`, `dialect.py`, `unwrapper.py`, `filters.py`,
+`models/`, `resources/`; `tests/` with pytest-httpx; `py.typed`; README and
+CHANGELOG). The `packages/*` workspace glob picks it up automatically; add a
+docs section to the root `mkdocs.yml` nav, a row to the README table, a
+matrix entry in `ci.yml`, and a PyPI trusted publisher entry for the new
+package name. See `.agents/skills/bibliofabric-sibling-client/` for the full
+procedure.

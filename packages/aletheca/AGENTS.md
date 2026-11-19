@@ -32,15 +32,7 @@ AlethecaClient               # client.py: BaseApiClient subclass, auth resolutio
 
 ## Development
 
-```bash
-uv sync --all-groups      # install
-uv run ruff check         # lint (also covers tests, examples)
-uv run ruff format        # format
-uv run ty check src       # types
-uv run pytest             # offline suite (pytest-httpx); live_api tests deselected
-uv run pytest -m live_api # live smoke tests; needs ALETHECA_API_KEY
-uv run mkdocs build --strict
-```
+Commands live at the workspace root (see the root `AGENTS.md`). Package-specific bits: the suite is `packages/aletheca/tests`, and live smoke tests need `ALETHECA_API_KEY`.
 
 ## Testing
 

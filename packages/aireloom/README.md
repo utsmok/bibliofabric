@@ -6,7 +6,7 @@
 
 AIREloom is an async Python client for the [OpenAIRE Graph API](https://graph.openaire.eu/) and [Scholexplorer API](https://scholexplorer.openaire.eu/), built on [bibliofabric](https://github.com/utsmok/bibliofabric).
 
-**Docs:** [utsmok.github.io/AIREloom](https://utsmok.github.io/AIREloom/) · **PyPI:** [aireloom](https://pypi.org/project/aireloom/) · **License:** MIT
+**Docs:** [utsmok.github.io/bibliofabric/aireloom](https://utsmok.github.io/bibliofabric/aireloom/) · **PyPI:** [aireloom](https://pypi.org/project/aireloom/) · **License:** MIT
 
 ## Features
 
@@ -199,9 +199,11 @@ the raw payload.
 
 ## Development
 
+AIREloom lives in the bibliofabric uv workspace at `packages/aireloom`. From the repository root:
+
 ```bash
-uv sync --all-groups     # install dev deps
-uv run pytest -x -q      # run tests
-uv run ruff check src/   # lint
-uv run ty check src/     # type check
+uv sync --all-packages --all-groups   # install dev deps
+uv run pytest packages/aireloom/tests -x -q  # run tests
+uv run ruff check                     # lint (workspace-wide)
+uv run ty check packages/*/src        # type check
 ```

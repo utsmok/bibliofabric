@@ -159,13 +159,15 @@ Generic settings are inherited under the same prefix: `STAVROPHORA_TIMEOUT`, `ST
 
 ## Development
 
+Stavrophora lives in the bibliofabric uv workspace at `packages/stavrophora`. From the repository root:
+
 ```bash
-uv sync
-uv run pytest                    # mocked tests (live tests excluded by default)
-uv run pytest -m live_api        # live API smoke tests
-uv run ruff check .
-uvx ty check src/
+uv sync --all-packages --all-groups    # install everything
+uv run pytest packages/stavrophora/tests  # mocked tests (live tests excluded by default)
+uv run pytest packages/stavrophora/tests -m live_api  # live API smoke tests
 ```
+
+Lint, type check, and docs run at the workspace root (`uv run ruff check`, `uv run ty check packages/*/src`, `uv run mkdocs build --strict`); see the root `AGENTS.md`.
 
 ## License
 

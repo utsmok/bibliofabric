@@ -99,15 +99,15 @@ async with FooClient() as client:
 
 `get()`, `search()`, and `count()` return typed results; iteration supports
 cursor, page, and offset paging depending on the dialect. Errors, retries, and
-limits are described in the [errors page](errors.md).
+limits are described in the [errors page](../../docs/bibliofabric/errors.md).
 
 ## Reference clients
 
-- [AIREloom](https://github.com/utsmok/aireloom) — OpenAIRE Graph and Scholix
-- [aletheca](https://github.com/utsmok/aletheca) — OpenAlex
-- [stavrophora](https://github.com/utsmok/stavrophora) — Crossref
+- [AIREloom](https://github.com/utsmok/bibliofabric/tree/main/packages/aireloom) — OpenAIRE Graph and Scholix
+- [aletheca](https://github.com/utsmok/bibliofabric/tree/main/packages/aletheca) — OpenAlex
+- [stavrophora](https://github.com/utsmok/bibliofabric/tree/main/packages/stavrophora) — Crossref
 
 ## Contributing and license
 
-See [contributing.md](https://github.com/utsmok/bibliofabric/blob/main/docs/contributing.md).
+See [contributing.md](https://github.com/utsmok/bibliofabric/blob/main/docs/bibliofabric/contributing.md).
 This project is licensed under the MIT License.
