@@ -48,6 +48,14 @@ API list operations to the V4 filter-based queries (D-14).
 
 ### Added
 
+- Sync support: `AireloomSyncClient` and the `Sync*` resource classes
+  (`SyncResearchProductsResource`, `SyncScholixResource`, and so on),
+  generated from the async sources with `scripts/unasync.py`. The sync client
+  uses `httpx.Client`, `time.sleep`, and threads; it never starts or touches
+  an event loop, so it works in scripts, notebooks, and inside a running
+  event loop. I/O modules now live in `aireloom._async` and `aireloom._sync`;
+  every public name stays importable from the package root.
+
 - Typed relation vocabulary from the links relations-info payload:
   `RelationName`, `RELATION_INVERSES`, and `relation_inverse(name)`
   (`Cites` -> `IsCitedBy`), exported from the package root.
