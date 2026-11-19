@@ -1,8 +1,8 @@
-# Aletheca: Asynchronous Python client for the OpenAlex API
+# Aletheca: Python client for the OpenAlex API (async and sync)
 
 Samuel Mok -- s.mok@utwente.nl -- 2025-2026
 
-Aletheca is an async Python client for the [OpenAlex API](https://docs.openalex.org/), built on [bibliofabric](https://github.com/utsmok/bibliofabric).
+Aletheca is a Python client for the [OpenAlex API](https://docs.openalex.org/), built on [bibliofabric](https://github.com/utsmok/bibliofabric). The async client is the source of truth; a generated sync twin (`AlethecaSyncClient`, resource classes `WorksSyncClient`, `AuthorsSyncClient`, ...) offers the same API without an event loop.
 
 **Docs:** [utsmok.github.io/bibliofabric/aletheca](https://utsmok.github.io/bibliofabric/aletheca/) -- **PyPI:** [aletheca](https://pypi.org/project/aletheca/) -- **License:** MIT
 
@@ -49,6 +49,27 @@ async def main():
 
 
 asyncio.run(main())
+```
+
+### Sync quick start
+
+The sync twin behaves the same and never touches an event loop, so it also works in Jupyter, in threads, and when called from inside a running event loop:
+
+```python
+from aletheca import AlethecaSyncClient
+
+with AlethecaSyncClient() as client:
+    work = client.works.get("W1234567890")
+    print(work.title)
+
+    page = client.works.search(query="machine learning", page_size=10)
+    for work in page.results:
+        print(f"{work.title} ({work.publication_year})")
+
+    for work in client.works.iterate(
+        filters={"authorships.author.id": "A1234567890"}, limit=5
+    ):
+        print(work.title)
 ```
 
 Other resource methods: `count()` (minimal-cost `select=id` request), `batch_get(ids, field=..., batch_size=...)`, `batch_get_by_doi(dois)`, `group_by(...)`, `sample(n, seed=...)`, `search_scoped(...)` (`search.title_and_abstract`, `search.exact`, `search.semantic`), and the `corpus=`/`include_pulled=` parameters on `client.works.search(...)`. The client also exposes `client.autocomplete(query)` (free) and `client.rate_limit()` (free budget check).

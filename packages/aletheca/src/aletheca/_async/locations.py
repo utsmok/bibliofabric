@@ -1,7 +1,8 @@
 """Client for the OpenAlex locations endpoint."""
 
-from ..dialect import _OPENALEX_URL_PREFIX, OpenAlexResourceClient
+from ..dialect import _OPENALEX_URL_PREFIX
 from ..models import LocationRecord
+from .dialect import OpenAlexResourceClient
 
 
 class LocationsClient(OpenAlexResourceClient[LocationRecord]):
