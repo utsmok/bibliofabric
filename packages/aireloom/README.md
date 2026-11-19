@@ -1,17 +1,17 @@
-# AIREloom: Asynchronous Python client for the OpenAIRE API
+# AIREloom: Python client for the OpenAIRE API
 
 <p align="center"><img src="https://github.com/user-attachments/assets/54a7de2e-9469-4d81-ba33-788a5a0aa753" alt="AIREloom logo" height="393" width="500" /></p>
 
 *Samuel Mok · s.mok@utwente.nl · 2025–2026*
 
-AIREloom is an async Python client for the [OpenAIRE Graph API](https://graph.openaire.eu/) and [Scholexplorer API](https://scholexplorer.openaire.eu/), built on [bibliofabric](https://github.com/utsmok/bibliofabric).
+AIREloom is a Python client for the [OpenAIRE Graph API](https://graph.openaire.eu/) and [Scholexplorer API](https://scholexplorer.openaire.eu/), built on [bibliofabric](https://github.com/utsmok/bibliofabric). It ships an async client and a generated sync twin (`AireloomSyncClient`) with the same API surface.
 
 **Docs:** [utsmok.github.io/bibliofabric/aireloom](https://utsmok.github.io/bibliofabric/aireloom/) · **PyPI:** [aireloom](https://pypi.org/project/aireloom/) · **License:** MIT
 
 ## Features
 
 - **Graph API V4 for list operations** — the recommended filter-based queries (`filter=field:value`, `sort=field:dir`, `select`, `facets`, `group_by`, cursor paging up to 10000 per page); single-entity lookups use the stable V3 by-id routes
-- **Async by design** — built on `httpx` + `asyncio` with retries, a client-side rate limiter (2 req/s, concurrency 4), and typed errors
+- **Async first, sync everywhere** — async built on `httpx` + `asyncio` with retries, a client-side rate limiter (2 req/s, concurrency 4), and typed errors; the generated sync twin runs on `httpx.Client`, `time.sleep`, and threads, and works in scripts, notebooks, and inside a running event loop
 - **Typed throughout** — Pydantic models for all inputs and outputs, PEP 561 `py.typed`; `search()` returns `bibliofabric.Page[E]`
 - **Scholix V3 (V2 for date filters)** — typed link records through a dedicated internal client for the Scholexplorer host
 - **Anonymous or OAuth2** — client credentials against the Keycloak endpoint, or no auth at all
@@ -72,6 +72,35 @@ async def main():
 
 asyncio.run(main())
 ```
+
+### Sync
+
+The same operations without `asyncio`, for scripts, notebooks, and code that
+already runs inside an event loop:
+
+```python
+from aireloom import AireloomSyncClient
+
+with AireloomSyncClient() as client:
+    page = client.research_products.search(
+        query="quantum dots",
+        page_size=5,
+    )
+    for product in page.results:
+        print(product.mainTitle)
+
+    for product in client.research_products.iterate(page_size=100):
+        print(product.mainTitle)
+        break
+
+    products = client.research_products.batch_get_by_doi(
+        ["10.5281/zenodo.15069438", "10.1038/s41586-023-06221-2"]
+    )
+```
+
+Both variants take the same parameters, raise the same errors, retry and page
+the same way, and enforce the same rate limits. Resource attributes expose the
+matching `Sync*` resource classes (`SyncResearchProductsResource`, ...).
 
 No authentication required — the Graph API works without it. For higher rate limits, set credentials (see [Authentication](#authentication)).
 
