@@ -2,7 +2,7 @@
 
 from typing import Annotated
 
-from bibliofabric.safe_types import SafeList, SafeStr
+from bibliofabric import SafeList, SafeStr
 from pydantic import BeforeValidator
 
 #: Coerces ``None`` → ``0`` (Crossref occasionally nulls numeric fields).
@@ -25,14 +25,19 @@ SafeStrList = Annotated[
     ),
 ]
 
-#: ``SafeStr`` that also strips the ``https://id.crossref.org/{kind}/`` stem.
-#: ``/prefixes/{prefix}`` returns ``member``/``prefix`` as full URIs
+#: ``SafeStr`` that also accepts a bare int/float (``member: 297`` on works)
+#: and strips the ``https://id.crossref.org/{kind}/`` stem. ``/prefixes/{prefix}``
+#: and work records return ``member``/``prefix`` as full URIs
 #: (``https://id.crossref.org/prefix/10.1038``); models normalize to bare values.
 IdSafeStr = Annotated[
-    SafeStr,
+    str,
     BeforeValidator(
         lambda v: (
-            v.rsplit("/", 1)[-1]
+            ""
+            if v is None
+            else str(v)
+            if isinstance(v, (int, float)) and not isinstance(v, bool)
+            else v.rsplit("/", 1)[-1]
             if isinstance(v, str) and v.startswith("https://id.crossref.org/")
             else v
         )
