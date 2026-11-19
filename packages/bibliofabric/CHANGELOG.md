@@ -5,6 +5,34 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Sync twins generated from the async source (D-17): the I/O modules live in
+  `bibliofabric._async`, and `scripts/unasync.py` generates the committed
+  `bibliofabric._sync` package plus sync test modules. The package root now
+  also exports `SyncBaseApiClient` and `SyncResourceClient`; sync twins work
+  inside a running event loop because they never touch one.
+- Request-class limiter (D-19): `BaseApiSettings.rate_limits` declares
+  requests-per-second per class (`max_requests_per_second` remains the rate of
+  the `"default"` class), and `BaseApiClient.rate_class(request)` is the
+  overridable hook that assigns a class per request. Each class gets its own
+  minimum-interval gate; the concurrency bound is shared.
+
+### Changed
+
+- Auth strategies implement both method pairs
+  (`async_authenticate`/`async_close` and `authenticate`/`close`), so one
+  strategy object works with either client variant. `ClientCredentialsAuth`
+  lazily creates an `httpx.AsyncClient` or `httpx.Client` per variant, guards
+  each variant's refresh with its own lock, and shares the cached token.
+- The `bibliofabric.client` and `bibliofabric.resources` module paths are
+  gone; import `BaseApiClient`, `ResourceClient`, and `OnError` from the
+  package root.
+- `ResourceClient.batch_get` bounds its chunk fetches through the shared
+  `run_bounded` primitive instead of a local semaphore + `gather`.
+
 ## [0.6.0] - 2026-11-19
 
 Overhaul of the public API. Versions of the client libraries after this

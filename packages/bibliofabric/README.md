@@ -101,6 +101,21 @@ async with FooClient() as client:
 cursor, page, and offset paging depending on the dialect. Errors, retries, and
 limits are described in the [errors page](../../docs/bibliofabric/errors.md).
 
+Every client built on the framework also gets a generated sync twin. Sync
+classes follow the `FooClient` -> `FooSyncClient` naming rule:
+
+```python
+with FooSyncClient() as client:
+    work = client.works.get("W123")
+    page = client.works.search(query="algae")
+    for work in client.works.iterate(page_size=100, limit=500):
+        ...
+```
+
+The sync client uses `httpx.Client`, `time.sleep`, and threads; it never
+starts an event loop, so it works in plain scripts, in Jupyter, and inside a
+running event loop. See the "Sync usage" docs page.
+
 ## Reference clients
 
 - [AIREloom](https://github.com/utsmok/bibliofabric/tree/main/packages/aireloom) — OpenAIRE Graph and Scholix

@@ -1,13 +1,11 @@
-"""Generic async API client for bibliofabric-family libraries.
+"""Generic API client for bibliofabric-family libraries.
 
 ``BaseApiClient`` owns the HTTP lifecycle: retries honoring ``Retry-After``,
-optional client-side throttling, auth strategy application, status-to-exception
+per-request-class pacing, auth strategy application, status-to-exception
 mapping, and credential redaction in debug logs. It never parses models.
 """
 
-import asyncio
 import logging
-import time
 from collections.abc import Mapping
 from datetime import UTC, datetime
 from email.utils import parsedate_to_datetime
@@ -18,9 +16,9 @@ import httpx
 import tenacity
 from tenacity import AsyncRetrying, stop_after_attempt, wait_random_exponential
 
-from .auth import AuthStrategy, NoAuth
-from .config import BaseApiSettings
-from .exceptions import (
+from ..auth import AuthStrategy, NoAuth
+from ..config import BaseApiSettings
+from ..exceptions import (
     APIError,
     AuthError,
     BibliofabricError,
@@ -29,8 +27,9 @@ from .exceptions import (
     RateLimitError,
     TimeoutError,
 )
-from .unwrap import ResponseUnwrapper
-from .utils import sanitize_headers, sanitize_url
+from ..unwrap import ResponseUnwrapper
+from ..utils import sanitize_headers, sanitize_url
+from ._concurrency import Limiter
 
 logger = logging.getLogger(__name__)
 
@@ -76,46 +75,6 @@ def _error_for_status(response: httpx.Response) -> BibliofabricError:
     return APIError(message, body=body, response=response)
 
 
-class _Limiter:
-    """Client-side rate and concurrency limiter.
-
-    The spacing gate sleeps outside its lock so concurrent callers are never
-    blocked while another caller sleeps.
-    """
-
-    def __init__(
-        self, max_requests_per_second: float | None, max_concurrency: int
-    ) -> None:
-        interval = (
-            1.0 / max_requests_per_second
-            if max_requests_per_second and max_requests_per_second > 0
-            else None
-        )
-        self._min_interval = interval
-        self._slots = asyncio.Semaphore(max_concurrency)
-        self._gate = asyncio.Lock()
-        self._next_slot = 0.0
-
-    async def acquire(self) -> None:
-        await self._slots.acquire()
-        if self._min_interval is None:
-            return
-        try:
-            while True:
-                async with self._gate:
-                    wait = self._next_slot - time.monotonic()
-                    if wait <= 0:
-                        self._next_slot = time.monotonic() + self._min_interval
-                        return
-                await asyncio.sleep(wait)
-        except BaseException:
-            self._slots.release()
-            raise
-
-    def release(self) -> None:
-        self._slots.release()
-
-
 class _RetryAfterWait(tenacity.wait.wait_base):
     """Retry-After when the server sent one, else jittered exponential backoff.
 
@@ -138,7 +97,7 @@ class _RetryAfterWait(tenacity.wait.wait_base):
 
 
 class BaseApiClient:
-    """Generic async HTTP client; subclass per API with base_url and unwrapper."""
+    """Generic HTTP client; subclass per API with base_url and unwrapper."""
 
     def __init__(
         self,
@@ -153,9 +112,11 @@ class BaseApiClient:
         self._settings = settings
         self._auth: AuthStrategy = auth if auth is not None else NoAuth()
         self._unwrapper = unwrapper
-        self._limiter = _Limiter(
-            settings.max_requests_per_second, settings.max_concurrency
-        )
+        rate_limits: dict[str, float | None] = {
+            "default": settings.max_requests_per_second
+        }
+        rate_limits.update(settings.rate_limits)
+        self._limiter = Limiter(rate_limits, settings.max_concurrency)
         self._should_close_client = http_client is None
         self._http_client = (
             http_client if http_client is not None else self._create_http_client()
@@ -177,6 +138,15 @@ class BaseApiClient:
             timeout=self._settings.timeout,
             headers={"User-Agent": self._settings.effective_user_agent()},
         )
+
+    def rate_class(self, request: httpx.Request) -> str:
+        """Return the request's rate class for the limiter.
+
+        The default puts every request in the ``"default"`` class, paced at
+        ``max_requests_per_second``. Override to route requests into the
+        classes declared in ``BaseApiSettings.rate_limits``.
+        """
+        return "default"
 
     def is_retryable(self, response: httpx.Response) -> bool:
         """Whether a response should be retried.
@@ -205,7 +175,7 @@ class BaseApiClient:
             "Sending request: %s %s", request.method, sanitize_url(str(request.url))
         )
         logger.debug("Request headers: %s", sanitize_headers(request.headers))
-        await self._limiter.acquire()
+        await self._limiter.acquire(self.rate_class(request))
         try:
             response = await self._http_client.send(request)
         except httpx.TimeoutException as error:

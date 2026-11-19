@@ -21,7 +21,16 @@ class BaseApiSettings(BaseSettings):
     max_retries: int = 3
     max_retry_wait: float = 60.0
     max_requests_per_second: float | None = None
+    """Requests per second of the ``"default"`` rate class."""
     max_concurrency: int = 10
+    rate_limits: dict[str, float] = {}
+    """Requests per second per rate class (D-19).
+
+    The ``"default"`` class comes from :attr:`max_requests_per_second`; keys
+    here add further classes (for example ``{"single": 10.0, "list": 3.0}``)
+    that a client's overridden ``rate_class`` assigns per request. Each class
+    gets its own minimum-interval gate; the concurrency bound is shared.
+    """
     user_agent: str | None = None
     mailto: str | None = None
 

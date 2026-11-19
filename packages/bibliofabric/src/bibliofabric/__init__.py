@@ -15,6 +15,10 @@ except PackageNotFoundError:
 __author__ = "Samuel Mok"
 __email__ = "s.mok@utwente.nl"
 
+from ._async.client import BaseApiClient
+from ._async.resources import OnError, ResourceClient
+from ._sync.client import SyncBaseApiClient
+from ._sync.resources import SyncResourceClient
 from .auth import (
     AuthStrategy,
     ClientCredentialsAuth,
@@ -23,7 +27,6 @@ from .auth import (
     QueryParameterAuth,
     StaticTokenAuth,
 )
-from .client import BaseApiClient
 from .config import BaseApiSettings
 from .exceptions import (
     APIError,
@@ -45,7 +48,6 @@ from .ids import (
     strip_url_prefix,
 )
 from .paging import Page, QueryDialect
-from .resources import ResourceClient
 from .types import SafeList, SafeStr
 from .unwrap import ResponseUnwrapper
 
@@ -65,6 +67,7 @@ __all__ = [
     "NetworkError",
     "NoAuth",
     "NotFoundError",
+    "OnError",
     "Page",
     "QueryDialect",
     "RateLimitError",
@@ -73,6 +76,8 @@ __all__ = [
     "SafeList",
     "SafeStr",
     "StaticTokenAuth",
+    "SyncBaseApiClient",
+    "SyncResourceClient",
     "TimeoutError",
     "ValidationError",
     "is_doi",

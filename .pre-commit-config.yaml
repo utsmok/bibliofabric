@@ -7,3 +7,12 @@ repos:
         files: ^packages/[^/]+/(src|tests)/
       - id: ruff-format
         files: ^packages/[^/]+/(src|tests)/
+
+  - repo: local
+    hooks:
+      - id: unasync-check
+        name: generated sync twins are fresh
+        entry: uv run python scripts/unasync.py --check
+        language: system
+        pass_filenames: false
+        files: ^(packages/[^/]+/(src|tests)/.*\.py|scripts/unasync\.py)$

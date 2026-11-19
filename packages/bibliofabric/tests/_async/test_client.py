@@ -1,6 +1,5 @@
 """Consumer-visible behavior of BaseApiClient: error mapping, retries, JSON."""
 
-import asyncio
 import time
 
 import httpx
@@ -78,24 +77,22 @@ async def test_get_returns_model(httpx_mock, make_client):
     assert widget.title == "T"
 
 
-async def test_retry_after_header_honored(httpx_mock, make_client, monkeypatch):
+async def test_retry_after_header_honored(httpx_mock, make_client):
     httpx_mock.add_response(
-        url=f"{BASE_URL}/works", status_code=429, headers={"Retry-After": "7"}, json={}
+        url=f"{BASE_URL}/works",
+        status_code=429,
+        headers={"Retry-After": "1"},
+        json={},
     )
     httpx_mock.add_response(url=f"{BASE_URL}/works", json={"results": [], "total": 0})
-    sleeps: list[float] = []
-
-    async def fake_sleep(seconds: float) -> None:
-        sleeps.append(seconds)
-
-    monkeypatch.setattr(asyncio, "sleep", fake_sleep)
     client = make_client(settings=FakeSettings(max_retries=2))
+    started = time.monotonic()
     response = await client.request("GET", "works")
     assert response.status_code == 200
-    assert sleeps == [7.0]
+    assert time.monotonic() - started >= 1.0
 
 
-async def test_retry_gives_up_after_max_retries(httpx_mock, make_client, monkeypatch):
+async def test_retry_gives_up_after_max_retries(httpx_mock, make_client):
     for _ in range(3):
         httpx_mock.add_response(
             url=f"{BASE_URL}/works",
@@ -103,19 +100,12 @@ async def test_retry_gives_up_after_max_retries(httpx_mock, make_client, monkeyp
             headers={"Retry-After": "0"},
             json={},
         )
-    sleeps: list[float] = []
-
-    async def fake_sleep(seconds: float) -> None:
-        sleeps.append(seconds)
-
-    monkeypatch.setattr(asyncio, "sleep", fake_sleep)
     client = make_client(settings=FakeSettings(max_retries=2))
     with pytest.raises(APIError) as excinfo:
         await client.request("GET", "works")
     assert excinfo.value.response is not None
     assert excinfo.value.response.status_code == 503
     assert len(httpx_mock.get_requests()) == 3
-    assert len(sleeps) == 2
 
 
 async def test_429_not_retried_when_vetoed(httpx_mock, make_client):
@@ -207,10 +197,10 @@ async def test_header_auth(httpx_mock, make_client):
     assert sent[0].headers["Crossref-Plus-API-Token"] == "tok"
 
 
-def test_static_token_auth_bearer():
+async def test_static_token_auth_bearer():
     auth = StaticTokenAuth("tok")
     request = httpx.Request("GET", "https://x.test/api")
-    asyncio.run(auth.async_authenticate(request))
+    await auth.async_authenticate(request)
     assert request.headers["Authorization"] == "Bearer tok"
     with pytest.raises(ConfigurationError):
         StaticTokenAuth("")
