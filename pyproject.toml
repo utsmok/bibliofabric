@@ -1,6 +1,6 @@
 [project]
 name = "stavrophora"
-version = "0.2.1"
+version = "0.3.0"
 description = "Python interface for the Crossref REST API, built on top of the bibliofabric framework."
 authors = [
     {name = "Samuel Mok", email = "s.mok@utwente.nl"}
@@ -9,7 +9,7 @@ readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.12"
 dependencies = [
-    "bibliofabric>=0.5.2",
+    "bibliofabric>=0.6,<0.7",
 ]
 
 classifiers = [
@@ -25,28 +25,25 @@ classifiers = [
 dev = [
     "pytest>=8.3.4",
     "pytest-asyncio>=0.26.0",
-    "pytest-cov>=6.1.1",
     "pytest-httpx>=0.35.0",
     "ruff>=0.16.6",
-    "ty>=0.0.78",
+    "ty==0.0.107",
 ]
 docs = [
     "mkdocs~=1.6.0",
     "mkdocs-material~=9.5.0",
     "mkdocstrings[python]",
 ]
-lint = ["ruff>=0.8.0"]
-test = ["pytest", "pytest-randomly"]
 
 [project.urls]
 "Homepage" = "https://github.com/utsmok/stavrophora"
 
+[tool.uv.sources]
+bibliofabric = { git = "https://github.com/utsmok/bibliofabric", branch = "overhaul-2026-11" }
+
 [build-system]
 requires = ["uv_build>=0.11.19,<0.12"]
 build-backend = "uv_build"
-
-[tool.uv.pip]
-generate-hashes = true
 
 [tool.ruff]
 line-length = 88
@@ -61,36 +58,31 @@ select = [
     "E7",
     "E9",
     "F",
-    "I", # isort
-    "B", # bugbear -- flake8 bugfinder
-    "Q", # correct quotes usage
-    "PTH",  # Replace os functions with pathlib functions
-    "SIM", # Simplify statements
-    "RET", # Return value related rules
-    "PIE", # misc flake8 rules
-    "FBT", # boolean traps
-    "PERF", # performance optimization
-    "PL", # pylint
-    "UP", # check for deprecated ways of coding
+    "I",     # isort
+    "B",     # bugbear -- flake8 bugfinder
+    "Q",     # correct quotes usage
+    "PTH",   # Replace os functions with pathlib functions
+    "SIM",   # Simplify statements
+    "RET",   # Return value related rules
+    "PIE",   # misc flake8 rules
+    "FBT",   # boolean traps
+    "PERF",  # performance optimization
+    "PL",    # pylint
+    "UP",    # check for deprecated ways of coding
     "FURB",
 ]
-ignore = ["PLR2004"]
+
+[tool.ruff.lint.pylint]
+max-args = 10
+max-branches = 25
+max-statements = 75
+
 
 [tool.ruff.lint.isort]
 combine-as-imports = true
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
-"**/client.py" = ["PLR0913", "PLR0912", "PLR0915", "PLC0415"]
-"**/session.py" = ["PLC0415"]
-"**/endpoints.py" = ["PLR0913"]
-"tests/**/*.py" = ["PLC0415", "PLR2004"]
-
-[tool.ruff.lint.pylint]
-max-args = 10
-max-branches = 25
-max-statements = 75
-max-returns = 10
 
 [tool.pytest.ini_options]
 pythonpath = [
@@ -104,4 +96,4 @@ asyncio_default_fixture_loop_scope = "function"
 markers = [
     "live_api: marks tests that hit the live Crossref API (skipped by default)",
 ]
-addopts = "-m 'not live_api'"
+addopts = "-m 'not live_api' --ignore=tests/_legacy"
