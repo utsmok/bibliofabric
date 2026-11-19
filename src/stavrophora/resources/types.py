@@ -21,4 +21,4 @@ class TypesResource(CrossrefResourceClient[CrossRefType]):
     def works(self, type_id: str | int) -> ScopedWorksResource:
         """Return a works client bound to ``types/{id}/works``."""
         type_id = quote(str(type_id).strip(), safe="")
-        return ScopedWorksResource(self._client, f"types/{type_id}/works")
+        return ScopedWorksResource(self._client, path=f"types/{type_id}/works")

@@ -152,9 +152,3 @@ class ScopedWorksResource(WorksResource):
     accept the full works parameter set but count as single-record requests
     for Crossref rate limiting.
     """
-
-    def __init__(self, client: Any, path: str) -> None:
-        super().__init__(client)
-        # `path` is a ClassVar on ResourceClient; scoped routes need one
-        # instance per parent id, so bypass the checker-visible assignment.
-        object.__setattr__(self, "path", path)

@@ -33,7 +33,7 @@ StavrophoraClient (client.py, extends bibliofabric.BaseApiClient)
 | Models | `models/` | `base.py` shared types, `safe_types.py` (`IdSafeStr` strips `id.crossref.org` URIs), `work.py`, `entities.py`, `agency.py`. All `extra="allow"`. |
 | Config | `config.py` | `StavrophoraSettings(BaseApiSettings)`, env prefix `STAVROPHORA_`; `mailto`, `plus_token`; polite-pool pacing 3/s, 3 concurrent. |
 
-`ScopedWorksResource` sets an instance-level `path` via `object.__setattr__` because the core declares `path: ClassVar[str]`; see the migration report's core change requests before touching it.
+`ScopedWorksResource` gets its per-parent route through the core's `ResourceClient(client, path=...)` constructor argument.
 
 ## Tech Stack
 

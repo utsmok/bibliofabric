@@ -23,7 +23,7 @@ class PrefixesResource(CrossrefResourceClient[Prefix]):
     def works(self, prefix: str | int) -> ScopedWorksResource:
         """Return a works client bound to ``prefixes/{prefix}/works``."""
         prefix = quote(str(prefix).strip(), safe="")
-        return ScopedWorksResource(self._client, f"prefixes/{prefix}/works")
+        return ScopedWorksResource(self._client, path=f"prefixes/{prefix}/works")
 
     def search(self, *_args: Any, **_kwargs: Any) -> Any:
         """Not supported: Crossref serves no ``/prefixes`` list route."""

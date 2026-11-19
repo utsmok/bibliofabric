@@ -32,4 +32,4 @@ class FundersResource(CrossrefResourceClient[Funder]):
         ``funder_id`` is the funder's Funder Registry DOI.
         """
         funder_id = quote(normalize_doi(funder_id), safe="")
-        return ScopedWorksResource(self._client, f"funders/{funder_id}/works")
+        return ScopedWorksResource(self._client, path=f"funders/{funder_id}/works")

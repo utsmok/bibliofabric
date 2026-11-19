@@ -30,4 +30,4 @@ class JournalsResource(CrossrefResourceClient[Journal]):
         Accepts print or electronic ISSNs; hyphens and case are normalized.
         """
         issn = quote(normalize_issn(issn), safe="")
-        return ScopedWorksResource(self._client, f"journals/{issn}/works")
+        return ScopedWorksResource(self._client, path=f"journals/{issn}/works")

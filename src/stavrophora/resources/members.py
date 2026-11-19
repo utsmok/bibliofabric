@@ -24,4 +24,4 @@ class MembersResource(CrossrefResourceClient[Member]):
     def works(self, member_id: str | int) -> ScopedWorksResource:
         """Return a works client bound to ``members/{id}/works``."""
         member_id = quote(str(member_id).strip(), safe="")
-        return ScopedWorksResource(self._client, f"members/{member_id}/works")
+        return ScopedWorksResource(self._client, path=f"members/{member_id}/works")
