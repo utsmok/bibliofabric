@@ -14,6 +14,8 @@ Deprecated and paid filters are deliberately absent:
 - ``from/to_created_date``, ``from/to_updated_date`` on works: paid
   (Member+/Partner daily sync; free accounts get 403 "Plan upgrade required").
 - ``is_in_jstage*`` on sources: no longer returned or documented upstream.
+- ``parent_works.relationship``: renamed ``parent_works.link_type`` by
+  OpenAlex (2026-11-14); the old filter name errors after 2027-03-01.
 """
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -101,9 +103,7 @@ class WorksFilters(BaseModel):
     # Part-of (parent/child works) filters
     has_parent_work: bool | None = Field(None, alias="has_parent_work")
     parent_works_id: str | None = Field(None, alias="parent_works.id")
-    parent_works_relationship: str | None = Field(
-        None, alias="parent_works.relationship"
-    )
+    parent_works_link_type: str | None = Field(None, alias="parent_works.link_type")
     lineage: str | None = None
     child_works_count: str | None = None
     is_traditional: bool | None = None

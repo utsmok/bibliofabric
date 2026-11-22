@@ -64,7 +64,7 @@ def test_links_smoke(live_client):
     edges = live_client.links.origin("W2741809807", limit=10)
     assert edges
     assert edges[0].origin.endswith("W2741809807")
-    assert edges[0].relationship.startswith("https://openalex.org/relationships/")
+    assert edges[0].link_type.startswith("https://openalex.org/link-types/")
 
 
 def test_rerank_smoke(live_client):

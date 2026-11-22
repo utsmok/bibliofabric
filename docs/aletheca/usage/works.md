@@ -116,6 +116,6 @@ Scopes: `title`, `title_and_abstract`, `title_abstract_keywords`, `exact` (wildc
 
 ## Filters
 
-`WorksFilters` covers the common filters, including `publication_year`, `is_oa`, `doi`, `cites:W...`, `cited_by:W...`, `related_to:W...`, dot-notation fields such as `authorships.author.id`, `primary_location.source.id`, `topics.id`, and the part-of filters `has_parent_work`, `parent_works.id`, `parent_works.relationship`, `lineage`, and `child_works_count`. Every model allows extra fields, so filters that are missing here still work as dicts: `client.works.search({"some.new.filter": "x"})`.
+`WorksFilters` covers the common filters, including `publication_year`, `is_oa`, `doi`, `cites:W...`, `cited_by:W...`, `related_to:W...`, dot-notation fields such as `authorships.author.id`, `primary_location.source.id`, `topics.id`, and the part-of filters `has_parent_work`, `parent_works.id`, `parent_works.link_type`, `lineage`, and `child_works_count`. Every model allows extra fields, so filters that are missing here still work as dicts: `client.works.search({"some.new.filter": "x"})`.
 
 Booleans serialize lowercase (`is_oa:true`), list values join into `|` OR groups, and DOI-valued filters are normalized before serialization.

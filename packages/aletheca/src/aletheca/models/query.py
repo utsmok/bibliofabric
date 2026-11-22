@@ -9,7 +9,12 @@
 from typing import Literal
 
 from bibliofabric import SafeStr
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field, field_validator
+
+# OpenAlex renamed relationships to link types on 2026-11-14; the old
+# ``/relationships/`` id prefix is accepted upstream until 2027-03-01.
+_OLD_LINK_TYPE_PREFIX = "https://openalex.org/relationships/"
+_NEW_LINK_TYPE_PREFIX = "https://openalex.org/link-types/"
 
 
 class GroupByBucket(BaseModel):
@@ -146,13 +151,26 @@ class LocationRecord(BaseModel):
 class Link(BaseModel):
     """One typed edge of the ``/links`` citation-graph endpoint.
 
-    ``relationship`` is an OpenAlex relationship URL (for example
-    ``https://openalex.org/relationships/citation``) labeling how
-    ``origin`` relates to ``target``.
+    ``link_type`` is an OpenAlex link-type URL (for example
+    ``https://openalex.org/link-types/citation``) labeling how ``origin``
+    relates to ``target``. OpenAlex renamed this field from
+    ``relationship`` (removed from responses on 2026-12-07); validation
+    accepts either name, and old ``/relationships/`` urls are mapped to
+    ``/link-types/`` so snapshots from before the rename parse to the
+    canonical form.
     """
 
     origin: SafeStr
     target: SafeStr
-    relationship: SafeStr | None = None
+    link_type: SafeStr | None = Field(
+        None, validation_alias=AliasChoices("link_type", "relationship")
+    )
 
-    model_config = ConfigDict(extra="allow")
+    @field_validator("link_type", mode="before")
+    @classmethod
+    def _map_old_prefix(cls, value: object) -> object:
+        if isinstance(value, str) and value.startswith(_OLD_LINK_TYPE_PREFIX):
+            return _NEW_LINK_TYPE_PREFIX + value[len(_OLD_LINK_TYPE_PREFIX) :]
+        return value
+
+    model_config = ConfigDict(extra="allow", populate_by_name=True)

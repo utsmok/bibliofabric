@@ -11,7 +11,8 @@
     {
       "origin": "https://openalex.org/W2741809807",
       "target": "https://openalex.org/W1560783210",
-      "relationship": "https://openalex.org/relationships/citation"
+      "relationship": "https://openalex.org/relationships/citation",
+      "link_type": "https://openalex.org/link-types/citation"
     },
     {
       "origin": "https://openalex.org/W2741809807",

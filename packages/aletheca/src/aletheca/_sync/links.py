@@ -2,15 +2,16 @@
 """Client for the OpenAlex links endpoint."""
 
 from ..models import Link
+from ..models.query import _NEW_LINK_TYPE_PREFIX, _OLD_LINK_TYPE_PREFIX
 from .dialect import OpenAlexResourceSyncClient
 
 
 class LinksSyncClient(OpenAlexResourceSyncClient[Link]):
     """Client for the ``/links`` endpoint.
 
-    Typed one-hop edges between works, each labeled with a relationship
-    (``https://openalex.org/relationships/citation`` and part-of
-    relationships). ``origin()`` lists the edges leaving a work, ``target()``
+    Typed one-hop edges between works, each labeled with a link type
+    (``https://openalex.org/link-types/citation`` and the part-of link
+    types). ``origin()`` lists the edges leaving a work, ``target()``
     the edges pointing at it; ``get``/``search``/``iterate`` are available
     for raw ``filter=origin:``/``target:`` queries.
     """
@@ -18,18 +19,43 @@ class LinksSyncClient(OpenAlexResourceSyncClient[Link]):
     path = "links"
     model = Link
 
-    def origin(self, work_id: str, *, limit: int = 100) -> list[Link]:
+    def origin(
+        self, work_id: str, *, limit: int = 100, link_type: str | None = None
+    ) -> list[Link]:
         """Collect the edges leaving ``work_id`` (what it cites or contains).
 
         Fetches ``filter=origin:<id>`` with cursor paging, up to ``limit``
-        edges. Ids normalize (bare ``W...`` or full URL).
+        edges. Ids normalize (bare ``W...`` or full URL). ``link_type``
+        keeps one kind of edge (``citation``, ``volume``, ``component``,
+        ``data-series``, ``part``, or ``review``); it accepts a short
+        value or a full link-type URL.
         """
-        return self.collect({"origin": self.normalize_id(work_id)}, limit=limit)
+        return self.collect(
+            self._edge_filters("origin", work_id, link_type), limit=limit
+        )
 
-    def target(self, work_id: str, *, limit: int = 100) -> list[Link]:
+    def target(
+        self, work_id: str, *, limit: int = 100, link_type: str | None = None
+    ) -> list[Link]:
         """Collect the edges pointing at ``work_id`` (what cites or contains it).
 
         Fetches ``filter=target:<id>`` with cursor paging, up to ``limit``
-        edges; heavily cited works need a small ``limit``.
+        edges; heavily cited works need a small ``limit``. ``link_type``
+        keeps one kind of edge, like ``origin()``.
         """
-        return self.collect({"target": self.normalize_id(work_id)}, limit=limit)
+        return self.collect(
+            self._edge_filters("target", work_id, link_type), limit=limit
+        )
+
+    def _edge_filters(
+        self, direction: str, work_id: str, link_type: str | None
+    ) -> dict[str, str]:
+        """Filter dict for one direction, optionally narrowed to one kind."""
+        filters = {direction: self.normalize_id(work_id)}
+        if link_type is not None:
+            for prefix in (_NEW_LINK_TYPE_PREFIX, _OLD_LINK_TYPE_PREFIX):
+                if link_type.startswith(prefix):
+                    link_type = link_type[len(prefix) :]
+                    break
+            filters["link_type"] = link_type
+        return filters

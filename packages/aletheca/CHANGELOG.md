@@ -38,7 +38,17 @@ changes are listed under each heading.
   key is required for cursor paging past the first page.
 
 ### Changed
-
+- OpenAlex's 2026-11-14 relationships-to-link-types rename:
+  `RelatedWork.relationship` is now `RelatedWork.link_type`
+  (`Work.parent_works` entries) and `Link.relationship` is now
+  `Link.link_type` (`/links` edges). Both models still validate the old
+  field name while OpenAlex serves it (until 2026-12-07), and `Link`
+  maps old `https://openalex.org/relationships/...` ids to
+  `https://openalex.org/link-types/...` so pre-rename snapshots parse to
+  the canonical form.
+- `WorksFilters.parent_works_relationship` is now `parent_works_link_type`
+  (`parent_works.link_type`; the old filter name errors upstream after
+  2027-03-01).
 - Settings: `ALETHECA_API_KEY` is the canonical env name
   (`ALETHECA_OPENALEX_API_KEY` still accepted as an alias, and the
   `openalex_api_key=` constructor keyword keeps working for consumers). New
@@ -65,6 +75,9 @@ changes are listed under each heading.
   `key_fn` parameter is gone.
 
 ### Added
+- `LinksClient.origin()` and `target()` take `link_type=` to keep one kind
+  of edge (`citation`, `volume`, `component`, `data-series`, `part`, or
+  `review`); a full link-type URL shortens to the value form.
 
 - Works-level helpers: `group_by(field, filters=...)` returning typed
   `GroupByBucket` objects (nested `groups` for multi-field group-by, cursor

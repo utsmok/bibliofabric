@@ -68,6 +68,16 @@ def test_filter_model_uses_dot_aliases(client, httpx_mock):
     }
 
 
+def test_part_of_filters_use_link_type_alias(client, httpx_mock):
+    httpx_mock.add_response(json=envelope([]))
+    client.works.search(
+        WorksFilters(has_parent_work=True, parent_works_link_type="volume")
+    )
+    assert last_params(httpx_mock)["filter"] == (
+        "has_parent_work:true,parent_works.link_type:volume"
+    )
+
+
 def test_list_values_become_pipe_joined_or(client, httpx_mock):
     httpx_mock.add_response(json=envelope([]))
     client.works.search({"openalex": ["W1", "W2", "W3"]})

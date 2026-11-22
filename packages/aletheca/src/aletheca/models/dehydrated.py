@@ -1,7 +1,7 @@
 """Pydantic models for dehydrated (partial) entity representations."""
 
 from bibliofabric import SafeList, SafeStr
-from pydantic import BaseModel, Field
+from pydantic import AliasChoices, BaseModel, Field
 from pydantic.config import ConfigDict
 
 from .base import BaseEntity
@@ -34,13 +34,20 @@ class RelatedInstitution(DehydratedInstitution):
 
 
 class RelatedWork(BaseEntity):
-    """Dehydrated work with relationship type (an entry of ``Work.parent_works``).
+    """Dehydrated work with its link type (an entry of ``Work.parent_works``).
 
-    ``relationship`` is one of the part-of kinds OpenAlex defines:
-    ``volume``, ``component``, ``data-series`` or ``part``.
+    ``link_type`` is one of the part-of kinds OpenAlex defines:
+    ``volume``, ``component``, ``data-series`` or ``part``. OpenAlex
+    renamed the response field from ``relationship`` (the old name stops
+    being served on 2026-12-07); validation accepts either, so payloads
+    harvested before the cutover keep parsing.
     """
 
-    relationship: SafeStr | None = None
+    link_type: SafeStr | None = Field(
+        None, validation_alias=AliasChoices("link_type", "relationship")
+    )
+
+    model_config = ConfigDict(extra="allow", populate_by_name=True)
 
 
 class DehydratedInstitutionWithYear(BaseModel):

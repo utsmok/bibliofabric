@@ -49,8 +49,6 @@ def test_locations_search_shape_and_parse(client, httpx_mock):
 
 
 # --- /links -----------------------------------------------------------
-
-
 def test_links_origin_sends_filter_and_parses(client, httpx_mock):
     httpx_mock.add_response(json=LINKS_PAGE)
     edges = client.links.origin("https://openalex.org/W2741809807")
@@ -58,7 +56,21 @@ def test_links_origin_sends_filter_and_parses(client, httpx_mock):
     assert len(edges) == len(LINKS_PAGE["results"])
     assert all(isinstance(edge, Link) for edge in edges)
     assert edges[0].target == LINKS_PAGE["results"][0]["target"]
-    assert edges[0].relationship == "https://openalex.org/relationships/citation"
+    assert edges[0].link_type == "https://openalex.org/link-types/citation"
+    # rows that only carry the pre-2026-12-07 `relationship` field parse
+    # and normalize to the canonical /link-types/ form too
+    assert edges[1].link_type == "https://openalex.org/link-types/citation"
+
+
+def test_links_origin_link_type_param_shortens_urls(client, httpx_mock):
+    httpx_mock.add_response(json=LINKS_PAGE)
+    httpx_mock.add_response(json=LINKS_PAGE)
+    client.links.origin("W2741809807", link_type="citation")
+    assert last_params(httpx_mock)["filter"] == "origin:W2741809807,link_type:citation"
+    client.links.target(
+        "W2741809807", link_type="https://openalex.org/link-types/volume"
+    )
+    assert last_params(httpx_mock)["filter"] == "target:W2741809807,link_type:volume"
 
 
 def test_links_target_sends_target_filter(client, httpx_mock):
