@@ -4,7 +4,7 @@ All notable changes to Aletheca are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] - 0.4.0
+## [0.4.0] - 2026-11-26
 
 Rewritten onto bibliofabric 0.6 (one generic `ResourceClient` + `QueryDialect`
 per API, `Page[E]` results, stdlib logging, no loguru, no sessions). Breaking

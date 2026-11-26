@@ -5,20 +5,11 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.6.0] - 2026-11-26
 
-### Added
-
-- Sync twins generated from the async source (D-17): the I/O modules live in
-  `bibliofabric._async`, and `scripts/unasync.py` generates the committed
-  `bibliofabric._sync` package plus sync test modules. The package root now
-  also exports `SyncBaseApiClient` and `SyncResourceClient`; sync twins work
-  inside a running event loop because they never touch one.
-- Request-class limiter (D-19): `BaseApiSettings.rate_limits` declares
-  requests-per-second per class (`max_requests_per_second` remains the rate of
-  the `"default"` class), and `BaseApiClient.rate_class(request)` is the
-  overridable hook that assigns a class per request. Each class gets its own
-  minimum-interval gate; the concurrency bound is shared.
+Overhaul of the public API. Versions of the client libraries after this
+release: aireloom 0.8.0, aletheca 0.4.0, stavrophora 0.3.0; they pin
+`bibliofabric>=0.6,<0.7`.
 
 ### Changed
 
@@ -32,12 +23,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   package root.
 - `ResourceClient.batch_get` bounds its chunk fetches through the shared
   `run_bounded` primitive instead of a local semaphore + `gather`.
-
-## [0.6.0] - 2026-11-19
-
-Overhaul of the public API. Versions of the client libraries after this
-release: aireloom 0.8.0, aletheca 0.4.0, stavrophora 0.3.0; they pin
-`bibliofabric>=0.6,<0.7`.
 
 ### Breaking changes
 
@@ -77,6 +62,16 @@ release: aireloom 0.8.0, aletheca 0.4.0, stavrophora 0.3.0; they pin
 
 ### Added
 
+- Sync twins generated from the async source (D-17): the I/O modules live in
+  `bibliofabric._async`, and `scripts/unasync.py` generates the committed
+  `bibliofabric._sync` package plus sync test modules. The package root now
+  also exports `SyncBaseApiClient` and `SyncResourceClient`; sync twins work
+  inside a running event loop because they never touch one.
+- Request-class limiter (D-19): `BaseApiSettings.rate_limits` declares
+  requests-per-second per class (`max_requests_per_second` remains the rate of
+  the `"default"` class), and `BaseApiClient.rate_class(request)` is the
+  overridable hook that assigns a class per request. Each class gets its own
+  minimum-interval gate; the concurrency bound is shared.
 - `HeaderAuth(name, value)` for static credential headers (Crossref Plus).
 - `ClientCredentialsAuth` sends a `User-Agent` on its token client
   (`user_agent=` parameter).
