@@ -1,0 +1,75 @@
+{
+ "status": "ok",
+ "message-type": "work",
+ "message-version": "1.0.0",
+ "message": {
+  "DOI": "10.12688/f1000research.141553.3",
+  "title": [
+   "Efficacy of Dashmool Vasti as an adjuvant therapy with the standard of care (modern + physiotherapy) in the rehabilitation of stroke as compared to standard of care \u2013 a clinical trial protocol"
+  ],
+  "type": "journal-article",
+  "created": {
+   "date-parts": [
+    [
+     2024,
+     4,
+     10
+    ]
+   ],
+   "date-time": "2024-04-10T13:25:05Z",
+   "timestamp": 1712755505000
+  },
+  "container-title": [
+   "F1000Research"
+  ],
+  "publisher": "F1000 Research Ltd",
+  "update-policy": "https://doi.org/10.12688/f1000research.crossmark-policy",
+  "update-to": [
+   {
+    "DOI": "10.12688/f1000research.141553.1",
+    "type": "new_version",
+    "label": "New version",
+    "source": "publisher",
+    "updated": {
+     "date-parts": [
+      [
+       2024,
+       4,
+       10
+      ]
+     ],
+     "date-time": "2024-04-10T00:00:00Z",
+     "timestamp": 1712707200000
+    }
+   },
+   {
+    "DOI": "10.12688/f1000research.141553.2",
+    "type": "new_version",
+    "label": "New version",
+    "source": "publisher",
+    "updated": {
+     "date-parts": [
+      [
+       2024,
+       4,
+       10
+      ]
+     ],
+     "date-time": "2024-04-10T00:00:00Z",
+     "timestamp": 1712707200000
+    }
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     4,
+     10
+    ]
+   ]
+  },
+  "volume": "12",
+  "page": "1589"
+ }
+}

@@ -1,0 +1,289 @@
+{
+ "status": "ok",
+ "message-type": "work-list",
+ "message-version": "1.0.0",
+ "message": {
+  "indexed": {
+   "date-parts": [
+    [
+     2025,
+     2,
+     21
+    ]
+   ],
+   "date-time": "2025-02-21T01:07:46Z",
+   "timestamp": 1740100066380,
+   "version": "3.37.3"
+  },
+  "reference-count": 12,
+  "publisher": "IEEE",
+  "license": [
+   {
+    "start": {
+     "date-parts": [
+      [
+       2021,
+       5,
+       4
+      ]
+     ],
+     "date-time": "2021-05-04T00:00:00Z",
+     "timestamp": 1620086400000
+    },
+    "content-version": "vor",
+    "delay-in-days": 0,
+    "URL": "https://ieeexplore.ieee.org/Xplorehelp/downloads/license-information/IEEE.html"
+   },
+   {
+    "start": {
+     "date-parts": [
+      [
+       2021,
+       5,
+       4
+      ]
+     ],
+     "date-time": "2021-05-04T00:00:00Z",
+     "timestamp": 1620086400000
+    },
+    "content-version": "stm-asf",
+    "delay-in-days": 0,
+    "URL": "https://doi.org/10.15223/policy-029"
+   },
+   {
+    "start": {
+     "date-parts": [
+      [
+       2021,
+       5,
+       4
+      ]
+     ],
+     "date-time": "2021-05-04T00:00:00Z",
+     "timestamp": 1620086400000
+    },
+    "content-version": "stm-asf",
+    "delay-in-days": 0,
+    "URL": "https://doi.org/10.15223/policy-037"
+   }
+  ],
+  "funder": [
+   {
+    "DOI": "10.13039/100000002",
+    "name": "NIH",
+    "doi-asserted-by": "publisher",
+    "award": [
+     "MH122023"
+    ],
+    "award-info": [
+     {
+      "award-number": [
+       "MH122023"
+      ]
+     }
+    ],
+    "id": [
+     {
+      "id": "10.13039/100000002",
+      "id-type": "DOI",
+      "asserted-by": "publisher"
+     }
+    ]
+   },
+   {
+    "DOI": "10.13039/100000001",
+    "name": "NSF",
+    "doi-asserted-by": "publisher",
+    "award": [
+     "OAC-1730655"
+    ],
+    "award-info": [
+     {
+      "award-number": [
+       "OAC-1730655"
+      ]
+     }
+    ],
+    "id": [
+     {
+      "id": "10.13039/100000001",
+      "id-type": "DOI",
+      "asserted-by": "publisher"
+     }
+    ]
+   }
+  ],
+  "content-domain": {
+   "domain": [],
+   "crossmark-restriction": false
+  },
+  "published-print": {
+   "date-parts": [
+    [
+     2021,
+     5,
+     4
+    ]
+   ]
+  },
+  "DOI": "10.1109/ner49283.2021.9441222",
+  "type": "proceedings-article",
+  "created": {
+   "date-parts": [
+    [
+     2021,
+     6,
+     3
+    ]
+   ],
+   "date-time": "2021-06-03T08:16:41Z",
+   "timestamp": 1622708201000
+  },
+  "page": "99-102",
+  "source": "Crossref",
+  "is-referenced-by-count": 1,
+  "title": [
+   "An Efficient Pipeline for Biophysical Modeling of Neurons"
+  ],
+  "prefix": "10.1109",
+  "author": [
+   {
+    "given": "Nathaniel",
+    "family": "Opsal",
+    "sequence": "first",
+    "affiliation": [],
+    "role": [
+     {
+      "role": "author",
+      "vocabulary": "crossref"
+     }
+    ]
+   },
+   {
+    "given": "Pete",
+    "family": "Canfield",
+    "sequence": "additional",
+    "affiliation": [],
+    "role": [
+     {
+      "role": "author",
+      "vocabulary": "crossref"
+     }
+    ]
+   },
+   {
+    "given": "Tyler",
+    "family": "Banks",
+    "sequence": "additional",
+    "affiliation": [],
+    "role": [
+     {
+      "role": "author",
+      "vocabulary": "crossref"
+     }
+    ]
+   },
+   {
+    "given": "Satish S.",
+    "family": "Nair",
+    "sequence": "additional",
+    "affiliation": [],
+    "role": [
+     {
+      "role": "author",
+      "vocabulary": "crossref"
+     }
+    ]
+   }
+  ],
+  "member": "263",
+  "reference": [
+   {
+    "year": "2014",
+    "author": "byrne",
+    "journal-title": "From Molecules to Networks An Introduction to Cellular and Molecular Neuroscience",
+    "key": "ref4"
+   },
+   {
+    "key": "ref3",
+    "doi-asserted-by": "crossref",
+    "DOI": "10.7554/eLife.56261",
+    "article-title": "Training deep neural density estimators to identify mechanistic models of neural dynamics",
+    "volume": "9",
+    "author": "gon\u00e7alves",
+    "year": "2020",
+    "journal-title": "Elife"
+   }
+  ],
+  "event": {
+   "name": "2021 10th International IEEE/EMBS Conference on Neural Engineering (NER)",
+   "start": {
+    "date-parts": [
+     [
+      2021,
+      5,
+      4
+     ]
+    ]
+   },
+   "location": "Italy",
+   "end": {
+    "date-parts": [
+     [
+      2021,
+      5,
+      6
+     ]
+    ]
+   }
+  },
+  "container-title": [
+   "2021 10th International IEEE/EMBS Conference on Neural Engineering (NER)"
+  ],
+  "link": [
+   {
+    "URL": "http://xplorestaging.ieee.org/ielx7/9441025/9441064/09441222.pdf?arnumber=9441222",
+    "content-type": "unspecified",
+    "content-version": "vor",
+    "intended-application": "similarity-checking"
+   }
+  ],
+  "deposited": {
+   "date-parts": [
+    [
+     2022,
+     5,
+     10
+    ]
+   ],
+   "date-time": "2022-05-10T15:41:59Z",
+   "timestamp": 1652197319000
+  },
+  "score": 0.0,
+  "resource": {
+   "primary": {
+    "URL": "https://ieeexplore.ieee.org/document/9441222/"
+   }
+  },
+  "issued": {
+   "date-parts": [
+    [
+     2021,
+     5,
+     4
+    ]
+   ]
+  },
+  "references-count": 12,
+  "URL": "https://doi.org/10.1109/ner49283.2021.9441222",
+  "published": {
+   "date-parts": [
+    [
+     2021,
+     5,
+     4
+    ]
+   ]
+  }
+ }
+}

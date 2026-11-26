@@ -1,0 +1,29 @@
+{
+ "header": {
+  "numFound": 26,
+  "page": 1,
+  "pageSize": 2
+ },
+ "results": [
+  {
+   "id": "openorgs____::5051dc5a570e109474ca2f2d846ebe37",
+   "legalName": "Max Planck University of Twente Center for Complex Fluid Dynamics",
+   "legalShortName": "Max Planck University of Twente Center for Complex Fluid Dynamics",
+   "country": {
+    "code": "NL",
+    "label": "Netherlands"
+   },
+   "websiteUrl": "https://www.utwente.nl/en/max-planck-center/"
+  },
+  {
+   "id": "pending_org_::447de8613c24e020737a0654146651e8",
+   "legalName": "University of Twente",
+   "legalShortName": "University of Twente",
+   "country": {
+    "code": "UNKNOWN",
+    "label": "Unknown"
+   },
+   "websiteUrl": null
+  }
+ ]
+}

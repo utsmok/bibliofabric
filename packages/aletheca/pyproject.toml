@@ -1,0 +1,30 @@
+[project]
+name = "aletheca"
+version = "0.4.0"
+description = "Python interface for the OpenAlex API, built on top of the bibliofabric framework."
+authors = [
+    {name = "Samuel Mok", email = "s.mok@utwente.nl"}
+]
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.12"
+dependencies = [
+    "bibliofabric>=0.6,<0.7",
+]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Framework :: AsyncIO",
+    "Typing :: Typed",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/utsmok/bibliofabric/tree/main/packages/aletheca"
+
+[build-system]
+requires = ["uv_build>=0.9.22,<0.12"]
+build-backend = "uv_build"

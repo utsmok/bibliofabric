@@ -1,0 +1,19 @@
+{
+ "header": {
+  "numFound": 2,
+  "page": 1,
+  "pageSize": 2
+ },
+ "results": [
+  {
+   "mainTitle": "The fundamental structures of prehistoric societies",
+   "id": "06cdd3ff4700::3c8734759ca685b966b1d737c37daeed",
+   "publicationDate": "2026-01-16"
+  },
+  {
+   "mainTitle": "A Place and a Link. The Socialist Intellectual Space",
+   "id": "06cdd3ff4700::5369fb2bf6e438896254176095d5b022",
+   "publicationDate": "2020-04-01"
+  }
+ ]
+}

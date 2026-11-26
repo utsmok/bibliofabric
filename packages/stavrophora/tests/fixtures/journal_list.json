@@ -1,0 +1,343 @@
+{
+ "status": "ok",
+ "message-type": "journal-list",
+ "message-version": "1.0.0",
+ "message": {
+  "items-per-page": 2,
+  "query": {
+   "start-index": 0,
+   "search-terms": null
+  },
+  "total-results": 173763,
+  "items": [
+   {
+    "last-status-check-time": 1794944638625,
+    "counts": {
+     "current-dois": 318,
+     "backfile-dois": 12386,
+     "total-dois": 12704
+    },
+    "breakdowns": {
+     "dois-by-issued-year": [
+      [
+       1999,
+       560
+      ],
+      [
+       2000,
+       496
+      ],
+      [
+       1996,
+       491
+      ],
+      [
+       1998,
+       457
+      ],
+      [
+       1997,
+       450
+      ]
+     ]
+    },
+    "publisher": "Wiley (John Wiley & Sons)",
+    "coverage": {
+     "affiliations-current": 0.7232704402515723,
+     "affiliation-ror-ids-backfile": 0.0,
+     "similarity-checking-current": 0.889937106918239,
+     "descriptions-current": 0.0,
+     "ror-ids-current": 0.0,
+     "funders-backfile": 0.1156951396738253,
+     "licenses-backfile": 0.978362667527854,
+     "funders-current": 0.4811320754716981,
+     "affiliations-backfile": 0.1508961730986598,
+     "resource-links-backfile": 0.9660100113030841,
+     "orcids-backfile": 0.0775875989019861,
+     "funder-ror-ids-current": 0.0,
+     "update-policies-current": 0.889937106918239,
+     "ror-ids-backfile": 0.0008880994671403197,
+     "orcids-current": 0.6918238993710693,
+     "similarity-checking-backfile": 0.89657678023575,
+     "references-backfile": 0.7861295010495721,
+     "descriptions-backfile": 0.0,
+     "award-numbers-backfile": 0.0887292103988374,
+     "update-policies-backfile": 0.08307766833521718,
+     "licenses-current": 0.889937106918239,
+     "award-numbers-current": 0.2893081761006289,
+     "abstracts-backfile": 0.649119974164379,
+     "resource-links-current": 0.1886792452830189,
+     "affiliation-ror-ids-current": 0.0,
+     "funder-ror-ids-backfile": 0.0008880994671403197,
+     "abstracts-current": 0.7358490566037736,
+     "references-current": 0.7232704402515723
+    },
+    "title": "Journal of Neuroscience Research",
+    "subjects": [],
+    "coverage-type": {
+     "all": {
+      "last-status-check-time": 1794944638625,
+      "affiliations": 0.2099,
+      "abstracts": 0.8274,
+      "orcids": 0.1181,
+      "affiliation-ror-ids": 0.0,
+      "licenses": 1.2401,
+      "references": 0.9967,
+      "funders": 0.1586,
+      "similarity-checking": 1.1389,
+      "funder-ror-ids": 0.0011,
+      "award-numbers": 0.1191,
+      "ror-ids": 0.0011,
+      "update-policies": 0.1312,
+      "resource-links": 1.2025,
+      "descriptions": 0.0
+     },
+     "backfile": {
+      "last-status-check-time": 1794944638625,
+      "affiliations": 0.1508961730986598,
+      "abstracts": 0.649119974164379,
+      "orcids": 0.0775875989019861,
+      "affiliation-ror-ids": 0.0,
+      "licenses": 0.978362667527854,
+      "references": 0.7861295010495721,
+      "funders": 0.1156951396738253,
+      "similarity-checking": 0.89657678023575,
+      "funder-ror-ids": 0.0008880994671403197,
+      "award-numbers": 0.0887292103988374,
+      "ror-ids": 0.0008880994671403197,
+      "update-policies": 0.08307766833521718,
+      "resource-links": 0.9660100113030841,
+      "descriptions": 0.0
+     },
+     "current": {
+      "last-status-check-time": 1794944638625,
+      "affiliations": 0.7232704402515723,
+      "abstracts": 0.7358490566037736,
+      "orcids": 0.6918238993710693,
+      "affiliation-ror-ids": 0.0,
+      "licenses": 0.889937106918239,
+      "references": 0.7232704402515723,
+      "funders": 0.4811320754716981,
+      "similarity-checking": 0.889937106918239,
+      "funder-ror-ids": 0.0,
+      "award-numbers": 0.2893081761006289,
+      "ror-ids": 0.0,
+      "update-policies": 0.889937106918239,
+      "resource-links": 0.1886792452830189,
+      "descriptions": 0.0
+     }
+    },
+    "flags": {
+     "deposits-abstracts-current": true,
+     "deposits-orcids-current": true,
+     "deposits-affiliation-ror-ids-current": false,
+     "deposits": true,
+     "deposits-affiliations-backfile": true,
+     "deposits-update-policies-backfile": true,
+     "deposits-similarity-checking-backfile": true,
+     "deposits-award-numbers-current": true,
+     "deposits-resource-links-current": true,
+     "deposits-ror-ids-current": false,
+     "deposits-articles": true,
+     "deposits-affiliations-current": true,
+     "deposits-affiliation-ror-ids-backfile": false,
+     "deposits-funders-current": true,
+     "deposits-references-backfile": true,
+     "deposits-funder-ror-ids-current": false,
+     "deposits-ror-ids-backfile": true,
+     "deposits-abstracts-backfile": true,
+     "deposits-licenses-backfile": true,
+     "deposits-award-numbers-backfile": true,
+     "deposits-descriptions-current": false,
+     "deposits-references-current": true,
+     "deposits-resource-links-backfile": true,
+     "deposits-descriptions-backfile": false,
+     "deposits-orcids-backfile": true,
+     "deposits-funders-backfile": true,
+     "deposits-funder-ror-ids-backfile": true,
+     "deposits-update-policies-current": true,
+     "deposits-similarity-checking-current": true,
+     "deposits-licenses-current": true
+    },
+    "ISSN": [
+     "0360-4012",
+     "1097-4547"
+    ],
+    "issn-type": [
+     {
+      "type": "print",
+      "value": "0360-4012"
+     },
+     {
+      "type": "electronic",
+      "value": "1097-4547"
+     }
+    ]
+   },
+   {
+    "last-status-check-time": 1794944639453,
+    "counts": {
+     "current-dois": 943,
+     "backfile-dois": 16892,
+     "total-dois": 17835
+    },
+    "breakdowns": {
+     "dois-by-issued-year": [
+      [
+       2000,
+       639
+      ],
+      [
+       2001,
+       544
+      ],
+      [
+       2003,
+       466
+      ],
+      [
+       1994,
+       462
+      ],
+      [
+       2002,
+       435
+      ]
+     ]
+    },
+    "publisher": "Wiley (John Wiley & Sons)",
+    "coverage": {
+     "affiliations-current": 0.853658536585366,
+     "affiliation-ror-ids-backfile": 0.0,
+     "similarity-checking-current": 0.9554612937433722,
+     "descriptions-current": 0.0,
+     "ror-ids-current": 0.0,
+     "funders-backfile": 0.1001657589391428,
+     "licenses-backfile": 0.9833649064645986,
+     "funders-current": 0.344644750795334,
+     "affiliations-backfile": 0.15551740468861,
+     "resource-links-backfile": 0.9688609992896045,
+     "orcids-backfile": 0.08068908358986503,
+     "funder-ror-ids-current": 0.0,
+     "update-policies-current": 0.9554612937433722,
+     "ror-ids-backfile": 0.002427184466019417,
+     "orcids-current": 0.816542948038176,
+     "similarity-checking-backfile": 0.95068671560502,
+     "references-backfile": 0.7457376272791854,
+     "descriptions-backfile": 0.0,
+     "award-numbers-backfile": 0.08139947904333412,
+     "update-policies-backfile": 0.09655458205067488,
+     "licenses-current": 0.9554612937433722,
+     "award-numbers-current": 0.2990455991516437,
+     "abstracts-backfile": 0.5132015155103007,
+     "resource-links-current": 0.383881230116649,
+     "affiliation-ror-ids-current": 0.0,
+     "funder-ror-ids-backfile": 0.002427184466019417,
+     "abstracts-current": 0.6330858960763521,
+     "references-current": 0.8377518557794273
+    },
+    "title": "Annals of Neurology",
+    "subjects": [],
+    "coverage-type": {
+     "all": {
+      "last-status-check-time": 1794944639453,
+      "affiliations": 0.3432,
+      "abstracts": 0.9266,
+      "orcids": 0.2133,
+      "affiliation-ror-ids": 0.0,
+      "licenses": 1.7512,
+      "references": 1.3387,
+      "funders": 0.2017,
+      "similarity-checking": 1.6961,
+      "funder-ror-ids": 0.0041,
+      "award-numbers": 0.1657,
+      "ror-ids": 0.0041,
+      "update-policies": 0.2532,
+      "resource-links": 1.6728,
+      "descriptions": 0.0
+     },
+     "backfile": {
+      "last-status-check-time": 1794944639453,
+      "affiliations": 0.15551740468861,
+      "abstracts": 0.5132015155103007,
+      "orcids": 0.08068908358986503,
+      "affiliation-ror-ids": 0.0,
+      "licenses": 0.9833649064645986,
+      "references": 0.7457376272791854,
+      "funders": 0.1001657589391428,
+      "similarity-checking": 0.95068671560502,
+      "funder-ror-ids": 0.002427184466019417,
+      "award-numbers": 0.08139947904333412,
+      "ror-ids": 0.002427184466019417,
+      "update-policies": 0.09655458205067488,
+      "resource-links": 0.9688609992896045,
+      "descriptions": 0.0
+     },
+     "current": {
+      "last-status-check-time": 1794944639453,
+      "affiliations": 0.853658536585366,
+      "abstracts": 0.6330858960763521,
+      "orcids": 0.816542948038176,
+      "affiliation-ror-ids": 0.0,
+      "licenses": 0.9554612937433722,
+      "references": 0.8377518557794273,
+      "funders": 0.344644750795334,
+      "similarity-checking": 0.9554612937433722,
+      "funder-ror-ids": 0.0,
+      "award-numbers": 0.2990455991516437,
+      "ror-ids": 0.0,
+      "update-policies": 0.9554612937433722,
+      "resource-links": 0.383881230116649,
+      "descriptions": 0.0
+     }
+    },
+    "flags": {
+     "deposits-abstracts-current": true,
+     "deposits-orcids-current": true,
+     "deposits-affiliation-ror-ids-current": false,
+     "deposits": true,
+     "deposits-affiliations-backfile": true,
+     "deposits-update-policies-backfile": true,
+     "deposits-similarity-checking-backfile": true,
+     "deposits-award-numbers-current": true,
+     "deposits-resource-links-current": true,
+     "deposits-ror-ids-current": false,
+     "deposits-articles": true,
+     "deposits-affiliations-current": true,
+     "deposits-affiliation-ror-ids-backfile": false,
+     "deposits-funders-current": true,
+     "deposits-references-backfile": true,
+     "deposits-funder-ror-ids-current": false,
+     "deposits-ror-ids-backfile": true,
+     "deposits-abstracts-backfile": true,
+     "deposits-licenses-backfile": true,
+     "deposits-award-numbers-backfile": true,
+     "deposits-descriptions-current": false,
+     "deposits-references-current": true,
+     "deposits-resource-links-backfile": true,
+     "deposits-descriptions-backfile": false,
+     "deposits-orcids-backfile": true,
+     "deposits-funders-backfile": true,
+     "deposits-funder-ror-ids-backfile": true,
+     "deposits-update-policies-current": true,
+     "deposits-similarity-checking-current": true,
+     "deposits-licenses-current": true
+    },
+    "ISSN": [
+     "0364-5134",
+     "1531-8249"
+    ],
+    "issn-type": [
+     {
+      "type": "print",
+      "value": "0364-5134"
+     },
+     {
+      "type": "electronic",
+      "value": "1531-8249"
+     }
+    ]
+   }
+  ]
+ }
+}

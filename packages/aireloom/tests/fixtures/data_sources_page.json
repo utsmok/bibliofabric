@@ -1,0 +1,71 @@
+{
+ "header": {
+  "numFound": 160444,
+  "page": 1,
+  "pageSize": 2
+ },
+ "results": [
+  {
+   "id": "06cdd3ff4700::4d38642638f614c204cd4f302329c303",
+   "originalIds": [
+    "06cdd3ff4700::2778-844X"
+   ],
+   "pids": null,
+   "type": {
+    "scheme": "pubsrepository::journal",
+    "value": "Journal"
+   },
+   "openaireCompatibility": "collected from a compatible aggregator",
+   "officialName": "Environnement, Ingénierie &amp; Développement",
+   "englishName": "Environnement, Ingénierie &amp; Développement",
+   "websiteUrl": "https://eid.episciences.org",
+   "logoUrl": null,
+   "dateOfValidation": null,
+   "description": null,
+   "subjects": null,
+   "languages": null,
+   "contentTypes": null,
+   "releaseStartDate": null,
+   "releaseEndDate": null,
+   "missionStatementUrl": null,
+   "accessRights": null,
+   "uploadRights": null,
+   "databaseAccessRestriction": null,
+   "dataUploadRestriction": null,
+   "versioning": false,
+   "citationGuidelineUrl": null,
+   "pidSystems": null,
+   "certificates": null,
+   "policies": null,
+   "journal": {
+    "name": "Environnement, Ingénierie &amp; Développement",
+    "issnPrinted": null,
+    "issnOnline": "2778-844X",
+    "issnLinking": null,
+    "ep": null,
+    "iss": null,
+    "sp": null,
+    "vol": null,
+    "edition": null,
+    "conferencePlace": null,
+    "conferenceDate": null
+   },
+   "collectedFrom": [
+    {
+     "key": "openaire____::6824b298c96ba906a3e6a70593affbf5",
+     "value": "Episciences"
+    }
+   ],
+   "thematic": false,
+   "eoscdatasourcetype": {
+    "code": "Journal archive",
+    "label": "Journal Archive"
+   },
+   "links": null,
+   "jurisdiction": null,
+   "odlanguages": null,
+   "openaireCompatibilityId": "hostedBy",
+   "endpoints": null
+  }
+ ]
+}

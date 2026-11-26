@@ -1,0 +1,327 @@
+{
+ "status": "ok",
+ "message-type": "member",
+ "message-version": "1.0.0",
+ "message": {
+  "last-status-check-time": 1795043555681,
+  "primary-name": "MDPI AG",
+  "counts": {
+   "current-dois": 862409,
+   "backfile-dois": 1406314,
+   "total-dois": 2268723
+  },
+  "breakdowns": {
+   "dois-by-issued-year": [
+    [
+     2023,
+     313858
+    ],
+    [
+     2022,
+     312362
+    ],
+    [
+     2025,
+     303120
+    ],
+    [
+     2026,
+     283700
+    ],
+    [
+     2024,
+     275588
+    ]
+   ]
+  },
+  "prefixes": [
+   "10.1989",
+   "10.32545",
+   "10.20944",
+   "10.3390",
+   "10.35995"
+  ],
+  "coverage": {
+   "affiliations-current": 0.891225624964489
+  },
+  "prefix": [
+   {
+    "name": "MDPI",
+    "value": "10.1989"
+   },
+   {
+    "name": "MDPI AG - Encyclopedia",
+    "value": "10.32545"
+   },
+   {
+    "name": "MDPI AG",
+    "value": "10.20944"
+   },
+   {
+    "name": "MDPI AG",
+    "value": "10.3390"
+   },
+   {
+    "name": "Journal and Article Management System",
+    "value": "10.35995"
+   }
+  ],
+  "id": 1968,
+  "tokens": [
+   "mdpi",
+   "ag"
+  ],
+  "counts-type": {
+   "all": {
+    "monograph": 22,
+    "journal-article": 2079001,
+    "book": 7374,
+    "journal-volume": 1,
+    "proceedings-article": 32677,
+    "journal": 110,
+    "component": 100,
+    "book-chapter": 431,
+    "database": 1,
+    "posted-content": 144478,
+    "journal-issue": 200,
+    "dataset": 1,
+    "edited-book": 4543
+   }
+  },
+  "coverage-type": {
+   "all": {
+    "monograph": {
+     "last-status-check-time": 1795043555681,
+     "affiliations": 0.0,
+     "abstracts": 0.0,
+     "orcids": 0.0,
+     "affiliation-ror-ids": 0.0,
+     "licenses": 0.0,
+     "references": 0.0,
+     "funders": 0.0,
+     "similarity-checking": 0.0,
+     "funder-ror-ids": 0.0,
+     "award-numbers": 0.0,
+     "ror-ids": 0.0,
+     "update-policies": 0.0,
+     "resource-links": 0.0,
+     "descriptions": 0.0
+    },
+    "journal-article": {
+     "last-status-check-time": 1795043555681,
+     "affiliations": 0.9847994301109042,
+     "abstracts": 0.9891178503521643,
+     "orcids": 0.8333853615270026,
+     "affiliation-ror-ids": 3.848001997113037e-06,
+     "licenses": 0.9883670089624778,
+     "references": 0.9814175173556915,
+     "funders": 0.5996832132355877,
+     "similarity-checking": 0.9983949021669541,
+     "funder-ror-ids": 0.05103556948746056,
+     "award-numbers": 0.5514177241857989,
+     "ror-ids": 0.05103941748945768,
+     "update-policies": 0.9839023646453273,
+     "resource-links": 0.005077919635440291,
+     "descriptions": 0.0
+    },
+    "book": {
+     "last-status-check-time": 1795043555681,
+     "affiliations": 0.0,
+     "abstracts": 0.0,
+     "orcids": 0.0,
+     "affiliation-ror-ids": 0.0,
+     "licenses": 0.0,
+     "references": 0.0,
+     "funders": 0.0,
+     "similarity-checking": 0.0,
+     "funder-ror-ids": 0.0,
+     "award-numbers": 0.0,
+     "ror-ids": 0.0,
+     "update-policies": 0.0,
+     "resource-links": 0.0,
+     "descriptions": 0.0
+    },
+    "journal-volume": {
+     "last-status-check-time": 1795043555681,
+     "affiliations": 0.0,
+     "abstracts": 0.0,
+     "orcids": 0.0,
+     "affiliation-ror-ids": 0.0,
+     "licenses": 0.0,
+     "references": 0.0,
+     "funders": 0.0,
+     "similarity-checking": 0.0,
+     "funder-ror-ids": 0.0,
+     "award-numbers": 0.0,
+     "ror-ids": 0.0,
+     "update-policies": 0.0,
+     "resource-links": 0.0,
+     "descriptions": 0.0
+    },
+    "proceedings-article": {
+     "last-status-check-time": 1795043555681,
+     "affiliations": 0.7763258561067417,
+     "abstracts": 0.0,
+     "orcids": 0.6305964439820056,
+     "affiliation-ror-ids": 0.0,
+     "licenses": 0.7818343177158246,
+     "references": 0.6395935979435077,
+     "funders": 0.2440554518468648,
+     "similarity-checking": 0.7818343177158246,
+     "funder-ror-ids": 0.01083330783119625,
+     "award-numbers": 0.1977231692015791,
+     "ror-ids": 0.01083330783119625,
+     "update-policies": 0.7816813048933501,
+     "resource-links": 0.0,
+     "descriptions": 0.0
+    },
+    "journal": {
+     "last-status-check-time": 1795043555681,
+     "affiliations": 0.0,
+     "abstracts": 0.0,
+     "orcids": 0.0,
+     "affiliation-ror-ids": 0.0,
+     "licenses": 0.0,
+     "references": 0.0,
+     "funders": 0.0,
+     "similarity-checking": 0.00909090909090909,
+     "funder-ror-ids": 0.0,
+     "award-numbers": 0.0,
+     "ror-ids": 0.0,
+     "update-policies": 0.0,
+     "resource-links": 0.0,
+     "descriptions": 0.0
+    },
+    "component": {
+     "last-status-check-time": 1795043555681,
+     "affiliations": 0.0,
+     "abstracts": 0.0,
+     "orcids": 0.0,
+     "affiliation-ror-ids": 0.0,
+     "licenses": 0.0,
+     "references": 0.0,
+     "funders": 0.0,
+     "similarity-checking": 0.0,
+     "funder-ror-ids": 0.0,
+     "award-numbers": 0.0,
+     "ror-ids": 0.0,
+     "update-policies": 0.0,
+     "resource-links": 0.0,
+     "descriptions": 0.99
+    },
+    "book-chapter": {
+     "last-status-check-time": 1795043555681,
+     "affiliations": 0.0,
+     "abstracts": 0.0,
+     "orcids": 0.0,
+     "affiliation-ror-ids": 0.0,
+     "licenses": 0.0,
+     "references": 0.0,
+     "funders": 0.0,
+     "similarity-checking": 0.0,
+     "funder-ror-ids": 0.0,
+     "award-numbers": 0.0,
+     "ror-ids": 0.0,
+     "update-policies": 0.0,
+     "resource-links": 0.0,
+     "descriptions": 0.0
+    },
+    "database": {
+     "last-status-check-time": 1795043555681,
+     "affiliations": 0.0,
+     "abstracts": 0.0,
+     "orcids": 0.0,
+     "affiliation-ror-ids": 0.0,
+     "licenses": 0.0,
+     "references": 0.0,
+     "funders": 0.0,
+     "similarity-checking": 0.0,
+     "funder-ror-ids": 0.0,
+     "award-numbers": 0.0,
+     "ror-ids": 0.0,
+     "update-policies": 0.0,
+     "resource-links": 0.0,
+     "descriptions": 0.0
+    },
+    "posted-content": {
+     "last-status-check-time": 1795043555681,
+     "affiliations": 0.0,
+     "abstracts": 0.9932792535887817,
+     "orcids": 0.7590913495480281,
+     "affiliation-ror-ids": 0.0,
+     "licenses": 0.9926909287227121,
+     "references": 0.0,
+     "funders": 0.0,
+     "similarity-checking": 0.0,
+     "funder-ror-ids": 0.0,
+     "award-numbers": 0.0,
+     "ror-ids": 0.0,
+     "update-policies": 0.0,
+     "resource-links": 0.0,
+     "descriptions": 0.0
+    },
+    "journal-issue": {
+     "last-status-check-time": 1795043555681,
+     "affiliations": 0.0,
+     "abstracts": 0.0,
+     "orcids": 0.0,
+     "affiliation-ror-ids": 0.0,
+     "licenses": 0.0,
+     "references": 0.0,
+     "funders": 0.0,
+     "similarity-checking": 0.23,
+     "funder-ror-ids": 0.0,
+     "award-numbers": 0.0,
+     "ror-ids": 0.0,
+     "update-policies": 0.0,
+     "resource-links": 0.0,
+     "descriptions": 0.0
+    },
+    "dataset": {
+     "last-status-check-time": 1795043555681,
+     "affiliations": 0.0,
+     "abstracts": 0.0,
+     "orcids": 0.0,
+     "affiliation-ror-ids": 0.0,
+     "licenses": 1.0,
+     "references": 1.0,
+     "funders": 0.0,
+     "similarity-checking": 0.0,
+     "funder-ror-ids": 0.0,
+     "award-numbers": 0.0,
+     "ror-ids": 0.0,
+     "update-policies": 0.0,
+     "resource-links": 0.0,
+     "descriptions": 0.0
+    },
+    "edited-book": {
+     "last-status-check-time": 1795043555681,
+     "affiliations": 0.0,
+     "abstracts": 0.0,
+     "orcids": 0.0,
+     "affiliation-ror-ids": 0.0,
+     "licenses": 0.0,
+     "references": 0.0,
+     "funders": 0.0,
+     "similarity-checking": 0.0,
+     "funder-ror-ids": 0.0,
+     "award-numbers": 0.0,
+     "ror-ids": 0.0,
+     "update-policies": 0.0,
+     "resource-links": 0.0,
+     "descriptions": 0.0
+    }
+   }
+  },
+  "flags": {
+   "deposits-abstracts-current": true
+  },
+  "location": "Basel, Switzerland",
+  "names": [
+   "MDPI AG",
+   "MDPI",
+   "MDPI AG - Encyclopedia",
+   "Journal and Article Management System"
+  ]
+ }
+}

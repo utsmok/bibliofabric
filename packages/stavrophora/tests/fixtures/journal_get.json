@@ -1,0 +1,169 @@
+{
+ "status": "ok",
+ "message-type": "journal",
+ "message-version": "1.0.0",
+ "message": {
+  "last-status-check-time": 1794944915054,
+  "counts": {
+   "current-dois": 1966,
+   "backfile-dois": 11445,
+   "total-dois": 13411
+  },
+  "breakdowns": {
+   "dois-by-issued-year": [
+    [
+     2026,
+     838
+    ],
+    [
+     2020,
+     729
+    ],
+    [
+     2021,
+     710
+    ],
+    [
+     2025,
+     624
+    ],
+    [
+     2015,
+     609
+    ]
+   ]
+  },
+  "publisher": "Institute of Electrical and Electronics Engineers",
+  "coverage": {
+   "affiliations-current": 0.9974567650050865,
+   "affiliation-ror-ids-backfile": 0.0,
+   "similarity-checking-current": 1.0,
+   "descriptions-current": 0.0,
+   "ror-ids-current": 0.1027466937945066,
+   "funders-backfile": 0.38173875054609,
+   "licenses-backfile": 0.9889908256880734,
+   "funders-current": 0.944557477110885,
+   "affiliations-backfile": 0.09768457841852338,
+   "resource-links-backfile": 0.001048492791612058,
+   "orcids-backfile": 0.3474006116207951,
+   "funder-ror-ids-current": 0.1027466937945066,
+   "update-policies-current": 0.0,
+   "ror-ids-backfile": 0.006465705548274356,
+   "orcids-current": 0.9949135300101729,
+   "similarity-checking-backfile": 0.999912625600699,
+   "references-backfile": 0.8432503276539974,
+   "descriptions-backfile": 0.0,
+   "award-numbers-backfile": 0.3563128003494976,
+   "update-policies-backfile": 0.0,
+   "licenses-current": 1.0,
+   "award-numbers-current": 0.927263479145473,
+   "abstracts-backfile": 0.0,
+   "resource-links-current": 0.0,
+   "affiliation-ror-ids-current": 0.0,
+   "funder-ror-ids-backfile": 0.006465705548274356,
+   "abstracts-current": 0.0,
+   "references-current": 0.9791454730417091
+  },
+  "title": "IEEE Transactions on Image Processing",
+  "subjects": [],
+  "coverage-type": {
+   "all": {
+    "last-status-check-time": 1794944915054,
+    "affiliations": 0.3079,
+    "abstracts": 0.0,
+    "orcids": 0.5932,
+    "affiliation-ror-ids": 0.0,
+    "licenses": 1.3285,
+    "references": 1.1576,
+    "funders": 0.6226,
+    "similarity-checking": 1.341,
+    "funder-ror-ids": 0.0276,
+    "award-numbers": 0.5901,
+    "ror-ids": 0.0276,
+    "update-policies": 0.0,
+    "resource-links": 0.0012,
+    "descriptions": 0.0
+   },
+   "backfile": {
+    "last-status-check-time": 1794944915054,
+    "affiliations": 0.09768457841852338,
+    "abstracts": 0.0,
+    "orcids": 0.3474006116207951,
+    "affiliation-ror-ids": 0.0,
+    "licenses": 0.9889908256880734,
+    "references": 0.8432503276539974,
+    "funders": 0.38173875054609,
+    "similarity-checking": 0.999912625600699,
+    "funder-ror-ids": 0.006465705548274356,
+    "award-numbers": 0.3563128003494976,
+    "ror-ids": 0.006465705548274356,
+    "update-policies": 0.0,
+    "resource-links": 0.001048492791612058,
+    "descriptions": 0.0
+   },
+   "current": {
+    "last-status-check-time": 1794944915054,
+    "affiliations": 0.9974567650050865,
+    "abstracts": 0.0,
+    "orcids": 0.9949135300101729,
+    "affiliation-ror-ids": 0.0,
+    "licenses": 1.0,
+    "references": 0.9791454730417091,
+    "funders": 0.944557477110885,
+    "similarity-checking": 1.0,
+    "funder-ror-ids": 0.1027466937945066,
+    "award-numbers": 0.927263479145473,
+    "ror-ids": 0.1027466937945066,
+    "update-policies": 0.0,
+    "resource-links": 0.0,
+    "descriptions": 0.0
+   }
+  },
+  "flags": {
+   "deposits-abstracts-current": false,
+   "deposits-orcids-current": true,
+   "deposits-affiliation-ror-ids-current": false,
+   "deposits": true,
+   "deposits-affiliations-backfile": true,
+   "deposits-update-policies-backfile": false,
+   "deposits-similarity-checking-backfile": true,
+   "deposits-award-numbers-current": true,
+   "deposits-resource-links-current": false,
+   "deposits-ror-ids-current": true,
+   "deposits-articles": true,
+   "deposits-affiliations-current": true,
+   "deposits-affiliation-ror-ids-backfile": false,
+   "deposits-funders-current": true,
+   "deposits-references-backfile": true,
+   "deposits-funder-ror-ids-current": true,
+   "deposits-ror-ids-backfile": true,
+   "deposits-abstracts-backfile": false,
+   "deposits-licenses-backfile": true,
+   "deposits-award-numbers-backfile": true,
+   "deposits-descriptions-current": false,
+   "deposits-references-current": true,
+   "deposits-resource-links-backfile": true,
+   "deposits-descriptions-backfile": false,
+   "deposits-orcids-backfile": true,
+   "deposits-funders-backfile": true,
+   "deposits-funder-ror-ids-backfile": true,
+   "deposits-update-policies-current": false,
+   "deposits-similarity-checking-current": true,
+   "deposits-licenses-current": true
+  },
+  "ISSN": [
+   "1057-7149",
+   "1941-0042"
+  ],
+  "issn-type": [
+   {
+    "type": "print",
+    "value": "1057-7149"
+   },
+   {
+    "type": "electronic",
+    "value": "1941-0042"
+   }
+  ]
+ }
+}
