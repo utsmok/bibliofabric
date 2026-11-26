@@ -56,6 +56,11 @@ API list operations to the V4 filter-based queries (D-14).
   event loop. I/O modules now live in `aireloom._async` and `aireloom._sync`;
   every public name stays importable from the package root.
 
+- `client.persons.batch_get_by_orcid(orcids)`: fetches person records for many
+  ORCID iDs with one `ids.original:a|b|c` request per 50 iDs (verified live on
+  2026-11-26), keyed by the hyphenated ORCID. Closes the batch-getter half of
+  issue #1.
+
 - Typed relation vocabulary from the links relations-info payload:
   `RelationName`, `RELATION_INVERSES`, and `relation_inverse(name)`
   (`Cites` -> `IsCitedBy`), exported from the package root.

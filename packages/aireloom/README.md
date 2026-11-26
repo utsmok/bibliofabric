@@ -125,6 +125,7 @@ Every entity resource (`client.research_products`, `client.projects`,
 
 `client.research_products` additionally has `batch_get_by_doi(dois)`,
 `search_links()`, `iterate_links()`, and `get_relations_info()`.
+`client.persons` has `batch_get_by_orcid(orcids)`.
 
 ### Filters and sorting
 

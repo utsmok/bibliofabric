@@ -24,6 +24,16 @@ persons = await client.persons.search(
 )
 ```
 
+To fetch many people by ORCID, use `batch_get_by_orcid`. It sends one request
+per 50 iDs and returns a dict keyed by the hyphenated ORCID; iDs without a
+person record are absent.
+
+```python
+people = await client.persons.batch_get_by_orcid(
+    ["0000-0002-5965-6560", "https://orcid.org/0000-0003-1219-1775"]
+)
+```
+
 ## Sort fields
 
 Only these fields sort. Anything else raises `ConfigurationError` before a

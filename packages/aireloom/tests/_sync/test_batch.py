@@ -45,6 +45,25 @@ def test_batch_get_by_doi_normalizes_keys(httpx_mock, client):
     assert list(fetched) == ["10.1234/abc"]
 
 
+def test_batch_get_by_orcid_keys_by_hyphenated_orcid(httpx_mock, client):
+    records = [
+        {"id": "orcid_______::a", "originalId": ["0000-0002-5965-6560"]},
+        {"id": "orcid_______::b", "originalId": ["0000-0003-1219-1775"]},
+    ]
+    httpx_mock.add_response(**json_response(_page_of(records)))
+    fetched = client.persons.batch_get_by_orcid(
+        ["https://orcid.org/0000-0002-5965-6560", "0000000312191775"]
+    )
+    request = httpx_mock.get_request()
+    assert request.url.path == "/v4/persons"
+    params = params_of(request)
+    assert params["filter"] == "ids.original:0000-0002-5965-6560|0000-0003-1219-1775"
+    assert {key: person.id for key, person in fetched.items()} == {
+        "0000-0002-5965-6560": "orcid_______::a",
+        "0000-0003-1219-1775": "orcid_______::b",
+    }
+
+
 def test_batch_missing_ids_absent(httpx_mock, client):
     httpx_mock.add_response(**json_response(_page_of([])))
     fetched = client.projects.batch_get(["p::missing"])

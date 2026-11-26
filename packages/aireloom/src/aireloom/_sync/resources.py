@@ -211,11 +211,39 @@ class SyncPersonsResource(SyncGraphResource[Person]):
     """V4 persons endpoint: search, iterate, count, facets, group_by.
 
     ``get(id)`` reads the V3 by-id route because V4 has no by-id endpoints.
+    Batch lookups by ORCID use an OR expression over ``ids.original``.
     """
 
     path = "v4/persons"
     model = Person
     filters_model = PersonsFilters
+    batch_size = 50
+
+    def record_keys(self, entity: Person, field: str) -> list[str]:
+        if field == "ids.original":
+            return [normalize_orcid(value) for value in entity.originalId]
+        return super().record_keys(entity, field)
+
+    def batch_get_by_orcid(
+        self,
+        orcids: list[str] | tuple[str, ...],
+        *,
+        batch_size: int | None = None,
+        concurrency: int = 4,
+    ) -> dict[str, Person]:
+        """Fetch person records for many ORCID iDs in bounded, concurrent chunks.
+
+        Accepts any spelling ``bibliofabric.ids.normalize_orcid`` handles. Keys
+        are hyphenated ORCID iDs; ORCIDs without a person record are absent from
+        the result. The request goes out as ``filter=ids.original:a|b|c``.
+        """
+        normalized = list(dict.fromkeys(normalize_orcid(orcid) for orcid in orcids))
+        return self.batch_get(
+            normalized,
+            field="ids.original",
+            batch_size=batch_size,
+            concurrency=concurrency,
+        )
 
 
 class SyncProjectsResource(SyncGraphResource[Project]):
