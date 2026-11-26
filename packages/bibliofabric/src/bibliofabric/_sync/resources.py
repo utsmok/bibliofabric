@@ -345,6 +345,11 @@ class SyncResourceClient[E: BaseModel]:
         params: Mapping[str, Any] | None,
     ) -> dict[str, Any]:
         dialect = self.dialect
+        if isinstance(filters, str):
+            raise ConfigurationError(
+                f"Got a string as filters ({filters!r}). Pass search text as "
+                f"query={filters!r}; filters takes a filter model or a mapping."
+            )
         query_params: dict[str, Any] = dict(self.build_filter_params(filters))
         size = (
             dialect.default_page_size

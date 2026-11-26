@@ -83,6 +83,13 @@ async def test_search_dict_filters(httpx_mock, make_client):
     assert page.results == []
 
 
+async def test_search_rejects_positional_search_text(httpx_mock, make_client):
+    client = make_client()
+    with pytest.raises(ConfigurationError, match="query='water'"):
+        await PageWidgets(client).search("water")
+    assert httpx_mock.get_requests() == []
+
+
 async def test_iterate_cursor_two_pages(httpx_mock, make_client):
     httpx_mock.add_response(
         url=f"{BASE_URL}/works?pageSize=2&cursor=*",

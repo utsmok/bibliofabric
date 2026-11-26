@@ -23,6 +23,10 @@ release: aireloom 0.8.0, aletheca 0.4.0, stavrophora 0.3.0; they pin
   package root.
 - `ResourceClient.batch_get` bounds its chunk fetches through the shared
   `run_bounded` primitive instead of a local semaphore + `gather`.
+- Search text is keyword-only (`query=`), and a string passed in the
+  `filters` position raises `ConfigurationError` naming `query=` before any
+  request is sent. Before, a positional query was sent as the `page`
+  parameter (#12).
 
 ### Breaking changes
 
