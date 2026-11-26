@@ -6,7 +6,8 @@ readme = "README.md"
 authors = [
     {name = "Samuel Mok", email = "s.mok@utwente.nl"}
 ]
-license = {text = "MIT"}
+license = "MIT"
+license-files = ["LICENSE"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Programming Language :: Python :: 3",
