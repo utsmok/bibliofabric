@@ -38,11 +38,13 @@ repository root:
 uv sync --all-packages --all-groups                 # install all packages plus dev/docs groups
 uv run pytest                                       # all four test suites (live tests deselected)
 uv run ruff check                                   # lint every package and scripts/
-uv run ty check packages/*/src scripts/unasync.py   # type gate
+uv run ty check packages/*/src packages/*/tests scripts/unasync.py  # type gate
 uv run python scripts/unasync.py --check            # verify generated _sync/ twins are fresh
 uv run mkdocs serve                                 # docs preview for the whole family
 ```
 
 Releases are tag-driven: push a tag `<package>-v<version>` (for example
-`aletheca-v0.4.1`) and CI builds and publishes that package to PyPI. See
-`AGENTS.md` for details and agent guidelines.
+`aletheca-v0.4.1`) and CI builds, publishes that package to PyPI, and creates a
+GitHub Release. See [docs/contributing.md](docs/contributing.md) for
+contributing and [AGENTS.md](AGENTS.md) for release details and agent
+guidelines.

@@ -29,4 +29,5 @@ ship async clients alongside generated sync twins (`<Name>SyncClient`) and
   the four pieces a client defines: a settings class, an unwrapper, a query
   dialect, and one resource client per endpoint.
 
-Requires Python 3.12 or newer.
+Requires Python 3.12 or newer. See the [contributing guide](contributing.md)
+to set up the workspace and run the test and lint gates.

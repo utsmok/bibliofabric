@@ -32,6 +32,7 @@ watch:
 
 nav:
   - Overview: index.md
+  - Contributing: contributing.md
   - bibliofabric:
       - Home: bibliofabric/index.md
       - Quick start: bibliofabric/client.md
@@ -46,8 +47,8 @@ nav:
           - Identifiers: bibliofabric/ids.md
           - Types: bibliofabric/types.md
           - Exceptions: bibliofabric/exceptions.md
-      - Contributing: bibliofabric/contributing.md
       - Writing a client with sync support: bibliofabric/authoring-sync.md
+      - Changelog: https://github.com/utsmok/bibliofabric/blob/main/packages/bibliofabric/CHANGELOG.md
   - aireloom:
       - Home: aireloom/index.md
       - Usage:
@@ -58,7 +59,6 @@ nav:
       - Errors, retries, and rate limits: aireloom/errors.md
       - Upstream quirks: aireloom/quirks.md
       - API reference: aireloom/api.md
-      - Contributing: aireloom/contributing.md
       - Changelog: https://github.com/utsmok/bibliofabric/blob/main/packages/aireloom/CHANGELOG.md
   - aletheca:
       - Home: aletheca/index.md
@@ -77,8 +77,7 @@ nav:
       - Errors, retries, and rate limits: aletheca/errors.md
       - Upstream quirks: aletheca/upstream-quirks.md
       - API reference: aletheca/reference.md
-      - Contributing: aletheca/contributing.md
-      - Changelog: aletheca/changelog.md
+      - Changelog: https://github.com/utsmok/bibliofabric/blob/main/packages/aletheca/CHANGELOG.md
   - stavrophora:
       - Home: stavrophora/index.md
       - Usage:
@@ -92,3 +91,4 @@ nav:
       - Errors, retries, rate limits: stavrophora/errors.md
       - Crossref quirks: stavrophora/quirks.md
       - API reference: stavrophora/reference.md
+      - Changelog: https://github.com/utsmok/bibliofabric/blob/main/packages/stavrophora/CHANGELOG.md

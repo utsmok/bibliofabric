@@ -28,6 +28,7 @@ monorepo.
 | `packages/aletheca` | OpenAlex client |
 | `packages/stavrophora` | Crossref client |
 | `scripts/unasync.py` | generates committed `_sync/` source and test twins from `_async/` |
+| `docs/contributing.md` | monorepo contributor guide |
 | `docs/<name>/` | that package's docs pages, one mkdocs site at the root |
 | `archive/<name>/` | historical documents from the standalone repos |
 | `.agents/skills/` | agent procedures (release, sibling client, live sweep) |
@@ -53,7 +54,7 @@ uv run pytest packages/aletheca/tests             # one package's suite
 uv run pytest -m live_api                         # live API smoke tests (needs credentials in .env)
 uv run ruff check                                 # lint all packages and scripts/
 uv run ruff format --check                        # formatting gate
-uv run ty check packages/*/src scripts/unasync.py # type gate
+uv run ty check packages/*/src packages/*/tests scripts/unasync.py # type gate
 uv run python scripts/unasync.py --check          # verify generated _sync/ twins are fresh
 uv run python scripts/unasync.py                  # regenerate _sync/ twins after _async/ edits
 uv run mkdocs build --strict                      # docs gate
@@ -69,9 +70,11 @@ resolves that to the sibling package (`[tool.uv.sources]` at the root).
    Changelog entry to that package's `CHANGELOG.md`. Commit and push `main`.
 2. Tag `<name>-v<version>` (example: `aletheca-v0.4.1`) and push the tag.
    A plain `v<version>` tag still publishes bibliofabric.
-3. CI runs lint + the test matrix, then a publish job that runs
-   `uv build --package <name>` and uploads via OIDC to the `pypi`
-   environment. One site deploys docs on pushes to `main`.
+3. CI runs lint + the test matrix (Python 3.12, 3.13, 3.14), then a publish
+   job that runs `uv build --package <name>` and `uv publish dist/*` via OIDC
+   to the `pypi` environment, followed by a `release` job that creates a
+   GitHub Release from the package's `CHANGELOG.md` (with `--generate-notes`
+   fallback). One site deploys docs on pushes to `main`.
 4. Verify the release is on PyPI before advertising it; `uv`'s index cache
    can lag a fresh publish for minutes (`uv cache clean <pkg>` if `uv add`
    claims the new version is unavailable).
