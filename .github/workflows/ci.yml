@@ -57,6 +57,8 @@ jobs:
       matrix:
         package: [bibliofabric, aireloom, aletheca, stavrophora]
         python-version: ["3.12", "3.13", "3.14"]
+    env:
+      UV_PYTHON: ${{ matrix.python-version }}
 
     steps:
       - name: Checkout repository
