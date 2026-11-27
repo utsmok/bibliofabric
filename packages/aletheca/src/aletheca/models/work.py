@@ -128,6 +128,7 @@ class Work(BaseEntity):
     primary_topic: DehydratedTopic | None = None
     lineage: SafeList[str] = Field(default_factory=list)
     parent_works: SafeList[RelatedWork] = Field(default_factory=list)
+    pull_notice_works: SafeList[RelatedWork] = Field(default_factory=list)
     referenced_works: SafeList[str] = Field(default_factory=list)
     related_works: SafeList[str] = Field(default_factory=list)
     sustainable_development_goals: SafeList[SDG] = Field(default_factory=list)
@@ -144,6 +145,7 @@ class Work(BaseEntity):
     # Undocumented
     funders: SafeList[DehydratedFunder] = Field(default_factory=list)
     relevance_score: float | None = None  # Search responses only
+    rerank_score: float | None = None  # Reranked search responses only
     institutions: SafeList[DehydratedInstitution] = Field(
         default_factory=list,
         description="Reserved upstream; currently always empty.",

@@ -3,7 +3,7 @@
 `client.awards` talks to the `/awards` endpoint and returns `Award` models (grants, verified against funding sources).
 
 ```python
-award = await client.awards.get("AW449823")
+award = await client.awards.get("G6193623415")
 ```
 
 ## Filters

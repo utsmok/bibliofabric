@@ -13,6 +13,6 @@ page = await client.topics.search(
 
 ## Filters
 
-Common `TopicsFilters` fields: `display_name`, `id`, `subfield.id`, `field.id`, `domain.id`, `works_count`, `works_count_range`, `display_name.search`, and the keyword filters `keywords.id`, `keywords.search`, `keywords.keyword`, `keywords.display_name`.
+Common `TopicsFilters` fields: `display_name`, `id`, `subfield.id`, `field.id`, `domain.id`, `works_count` (accepts ints or OpenAlex range strings like `">1000"`), `display_name.search`, and the keyword filters `keywords.id`, `keywords.search`, `keywords.keyword`, `keywords.display_name`.
 
 All shared operations are available: `get()`, `search()`, `iterate()`, `collect()`, `first()`, `count()`, `batch_get()`. `Topic.siblings` holds related topics as returned by the live API.

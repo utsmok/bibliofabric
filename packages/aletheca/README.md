@@ -8,12 +8,12 @@ Aletheca is a Python client for the [OpenAlex API](https://docs.openalex.org/), 
 
 ## Features
 
-- **Async by design** -- built on `httpx` + `asyncio` with proper connection pooling
+- **Async and sync** -- built on `httpx` with proper connection pooling; generated sync twin (`AlethecaSyncClient`) with the same API
 - **Typed throughout** -- Pydantic v2 models for all entities, PEP 561 `py.typed` marker
 - **Cursor pagination** -- efficient iteration over large result sets via cursor-based auto-pagination
 - **Filter serialization** -- automatic conversion to OpenAlex `filter=key:value` syntax with Pydantic filter models
 - **Safe types** -- `SafeList` and `SafeStr` for None-safe traversal of API responses
-- **Convenience queries** -- high-level functions for common workflows (`works_by_author`, `citing_works`, etc.)
+- **Ergonomic helpers** -- `batch_get_by_doi()`, `citing()`, `referenced()`, `oa_pdf_urls()`, `search_scoped()`, `sample()`, `group_by()`, `autocomplete()`, and `rate_limit()`
 
 ## Installation
 
@@ -41,7 +41,7 @@ async def main():
         for work in page.results:
             print(f"{work.title} ({work.publication_year})")
 
-        # Iterate over matches with cursor auto-pagination (per-page=100 default)
+        # Iterate over matches with cursor auto-pagination (per_page=100 default)
         async for work in client.works.iterate(
             filters={"authorships.author.id": "A1234567890"},
         ):
@@ -76,11 +76,10 @@ Other resource methods: `count()` (minimal-cost `select=id` request), `batch_get
 
 ## Examples
 
-All examples in [`examples/`](examples/) are dual-purpose -- run as scripts or as interactive [marimo](https://marimo.io) notebooks:
+All examples in [`examples/`](examples/) are plain Python scripts. Run them from the repository root:
 
 ```bash
-# As a script
-uv run examples/quickstart.py
+uv run packages/aletheca/examples/quickstart.py
 ```
 
 | Script | Description |
@@ -151,7 +150,7 @@ print(f"{len(citations)} citing works, {len(refs)} references fetched")
 
 ## Known OpenAlex API Issues
 
-Verified findings: [`docs/upstream-quirks.md`](../../docs/aletheca/upstream-quirks.md).
+Verified findings: [Upstream quirks](https://utsmok.github.io/bibliofabric/aletheca/upstream-quirks/).
 
 - **OpenAPI spec is substantially incomplete** -- 50+ fields returned by the live API are missing from the spec schemas across all entity types. Several spec fields don't exist in the live API.
 - **Wrong field names in spec** -- `content_url` (spec) vs `content_urls` (live), `grants_count` (spec) vs `awards_count` (live)

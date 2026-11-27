@@ -6,7 +6,7 @@
 work = await client.works.get("W2741809807")
 ```
 
-IDs may be bare (`W2741809807`) or full URLs (`https://openalex.org/W2741809807`); both normalize to the same path and dictionary key.
+IDs may be bare (`W2741809807`), full OpenAlex URLs (`https://openalex.org/W2741809807`), or external IDs such as DOIs (`10.7717/peerj.4375`, `https://doi.org/10.7717/peerj.4375`, `doi:10.7717/peerj.4375`) and PMIDs (`pmid:29456894`). DOI lookups are prefixed with `doi:` so OpenAlex serves them on its free `$0` singleton route.
 
 ## Search
 
@@ -49,7 +49,7 @@ async for work in client.works.iterate({"authorships.author.id": "A5089275346"})
     ...
 ```
 
-`iterate()` pages with cursors at `per-page=100` and yields `Work` objects. It accepts `limit`, an `on_page(page_number, next_cursor)` callback for checkpointing, and `on_error="skip"` to drop records that fail validation. Keyless access can fetch only the first cursor page; the follow-up 401 raises `AuthError` with a message that names `ALETHECA_API_KEY`.
+`iterate()` pages with cursors at `per_page=100` and yields `Work` objects. It accepts `limit`, an `on_page(page_number, next_cursor)` callback for checkpointing, and `on_error="skip"` to drop records that fail validation. Keyless access can fetch only the first cursor page; the follow-up 401 raises `AuthError` with a message that names `ALETHECA_API_KEY`.
 
 ## Counting at minimal cost
 
@@ -57,7 +57,7 @@ async for work in client.works.iterate({"authorships.author.id": "A5089275346"})
 n = await client.works.count({"is_oa": True})
 ```
 
-`count()` sends `per-page=1` with `select=id`, so the request carries no entity payloads.
+`count()` sends `per_page=1` with `select=id`, so the request carries no entity payloads.
 
 ## Batch retrieval
 
@@ -68,7 +68,7 @@ works = await client.works.batch_get_by_doi(
 works = await client.works.batch_get_by_openalex_id(["W2741809807", "W2100837269"])
 ```
 
-Both return `dict[normalized id, Work]`. Ids are deduplicated, split into chunks of 100 (OpenAlex's pipe-joined OR cap), and fetched concurrently. DOIs are normalized: URL prefixes are stripped and the value lowercased. Missing records are absent from the result; works without the requested field fall back to their OpenAlex id as key. `batch_get(ids, field=..., batch_size=...)` is the generic form; passing more than 100 OR values in one filter raises `ConfigurationError`.
+Both return `dict[normalized id, Work]`. Ids are deduplicated, split into chunks of 100 (OpenAlex's pipe-joined OR cap), and fetched concurrently. DOIs are normalized: URL prefixes are stripped and the value lowercased. Missing records are absent from the result. `batch_get(ids, field=..., batch_size=...)` is the generic form (supporting `id`, `doi`, `pmid`, `pmcid`, etc.); passing more than 100 OR values in one filter raises `ConfigurationError`.
 
 ## PDF links
 
@@ -102,7 +102,7 @@ buckets = await client.works.group_by("type")
 multi = await client.works.group_by("type,publication_year")
 ```
 
-Returns typed `GroupByBucket` objects. Multi-field group-by nests deeper dimensions in `bucket.groups`. Responses page at 200 buckets with a cursor; pass `cursor=<next cursor>` (from the last request's `meta.next_cursor`) to continue.
+Returns typed `GroupByBucket` objects (up to 200 buckets per call). Multi-field group-by nests deeper dimensions in `bucket.groups`. Use `client.works.search(params={"group_by": ..., "cursor": "*"})` when you need `page.next_cursor` for multi-page bucket iteration.
 
 ## Scoped search
 

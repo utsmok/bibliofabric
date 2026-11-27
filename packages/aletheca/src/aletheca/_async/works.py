@@ -1,8 +1,9 @@
 """Client for the OpenAlex works endpoint."""
 
 from collections.abc import Mapping, Sequence
-from typing import Any, Literal
+from typing import Any, Literal, TypedDict, Unpack, override
 
+from bibliofabric import OnError, validate_model
 from bibliofabric.exceptions import ConfigurationError
 from bibliofabric.paging import Page
 from pydantic import BaseModel
@@ -21,6 +22,24 @@ SEARCH_SCOPES = (
 )
 
 
+class _WorksSearchKwargs(TypedDict, total=False):
+    sort: str | Sequence[str] | None
+    select: Sequence[str] | None
+    page: int | None
+    page_size: int | None
+    cursor: str | None
+    corpus: Literal["core", "expansion", "all"] | None
+    include_parts: bool | None
+    include_pulled: bool | None
+    rerank: bool
+    on_error: OnError
+    failures: list[tuple[dict[str, Any], Exception]] | None
+
+
+class _WorksSampleKwargs(_WorksSearchKwargs, total=False):
+    query: str | None
+
+
 class WorksClient(OpenAlexResourceClient[Work]):
     """Client for the ``/works`` endpoint.
 
@@ -32,6 +51,7 @@ class WorksClient(OpenAlexResourceClient[Work]):
     path = "works"
     model = Work
 
+    @override
     async def search(
         self,
         filters: BaseModel | Mapping[str, Any] | None = None,
@@ -42,6 +62,8 @@ class WorksClient(OpenAlexResourceClient[Work]):
         page: int | None = None,
         page_size: int | None = None,
         cursor: str | None = None,
+        on_error: OnError = "raise",
+        failures: list[tuple[dict[str, Any], Exception]] | None = None,
         params: Mapping[str, Any] | None = None,
         corpus: Literal["core", "expansion", "all"] | None = None,
         include_parts: bool | None = None,
@@ -81,6 +103,8 @@ class WorksClient(OpenAlexResourceClient[Work]):
             page=page,
             page_size=page_size,
             cursor=cursor,
+            on_error=on_error,
+            failures=failures,
             params=extra or None,
         )
 
@@ -96,10 +120,8 @@ class WorksClient(OpenAlexResourceClient[Work]):
             "semantic",
         ] = "title_and_abstract",
         filters: BaseModel | Mapping[str, Any] | None = None,
-        sort: str | Sequence[str] | None = None,
-        select: Sequence[str] | None = None,
-        page: int | None = None,
-        page_size: int | None = None,
+        params: Mapping[str, Any] | None = None,
+        **kwargs: Unpack[_WorksSearchKwargs],
     ) -> Page[Work]:
         """Search works under one scoped ``search.*`` parameter.
 
@@ -113,14 +135,8 @@ class WorksClient(OpenAlexResourceClient[Work]):
             raise ConfigurationError(
                 f"scope must be one of {SEARCH_SCOPES}, got {scope!r}."
             )
-        return await self.search(
-            filters,
-            sort=sort,
-            select=select,
-            page=page,
-            page_size=page_size,
-            params={f"search.{scope}": text},
-        )
+        merged = {**(params or {}), f"search.{scope}": text}
+        return await self.search(filters, params=merged, **kwargs)
 
     async def sample(
         self,
@@ -128,11 +144,8 @@ class WorksClient(OpenAlexResourceClient[Work]):
         *,
         seed: int | None = None,
         filters: BaseModel | Mapping[str, Any] | None = None,
-        query: str | None = None,
-        sort: str | Sequence[str] | None = None,
-        select: Sequence[str] | None = None,
-        page: int | None = None,
-        page_size: int | None = None,
+        params: Mapping[str, Any] | None = None,
+        **kwargs: Unpack[_WorksSampleKwargs],
     ) -> Page[Work]:
         """Return a random sample of up to ``n`` works (max 10,000).
 
@@ -143,18 +156,10 @@ class WorksClient(OpenAlexResourceClient[Work]):
             raise ConfigurationError(
                 f"sample size must be between 1 and {MAX_SAMPLE_SIZE}, got {n}."
             )
-        extra: dict[str, Any] = {"sample": n}
+        extra: dict[str, Any] = {**(params or {}), "sample": n}
         if seed is not None:
             extra["seed"] = seed
-        return await self.search(
-            filters,
-            query=query,
-            sort=sort,
-            select=select,
-            page=page,
-            page_size=page_size,
-            params=extra,
-        )
+        return await self.search(filters, params=extra, **kwargs)
 
     async def group_by(
         self,
@@ -168,9 +173,8 @@ class WorksClient(OpenAlexResourceClient[Work]):
         """Return typed ``group_by`` buckets (costs one credit).
 
         ``group_by`` accepts up to three comma-separated fields; deeper
-        dimensions nest in :attr:`GroupByBucket.groups`. Responses page at 200
-        buckets with a cursor; pass ``cursor=<next cursor from Page.meta>`` to
-        continue. Pass ``cursor="*"`` to start cursor paging explicitly.
+        dimensions nest in :attr:`GroupByBucket.groups`. Responses return up
+        to 200 buckets per call; pass ``cursor`` when advancing manually.
         """
         extra = dict(params or {})
         extra["group_by"] = group_by
@@ -181,10 +185,16 @@ class WorksClient(OpenAlexResourceClient[Work]):
             query_params[self.dialect.query_param] = query
         query_params.update(extra)
         response = await self._client.request("GET", self.path, params=query_params)
-        body = response.json()
+        body = self._client.parse_json(response)
+        buckets = body.get("group_by") if isinstance(body, dict) else None
         return [
-            GroupByBucket.model_validate(bucket)
-            for bucket in body.get("group_by") or []
+            validate_model(
+                GroupByBucket,
+                bucket,
+                request=response.request,
+                response=response,
+            )
+            for bucket in buckets or []
         ]
 
     async def batch_get_by_doi(
@@ -194,8 +204,7 @@ class WorksClient(OpenAlexResourceClient[Work]):
 
         DOIs are normalized (URL prefixes stripped, lowercased) and split
         into chunks of ``batch_size`` (default 100, the OpenAlex OR cap).
-        Returns ``{normalized doi: Work}``; DOIs not found are absent. Works
-        without a DOI fall back to their OpenAlex id as key.
+        Returns ``{normalized doi: Work}``; DOIs not found are absent.
         """
         return await self.batch_get(dois, field="doi", batch_size=batch_size)
 
@@ -203,7 +212,7 @@ class WorksClient(OpenAlexResourceClient[Work]):
         self, ids: Sequence[str], *, batch_size: int | None = None
     ) -> dict[str, Work]:
         """Fetch works by OpenAlex id (bare ``W...`` or full URL)."""
-        return await self.batch_get(ids, field="openalex", batch_size=batch_size)
+        return await self.batch_get(ids, field="id", batch_size=batch_size)
 
     async def oa_pdf_urls(self, doi_or_id: str) -> list[str]:
         """Return downloadable PDF URLs for a work, best OA copy first.
@@ -234,22 +243,25 @@ class WorksClient(OpenAlexResourceClient[Work]):
         sort: str | Sequence[str] | None = None,
     ) -> list[Work]:
         """Collect works that cite ``work_id``, bounded by ``limit``."""
-        merged: dict[str, Any] = {"cites": self.normalize_id(work_id)}
+        merged: dict[str, Any] = {}
         if filters is not None:
             extra = (
                 filters.model_dump(exclude_none=True, by_alias=True)
                 if isinstance(filters, BaseModel)
-                else dict(filters)
+                else {k: v for k, v in filters.items() if v is not None}
             )
             merged.update(extra)
+        merged["cites"] = self.normalize_id(work_id)
         return await self.collect(merged, sort=sort, limit=limit)
 
     async def referenced(self, work_id: str, *, limit: int = 100) -> list[Work]:
         """Fetch (up to ``limit`` of) the works referenced by ``work_id``."""
+        if limit <= 0:
+            raise ConfigurationError(f"limit must be positive, got {limit}.")
         work = await self.get(work_id)
         targets = [self.normalize_id(target) for target in work.referenced_works]
         targets = targets[:limit]
         if not targets:
             return []
-        results = await self.batch_get(targets, field="openalex")
+        results = await self.batch_get(targets, field="id")
         return [results[target] for target in targets if target in results]

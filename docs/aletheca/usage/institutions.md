@@ -13,7 +13,7 @@ page = await client.institutions.search(
 
 ## Filters
 
-Common `InstitutionsFilters` fields: `display_name`, `country_code`, `type`, `ror`, `continent`, `is_global_south`, `has_ror`, `is_super_system`, `works_count`, `works_count_range`, `cited_by_count`, `cited_by_count_range`, and `display_name.search`.
+Common `InstitutionsFilters` fields: `display_name`, `country_code`, `type`, `ror`, `continent`, `is_global_south`, `has_ror`, `is_super_system`, `works_count` (accepts ints or OpenAlex range strings like `">1000"`), `cited_by_count`, and `display_name.search`.
 
 ## Working with associated institutions
 

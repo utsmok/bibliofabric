@@ -1,8 +1,12 @@
 """Client for the OpenAlex locations endpoint."""
 
+from collections.abc import Sequence
+
+from bibliofabric.ids import normalize_doi
+
 from ..dialect import _OPENALEX_URL_PREFIX
 from ..models import LocationRecord
-from .dialect import OpenAlexResourceClient
+from .dialect import DOI_FIELDS, OpenAlexResourceClient
 
 
 class LocationsClient(OpenAlexResourceClient[LocationRecord]):
@@ -27,3 +31,20 @@ class LocationsClient(OpenAlexResourceClient[LocationRecord]):
         text = value.strip()
         text = text.removeprefix(_OPENALEX_URL_PREFIX)
         return text.removeprefix(f"{self.path}/")
+
+    def build_batch_params(self, field: str, values: Sequence[str]) -> dict[str, str]:
+        """Build one ``batch_get`` chunk without rewriting ``id`` to ``openalex``."""
+        chunk = list(values)
+        if field in DOI_FIELDS:
+            chunk = [normalize_doi(value) for value in chunk]
+        return {"filter": f"{field}:{'|'.join(chunk)}"}
+
+    def record_keys(self, entity: LocationRecord, field: str) -> list[str]:
+        """Match location keys, normalizing DOIs when batching by ``doi``."""
+        if field == "doi":
+            values: list[str] = []
+            if entity.doi is not None:
+                values.append(normalize_doi(str(entity.doi)))
+                values.append(self.normalize_id(str(entity.doi)))
+            return list(dict.fromkeys(values))
+        return super().record_keys(entity, field)

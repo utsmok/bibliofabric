@@ -4,6 +4,65 @@ All notable changes to Aletheca are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- **Free `$0` DOI singleton lookups**: `OpenAlexResourceClient.item_path()` now
+  prefixes DOIs with `doi:` (and ORCIDs/RORs/ISSNs/PMIDs/PMCIDs with their
+  namespaces) before URL-encoding, routing `works.get("10.7717/peerj.4375")`
+  and `works.oa_pdf_urls(...)` to OpenAlex's free `$0` singleton endpoint
+  instead of bare `/works/<doi>` (which billed `$0.0001`).
+- **Canonical `per_page` parameter**: `OPENALEX_DIALECT.page_size_param` now
+  emits OpenAlex's official `per_page` instead of legacy `per-page`.
+- **`AlethecaSettings` limiter defaults & overrides**: `max_requests_per_second`
+  (`10.0`), `max_concurrency` (`5`), and `rate_limits` (`{"semantic": 1.0}`)
+  are now declared directly on `AlethecaSettings`, fixing explicit
+  `max_concurrency=10` and `max_requests_per_second=None` overrides being
+  silently clobbered; `api_key` is hidden from `repr`; typo `"meteres"` fixed
+  (Issue #17). Note: the legacy `openalex_api_key=` constructor keyword is a
+  runtime-only deprecated alias — typed callers should pass `api_key=`.
+- **`ValidationError` wrapping**: `client.autocomplete()`, `client.rate_limit()`,
+  and `client.works.group_by()` now validate through `bibliofabric.validate_model`
+  so schema failures raise `bibliofabric.ValidationError` instead of raw
+  `pydantic.ValidationError`.
+- **Auth edge cases**: `AlethecaClient(api_key="")` now forces keyless access,
+  empty settings keys correctly trigger the actionable keyless-401 message
+  (naming `AlethecaSyncClient` on the sync twin), and unknown `auth_scheme`
+  values raise `ConfigurationError`.
+- **`batch_get()` external-ID keying**: `normalize_id()` and `record_keys()`
+  now resolve ORCID, ROR, ISSN, PMID, and PMCID across `entity.ids`, and
+  `LocationsClient.build_batch_params()` no longer rewrites `field="id"` to
+  `openalex:`.
+- **Filter serialization & helpers**: `build_filter_params()` skips `None`
+  entries and empty collections, supports `set`/`frozenset`, and normalizes
+  `funder.doi`; `WorksClient.citing()` prevents caller filters from overwriting
+  `cites`; `WorksClient.referenced()` rejects `limit <= 0`.
+- **Model nullability**: `GroupByBucket.key` now accepts `None` (for
+  `:include_unknown`), `LocationRecord.ids`/`urls` use `SafeList`, and nullable
+  nested fields (`CitationNormalizedPercentile`, `APCEntry.price`, `HasContent`,
+  `OpenAccess.is_oa`, `*.score`) accept `None`.
+
+### Added
+
+- `AlethecaClient` forwards `http_client`, `data`/`content`/`timeout` on
+  `request()`, routes `search.semantic` to the 1 req/s `"semantic"` rate class,
+  and supports `filters=` plus entity validation on `autocomplete()`.
+- `WorksClient.search()` forwards `on_error`/`failures`; `search_scoped()` and
+  `sample()` forward `cursor`, `corpus`, `include_parts`, `include_pulled`,
+  `rerank` (`search_scoped`), `on_error`, `failures`, and `params`.
+- Basic-paging guards reject `page * per_page > 10,000`, `page` combined with
+  `cursor`, `page < 1`, and `page_size <= 0`.
+- `OPENALEX_DIALECT.iterate_page_size = 100` removes the untyped `iterate()`
+  override, restoring full typing (`select=`, `on_error=`, `failures=`).
+- Widened filter field types (`int | str | Sequence[...] | None`), added
+  `WorksFilters.best_open_version` and 2026 fields (`is_pulled`,
+  `pull_notice_works_*`, `awards_*`, `funders_id`, `keywords_id`, `fwci`,
+  `pmcid`, `indexed_in`), plus `LocationsFilters` and `LinksFilters`.
+- Added 2026 model fields (`Work.pull_notice_works`, `Work.rerank_score`,
+  `AwardFunder.ror`, `RateLimitInfo` credit/cost fields) and exported
+  `reconstruct_abstract` from `aletheca`.
+
 ## [0.4.0] - 2026-11-26
 
 Rewritten onto bibliofabric 0.6 (one generic `ResourceClient` + `QueryDialect`
@@ -95,7 +154,7 @@ changes are listed under each heading.
   `get`/`search`/`iterate`; namespaced ids such as `doi:...` stay intact
   because the single route 404s on bare DOIs).
 - `client.links` (`/links` citation-graph edges, typed `Link` with
-  `relationship` labels) with `origin(work_id)` and `target(work_id)`
+  `link_type` labels) with `origin(work_id)` and `target(work_id)`
   helpers.
 - `works.search(rerank=True)` sends `rerank=true` (top-100 reranking for
   relevance-sorted searches, +10 credits); whether it applied is readable
@@ -231,7 +290,8 @@ changes are listed under each heading.
 - MkDocs documentation
 - Marimo notebook examples
 
-[Unreleased]: https://github.com/utsmok/aletheca/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/utsmok/bibliofabric/compare/aletheca-v0.4.0...HEAD
+[0.4.0]: https://github.com/utsmok/bibliofabric/releases/tag/aletheca-v0.4.0
 [0.3.0]: https://github.com/utsmok/aletheca/releases/tag/v0.3.0
 [0.2.2]: https://github.com/utsmok/aletheca/releases/tag/v0.2.2
 [0.2.1]: https://github.com/utsmok/aletheca/releases/tag/v0.2.1

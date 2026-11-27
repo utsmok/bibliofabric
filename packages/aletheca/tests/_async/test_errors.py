@@ -73,3 +73,38 @@ async def test_iterate_skip_mode_records_failures(client, httpx_mock):
     ]
     assert [work.id for work in collected] == [good["id"]]
     assert len(failures) == 1
+
+
+async def test_works_search_skip_mode_records_failures(client, httpx_mock):
+    good = entity("W1")
+    httpx_mock.add_response(json=envelope([42, good], count=2))
+    failures: list[tuple[dict, Exception]] = []
+    page = await client.works.search(on_error="skip", failures=failures)
+    assert [work.id for work in page.results] == [good["id"]]
+    assert len(failures) == 1
+
+
+async def test_autocomplete_validation_failure_maps_to_validation_error(
+    client, httpx_mock
+):
+    httpx_mock.add_response(json={"results": [42]})
+    with pytest.raises(ValidationError) as excinfo:
+        await client.autocomplete("utrecht")
+    assert excinfo.value.model_name == "AutocompleteResult"
+    assert excinfo.value.raw == 42
+
+
+async def test_rate_limit_validation_failure_maps_to_validation_error(
+    client, httpx_mock
+):
+    httpx_mock.add_response(json={"rate_limit": "not-an-object"})
+    with pytest.raises(ValidationError) as excinfo:
+        await client.rate_limit()
+    assert excinfo.value.model_name == "RateLimitStatus"
+
+
+async def test_group_by_validation_failure_maps_to_validation_error(client, httpx_mock):
+    httpx_mock.add_response(json={"group_by": [{"key": "2024"}]})
+    with pytest.raises(ValidationError) as excinfo:
+        await client.works.group_by("publication_year")
+    assert excinfo.value.model_name == "GroupByBucket"

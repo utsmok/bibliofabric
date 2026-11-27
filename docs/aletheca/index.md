@@ -1,6 +1,6 @@
 # Aletheca
 
-Aletheca is a Python client for the [OpenAlex API](https://docs.openalex.org/), built on [bibliofabric](https://github.com/utsmok/bibliofabric). It types all nine entity endpoints (works, authors, sources, institutions, topics, keywords, publishers, funders, awards) with Pydantic models and serializes OpenAlex filter syntax for you. It ships an async client and a generated sync twin with the same API.
+Aletheca is a Python client for the [OpenAlex API](https://docs.openalex.org/), built on [bibliofabric](https://github.com/utsmok/bibliofabric). It types all nine native entity endpoints (works, authors, sources, institutions, topics, keywords, publishers, funders, awards) plus the `/locations` per-copy index and `/links` citation-graph endpoint with Pydantic models and serializes OpenAlex filter syntax for you. It ships an async client and a generated sync twin with the same API.
 
 ## Install
 

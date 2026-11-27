@@ -10,6 +10,6 @@ Keyword ids are slugs (`photosynthesis`), not `K...` codes, and `get()` normaliz
 
 ## Filters
 
-`KeywordsFilters` fields: `display_name`, `works_count`, `works_count_range`, and `display_name.search`.
+`KeywordsFilters` fields: `display_name`, `works_count` (accepts ints or OpenAlex range strings like `">1000"`), and `display_name.search`.
 
 All shared operations are available: `get()`, `search()`, `iterate()`, `collect()`, `first()`, `count()`, `batch_get()`.

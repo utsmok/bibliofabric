@@ -71,7 +71,7 @@ class SimpleDehydratedConcept(BaseEntity):
 class DehydratedConcept(SimpleDehydratedConcept):
     """Concept with relevance score (deprecated entity)."""
 
-    score: float = 0.0
+    score: float | None = None
 
     model_config = ConfigDict(extra="allow")
 

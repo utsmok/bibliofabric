@@ -1,5 +1,7 @@
 """Pydantic models for the Award entity."""
 
+from typing import Any
+
 from bibliofabric import SafeList, SafeStr
 from pydantic import BaseModel, Field
 from pydantic.config import ConfigDict
@@ -15,6 +17,7 @@ class AwardFunder(BaseModel):
     id: SafeStr | None = None
     display_name: SafeStr | None = None
     doi: SafeStr | None = None
+    ror: SafeStr | None = None
 
     model_config = ConfigDict(extra="allow")
 
@@ -121,7 +124,7 @@ class Award(BaseEntity):
     recipients: SafeList[Recipient] = Field(default_factory=list)
     recipient_countries: SafeList[RecipientCountry] = Field(default_factory=list)
     # Element shape not yet observed (no populated probe or doc example found).
-    recipient_regions: SafeList[dict] = Field(default_factory=list)
+    recipient_regions: SafeList[dict[str, Any]] = Field(default_factory=list)
 
     # Linked awards
     sub_awards: SafeList[LinkedAward] = Field(default_factory=list)

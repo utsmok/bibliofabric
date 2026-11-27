@@ -32,6 +32,7 @@ from ._async.publishers import PublishersClient
 from ._async.sources import SourcesClient
 from ._async.topics import TopicsClient
 from ._async.works import WorksClient
+from ._helpers import reconstruct_abstract
 from ._sync.authors import AuthorsSyncClient
 from ._sync.awards import AwardsSyncClient
 from ._sync.client import AlethecaSyncClient
@@ -51,6 +52,8 @@ from .filters import (
     FundersFilters,
     InstitutionsFilters,
     KeywordsFilters,
+    LinksFilters,
+    LocationsFilters,
     PublishersFilters,
     SourcesFilters,
     TopicsFilters,
@@ -108,9 +111,11 @@ __all__ = [
     "KeywordsSyncClient",
     "Link",
     "LinksClient",
+    "LinksFilters",
     "LinksSyncClient",
     "LocationRecord",
     "LocationsClient",
+    "LocationsFilters",
     "LocationsSyncClient",
     "NetworkError",
     "NotFoundError",
@@ -135,4 +140,5 @@ __all__ = [
     "WorksClient",
     "WorksFilters",
     "WorksSyncClient",
+    "reconstruct_abstract",
 ]

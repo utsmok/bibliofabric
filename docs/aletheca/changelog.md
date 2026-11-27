@@ -1,3 +1,3 @@
 # Changelog
 
-The changelog now lives in [`CHANGELOG.md`](https://github.com/utsmok/aletheca/blob/main/CHANGELOG.md) at the repository root, in Keep a Changelog format.
+The changelog lives in [`packages/aletheca/CHANGELOG.md`](https://github.com/utsmok/bibliofabric/blob/main/packages/aletheca/CHANGELOG.md) in the bibliofabric repository, in Keep a Changelog format.

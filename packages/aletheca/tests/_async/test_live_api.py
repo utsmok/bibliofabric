@@ -16,12 +16,13 @@ pytestmark = pytest.mark.live_api
 
 
 @pytest.fixture
-def live_client():
+async def live_client():
     key = os.environ.get("ALETHECA_API_KEY")
     if not key:
         pytest.skip("ALETHECA_API_KEY is not exported")
     settings = AlethecaSettings(_env_file=None, api_key=key)
-    return AlethecaClient(settings=settings)
+    async with AlethecaClient(settings=settings) as client:
+        yield client
 
 
 @pytest.mark.parametrize(
@@ -78,6 +79,13 @@ async def test_oa_pdf_urls_smoke(live_client):
     urls = await live_client.works.oa_pdf_urls(work_id)
     assert urls
     assert all(url.startswith("http") for url in urls)
+
+
+async def test_doi_singleton_smoke(live_client):
+    work = await live_client.works.get("10.7717/peerj.4375")
+    assert work.id == "https://openalex.org/W2741809807"
+    urls = await live_client.works.oa_pdf_urls("10.48550/arXiv.1706.03762")
+    assert urls
 
 
 async def test_count_smoke(live_client):

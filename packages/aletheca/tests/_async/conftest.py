@@ -9,5 +9,6 @@ from aletheca import AlethecaClient
 
 
 @pytest.fixture
-def client(settings):
-    return AlethecaClient(settings=settings)
+async def client(settings):
+    async with AlethecaClient(settings=settings) as aletheca_client:
+        yield aletheca_client

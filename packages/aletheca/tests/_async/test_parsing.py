@@ -1,7 +1,21 @@
 """Parsing of real OpenAlex payloads into the typed models."""
 
 import pytest
-from aletheca import GroupByBucket
+from aletheca import (
+    GroupByBucket,
+    LocationRecord,
+    Work,
+    reconstruct_abstract,
+)
+from aletheca.models import (
+    APCEntry,
+    AwardFunder,
+    CitationNormalizedPercentile,
+    DehydratedConcept,
+    DehydratedTopic,
+    HasContent,
+    OpenAccess,
+)
 
 from ..conftest import load_fixture
 
@@ -127,3 +141,74 @@ async def test_typed_autocomplete_route(client, httpx_mock):
     result = await client.autocomplete("utrecht", entity_type="institutions")
     assert len(result) == 1
     assert httpx_mock.get_requests()[-1].url.path == "/autocomplete/institutions"
+
+
+async def test_rate_limit_parses_credit_and_cost_fields(client, httpx_mock):
+    payload = load_fixture("rate_limit.json")
+    httpx_mock.add_response(json=payload)
+    status = await client.rate_limit()
+    assert status.rate_limit is not None
+    assert status.rate_limit.daily_remaining_usd == 0.9929
+    assert (
+        status.rate_limit.endpoint_costs_usd
+        == payload["rate_limit"]["endpoint_costs_usd"]
+    )
+    assert status.rate_limit.credit_costs == payload["rate_limit"]["credit_costs"]
+    assert status.rate_limit.onetime_credits_balance == 0
+    assert "api_key" not in repr(status)
+    assert "Q0C...AQ3" not in repr(status)
+
+
+def test_nullable_model_fields_and_2026_additions():
+    bucket = GroupByBucket.model_validate({"key": None, "count": 7})
+    assert bucket.key is None
+    assert bucket.count == 7
+
+    location = LocationRecord.model_validate(
+        {"id": "doi:10.1/x", "ids": None, "urls": None}
+    )
+    assert location.ids == []
+    assert location.urls == []
+
+    assert APCEntry.model_validate({"price": None}).price is None
+    assert OpenAccess.model_validate({"is_oa": None}).is_oa is None
+    assert DehydratedTopic.model_validate({"score": None}).score is None
+    assert DehydratedConcept.model_validate({"score": None}).score is None
+    cnp = CitationNormalizedPercentile.model_validate(
+        {"value": None, "is_in_top_1_percent": None, "is_in_top_10_percent": None}
+    )
+    assert cnp.value is None and cnp.is_in_top_1_percent is None
+    hc = HasContent.model_validate({"pdf": None, "grobid_xml": None})
+    assert hc.pdf is None and hc.grobid_xml is None
+
+    work = Work.model_validate(
+        {
+            "id": "https://openalex.org/W1",
+            "rerank_score": 0.91,
+            "pull_notice_works": [
+                {
+                    "id": "https://openalex.org/W2",
+                    "display_name": "Retraction Notice",
+                    "link_type": "retraction",
+                }
+            ],
+        }
+    )
+    assert work.rerank_score == 0.91
+    assert work.pull_notice_works[0].link_type == "retraction"
+
+    funder = AwardFunder.model_validate(
+        {"id": "https://openalex.org/F1", "ror": "https://ror.org/02nr0ka47"}
+    )
+    assert funder.ror == "https://ror.org/02nr0ka47"
+
+
+def test_reconstruct_abstract_variants():
+    assert reconstruct_abstract(None) is None
+    assert reconstruct_abstract({}) is None
+    assert reconstruct_abstract({"word": []}) is None
+    assert reconstruct_abstract({"Hello": [0], "world": [1]}) == "Hello world"
+    assert (
+        reconstruct_abstract({"the": [0, 3], "cat": [1], "sat": [2], "mat": [5]})
+        == "the cat sat the mat"
+    )

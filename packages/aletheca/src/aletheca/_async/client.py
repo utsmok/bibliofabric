@@ -10,28 +10,23 @@ from functools import cached_property
 from typing import Any
 
 import httpx
-from bibliofabric import BaseApiClient
+from bibliofabric import BaseApiClient, validate_model
 from bibliofabric.auth import (
     AuthStrategy,
     NoAuth,
     QueryParameterAuth,
     StaticTokenAuth,
 )
-from bibliofabric.exceptions import AuthError
+from bibliofabric.exceptions import AuthError, ConfigurationError
+from pydantic import BaseModel
 
-from ..config import (
-    BASE_MAX_CONCURRENCY,
-    DEFAULT_MAX_CONCURRENCY,
-    DEFAULT_MAX_REQUESTS_PER_SECOND,
-    AlethecaSettings,
-    AuthScheme,
-    get_settings,
-)
-from ..dialect import OPENALEX_API_BASE_URL
+from ..config import AlethecaSettings, AuthScheme, get_settings
+from ..dialect import AUTOCOMPLETE_ENTITY_TYPES, OPENALEX_API_BASE_URL
 from ..models import AutocompleteResult, RateLimitStatus
 from ..unwrapper import OpenAlexUnwrapper
 from .authors import AuthorsClient
 from .awards import AwardsClient
+from .dialect import serialize_filter_params
 from .funders import FundersClient
 from .institutions import InstitutionsClient
 from .keywords import KeywordsClient
@@ -46,6 +41,7 @@ logger = logging.getLogger(__name__)
 
 _UNAUTHORIZED = 401
 _TOO_MANY_REQUESTS = 429
+_VALID_AUTH_SCHEMES = frozenset({"query", "bearer"})
 
 
 class AlethecaClient(BaseApiClient):
@@ -67,43 +63,43 @@ class AlethecaClient(BaseApiClient):
         base_url: str | None = None,
         auth_strategy: AuthStrategy | None = None,
         auth_scheme: AuthScheme | None = None,
+        http_client: httpx.AsyncClient | None = None,
     ) -> None:
         """Build the client.
 
         Args:
             settings: Settings instance; ``None`` loads from the environment.
-            api_key: OpenAlex API key; overrides the settings value.
+            api_key: OpenAlex API key; overrides the settings value. Pass
+                ``""`` to force keyless access even when an env key is set.
             base_url: API base URL override (testing).
             auth_strategy: Fully custom auth strategy; takes precedence over
                 ``api_key``/``auth_scheme``.
             auth_scheme: ``"query"`` (default, ``?api_key=``) or ``"bearer"``
                 (``Authorization: Bearer``); overrides the settings value.
+            http_client: Optional pre-configured ``httpx.AsyncClient`` (caller
+                retains ownership and is responsible for closing it).
         """
         resolved_settings = settings or get_settings()
-        if resolved_settings.max_requests_per_second is None:
-            resolved_settings = resolved_settings.model_copy(
-                update={"max_requests_per_second": DEFAULT_MAX_REQUESTS_PER_SECOND}
-            )
-        # The base default (10) is replaced by the stricter OpenAlex pace;
-        # an explicit ALETHECA_MAX_CONCURRENCY of any other value is kept.
-        if resolved_settings.max_concurrency == BASE_MAX_CONCURRENCY:
-            resolved_settings = resolved_settings.model_copy(
-                update={"max_concurrency": DEFAULT_MAX_CONCURRENCY}
-            )
-        key = api_key or resolved_settings.api_key
-        scheme = auth_scheme or resolved_settings.auth_scheme
+        raw_key = resolved_settings.api_key if api_key is None else api_key
+        key = raw_key or None
+        scheme = resolved_settings.auth_scheme if auth_scheme is None else auth_scheme
         if auth_strategy is not None:
             auth = auth_strategy
             keyless = isinstance(auth, NoAuth)
         else:
+            if scheme not in _VALID_AUTH_SCHEMES:
+                raise ConfigurationError(
+                    f"auth_scheme must be 'query' or 'bearer', got {scheme!r}."
+                )
             auth = self._resolve_auth(key, scheme)
-            keyless = key is None
+            keyless = not key
         self._keyless = keyless
         super().__init__(
             base_url=base_url or OPENALEX_API_BASE_URL,
             settings=resolved_settings,
             unwrapper=OpenAlexUnwrapper(),
             auth=auth,
+            http_client=http_client,
         )
         logger.debug("%s initialized (keyless=%s).", type(self).__name__, keyless)
 
@@ -116,6 +112,12 @@ class AlethecaClient(BaseApiClient):
             return StaticTokenAuth(api_key)
         return QueryParameterAuth("api_key", api_key)
 
+    def rate_class(self, request: httpx.Request) -> str:
+        """Route ``search.semantic`` requests to the 1 req/s ``semantic`` class."""
+        if "search.semantic" in request.url.params:
+            return "semantic"
+        return "default"
+
     async def request(
         self,
         method: str,
@@ -123,7 +125,10 @@ class AlethecaClient(BaseApiClient):
         *,
         params: Mapping[str, Any] | None = None,
         json: Any | None = None,
+        data: Mapping[str, Any] | None = None,
+        content: str | bytes | None = None,
         headers: Mapping[str, str] | None = None,
+        timeout: float | httpx.Timeout | None = None,
     ) -> httpx.Response:
         """Send a request with retries, mapping keyless 401s to clear errors.
 
@@ -132,7 +137,14 @@ class AlethecaClient(BaseApiClient):
         """
         try:
             return await super().request(
-                method, path, params=params, json=json, headers=headers
+                method,
+                path,
+                params=params,
+                json=json,
+                data=data,
+                content=content,
+                headers=headers,
+                timeout=timeout,
             )
         except AuthError as error:
             response = error.response
@@ -146,7 +158,9 @@ class AlethecaClient(BaseApiClient):
                     "cannot use cursor paging past the first page and shares "
                     "a small daily budget per IP address. Get a free API key "
                     "at https://openalex.org/settings/api and set "
-                    "ALETHECA_API_KEY (or pass api_key= to AlethecaClient).",
+                    "ALETHECA_API_KEY (or pass api_key= to "
+                    f"{type(self).__name__}).",
+                    body=error.body,
                     request=error.request,
                     response=response,
                 ) from error
@@ -170,19 +184,40 @@ class AlethecaClient(BaseApiClient):
     # --- non-entity endpoints ------------------------------------------
 
     async def autocomplete(
-        self, query: str, *, entity_type: str | None = None
+        self,
+        query: str,
+        *,
+        entity_type: str | None = None,
+        filters: BaseModel | Mapping[str, Any] | None = None,
     ) -> list[AutocompleteResult]:
         """Free typeahead/ID resolution; returns up to 10 rows per call.
 
-        ``entity_type`` restricts to one entity route (e.g. ``"works"``,
+        ``entity_type`` restricts to one autocomplete route (``"works"``,
         ``"authors"``, ``"institutions"``, ``"sources"``, ``"topics"``,
-        ``"funders"``, ``"publishers"``, ``"awards"``, ``"keywords"``).
-        Costs no credits.
+        ``"keywords"``, ``"concepts"``, ``"publishers"``, or ``"funders"``;
+        OpenAlex does not provide ``/autocomplete/awards``). Optional
+        ``filters`` narrows candidates using OpenAlex filter syntax. Costs no
+        credits.
         """
+        if entity_type is not None and entity_type not in AUTOCOMPLETE_ENTITY_TYPES:
+            raise ConfigurationError(
+                f"entity_type must be one of {sorted(AUTOCOMPLETE_ENTITY_TYPES)}, "
+                f"got {entity_type!r}."
+            )
         path = "autocomplete" if entity_type is None else f"autocomplete/{entity_type}"
-        body = await self.get_json(path, params={"q": query})
+        params: dict[str, str] = {"q": query}
+        params.update(serialize_filter_params(filters))
+        response = await self.request("GET", path, params=params)
+        body = self.parse_json(response)
+        rows = body.get("results") if isinstance(body, dict) else None
         return [
-            AutocompleteResult.model_validate(row) for row in body.get("results") or []
+            validate_model(
+                AutocompleteResult,
+                row,
+                request=response.request,
+                response=response,
+            )
+            for row in rows or []
         ]
 
     async def rate_limit(self) -> RateLimitStatus:
@@ -190,7 +225,14 @@ class AlethecaClient(BaseApiClient):
 
         Free, costs no credits; useful as a guard before large jobs.
         """
-        return RateLimitStatus.model_validate(await self.get_json("rate-limit"))
+        response = await self.request("GET", "rate-limit")
+        body = self.parse_json(response)
+        return validate_model(
+            RateLimitStatus,
+            body,
+            request=response.request,
+            response=response,
+        )
 
     # --- entity resources -----------------------------------------------
 

@@ -15,7 +15,7 @@ from .dehydrated import DehydratedSource
 class APCEntry(BaseModel):
     """A single APC price entry."""
 
-    price: int = 0
+    price: int | None = None
     currency: SafeStr = ""
 
     model_config = ConfigDict(extra="allow")
@@ -60,7 +60,7 @@ class Mesh(BaseModel):
 
     descriptor_ui: SafeStr = ""
     descriptor_name: SafeStr = ""
-    is_major_topic: bool = False
+    is_major_topic: bool | None = None
     qualifier_ui: SafeStr | None = None
     qualifier_name: SafeStr | None = None
 
@@ -98,7 +98,7 @@ class Location(BaseModel):
 class OpenAccess(BaseModel):
     """Open access status of a work."""
 
-    is_oa: bool = False
+    is_oa: bool | None = None
     oa_status: (
         Literal["diamond", "gold", "green", "hybrid", "bronze", "closed"] | None
     ) = None
@@ -151,7 +151,7 @@ class TopicMinimal(BaseEntity):
 class DehydratedTopic(BaseEntity):
     """Topic with score, embedded in other entities."""
 
-    score: float = 0.0
+    score: float | None = None
     subfield: Subfield | None = None
     field: FieldEntity | None = None
     domain: Domain | None = None
@@ -162,7 +162,7 @@ class DehydratedTopic(BaseEntity):
 class TopicCount(BaseEntity):
     """Topic with count and score."""
 
-    count: int = 0
+    count: int | None = None
     score: float | None = None
     subfield: Subfield | None = None
     field: FieldEntity | None = None
@@ -174,7 +174,7 @@ class TopicCount(BaseEntity):
 class TopicShare(BaseEntity):
     """Topic share information."""
 
-    value: float = 0.0
+    value: float | None = None
     subfield: Subfield | None = None
     field: FieldEntity | None = None
     domain: Domain | None = None
@@ -188,7 +188,7 @@ class TopicShare(BaseEntity):
 class SDG(BaseEntity):
     """Sustainable Development Goal."""
 
-    score: float = 0.0
+    score: float | None = None
 
     model_config = ConfigDict(extra="allow")
 
@@ -199,7 +199,7 @@ class SDG(BaseEntity):
 class DehydratedKeyword(BaseEntity):
     """Keyword with score, embedded in works."""
 
-    score: float = 0.0
+    score: float | None = None
 
     model_config = ConfigDict(extra="allow")
 
@@ -219,9 +219,9 @@ class CitedByPercentileYear(BaseModel):
 class CitationNormalizedPercentile(BaseModel):
     """Citation normalized percentile."""
 
-    value: float = 0.0
-    is_in_top_1_percent: bool = False
-    is_in_top_10_percent: bool = False
+    value: float | None = None
+    is_in_top_1_percent: bool | None = None
+    is_in_top_10_percent: bool | None = None
 
     model_config = ConfigDict(extra="allow")
 
@@ -310,8 +310,8 @@ class International(BaseModel):
 class HasContent(BaseModel):
     """Content availability flags for a work."""
 
-    pdf: bool = False
-    grobid_xml: bool = False
+    pdf: bool | None = None
+    grobid_xml: bool | None = None
 
     model_config = ConfigDict(extra="allow")
 

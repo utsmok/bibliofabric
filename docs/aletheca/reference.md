@@ -33,8 +33,20 @@ Generated from the source with mkdocstrings.
       show_source: false
       members:
         - works
+        - authors
+        - sources
+        - institutions
+        - topics
+        - keywords
+        - publishers
+        - funders
+        - awards
+        - locations
+        - links
         - autocomplete
         - rate_limit
+        - request
+        - is_retryable
 
 The sync twins of the resource clients are exported from the package root
 (``WorksSyncClient``, ``AuthorsSyncClient``, and so on). They mirror the
@@ -142,6 +154,16 @@ keys and allows extra fields.
       heading_level: 3
       show_source: false
 
+::: aletheca.filters.LocationsFilters
+    options:
+      heading_level: 3
+      show_source: false
+
+::: aletheca.filters.LinksFilters
+    options:
+      heading_level: 3
+      show_source: false
+
 ## Dialect and helpers
 
 ::: aletheca.dialect
@@ -151,13 +173,14 @@ keys and allows extra fields.
       members:
         - OPENALEX_API_BASE_URL
         - MAX_OR_VALUES
+        - MAX_BASIC_PAGING_RESULTS
 
 ::: aletheca._async.dialect.OpenAlexResourceClient
     options:
       heading_level: 3
       show_source: false
 
-::: aletheca._helpers.reconstruct_abstract
+::: aletheca.reconstruct_abstract
     options:
       heading_level: 3
       show_source: false
@@ -184,6 +207,16 @@ models; see the source for the full field list.
       show_source: false
 
 ::: aletheca.models.RateLimitStatus
+    options:
+      heading_level: 3
+      show_source: false
+
+::: aletheca.models.LocationRecord
+    options:
+      heading_level: 3
+      show_source: false
+
+::: aletheca.models.Link
     options:
       heading_level: 3
       show_source: false

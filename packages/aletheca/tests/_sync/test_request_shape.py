@@ -2,7 +2,13 @@
 """Outgoing request shape: paths, params, filter syntax, paging, batching."""
 
 import pytest
-from aletheca import ConfigurationError, WorksFilters
+from aletheca import (
+    AwardsFilters,
+    ConfigurationError,
+    LinksFilters,
+    LocationsFilters,
+    WorksFilters,
+)
 
 from ..conftest import entity, envelope, load_fixture
 
@@ -27,6 +33,48 @@ def test_get_normalizes_url_ids(client, httpx_mock):
     assert httpx_mock.get_requests()[-1].url.path == "/works/W2741809807"
 
 
+@pytest.mark.parametrize(
+    "raw_doi",
+    [
+        "10.7717/peerj.4375",
+        "https://doi.org/10.7717/PeerJ.4375",
+        "doi:10.7717/PEERJ.4375",
+    ],
+)
+def test_get_doi_singleton_uses_free_doi_prefix(client, httpx_mock, raw_doi):
+    httpx_mock.add_response(json=WORK)
+    client.works.get(raw_doi)
+    request = httpx_mock.get_requests()[-1]
+    assert request.url.path == "/works/doi:10.7717/peerj.4375"
+    assert request.url.raw_path.startswith(b"/works/doi%3A10.7717%2Fpeerj.4375")
+
+
+def test_get_external_ids_preserve_namespace_prefix(client, httpx_mock):
+    httpx_mock.add_response(json=entity("A1"))
+    client.authors.get("https://orcid.org/0000-0001-6187-6610")
+    assert httpx_mock.get_requests()[-1].url.raw_path.startswith(
+        b"/authors/orcid%3A0000-0001-6187-6610"
+    )
+
+    httpx_mock.add_response(json=entity("I1"))
+    client.institutions.get("https://ror.org/02nr0ka47")
+    assert httpx_mock.get_requests()[-1].url.raw_path.startswith(
+        b"/institutions/ror%3A02nr0ka47"
+    )
+
+    httpx_mock.add_response(json=entity("S1"))
+    client.sources.get("0028-0836")
+    assert httpx_mock.get_requests()[-1].url.raw_path.startswith(
+        b"/sources/issn%3A0028-0836"
+    )
+
+    httpx_mock.add_response(json=entity("W1"))
+    client.works.get("pmid:29456894")
+    assert httpx_mock.get_requests()[-1].url.raw_path.startswith(
+        b"/works/pmid%3A29456894"
+    )
+
+
 def test_search_params_shape(client, httpx_mock):
     httpx_mock.add_response(json=envelope([]))
     client.works.search(
@@ -42,20 +90,31 @@ def test_search_params_shape(client, httpx_mock):
     assert params["search"] == "open science"
     assert params["sort"] == "display_name:asc"
     assert params["select"] == "id,title"
-    assert params["per-page"] == "10"
+    assert params["per_page"] == "10"
     assert params["page"] == "2"
 
 
 def test_search_defaults_to_25_per_page(client, httpx_mock):
     httpx_mock.add_response(json=envelope([]))
     client.works.search()
-    assert last_params(httpx_mock)["per-page"] == "25"
+    assert last_params(httpx_mock)["per_page"] == "25"
 
 
 def test_search_page_size_capped_at_100(client, httpx_mock):
     httpx_mock.add_response(json=envelope([]))
     client.works.search(page_size=500)
-    assert last_params(httpx_mock)["per-page"] == "100"
+    assert last_params(httpx_mock)["per_page"] == "100"
+
+
+def test_search_basic_paging_guards(client):
+    with pytest.raises(ConfigurationError, match="10000"):
+        client.works.search(page=101, page_size=100)
+    with pytest.raises(ConfigurationError, match="combine"):
+        client.works.search(page=1, cursor="*")
+    with pytest.raises(ConfigurationError, match="positive"):
+        client.works.search(page_size=0)
+    with pytest.raises(ConfigurationError, match="page must be"):
+        client.works.search(page=0)
 
 
 def test_filter_model_uses_dot_aliases(client, httpx_mock):
@@ -89,6 +148,62 @@ def test_doi_filter_values_are_normalized(client, httpx_mock):
     client.works.search({"doi": "https://doi.org/10.1234/ABC"})
     assert last_params(httpx_mock)["filter"] == "doi:10.1234/abc"
 
+    httpx_mock.add_response(json=envelope([]))
+    client.awards.search(AwardsFilters(funder_doi="https://doi.org/10.13039/100000065"))
+    assert last_params(httpx_mock)["filter"] == "funder.doi:10.13039/100000065"
+
+
+def test_filter_serialization_skips_none_empty_and_handles_sets(client, httpx_mock):
+    httpx_mock.add_response(json=envelope([]))
+    client.works.search(
+        {
+            "publication_year": 2024,
+            "is_oa": None,
+            "openalex": [],
+            "type": {"article", "preprint"},
+        }
+    )
+    assert (
+        last_params(httpx_mock)["filter"]
+        == "publication_year:2024,type:article|preprint"
+    )
+
+
+def test_widened_and_2026_filters_serialize(client, httpx_mock):
+    httpx_mock.add_response(json=envelope([]))
+    filters = WorksFilters(
+        publication_year="2020-2024",
+        cited_by_count=">100",
+        best_open_version="published",
+        is_pulled=True,
+        pull_notice_works_link_type="retraction",
+        awards_funder_id=["F1", "F2"],
+        fwci=">1.5",
+        pmcid="PMC12345",
+        indexed_in=["crossref", "pubmed"],
+    )
+    client.works.search(filters)
+    parts = set(last_params(httpx_mock)["filter"].split(","))
+    assert parts == {
+        "publication_year:2020-2024",
+        "cited_by_count:>100",
+        "best_open_version:published",
+        "is_pulled:true",
+        "pull_notice_works.link_type:retraction",
+        "awards.funder_id:F1|F2",
+        "fwci:>1.5",
+        "pmcid:PMC12345",
+        "indexed_in:crossref|pubmed",
+    }
+
+    httpx_mock.add_response(json=envelope([]))
+    client.locations.search(LocationsFilters(provenance="crossref", is_oa=True))
+    assert last_params(httpx_mock)["filter"] == "provenance:crossref,is_oa:true"
+
+    httpx_mock.add_response(json=envelope([]))
+    client.links.search(LinksFilters(origin="W1", link_type="citation"))
+    assert last_params(httpx_mock)["filter"] == "origin:W1,link_type:citation"
+
 
 def test_more_than_100_or_values_rejected(client, httpx_mock):
     with pytest.raises(ConfigurationError):
@@ -111,7 +226,7 @@ def test_iterate_pages_with_cursor_at_100_per_page(client, httpx_mock):
     ]
     requests = httpx_mock.get_requests()
     assert dict(requests[0].url.params)["cursor"] == "*"
-    assert dict(requests[0].url.params)["per-page"] == "100"
+    assert dict(requests[0].url.params)["per_page"] == "100"
     assert dict(requests[1].url.params)["cursor"] == "I1"
 
 
@@ -135,9 +250,10 @@ def test_count_requests_minimal_payload(client, httpx_mock):
     httpx_mock.add_response(json=envelope([], count=42))
     assert client.works.count() == 42
     params = last_params(httpx_mock)
-    assert params["per-page"] == "1"
+    assert params["per_page"] == "1"
     assert params["select"] == "id"
-    assert params["cursor"] == "*"
+    assert params["page"] == "1"
+    assert "cursor" not in params
 
 
 def test_corpus_and_include_flags_stay_out_of_filter(client, httpx_mock):
@@ -159,10 +275,16 @@ def test_invalid_corpus_rejected(client, httpx_mock):
 
 def test_sample_sends_sample_and_seed(client, httpx_mock):
     httpx_mock.add_response(json=envelope([]))
-    client.works.sample(50, seed=42)
+    client.works.sample(
+        50, seed=42, cursor="*", corpus="all", include_parts=True, include_pulled=False
+    )
     params = last_params(httpx_mock)
     assert params["sample"] == "50"
     assert params["seed"] == "42"
+    assert params["cursor"] == "*"
+    assert params["corpus"] == "all"
+    assert params["include_parts"] == "true"
+    assert params["include_pulled"] == "false"
 
 
 def test_sample_rejects_out_of_range(client, httpx_mock):
@@ -172,8 +294,37 @@ def test_sample_rejects_out_of_range(client, httpx_mock):
 
 def test_scoped_search_uses_search_dot_param(client, httpx_mock):
     httpx_mock.add_response(json=envelope([]))
-    client.works.search_scoped("photosynthesis", scope="title_abstract_keywords")
-    assert last_params(httpx_mock)["search.title_abstract_keywords"] == "photosynthesis"
+    client.works.search_scoped(
+        "photosynthesis",
+        scope="title_abstract_keywords",
+        cursor="*",
+        corpus="expansion",
+        rerank=True,
+    )
+    params = last_params(httpx_mock)
+    assert params["search.title_abstract_keywords"] == "photosynthesis"
+    assert params["cursor"] == "*"
+    assert params["corpus"] == "expansion"
+    assert params["rerank"] == "true"
+
+
+def test_autocomplete_filters_and_entity_validation(client, httpx_mock):
+    httpx_mock.add_response(json={"results": []})
+    client.autocomplete("einstein", entity_type="authors", filters={"has_orcid": True})
+    params = last_params(httpx_mock)
+    assert params["q"] == "einstein"
+    assert params["filter"] == "has_orcid:true"
+
+    with pytest.raises(ConfigurationError, match="entity_type"):
+        client.autocomplete("grant", entity_type="awards")
+
+
+def test_client_request_forwards_data_content_timeout(client, httpx_mock):
+    httpx_mock.add_response(json={"ok": True})
+    response = client.request("POST", "works", content=b"payload", timeout=12.0)
+    assert response.json() == {"ok": True}
+    request = httpx_mock.get_requests()[-1]
+    assert request.content == b"payload"
 
 
 def test_group_by_sends_group_by_param(client, httpx_mock):
@@ -197,9 +348,9 @@ def test_batch_get_splits_at_100_and_keys_results(client, httpx_mock):
     assert dict(requests[0].url.params)["filter"] == "openalex:" + "|".join(
         f"W{i}" for i in range(100)
     )
-    assert dict(requests[0].url.params)["per-page"] == "100"
+    assert dict(requests[0].url.params)["per_page"] == "100"
     assert dict(requests[1].url.params)["filter"] == "openalex:W100|W101|W102"
-    assert dict(requests[1].url.params)["per-page"] == "3"
+    assert dict(requests[1].url.params)["per_page"] == "3"
 
 
 def test_batch_get_default_field_uses_openalex_filter(client, httpx_mock):
@@ -208,6 +359,85 @@ def test_batch_get_default_field_uses_openalex_filter(client, httpx_mock):
     result = client.works.batch_get(["https://openalex.org/W1"])
     assert "W1" in result
     assert last_params(httpx_mock)["filter"] == "openalex:W1"
+
+
+def test_batch_get_external_ids_key_properly(client, httpx_mock):
+    httpx_mock.add_response(
+        json=envelope(
+            [
+                {
+                    "id": "https://openalex.org/A1",
+                    "orcid": "https://orcid.org/0000-0001-6187-6610",
+                }
+            ],
+            count=1,
+        )
+    )
+    authors = client.authors.batch_get(["0000-0001-6187-6610"], field="orcid")
+    assert "0000-0001-6187-6610" in authors
+
+    httpx_mock.add_response(
+        json=envelope(
+            [
+                {
+                    "id": "https://openalex.org/I1",
+                    "ror": "https://ror.org/02nr0ka47",
+                }
+            ],
+            count=1,
+        )
+    )
+    insts = client.institutions.batch_get(["https://ror.org/02nr0ka47"], field="ror")
+    assert "02nr0ka47" in insts
+
+    httpx_mock.add_response(
+        json=envelope(
+            [
+                {
+                    "id": "https://openalex.org/S1",
+                    "issn": ["0028-0836", "1476-4687"],
+                }
+            ],
+            count=1,
+        )
+    )
+    sources = client.sources.batch_get(["0028-0836"], field="issn")
+    assert "0028-0836" in sources
+
+    httpx_mock.add_response(
+        json=envelope(
+            [
+                {
+                    "id": "https://openalex.org/W1",
+                    "ids": {
+                        "openalex": "https://openalex.org/W1",
+                        "pmid": "https://pubmed.ncbi.nlm.nih.gov/29456894",
+                        "pmcid": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1234567",
+                    },
+                }
+            ],
+            count=1,
+        )
+    )
+    by_pmid = client.works.batch_get(["29456894"], field="pmid")
+    assert "29456894" in by_pmid
+
+    httpx_mock.add_response(
+        json=envelope(
+            [
+                {
+                    "id": "https://openalex.org/W1",
+                    "ids": {
+                        "openalex": "https://openalex.org/W1",
+                        "pmcid": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1234567",
+                    },
+                }
+            ],
+            count=1,
+        )
+    )
+    by_pmcid = client.works.batch_get(["PMC1234567"], field="pmcid")
+    assert "PMC1234567" in by_pmcid
 
 
 def test_batch_get_by_doi_normalizes_keys(client, httpx_mock):
@@ -226,10 +456,14 @@ def test_batch_get_by_doi_normalizes_keys(client, httpx_mock):
 
 def test_citing_filters_by_cites(client, httpx_mock):
     httpx_mock.add_response(json=envelope([entity("W9")]))
-    citing = client.works.citing("W2741809807", limit=5)
+    citing = client.works.citing(
+        "W2741809807",
+        limit=5,
+        filters={"cites": "W_IGNORED", "is_oa": True, "language": None},
+    )
     assert len(citing) == 1
     params = last_params(httpx_mock)
-    assert params["filter"] == "cites:W2741809807"
+    assert set(params["filter"].split(",")) == {"cites:W2741809807", "is_oa:true"}
     assert params["cursor"] == "*"
 
 
@@ -244,6 +478,11 @@ def test_referenced_works_fetches_targets(client, httpx_mock):
     assert referenced[0].id == WORK["id"]
     params = last_params(httpx_mock)
     assert params["filter"] == "openalex:W2741809807|W999"
+
+    with pytest.raises(ConfigurationError, match="positive"):
+        client.works.referenced("W2741809807", limit=0)
+    with pytest.raises(ConfigurationError, match="positive"):
+        client.works.referenced("W2741809807", limit=-1)
 
 
 def test_other_resources_use_their_paths(client, httpx_mock):

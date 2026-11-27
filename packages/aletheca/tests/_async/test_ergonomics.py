@@ -42,9 +42,21 @@ async def test_locations_search_shape_and_parse(client, httpx_mock):
     page = await client.locations.search({"doi": "10.7717/peerj.4375"})
     params = last_params(httpx_mock)
     assert params["filter"] == "doi:10.7717/peerj.4375"
-    assert params["per-page"] == "25"
+    assert params["per_page"] == "25"
     assert page.total == 1
     assert page.results[0].id == LOCATION["id"]
+
+
+async def test_locations_batch_get_uses_id_and_doi_filters(client, httpx_mock):
+    httpx_mock.add_response(json=envelope([LOCATION], count=1))
+    by_id = await client.locations.batch_get(["doi:10.7717/peerj.4375"])
+    assert last_params(httpx_mock)["filter"] == "id:doi:10.7717/peerj.4375"
+    assert "doi:10.7717/peerj.4375" in by_id
+
+    httpx_mock.add_response(json=envelope([LOCATION], count=1))
+    by_doi = await client.locations.batch_get(["10.7717/peerj.4375"], field="doi")
+    assert last_params(httpx_mock)["filter"] == "doi:10.7717/peerj.4375"
+    assert "10.7717/peerj.4375" in by_doi
 
 
 # --- /links -----------------------------------------------------------
@@ -103,8 +115,10 @@ async def test_search_omits_rerank_by_default(client, httpx_mock):
 async def test_oa_pdf_urls_best_oa_first_and_deduped(client, httpx_mock):
     httpx_mock.add_response(json=WORK_MULTI_OA)
     urls = await client.works.oa_pdf_urls("10.48550/arXiv.1706.03762")
-    # works.get() lowers DOIs to the bare form; the single route accepts it.
-    assert httpx_mock.get_requests()[-1].url.path == "/works/10.48550/arxiv.1706.03762"
+    # works.get() sends DOI singletons with the doi: prefix (free $0 route).
+    request = httpx_mock.get_requests()[-1]
+    assert request.url.path == "/works/doi:10.48550/arxiv.1706.03762"
+    assert request.url.raw_path.startswith(b"/works/doi%3A10.48550%2Farxiv.1706.03762")
     best = WORK_MULTI_OA["best_oa_location"]["pdf_url"]
     second = "https://langtaosha.org.cn/index.php/lts/preprint/download/10/108"
     # best_oa_location and primary_location carry the same pdf_url; the

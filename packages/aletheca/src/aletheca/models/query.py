@@ -8,7 +8,7 @@
 
 from typing import Literal
 
-from bibliofabric import SafeStr
+from bibliofabric import SafeList, SafeStr
 from pydantic import AliasChoices, BaseModel, ConfigDict, Field, field_validator
 
 # OpenAlex renamed relationships to link types on 2026-11-14; the old
@@ -24,7 +24,7 @@ class GroupByBucket(BaseModel):
     second and third dimension in ``groups``.
     """
 
-    key: str | int
+    key: str | int | None = None
     key_display_name: str | None = Field(None, alias="key_display_name")
     count: int
     groups: list["GroupByBucket"] = Field(default_factory=list)
@@ -71,9 +71,14 @@ class RateLimitInfo(BaseModel):
     resets_at: str | None = None
     resets_in_seconds: int | None = None
     per_second_limits: PerSecondLimits | None = None
+    endpoint_costs_usd: dict[str, float] | None = None
     credits_limit: int | None = None
     credits_used: int | None = None
     credits_remaining: int | None = None
+    onetime_credits_balance: int | None = None
+    onetime_credits_remaining: int | None = None
+    onetime_credits_expires_at: str | None = None
+    credit_costs: dict[str, int] | None = None
 
     model_config = ConfigDict(extra="ignore")
 
@@ -140,8 +145,8 @@ class LocationRecord(BaseModel):
     is_retracted: bool | None = None
     landing_page_url: SafeStr | None = None
     pdf_url: SafeStr | None = None
-    ids: list[LocationRecordId] = Field(default_factory=list)
-    urls: list[LocationRecordUrl] = Field(default_factory=list)
+    ids: SafeList[LocationRecordId] = Field(default_factory=list)
+    urls: SafeList[LocationRecordUrl] = Field(default_factory=list)
     merge_key: dict[str, str | None] | None = None
     ingested_at: str | None = None
 

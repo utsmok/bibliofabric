@@ -11,4 +11,5 @@ from aletheca import AlethecaSyncClient
 
 @pytest.fixture
 def client(settings):
-    return AlethecaSyncClient(settings=settings)
+    with AlethecaSyncClient(settings=settings) as aletheca_client:
+        yield aletheca_client

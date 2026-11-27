@@ -34,11 +34,12 @@ Error strings redact credential query parameters, so printing them never leaks y
 Some mistakes fail before any request is sent, with a `ConfigurationError`:
 
 - More than 100 pipe-joined values in one filter.
+- Basic paging past OpenAlex's 10,000-result ceiling (`page * per_page > 10,000`), combining `page` with `cursor`, `page < 1`, or `page_size <= 0`.
 - A `corpus` value outside `core`/`expansion`/`all` on `works.search()`.
 - A `sample()` size outside 1 to 10,000.
-- An unknown `search_scoped()` scope.
+- An unknown `search_scoped()` scope, `autocomplete()` entity type, or `auth_scheme`.
 
-A record that fails model validation raises `ValidationError` with the raw payload (`raw`), the pydantic error (`error`), and the model name (`model_name`). In `iterate()` and `collect()`, pass `on_error="skip"` to drop bad records and collect them in a `failures` list instead.
+A record that fails model validation raises `ValidationError` with the raw payload (`raw`), the pydantic error (`error`), and the model name (`model_name`). In `search()`, `batch_get()`, `iterate()`, and `collect()`, pass `on_error="skip"` to drop bad records and collect them in a `failures` list instead.
 
 ## Retries
 
@@ -68,7 +69,7 @@ print(status.rate_limit.daily_remaining_usd)
 
 ## Client-side pacing
 
-Aletheca spaces requests to a default of 10 per second with at most 5 concurrent requests. Change both with `ALETHECA_MAX_REQUESTS_PER_SECOND` and `ALETHECA_MAX_CONCURRENCY`.
+Aletheca spaces requests to a default of 10 per second with at most 5 concurrent requests, and caps `search.semantic` requests to 1 per second via its `"semantic"` rate class. Change these with `ALETHECA_MAX_REQUESTS_PER_SECOND`, `ALETHECA_MAX_CONCURRENCY`, and `ALETHECA_RATE_LIMITS`.
 
 ## Keyless 401s
 

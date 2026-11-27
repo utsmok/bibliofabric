@@ -16,4 +16,4 @@ class AuthorsClient(OpenAlexResourceClient[Author]):
         self, ids: Sequence[str], *, batch_size: int | None = None
     ) -> dict[str, Author]:
         """Fetch authors by OpenAlex id (bare ``A...`` or full URL)."""
-        return await self.batch_get(ids, field="openalex", batch_size=batch_size)
+        return await self.batch_get(ids, field="id", batch_size=batch_size)
