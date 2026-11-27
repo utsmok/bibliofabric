@@ -44,16 +44,20 @@ def is_doi(value: str) -> bool:
 
 def normalize_orcid(value: str) -> str:
     """Return the ORCID iD in hyphenated form (``0000-0002-1825-0097``)."""
-    stripped = strip_url_prefix(value, _ORCID_PREFIXES)
+    stripped = strip_url_prefix(value, _ORCID_PREFIXES).rstrip("/")
     compact = stripped.replace("-", "").replace(" ", "").upper()
-    if len(compact) == _ORCID_LENGTH:
+    if (
+        len(compact) == _ORCID_LENGTH
+        and compact[:-1].isdigit()
+        and compact[-1] in "0123456789X"
+    ):
         return "-".join(compact[index : index + 4] for index in range(0, 16, 4))
     return stripped
 
 
 def normalize_ror(value: str) -> str:
     """Return the bare ROR id, lowercased."""
-    return strip_url_prefix(value, _ROR_PREFIXES).lower()
+    return strip_url_prefix(value, _ROR_PREFIXES).rstrip("/").lower()
 
 
 def normalize_issn(value: str) -> str:
@@ -68,3 +72,13 @@ def normalize_issn(value: str) -> str:
     ):
         return f"{compact[:4]}-{compact[4:]}"
     return stripped
+
+
+__all__ = [
+    "is_doi",
+    "normalize_doi",
+    "normalize_issn",
+    "normalize_orcid",
+    "normalize_ror",
+    "strip_url_prefix",
+]

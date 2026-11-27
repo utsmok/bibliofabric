@@ -28,11 +28,14 @@ from bibliofabric import (
     ResourceClient,
     ResponseUnwrapper,
 )
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
+from pydantic_settings import SettingsConfigDict
 
 
 class FooSettings(BaseApiSettings):
-    model_config = ConfigDict(env_prefix="FOO_", env_file=".env", extra="ignore")
+    model_config = SettingsConfigDict(
+        env_prefix="FOO_", env_file=".env", extra="ignore"
+    )
 
 
 class Work(BaseModel):
@@ -99,7 +102,7 @@ async with FooClient() as client:
 
 `get()`, `search()`, and `count()` return typed results; iteration supports
 cursor, page, and offset paging depending on the dialect. Errors, retries, and
-limits are described in the [errors page](../../docs/bibliofabric/errors.md).
+limits are described in the [errors page](https://utsmok.github.io/bibliofabric/bibliofabric/errors/).
 
 Every client built on the framework also gets a generated sync twin. Sync
 classes follow the `FooClient` -> `FooSyncClient` naming rule:

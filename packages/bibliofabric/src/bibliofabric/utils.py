@@ -9,7 +9,9 @@ _SENSITIVE_QUERY_PARAMETER = re.compile(
     re.IGNORECASE,
 )
 
-_SENSITIVE_HEADER_MARKERS = ("authorization", "token", "key", "secret")
+_SENSITIVE_HEADER_MARKERS = ("authorization", "token", "key", "secret", "cookie")
+
+__all__ = ["sanitize_headers", "sanitize_url"]
 
 
 def sanitize_url(url: object) -> str:

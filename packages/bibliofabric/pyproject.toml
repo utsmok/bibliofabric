@@ -12,6 +12,7 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Framework :: AsyncIO",
     "Typing :: Typed",
 ]
@@ -24,7 +25,11 @@ dependencies = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/utsmok/bibliofabric"
+Homepage = "https://github.com/utsmok/bibliofabric"
+Repository = "https://github.com/utsmok/bibliofabric"
+Documentation = "https://utsmok.github.io/bibliofabric/bibliofabric/"
+Issues = "https://github.com/utsmok/bibliofabric/issues"
+Changelog = "https://github.com/utsmok/bibliofabric/blob/main/packages/bibliofabric/CHANGELOG.md"
 
 [build-system]
 requires = ["uv_build>=0.9.22,<0.12"]

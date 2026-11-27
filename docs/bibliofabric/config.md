@@ -22,11 +22,12 @@ Each client library exposes one `get_settings()` function decorated with
 
 | Field | Default | Meaning |
 |---|---|---|
-| `timeout` | 30.0 | Request timeout in seconds |
-| `max_retries` | 3 | Retries per request |
-| `max_retry_wait` | 60.0 | Upper bound on a single retry wait |
-| `max_requests_per_second` | None | Client-side rate limit; None disables it |
-| `max_concurrency` | 10 | Concurrent requests bound |
+| `timeout` | 30.0 | Request timeout in seconds (`> 0`) |
+| `max_retries` | 3 | Retries per request (`>= 0`) |
+| `max_retry_wait` | 60.0 | Upper bound on a single retry wait (`>= 0`) |
+| `max_requests_per_second` | None | Default-class client-side rate limit (`> 0`); `None` disables it |
+| `max_concurrency` | 10 | Shared concurrent requests bound (`> 0`) |
+| `rate_limits` | `{}` | Optional per-class rates (`dict[str, float | None]`) used with `BaseApiClient.rate_class()` |
 | `user_agent` | None | Overrides the default User-Agent |
 | `mailto` | None | Contact address, added to the User-Agent |
 

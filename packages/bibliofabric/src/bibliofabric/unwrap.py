@@ -30,3 +30,6 @@ class ResponseUnwrapper(Protocol):
     def meta(self, body: Any) -> dict[str, Any]:
         """Return the envelope minus the results (facets, group-by, headers)."""
         ...
+
+
+__all__ = ["ResponseUnwrapper"]

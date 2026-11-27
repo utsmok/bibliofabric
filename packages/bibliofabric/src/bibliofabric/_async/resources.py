@@ -10,9 +10,10 @@ from collections.abc import AsyncIterator, Callable, Mapping, Sequence
 from typing import Any, ClassVar, Literal
 from urllib.parse import quote
 
+import httpx
 from pydantic import BaseModel, ValidationError as PydanticValidationError
 
-from ..exceptions import ConfigurationError, ValidationError
+from ..exceptions import ConfigurationError, NotFoundError, validate_model
 from ..paging import Page, QueryDialect
 from ._concurrency import maybe_await, run_bounded
 from .client import BaseApiClient
@@ -20,6 +21,14 @@ from .client import BaseApiClient
 logger = logging.getLogger(__name__)
 
 OnError = Literal["raise", "skip"]
+_VALID_ON_ERROR = frozenset({"raise", "skip"})
+
+
+def _check_on_error(on_error: OnError) -> None:
+    if on_error not in _VALID_ON_ERROR:
+        raise ConfigurationError(
+            f"on_error must be 'raise' or 'skip', got {on_error!r}."
+        )
 
 
 async def _fire_on_page(
@@ -27,7 +36,7 @@ async def _fire_on_page(
     page_number: int,
     next_cursor: str | None,
 ) -> None:
-    """Invoke an ``on_page`` callback, awaiting its result if it is awaitable."""
+    """Invoke an ``on_page`` callback, awaiting its result when awaitable."""
     if on_page is None:
         return
     await maybe_await(on_page(page_number, next_cursor))
@@ -66,19 +75,25 @@ class ResourceClient[E: BaseModel]:
         """Convert filter criteria into query parameters.
 
         The default dumps pydantic models (excluding ``None`` fields, using
-        aliases) and stringifies values. Override for APIs that encode filters
-        as a single structured parameter.
+        aliases), skips ``None`` entries in plain mappings, formats booleans as
+        lowercase ``"true"``/``"false"``, and stringifies other values. Override
+        for APIs that encode filters as a single structured parameter.
         """
         if filters is None:
             return {}
         if isinstance(filters, BaseModel):
             dumped = filters.model_dump(exclude_none=True, by_alias=True)
         else:
-            dumped = dict(filters)
-        return {
-            str(key): value if isinstance(value, str) else str(value)
-            for key, value in dumped.items()
-        }
+            dumped = {key: value for key, value in filters.items() if value is not None}
+        params: dict[str, str] = {}
+        for key, value in dumped.items():
+            if isinstance(value, bool):
+                params[str(key)] = "true" if value else "false"
+            elif isinstance(value, str):
+                params[str(key)] = value
+            else:
+                params[str(key)] = str(value)
+        return params
 
     def format_sort(self, sort: str | Sequence[str]) -> dict[str, str]:
         """Convert a sort request into query parameters.
@@ -118,18 +133,46 @@ class ResourceClient[E: BaseModel]:
         values = value if isinstance(value, list) else [value]
         return [self.normalize_id(str(item)) for item in values if item is not None]
 
-    def item_path(self, id: str) -> str:
+    def item_path(self, id: str | int) -> str:
         """Return the single-entity path for ``id``, URL-encoding it."""
-        return f"{self.path}/{quote(self.normalize_id(id), safe='')}"
+        normalized = self.normalize_id(str(id))
+        if not normalized:
+            raise ConfigurationError(
+                f"{type(self).__name__}.item_path requires a non-empty id."
+            )
+        return f"{self.path.rstrip('/')}/{quote(normalized, safe='')}"
 
     # --- operations ----------------------------------------------------
 
-    async def get(self, id: str) -> E:
+    async def get(
+        self,
+        id: str | int,
+        *,
+        select: Sequence[str] | None = None,
+        params: Mapping[str, Any] | None = None,
+    ) -> E:
         """Fetch one entity by id; 404 raises :class:`NotFoundError`."""
-        response = await self._client.request("GET", self.item_path(id))
-        body = response.json()
+        query_params: dict[str, Any] = {}
+        if select and self.dialect.select_param is not None:
+            query_params[self.dialect.select_param] = ",".join(select)
+        if params is not None:
+            query_params.update(params)
+        response = await self._client.request(
+            "GET",
+            self.item_path(id),
+            params=query_params or None,
+        )
+        body = self._client.parse_json(response)
         data = self._client.unwrapper.item(body)
         return self._validate(data, request=response.request, response=response)
+
+    async def exists(self, id: str | int) -> bool:
+        """Return ``True`` when ``id`` exists (HTTP HEAD); 404 returns ``False``."""
+        try:
+            await self._client.request("HEAD", self.item_path(id))
+        except NotFoundError:
+            return False
+        return True
 
     async def search(
         self,
@@ -141,13 +184,18 @@ class ResourceClient[E: BaseModel]:
         page: int | None = None,
         page_size: int | None = None,
         cursor: str | None = None,
+        on_error: OnError = "raise",
+        failures: list[tuple[dict[str, Any], Exception]] | None = None,
         params: Mapping[str, Any] | None = None,
     ) -> Page[E]:
         """Fetch one page of results as a typed :class:`Page`.
 
         ``params`` is the escape hatch for API extras (facets, ``sample``,
         ``seed``); typed wrappers for them belong on client subclasses.
+        Records that fail validation raise :class:`ValidationError` by default,
+        or are skipped and recorded in ``failures`` with ``on_error="skip"``.
         """
+        _check_on_error(on_error)
         query_params = self._search_params(
             filters=filters,
             query=query,
@@ -159,17 +207,34 @@ class ResourceClient[E: BaseModel]:
             params=params,
         )
         response = await self._client.request("GET", self.path, params=query_params)
-        body = response.json()
+        body = self._client.parse_json(response)
         unwrapper = self._client.unwrapper
-        results = [
-            self._validate(record, request=response.request, response=response)
-            for record in unwrapper.results(body)
-        ]
+        results: list[E] = []
+        for record in unwrapper.results(body):
+            entity = self._parse_or_handle(
+                record,
+                on_error=on_error,
+                failures=failures,
+                request=response.request,
+                response=response,
+            )
+            if entity is not None:
+                results.append(entity)
+        effective_page = page
+        if (
+            effective_page is None
+            and cursor is None
+            and (
+                self.dialect.offset_param is not None
+                or self.dialect.page_param is not None
+            )
+        ):
+            effective_page = self.dialect.page_start
         return Page(
             results=results,
             total=unwrapper.total(body),
             next_cursor=unwrapper.next_cursor(body),
-            page=page,
+            page=effective_page,
             meta=unwrapper.meta(body),
         )
 
@@ -198,10 +263,11 @@ class ResourceClient[E: BaseModel]:
         :class:`ValidationError`, or are dropped and recorded in ``failures``
         with ``on_error="skip"``.
         """
-        cursor_param = self.dialect.cursor_param
-        if cursor_param is not None:
+        _check_on_error(on_error)
+        if limit is not None and limit < 0:
+            raise ConfigurationError(f"limit must be non-negative, got {limit}.")
+        if self.dialect.cursor_param is not None:
             return self._iterate_cursor(
-                cursor_param,
                 filters=filters,
                 query=query,
                 sort=sort,
@@ -264,10 +330,29 @@ class ResourceClient[E: BaseModel]:
     async def first(
         self,
         filters: BaseModel | Mapping[str, Any] | None = None,
-        **kwargs: Any,
+        *,
+        query: str | None = None,
+        sort: str | Sequence[str] | None = None,
+        select: Sequence[str] | None = None,
+        page_size: int | None = 1,
+        cursor: str | None = None,
+        on_error: OnError = "raise",
+        failures: list[tuple[dict[str, Any], Exception]] | None = None,
+        params: Mapping[str, Any] | None = None,
     ) -> E | None:
         """Return the first matching entity, or ``None`` when there is none."""
-        results = await self.collect(filters, limit=1, **kwargs)
+        results = await self.collect(
+            filters,
+            limit=1,
+            query=query,
+            sort=sort,
+            select=select,
+            page_size=page_size,
+            cursor=cursor,
+            on_error=on_error,
+            failures=failures,
+            params=params,
+        )
         return results[0] if results else None
 
     async def count(
@@ -278,55 +363,105 @@ class ResourceClient[E: BaseModel]:
         params: Mapping[str, Any] | None = None,
     ) -> int:
         """Return the total number of matching entities, fetching a minimal page."""
+        dialect = self.dialect
+        cursor = (
+            dialect.cursor_start
+            if dialect.cursor_param is not None
+            and dialect.page_param is None
+            and dialect.offset_param is None
+            else None
+        )
         query_params = self._search_params(
             filters=filters,
             query=query,
-            page_size=1,
-            cursor=self.dialect.cursor_start,
+            page_size=dialect.count_page_size,
+            cursor=cursor,
             params=params,
         )
         response = await self._client.request("GET", self.path, params=query_params)
-        return self._client.unwrapper.total(response.json()) or 0
+        return self._client.unwrapper.total(self._client.parse_json(response)) or 0
 
     async def batch_get(
         self,
         ids: Sequence[str],
         *,
         field: str = "id",
+        select: Sequence[str] | None = None,
         batch_size: int | None = None,
         concurrency: int = 4,
+        on_error: OnError = "raise",
+        failures: list[tuple[dict[str, Any], Exception]] | None = None,
     ) -> dict[str, E]:
         """Fetch entities for many ids in bounded, concurrent chunks.
 
         Ids are normalized with :meth:`normalize_id` and deduplicated, split
-        into chunks of ``batch_size`` (or the class default), fetched
-        concurrently under ``concurrency``, and returned keyed by normalized
-        id. Missing ids are absent from the result. Each entity is keyed by
-        the requested ids found among :meth:`record_keys`.
+        into chunks of ``batch_size`` (capped at ``dialect.max_page_size``),
+        fetched concurrently under ``concurrency``, and returned keyed by
+        normalized id. Missing ids are absent from the result. Each entity is
+        keyed by the requested ids found among :meth:`record_keys`. Records
+        that fail validation raise :class:`ValidationError` by default, or are
+        skipped and recorded in ``failures`` with ``on_error="skip"``.
         """
-        size = self.batch_size if batch_size is None else batch_size
-        if size <= 0:
+        _check_on_error(on_error)
+        if batch_size is None:
+            size = self.batch_size
+            if size <= 0:
+                raise ConfigurationError(
+                    f"{type(self).__name__}.batch_get is disabled (batch_size={size})."
+                )
+        else:
+            if batch_size <= 0:
+                raise ConfigurationError(
+                    f"batch_size must be positive, got {batch_size}."
+                )
+            size = batch_size
+        if concurrency <= 0:
             raise ConfigurationError(
-                f"{type(self).__name__}.batch_get is disabled (batch_size=0)."
+                f"concurrency must be positive, got {concurrency}."
             )
+        effective_size = min(size, self.dialect.max_page_size)
         keys = list(dict.fromkeys(self.normalize_id(value) for value in ids))
-        chunks = [keys[start : start + size] for start in range(0, len(keys), size)]
-        results: dict[str, E] = {}
+        if not keys:
+            return {}
+        chunks = [
+            keys[start : start + effective_size]
+            for start in range(0, len(keys), effective_size)
+        ]
 
-        async def fetch_chunk(chunk: list[str]) -> None:
+        async def fetch_chunk(
+            chunk: list[str],
+        ) -> tuple[dict[str, E], list[tuple[dict[str, Any], Exception]]]:
             query_params = self.build_batch_params(field, chunk)
-            query_params[self.dialect.page_size_param] = min(
-                len(chunk), self.dialect.max_page_size
-            )
+            query_params[self.dialect.page_size_param] = len(chunk)
+            if select and self.dialect.select_param is not None:
+                query_params[self.dialect.select_param] = ",".join(select)
             response = await self._client.request("GET", self.path, params=query_params)
             requested = set(chunk)
-            for record in self._client.unwrapper.results(response.json()):
-                entity = self._validate(record, response=response)
+            chunk_results: dict[str, E] = {}
+            chunk_failures: list[tuple[dict[str, Any], Exception]] = []
+            for record in self._client.unwrapper.results(
+                self._client.parse_json(response)
+            ):
+                entity = self._parse_or_handle(
+                    record,
+                    on_error=on_error,
+                    failures=chunk_failures if failures is not None else None,
+                    request=response.request,
+                    response=response,
+                )
+                if entity is None:
+                    continue
                 for key in self.record_keys(entity, field):
                     if key in requested:
-                        results[key] = entity
+                        chunk_results[key] = entity
+            return chunk_results, chunk_failures
 
-        await run_bounded(fetch_chunk, chunks, concurrency)
+        chunk_outputs = await run_bounded(fetch_chunk, chunks, concurrency)
+        results: dict[str, E] = {}
+        for chunk_results, chunk_failures in chunk_outputs:
+            results.update(chunk_results)
+            if failures is not None:
+                failures.extend(chunk_failures)
         return results
 
     # --- internals -----------------------------------------------------
@@ -381,20 +516,10 @@ class ResourceClient[E: BaseModel]:
         self,
         data: dict[str, Any],
         *,
-        request: Any = None,
-        response: Any = None,
+        request: httpx.Request | None = None,
+        response: httpx.Response | None = None,
     ) -> E:
-        try:
-            return self.model.model_validate(data)
-        except PydanticValidationError as error:
-            raise ValidationError(
-                f"Failed to validate {self.model.__name__}: {error}",
-                raw=data,
-                error=error,
-                model_name=self.model.__name__,
-                request=request,
-                response=response,
-            ) from error
+        return validate_model(self.model, data, request=request, response=response)
 
     def _parse_or_handle(
         self,
@@ -402,6 +527,8 @@ class ResourceClient[E: BaseModel]:
         *,
         on_error: OnError,
         failures: list[tuple[dict[str, Any], Exception]] | None,
+        request: httpx.Request | None = None,
+        response: httpx.Response | None = None,
     ) -> E | None:
         """Validate a record; on failure raise, or skip and record it."""
         try:
@@ -416,16 +543,12 @@ class ResourceClient[E: BaseModel]:
                     error,
                 )
                 return None
-            raise ValidationError(
-                f"Failed to validate {self.model.__name__}: {error}",
-                raw=record,
-                error=error,
-                model_name=self.model.__name__,
-            ) from error
+            return validate_model(
+                self.model, record, request=request, response=response
+            )
 
     async def _iterate_cursor(
         self,
-        cursor_param: str,
         *,
         filters: BaseModel | Mapping[str, Any] | None,
         query: str | None,
@@ -439,6 +562,8 @@ class ResourceClient[E: BaseModel]:
         on_page: Callable[[int, str | None], Any] | None,
         params: Mapping[str, Any] | None,
     ) -> AsyncIterator[E]:
+        if limit == 0:
+            return
         dialect = self.dialect
         if page_size is None:
             page_size = dialect.iterate_page_size
@@ -457,7 +582,7 @@ class ResourceClient[E: BaseModel]:
                 params=params,
             )
             response = await self._client.request("GET", self.path, params=query_params)
-            body = response.json()
+            body = self._client.parse_json(response)
             unwrapper = self._client.unwrapper
             results = unwrapper.results(body)
             next_cursor = unwrapper.next_cursor(body)
@@ -467,7 +592,11 @@ class ResourceClient[E: BaseModel]:
             stopped = False
             for record in results:
                 entity = self._parse_or_handle(
-                    record, on_error=on_error, failures=failures
+                    record,
+                    on_error=on_error,
+                    failures=failures,
+                    request=response.request,
+                    response=response,
                 )
                 if entity is None:
                     continue
@@ -495,10 +624,13 @@ class ResourceClient[E: BaseModel]:
         on_page: Callable[[int, str | None], Any] | None,
         params: Mapping[str, Any] | None,
     ) -> AsyncIterator[E]:
+        if limit == 0:
+            return
         if page_size is None:
             page_size = self.dialect.iterate_page_size
         page = self.dialect.page_start
         fetched = 0
+        seen = 0
         while True:
             query_params = self._search_params(
                 filters=filters,
@@ -510,21 +642,28 @@ class ResourceClient[E: BaseModel]:
                 params=params,
             )
             response = await self._client.request("GET", self.path, params=query_params)
-            body = response.json()
+            body = self._client.parse_json(response)
             unwrapper = self._client.unwrapper
             results = unwrapper.results(body)
             total = unwrapper.total(body)
+            seen += len(results)
+            stopped = False
             for record in results:
                 entity = self._parse_or_handle(
-                    record, on_error=on_error, failures=failures
+                    record,
+                    on_error=on_error,
+                    failures=failures,
+                    request=response.request,
+                    response=response,
                 )
                 if entity is None:
                     continue
                 yield entity
                 fetched += 1
                 if limit is not None and fetched >= limit:
-                    return
+                    stopped = True
+                    break
             await _fire_on_page(on_page, page, None)
-            if not results or (total is not None and fetched >= total):
+            if stopped or not results or (total is not None and seen >= total):
                 return
             page += 1

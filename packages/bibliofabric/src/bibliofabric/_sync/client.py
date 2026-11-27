@@ -7,6 +7,7 @@ mapping, and credential redaction in debug logs. It never parses models.
 """
 
 import logging
+import math
 from collections.abc import Mapping
 from datetime import UTC, datetime
 from email.utils import parsedate_to_datetime
@@ -44,9 +45,11 @@ def _retry_after_seconds(response: httpx.Response) -> float | None:
         return None
     header = header.strip()
     try:
-        return max(0.0, float(header))
+        seconds = float(header)
     except ValueError:
         pass
+    else:
+        return max(0.0, seconds) if math.isfinite(seconds) else None
     try:
         when = parsedate_to_datetime(header)
     except (TypeError, ValueError):
@@ -72,9 +75,14 @@ def _error_for_status(response: httpx.Response) -> BibliofabricError:
     if status == HTTPStatus.NOT_FOUND:
         return NotFoundError(message, body=body, response=response)
     if status == HTTPStatus.TOO_MANY_REQUESTS:
-        return RateLimitError(message, body=body, response=response)
+        return RateLimitError(
+            message,
+            body=body,
+            retry_after=_retry_after_seconds(response),
+            response=response,
+        )
     if status in (HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN):
-        return AuthError(message, response=response)
+        return AuthError(message, body=body, response=response)
     return APIError(message, body=body, response=response)
 
 
@@ -126,6 +134,11 @@ class SyncBaseApiClient:
         )
 
     @property
+    def base_url(self) -> str:
+        """The normalized base URL this client sends requests to."""
+        return self._base_url
+
+    @property
     def unwrapper(self) -> ResponseUnwrapper:
         """The response unwrapper this client was built with."""
         return self._unwrapper
@@ -171,6 +184,16 @@ class SyncBaseApiClient:
             return response is not None and self.is_retryable(response)
         return False
 
+    def parse_json(self, response: httpx.Response) -> Any:
+        """Decode a JSON response body, raising :class:`APIError` on invalid JSON."""
+        try:
+            return response.json()
+        except ValueError as error:
+            raise APIError(
+                f"API returned invalid JSON (status {response.status_code}): {error}",
+                response=response,
+            ) from error
+
     def _send_once(self, request: httpx.Request) -> httpx.Response:
         """Authenticate, throttle, send once, and map error statuses."""
         self._auth.authenticate(request)
@@ -187,7 +210,8 @@ class SyncBaseApiClient:
             ) from error
         except httpx.RequestError as error:
             raise NetworkError(
-                f"Request failed for {sanitize_url(str(request.url))}: {error}",
+                f"Request failed for {sanitize_url(str(request.url))}: "
+                f"{sanitize_url(str(error))}",
                 request=request,
             ) from error
         finally:
@@ -201,6 +225,32 @@ class SyncBaseApiClient:
             raise _error_for_status(response)
         return response
 
+    def _resolve_url(self, path: str) -> str:
+        """Resolve relative ``path`` against ``self._base_url`` when needed."""
+        if path.startswith(("http://", "https://")):
+            return path
+        if not str(self._http_client.base_url):
+            return f"{self._base_url}/{path.lstrip('/')}"
+        return path
+
+    def _effective_headers(
+        self, headers: Mapping[str, str] | None
+    ) -> dict[str, str] | None:
+        request_headers = dict(headers) if headers is not None else None
+        if not self._should_close_client:
+            has_explicit_ua = request_headers is not None and any(
+                key.lower() == "user-agent" for key in request_headers
+            )
+            client_ua = self._http_client.headers.get("user-agent", "")
+            if not has_explicit_ua and (
+                not client_ua or client_ua.startswith("python-httpx/")
+            ):
+                request_headers = {
+                    "User-Agent": self._settings.effective_user_agent(),
+                    **(request_headers or {}),
+                }
+        return request_headers
+
     def request(
         self,
         method: str,
@@ -208,7 +258,10 @@ class SyncBaseApiClient:
         *,
         params: Mapping[str, Any] | None = None,
         json: Any | None = None,
+        data: Mapping[str, Any] | None = None,
+        content: str | bytes | None = None,
         headers: Mapping[str, str] | None = None,
+        timeout: float | httpx.Timeout | None = None,
     ) -> httpx.Response:
         """Send a request with retries and return the response.
 
@@ -218,7 +271,14 @@ class SyncBaseApiClient:
         timeouts :class:`TimeoutError`.
         """
         request = self._http_client.build_request(
-            method, path, params=params, json=json, headers=headers
+            method,
+            self._resolve_url(path),
+            params=params,
+            json=json,
+            data=data,
+            content=content,
+            headers=self._effective_headers(headers),
+            timeout=httpx.USE_CLIENT_DEFAULT if timeout is None else timeout,
         )
         retrying = Retrying(
             stop=stop_after_attempt(self._settings.max_retries + 1),
@@ -228,16 +288,24 @@ class SyncBaseApiClient:
         )
         return retrying(self._send_once, request)
 
-    def get_json(self, path: str, *, params: Mapping[str, Any] | None = None) -> Any:
+    def get_json(
+        self,
+        path: str,
+        *,
+        params: Mapping[str, Any] | None = None,
+        headers: Mapping[str, str] | None = None,
+    ) -> Any:
         """Send a GET and return the parsed JSON body."""
-        response = self.request("GET", path, params=params)
-        return response.json()
+        response = self.request("GET", path, params=params, headers=headers)
+        return self.parse_json(response)
 
     def close(self) -> None:
         """Close the HTTP client when owned, and the auth strategy's resources."""
-        if self._should_close_client and not self._http_client.is_closed:
-            self._http_client.close()
-        self._auth.close()
+        try:
+            if self._should_close_client and not self._http_client.is_closed:
+                self._http_client.close()
+        finally:
+            self._auth.close()
 
     def __enter__(self) -> Self:
         return self

@@ -9,15 +9,26 @@ with an async client (``async_authenticate``) and a sync client
 
 import asyncio
 import logging
+import math
 import threading
 import time
-from typing import Protocol
+from typing import Any, Protocol
 
 import httpx
 
 from .exceptions import AuthError, ConfigurationError
+from .utils import sanitize_url
 
 logger = logging.getLogger(__name__)
+
+_TOKEN_REFRESH_BUFFER_SECONDS = 30.0
+
+
+def _safe_json_body(response: httpx.Response) -> Any:
+    try:
+        return response.json()
+    except Exception:
+        return None
 
 
 class AuthStrategy(Protocol):
@@ -186,26 +197,55 @@ class ClientCredentialsAuth:
             return True
         if self._token_expires_at is None:
             return False
-        return time.time() >= self._token_expires_at
+        return time.monotonic() >= self._token_expires_at
 
-    def _store_token(self, payload: object) -> str:
+    def _store_token(
+        self, payload: object, *, response: httpx.Response | None = None
+    ) -> str:
         """Validate a token-endpoint payload and cache the new token."""
         if not isinstance(payload, dict):
-            raise AuthError("Token endpoint returned a non-object payload.")
+            raise AuthError(
+                "Token endpoint returned a non-object payload.",
+                body=payload,
+                response=response,
+            )
         access_token = payload.get("access_token")
         if not isinstance(access_token, str) or not access_token:
-            raise AuthError("Token response did not contain an 'access_token'.")
+            raise AuthError(
+                "Token response did not contain an 'access_token'.",
+                body=payload,
+                response=response,
+            )
 
         expires_in = payload.get("expires_in")
-        try:
-            self._token_expires_at = (
-                time.time() + float(expires_in) - 30 if expires_in else None
-            )
-        except (TypeError, ValueError):
+        if expires_in is None:
             self._token_expires_at = None
+        else:
+            try:
+                seconds = float(expires_in)
+            except (TypeError, ValueError):
+                self._token_expires_at = None
+            else:
+                if not math.isfinite(seconds):
+                    self._token_expires_at = None
+                elif seconds <= 0:
+                    self._token_expires_at = time.monotonic()
+                else:
+                    buffer = min(_TOKEN_REFRESH_BUFFER_SECONDS, seconds * 0.5)
+                    self._token_expires_at = time.monotonic() + seconds - buffer
         self._access_token = access_token
         logger.debug("Successfully fetched new access token.")
         return access_token
+
+    def _parse_token_response(self, response: httpx.Response) -> str:
+        try:
+            payload = response.json()
+        except ValueError as error:
+            raise AuthError(
+                f"Token endpoint returned invalid JSON: {error}",
+                response=response,
+            ) from error
+        return self._store_token(payload, response=response)
 
     async def _fetch_access_token(self) -> str:
         if self._async_lock is None:
@@ -214,7 +254,9 @@ class ClientCredentialsAuth:
             if self._access_token is not None and not self._is_token_expired():
                 return self._access_token
 
-            logger.debug("Fetching new access token from %s", self._token_url)
+            logger.debug(
+                "Fetching new access token from %s", sanitize_url(self._token_url)
+            )
             try:
                 response = await self._get_async_client().post(
                     self._token_url,
@@ -224,16 +266,32 @@ class ClientCredentialsAuth:
                     data={"grant_type": "client_credentials"},
                 )
                 response.raise_for_status()
+            except httpx.HTTPStatusError as error:
+                raise AuthError(
+                    f"Failed to fetch access token: {sanitize_url(str(error))}",
+                    body=_safe_json_body(error.response),
+                    request=error.request,
+                    response=error.response,
+                ) from error
+            except httpx.HTTPError as error:
+                raise AuthError(
+                    f"Failed to fetch access token: {sanitize_url(str(error))}",
+                    request=getattr(error, "request", None),
+                ) from error
             except Exception as error:
-                raise AuthError(f"Failed to fetch access token: {error}") from error
-            return self._store_token(response.json())
+                raise AuthError(
+                    f"Failed to fetch access token: {sanitize_url(str(error))}"
+                ) from error
+            return self._parse_token_response(response)
 
     def _fetch_access_token_sync(self) -> str:
         with self._sync_lock:
             if self._access_token is not None and not self._is_token_expired():
                 return self._access_token
 
-            logger.debug("Fetching new access token from %s", self._token_url)
+            logger.debug(
+                "Fetching new access token from %s", sanitize_url(self._token_url)
+            )
             try:
                 response = self._get_sync_client().post(
                     self._token_url,
@@ -243,14 +301,29 @@ class ClientCredentialsAuth:
                     data={"grant_type": "client_credentials"},
                 )
                 response.raise_for_status()
+            except httpx.HTTPStatusError as error:
+                raise AuthError(
+                    f"Failed to fetch access token: {sanitize_url(str(error))}",
+                    body=_safe_json_body(error.response),
+                    request=error.request,
+                    response=error.response,
+                ) from error
+            except httpx.HTTPError as error:
+                raise AuthError(
+                    f"Failed to fetch access token: {sanitize_url(str(error))}",
+                    request=getattr(error, "request", None),
+                ) from error
             except Exception as error:
-                raise AuthError(f"Failed to fetch access token: {error}") from error
-            return self._store_token(response.json())
+                raise AuthError(
+                    f"Failed to fetch access token: {sanitize_url(str(error))}"
+                ) from error
+            return self._parse_token_response(response)
 
     async def async_authenticate(self, request: httpx.Request) -> None:
-        if self._access_token is None or self._is_token_expired():
-            await self._fetch_access_token()
-        request.headers["Authorization"] = f"Bearer {self._access_token}"
+        token = self._access_token
+        if token is None or self._is_token_expired():
+            token = await self._fetch_access_token()
+        request.headers["Authorization"] = f"Bearer {token}"
 
     async def async_close(self) -> None:
         if self._async_token_client is not None:
@@ -258,11 +331,22 @@ class ClientCredentialsAuth:
             self._async_token_client = None
 
     def authenticate(self, request: httpx.Request) -> None:
-        if self._access_token is None or self._is_token_expired():
-            self._fetch_access_token_sync()
-        request.headers["Authorization"] = f"Bearer {self._access_token}"
+        token = self._access_token
+        if token is None or self._is_token_expired():
+            token = self._fetch_access_token_sync()
+        request.headers["Authorization"] = f"Bearer {token}"
 
     def close(self) -> None:
         if self._sync_token_client is not None:
             self._sync_token_client.close()
             self._sync_token_client = None
+
+
+__all__ = [
+    "AuthStrategy",
+    "ClientCredentialsAuth",
+    "HeaderAuth",
+    "NoAuth",
+    "QueryParameterAuth",
+    "StaticTokenAuth",
+]

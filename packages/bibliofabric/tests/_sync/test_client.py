@@ -2,9 +2,13 @@
 """Consumer-visible behavior of BaseApiClient: error mapping, retries, JSON."""
 
 import time
+from datetime import UTC, datetime, timedelta
+from email.utils import format_datetime
 
 import httpx
 import pytest
+from bibliofabric import SyncBaseApiClient, validate_model
+from bibliofabric._sync import _concurrency
 from bibliofabric.auth import (
     ClientCredentialsAuth,
     HeaderAuth,
@@ -19,9 +23,21 @@ from bibliofabric.exceptions import (
     NotFoundError,
     RateLimitError,
     TimeoutError,
+    ValidationError,
 )
 
-from .conftest import BASE_URL, SyncFakeSettings, SyncWidget, SyncWidgets
+from .conftest import (
+    BASE_URL,
+    SyncFakeSettings,
+    SyncFakeUnwrapper,
+    SyncWidget,
+    SyncWidgets,
+)
+
+
+class _Veto429Client(SyncBaseApiClient):
+    def is_retryable(self, response: httpx.Response) -> bool:
+        return response.status_code != 429 and super().is_retryable(response)
 
 
 def test_error_status_mapping(httpx_mock, make_client):
@@ -35,20 +51,54 @@ def test_error_status_mapping(httpx_mock, make_client):
     for path, status, _ in cases:
         httpx_mock.add_response(url=f"{BASE_URL}{path}", status_code=status, json={})
     client = make_client(settings=SyncFakeSettings(max_retries=0))
-    for path, _, exception in cases:
-        with pytest.raises(exception):
+    for path, status, exception in cases:
+        with pytest.raises(exception) as excinfo:
             client.request("GET", path.lstrip("/"))
+        assert excinfo.value.status_code == status
+        assert excinfo.value.request is not None
+        assert excinfo.value.response is not None
 
 
-def test_error_body_exposed_on_vetoed_429(httpx_mock, make_client):
+def test_error_body_exposed_and_formatted_on_vetoed_429(httpx_mock):
     httpx_mock.add_response(
-        url=f"{BASE_URL}/budget", status_code=429, json={"reason": "daily_budget"}
+        url=f"{BASE_URL}/budget",
+        status_code=429,
+        headers={"Retry-After": "12"},
+        json={"reason": "daily_budget", "message": "Daily budget exhausted"},
     )
-    client = make_client(settings=SyncFakeSettings(max_retries=3))
-    client.is_retryable = lambda response: response.status_code != 429  # type: ignore[method-assign]
-    with pytest.raises(RateLimitError) as excinfo:
-        client.request("GET", "budget")
-    assert excinfo.value.body == {"reason": "daily_budget"}
+    client = _Veto429Client(
+        base_url=BASE_URL,
+        settings=SyncFakeSettings(max_retries=3),
+        unwrapper=SyncFakeUnwrapper(),
+    )
+    try:
+        with pytest.raises(RateLimitError) as excinfo:
+            client.request("GET", "budget")
+    finally:
+        client.close()
+    assert excinfo.value.body == {
+        "reason": "daily_budget",
+        "message": "Daily budget exhausted",
+    }
+    assert excinfo.value.retry_after == 12.0
+    assert "reason=daily_budget" in str(excinfo.value)
+    assert "Daily budget exhausted" in str(excinfo.value)
+
+
+def test_auth_error_exposes_json_body(httpx_mock, make_client):
+    httpx_mock.add_response(
+        url=f"{BASE_URL}/secret",
+        status_code=401,
+        json={"error": "invalid_api_key", "message": "API key rejected"},
+    )
+    client = make_client(settings=SyncFakeSettings(max_retries=0))
+    with pytest.raises(AuthError) as excinfo:
+        client.request("GET", "secret")
+    assert excinfo.value.body == {
+        "error": "invalid_api_key",
+        "message": "API key rejected",
+    }
+    assert "invalid_api_key" in str(excinfo.value)
 
 
 def test_error_body_none_for_plain_text(httpx_mock, make_client):
@@ -57,6 +107,17 @@ def test_error_body_none_for_plain_text(httpx_mock, make_client):
     with pytest.raises(APIError) as excinfo:
         client.request("GET", "text")
     assert excinfo.value.body is None
+    assert "oops" in str(excinfo.value)
+
+
+def test_error_str_handles_response_without_request():
+    response = httpx.Response(404, text="not here")
+    error = APIError("Missing item", response=response)
+    assert error.request is None
+    assert error.status_code == 404
+    rendered = str(error)
+    assert "status: 404" in rendered
+    assert "not here" in rendered
 
 
 def test_404_from_get(httpx_mock, make_client):
@@ -82,7 +143,7 @@ def test_retry_after_header_honored(httpx_mock, make_client):
     httpx_mock.add_response(
         url=f"{BASE_URL}/works",
         status_code=429,
-        headers={"Retry-After": "1"},
+        headers={"Retry-After": "0.1"},
         json={},
     )
     httpx_mock.add_response(url=f"{BASE_URL}/works", json={"results": [], "total": 0})
@@ -90,7 +151,23 @@ def test_retry_after_header_honored(httpx_mock, make_client):
     started = time.monotonic()
     response = client.request("GET", "works")
     assert response.status_code == 200
-    assert time.monotonic() - started >= 1.0
+    assert time.monotonic() - started >= 0.08
+
+
+def test_retry_after_http_date_capped(httpx_mock, make_client):
+    future = datetime.now(UTC) + timedelta(seconds=60)
+    httpx_mock.add_response(
+        url=f"{BASE_URL}/dated",
+        status_code=503,
+        headers={"Retry-After": format_datetime(future, usegmt=True)},
+        json={},
+    )
+    httpx_mock.add_response(url=f"{BASE_URL}/dated", json={"ok": True})
+    client = make_client(settings=SyncFakeSettings(max_retries=1, max_retry_wait=0.05))
+    started = time.monotonic()
+    response = client.request("GET", "dated")
+    assert response.status_code == 200
+    assert time.monotonic() - started < 1.0
 
 
 def test_retry_gives_up_after_max_retries(httpx_mock, make_client):
@@ -109,34 +186,94 @@ def test_retry_gives_up_after_max_retries(httpx_mock, make_client):
     assert len(httpx_mock.get_requests()) == 3
 
 
-def test_429_not_retried_when_vetoed(httpx_mock, make_client):
+def test_429_not_retried_when_vetoed(httpx_mock):
     httpx_mock.add_response(
         url=f"{BASE_URL}/works", status_code=429, json={"reason": "daily_budget"}
     )
 
-    client = make_client(settings=SyncFakeSettings(max_retries=3))
-    client.is_retryable = lambda response: response.status_code != 429  # type: ignore[method-assign]
-    with pytest.raises(RateLimitError) as excinfo:
-        client.request("GET", "works")
+    client = _Veto429Client(
+        base_url=BASE_URL,
+        settings=SyncFakeSettings(max_retries=3),
+        unwrapper=SyncFakeUnwrapper(),
+    )
+    try:
+        with pytest.raises(RateLimitError) as excinfo:
+            client.request("GET", "works")
+    finally:
+        client.close()
     assert excinfo.value.body == {"reason": "daily_budget"}
     assert len(httpx_mock.get_requests()) == 1
 
 
-def test_network_and_timeout_errors(httpx_mock, make_client):
-    httpx_mock.add_exception(httpx.ConnectError("boom"), url=f"{BASE_URL}/down")
+def test_network_and_timeout_errors_and_redaction(httpx_mock, make_client):
+    httpx_mock.add_exception(
+        httpx.ConnectError("boom https://fake.test/api/down?api_key=supersecret"),
+        url=f"{BASE_URL}/down?api_key=supersecret",
+    )
     httpx_mock.add_exception(httpx.ReadTimeout("t"), url=f"{BASE_URL}/slow")
     client = make_client(settings=SyncFakeSettings(max_retries=0))
-    with pytest.raises(NetworkError):
-        client.request("GET", "down")
+    with pytest.raises(NetworkError) as net_exc:
+        client.request("GET", "down", params={"api_key": "supersecret"})
+    assert "supersecret" not in net_exc.value.message
+    assert "supersecret" not in str(net_exc.value)
     with pytest.raises(TimeoutError) as excinfo:
         client.request("GET", "slow")
     assert isinstance(excinfo.value, TimeoutError)
 
 
-def test_get_json(httpx_mock, make_client):
+def test_get_json_and_invalid_json_raises_api_error(httpx_mock, make_client):
     httpx_mock.add_response(url=f"{BASE_URL}/works", json={"results": [1]})
+    httpx_mock.add_response(url=f"{BASE_URL}/html", text="<html>maintenance</html>")
     client = make_client()
-    assert client.get_json("works") == {"results": [1]}
+    assert client.get_json("works", headers={"X-Custom": "1"}) == {"results": [1]}
+    assert httpx_mock.get_requests()[0].headers["X-Custom"] == "1"
+    with pytest.raises(APIError) as excinfo:
+        client.get_json("html")
+    assert excinfo.value.status_code == 200
+    assert "invalid JSON" in str(excinfo.value)
+
+
+def test_injected_http_client_without_base_url_and_lifecycle(httpx_mock):
+    httpx_mock.add_response(url=f"{BASE_URL}/ping", json={"ok": True})
+    shared = httpx.Client()
+    client = SyncBaseApiClient(
+        base_url=BASE_URL,
+        settings=SyncFakeSettings(user_agent="custom-agent/2.0"),
+        unwrapper=SyncFakeUnwrapper(),
+        http_client=shared,
+    )
+    assert client.base_url == BASE_URL
+    with client:
+        assert client.get_json("ping") == {"ok": True}
+    sent = httpx_mock.get_requests()[0]
+    assert str(sent.url) == f"{BASE_URL}/ping"
+    assert sent.headers["User-Agent"] == "custom-agent/2.0"
+    # Caller-owned client must remain open after aclose().
+    assert not shared.is_closed
+    shared.close()
+
+
+def test_owned_http_client_closed_by_context_manager(httpx_mock):
+    httpx_mock.add_response(url=f"{BASE_URL}/ping", json={"ok": True})
+    with SyncBaseApiClient(
+        base_url=BASE_URL,
+        settings=SyncFakeSettings(),
+        unwrapper=SyncFakeUnwrapper(),
+    ) as client:
+        client.get_json("ping")
+        internal = client._http_client
+    assert internal.is_closed
+
+
+def test_request_supports_data_content_and_timeout(httpx_mock, make_client):
+    httpx_mock.add_response(url=f"{BASE_URL}/form", method="POST", json={"ok": True})
+    httpx_mock.add_response(url=f"{BASE_URL}/raw", method="POST", json={"ok": True})
+    client = make_client()
+    client.request("POST", "form", data={"a": "1"}, timeout=5.0)
+    client.request("POST", "raw", content=b"bytes", timeout=httpx.Timeout(5.0))
+    requests = httpx_mock.get_requests()
+    assert requests[0].content == b"a=1"
+    assert requests[1].content == b"bytes"
 
 
 def test_client_credentials_token_fetch_and_refresh(httpx_mock, make_client):
@@ -161,7 +298,7 @@ def test_client_credentials_token_fetch_and_refresh(httpx_mock, make_client):
     # Force expiry: the next request must fetch a fresh token.
     auth = client._auth
     assert isinstance(auth, ClientCredentialsAuth)
-    auth._token_expires_at = time.time() - 1
+    auth._token_expires_at = time.monotonic() - 1
     httpx_mock.add_response(
         url="https://auth.test/token", json={"access_token": "tok2", "expires_in": 3600}
     )
@@ -173,6 +310,72 @@ def test_client_credentials_token_fetch_and_refresh(httpx_mock, make_client):
     assert len(token_requests) == 2
     sent = [r for r in httpx_mock.get_requests() if str(r.url).startswith(BASE_URL)]
     assert sent[-1].headers["Authorization"] == "Bearer tok2"
+    client.close()
+
+
+def test_client_credentials_error_and_expiry_edge_cases(httpx_mock, make_client):
+    # Non-JSON 200 raises AuthError (not JSONDecodeError).
+    httpx_mock.add_response(url="https://auth.test/bad-json", text="<html>err</html>")
+    bad_json_client = make_client(
+        auth=ClientCredentialsAuth("id", "secret", "https://auth.test/bad-json")
+    )
+    with pytest.raises(AuthError):
+        bad_json_client.request("GET", "works")
+    bad_json_client.close()
+
+    # HTTP 401 from token endpoint attaches response & body to AuthError.
+    httpx_mock.add_response(
+        url="https://auth.test/denied",
+        status_code=401,
+        json={"error": "invalid_client"},
+    )
+    denied_client = make_client(
+        auth=ClientCredentialsAuth("id", "secret", "https://auth.test/denied")
+    )
+    with pytest.raises(AuthError) as excinfo:
+        denied_client.request("GET", "works")
+    assert excinfo.value.status_code == 401
+    assert excinfo.value.body == {"error": "invalid_client"}
+    denied_client.close()
+
+    # expires_in=0 means expired immediately; short expires_in=10 caches with clamped buffer.
+    httpx_mock.add_response(
+        url="https://auth.test/short", json={"access_token": "t0", "expires_in": 0}
+    )
+    httpx_mock.add_response(
+        url="https://auth.test/short", json={"access_token": "t1", "expires_in": 10}
+    )
+    httpx_mock.add_response(url=f"{BASE_URL}/w", json={}, is_reusable=True)
+    short_client = make_client(
+        auth=ClientCredentialsAuth("id", "secret", "https://auth.test/short")
+    )
+    short_client.request("GET", "w")
+    short_client.request("GET", "w")
+    short_client.request("GET", "w")
+    token_posts = [
+        r for r in httpx_mock.get_requests() if str(r.url) == "https://auth.test/short"
+    ]
+    assert len(token_posts) == 2
+    short_client.close()
+
+
+def test_client_credentials_concurrent_refresh_runs_once(httpx_mock, make_client):
+    httpx_mock.add_response(
+        url="https://auth.test/once",
+        json={"access_token": "shared", "expires_in": 3600},
+    )
+    httpx_mock.add_response(url=f"{BASE_URL}/w", json={}, is_reusable=True)
+    client = make_client(
+        auth=ClientCredentialsAuth("id", "secret", "https://auth.test/once")
+    )
+    _concurrency.run_bounded(
+        lambda _: client.request("GET", "w"), [1, 2, 3, 4], concurrency=4
+    )
+    token_posts = [
+        r for r in httpx_mock.get_requests() if str(r.url) == "https://auth.test/once"
+    ]
+    assert len(token_posts) == 1
+    client.close()
 
 
 def test_client_credentials_requires_configuration():
@@ -181,7 +384,6 @@ def test_client_credentials_requires_configuration():
 
 
 def test_query_parameter_auth(httpx_mock, make_client):
-
     httpx_mock.add_response(
         url=f"{BASE_URL}/works?api_key=secret", json={"results": []}
     )
@@ -190,7 +392,6 @@ def test_query_parameter_auth(httpx_mock, make_client):
 
 
 def test_header_auth(httpx_mock, make_client):
-
     httpx_mock.add_response(url=f"{BASE_URL}/works", json={"results": []})
     client = make_client(auth=HeaderAuth("Crossref-Plus-API-Token", "tok"))
     client.request("GET", "works")
@@ -205,3 +406,12 @@ def test_static_token_auth_bearer():
     assert request.headers["Authorization"] == "Bearer tok"
     with pytest.raises(ConfigurationError):
         StaticTokenAuth("")
+
+
+def test_validate_model_helper():
+    widget = validate_model(SyncWidget, {"id": "w1", "title": "Ok"})
+    assert widget.id == "w1"
+    with pytest.raises(ValidationError) as excinfo:
+        validate_model(SyncWidget, {"title": 123})
+    assert excinfo.value.raw == {"title": 123}
+    assert excinfo.value.model_name == "SyncWidget"

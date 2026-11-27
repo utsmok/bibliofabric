@@ -3,7 +3,9 @@
 import asyncio
 import threading
 
+import pytest
 from bibliofabric import BaseApiSettings, SyncBaseApiClient
+from bibliofabric._sync import _concurrency
 
 
 class _Unwrapper:
@@ -72,3 +74,11 @@ def test_sync_client_from_threads(httpx_mock):
 
     assert errors == []
     assert results == [{"ok": True}] * 4
+
+
+def test_sync_maybe_await_rejects_coroutine():
+    async def async_cb() -> None:
+        return None
+
+    with pytest.raises(TypeError, match="synchronous function"):
+        _concurrency.maybe_await(async_cb())

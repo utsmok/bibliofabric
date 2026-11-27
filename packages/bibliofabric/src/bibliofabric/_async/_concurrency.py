@@ -29,42 +29,53 @@ class Limiter:
     """Per-class minimum-interval gates under one shared concurrency bound.
 
     ``rate_limits`` maps a class name to its allowed requests per second;
-    ``None`` or a non-positive rate disables spacing for that class.
-    :meth:`acquire` claims a concurrency slot, then claims the class's next
-    slot on a shared monotonic timeline. The gate lock is only held to book
-    the slot, so callers of one class never block callers of another.
+    ``None`` or a non-positive rate disables spacing for that class. Undeclared
+    rate classes fall back to ``"default"``. :meth:`acquire` reserves the
+    class's next slot on a shared monotonic timeline, sleeps outside the lock
+    before taking a concurrency slot (so waiting callers of one class never
+    starve another class's concurrency slots), and then claims a concurrency
+    slot.
     """
 
     def __init__(
         self, rate_limits: Mapping[str, float | None], max_concurrency: int
     ) -> None:
-        self._min_intervals = {
-            name: 1.0 / rate
+        if max_concurrency <= 0:
+            raise ValueError(
+                f"max_concurrency must be positive, got {max_concurrency}."
+            )
+        self._intervals: dict[str, float | None] = {
+            name: (1.0 / rate if rate is not None and rate > 0 else None)
             for name, rate in rate_limits.items()
-            if rate is not None and rate > 0
         }
         self._slots = asyncio.Semaphore(max_concurrency)
-        self._gates: dict[str, asyncio.Lock] = {}
+        self._gates: dict[str, asyncio.Lock] = {
+            name: asyncio.Lock()
+            for name, interval in self._intervals.items()
+            if interval is not None
+        }
         self._next_slot: dict[str, float] = {}
 
     async def acquire(self, rate_class: str = "default") -> None:
-        """Take one concurrency slot and wait for the class's next slot."""
-        await self._slots.acquire()
-        interval = self._min_intervals.get(rate_class)
-        if interval is None:
-            return
-        try:
-            while True:
-                gate = self._gates.setdefault(rate_class, asyncio.Lock())
-                async with gate:
-                    wait = self._next_slot.get(rate_class, 0.0) - _now()
-                    if wait <= 0:
-                        self._next_slot[rate_class] = _now() + interval
-                        return
+        """Wait for the class's next pacing slot, then claim a concurrency slot."""
+        if rate_class in self._intervals:
+            effective_class = rate_class
+            interval = self._intervals[rate_class]
+        else:
+            effective_class = "default"
+            interval = self._intervals.get("default")
+
+        if interval is not None:
+            gate = self._gates[effective_class]
+            async with gate:
+                now = _now()
+                slot = max(now, self._next_slot.get(effective_class, float("-inf")))
+                self._next_slot[effective_class] = slot + interval
+            wait = slot - now
+            if wait > 0:
                 await sleep(wait)
-        except BaseException:
-            self._slots.release()
-            raise
+
+        await self._slots.acquire()
 
     def release(self) -> None:
         """Give back the concurrency slot taken by :meth:`acquire`."""
@@ -78,19 +89,32 @@ async def maybe_await(value: Any) -> Any:
     return value
 
 
-async def run_bounded[T](
-    fn: Callable[[T], Awaitable[Any]],
+async def run_bounded[T, R](
+    fn: Callable[[T], Awaitable[R]],
     items: Sequence[T],
     concurrency: int,
-) -> list[Any]:
+) -> list[R]:
     """Run ``fn`` over ``items`` with at most ``concurrency`` tasks in flight.
 
-    Results keep the input order; the first failure re-raises.
+    Results keep the input order; the first failure cancels remaining sibling
+    tasks and re-raises.
     """
+    if concurrency <= 0:
+        raise ValueError(f"concurrency must be positive, got {concurrency}.")
+    if not items:
+        return []
     semaphore = asyncio.Semaphore(concurrency)
 
-    async def run(item: T) -> Any:
+    async def run(item: T) -> R:
         async with semaphore:
             return await fn(item)
 
-    return list(await asyncio.gather(*(run(item) for item in items)))
+    tasks = [asyncio.create_task(run(item)) for item in items]
+    try:
+        return list(await asyncio.gather(*tasks))
+    except BaseException:
+        for task in tasks:
+            if not task.done():
+                task.cancel()
+        await asyncio.gather(*tasks, return_exceptions=True)
+        raise

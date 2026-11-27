@@ -1,14 +1,16 @@
 # Authentication
 
-Auth strategies implement the `AuthStrategy` protocol: `async_authenticate()`
-mutates the outgoing `httpx.Request`, `async_close()` releases resources.
+Auth strategies implement the `AuthStrategy` protocol:
+`async_authenticate()` / `authenticate()` mutate the outgoing `httpx.Request`,
+and `async_close()` / `close()` release resources idempotently so a single
+strategy instance works with both async and sync clients.
 
 | Strategy | Use case |
 |---|---|
 | `NoAuth` | Public APIs (default) |
 | `StaticTokenAuth(token)` | Pre-issued bearer token |
 | `QueryParameterAuth(key_name, key_value)` | APIs authenticated by query parameter (OpenAlex `api_key`) |
-| `HeaderAuth(name, value)` | Static credential headers (Crossref Plus `Crossref-Plus-API-Token`) |
+| `HeaderAuth(name, value)` | Static credential headers (Crossref Metadata Plus `crossref-api-key`) |
 | `ClientCredentialsAuth(client_id, client_secret, token_url)` | OAuth2 client-credentials flow |
 
 `ClientCredentialsAuth` fetches a bearer token, reuses it until shortly before

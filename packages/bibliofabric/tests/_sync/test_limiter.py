@@ -52,13 +52,43 @@ def test_default_class_uses_max_requests_per_second(monkeypatch):
         clock[0] += seconds
 
     monkeypatch.setattr(_concurrency, "sleep", fake_sleep)
-    limiter = _concurrency.Limiter({"default": 2.0}, max_concurrency=5)
+    limiter = _concurrency.Limiter(
+        {"default": 2.0, "unlimited": None}, max_concurrency=5
+    )
 
     limiter.acquire()
     limiter.release()
     limiter.acquire()
     limiter.release()
-    assert sleeps == [0.5]
+    # Undeclared class falls back to "default".
+    limiter.acquire("unknown")
+    limiter.release()
+    # Explicit None disables spacing for that class.
+    limiter.acquire("unlimited")
+    limiter.release()
+    limiter.acquire("unlimited")
+    limiter.release()
+    assert sleeps == [pytest.approx(0.5), pytest.approx(0.5)]
+
+
+def test_waiting_class_does_not_starve_other_class_concurrency():
+    # Two slow "list" callers sleep on their pacing gate; a concurrent "single"
+    # caller must still obtain the lone concurrency slot without waiting for
+    # the sleeping "list" callers.
+    limiter = _concurrency.Limiter({"list": 2.0, "single": 100.0}, max_concurrency=1)
+    order: list[str] = []
+
+    def call(label: str) -> None:
+        rate_class = "list" if label.startswith("list") else "single"
+        limiter.acquire(rate_class)
+        try:
+            order.append(label)
+            _concurrency.sleep(0.02)
+        finally:
+            limiter.release()
+
+    _concurrency.run_bounded(call, ["list-1", "list-2", "single-1"], 3)
+    assert order.index("single-1") < order.index("list-2")
 
 
 def test_shared_concurrency_across_classes():
@@ -86,9 +116,14 @@ def test_run_bounded_preserves_order_and_raises_first_error():
             raise ValueError("boom")
         return item * 10
 
+    assert _concurrency.run_bounded(work, [], 2) == []
     assert _concurrency.run_bounded(work, [1, 2, 4], 2) == [10, 20, 40]
     with pytest.raises(ValueError, match="boom"):
         _concurrency.run_bounded(work, [1, 3, 4], 2)
+    with pytest.raises(ValueError, match="positive"):
+        _concurrency.run_bounded(work, [1], 0)
+    with pytest.raises(ValueError, match="positive"):
+        _concurrency.Limiter({}, max_concurrency=0)
 
 
 def test_limiter_release_on_send_failure(httpx_mock, make_client):

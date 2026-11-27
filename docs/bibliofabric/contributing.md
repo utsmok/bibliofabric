@@ -2,12 +2,12 @@
 
 ## Set up your environment
 
-This project uses `uv`:
+This project uses `uv` from the monorepo root:
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/bibliofabric.git
 cd bibliofabric
-uv sync --all-groups
+uv sync --all-packages --all-groups
 ```
 
 ## Gates
@@ -15,14 +15,18 @@ uv sync --all-groups
 Every change must pass the same gates CI runs:
 
 ```bash
-uv run ruff check            # lint src and tests
-uv run ruff format --check   # formatting
-uv run ty check src          # types, zero diagnostics
-uv run pytest                # tests
+uv run python scripts/unasync.py --check   # sync twins up to date, no orphans
+uv run ruff check                          # lint src and tests
+uv run ruff format --check                 # formatting
+uv run ty check packages/*/src             # types, zero diagnostics
+uv run pytest                              # tests
+uv run mkdocs build --strict               # docs
 ```
 
-`uv run ruff format` to format; `uv run ruff check --fix` for lint fixes. The
-`dev` group pins `ty` exactly so local and CI runs agree.
+`uv run python scripts/unasync.py` regenerates `_sync/` twins after editing
+`_async/` modules; `uv run ruff format` formats; `uv run ruff check --fix`
+applies lint fixes. The `dev` group pins `ty` exactly so local and CI runs
+agree.
 
 ## Conventions
 

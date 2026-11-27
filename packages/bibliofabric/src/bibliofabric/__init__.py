@@ -38,6 +38,7 @@ from .exceptions import (
     RateLimitError,
     TimeoutError,
     ValidationError,
+    validate_model,
 )
 from .ids import (
     is_doi,
@@ -86,4 +87,5 @@ __all__ = [
     "normalize_orcid",
     "normalize_ror",
     "strip_url_prefix",
+    "validate_model",
 ]
