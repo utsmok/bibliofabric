@@ -1,5 +1,5 @@
 # Generated docs site
-site/
+/site/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -30,9 +30,6 @@ coverage.xml
 /env/
 /venv/
 secrets.env
-
-# mkdocs documentation
-/site
 
 # mypy / ty caches
 .mypy_cache/

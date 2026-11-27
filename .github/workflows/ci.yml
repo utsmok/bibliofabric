@@ -9,7 +9,7 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
@@ -41,10 +41,13 @@ jobs:
         run: uv run ruff format --check
 
       - name: Type check with ty
-        run: uv run ty check packages/*/src
+        run: uv run ty check packages/*/src scripts/unasync.py
 
       - name: Check generated sync code
         run: uv run python scripts/unasync.py --check
+
+      - name: Build docs (strict)
+        run: uv run mkdocs build --strict
 
   test:
     runs-on: ubuntu-latest
@@ -103,7 +106,7 @@ jobs:
         run: uv sync --locked --all-packages --all-groups
 
       - name: Build & deploy docs
-        run: uv run mkdocs gh-deploy --force
+        run: uv run mkdocs gh-deploy --force --strict
 
   publish:
     runs-on: ubuntu-latest
@@ -120,11 +123,14 @@ jobs:
           tag="${GITHUB_REF_NAME}"
           if [[ "$tag" == *-v* ]]; then
             pkg="${tag%-v*}"
+            version="${tag##*-v}"
           else
             # Plain "v<version>" tags release the core package.
             pkg="bibliofabric"
+            version="${tag#v}"
           fi
           echo "package=$pkg" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
         id: package
 
       - name: Checkout repository
@@ -139,6 +145,29 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
+      - name: Validate package and tag version
+        env:
+          PKG: ${{ steps.package.outputs.package }}
+          TAG_VERSION: ${{ steps.package.outputs.version }}
+        run: |
+          uv run --no-project python -c '
+          import os, sys, tomllib
+          from pathlib import Path
+          pkg = os.environ["PKG"]
+          tag_version = os.environ["TAG_VERSION"]
+          pyproject = Path("packages") / pkg / "pyproject.toml"
+          if not pyproject.is_file():
+              sys.exit(f"Unknown workspace package from tag: {pkg!r} ({pyproject} not found)")
+          data = tomllib.loads(pyproject.read_text(encoding="utf-8"))
+          pkg_name = data.get("project", {}).get("name")
+          pkg_version = data.get("project", {}).get("version")
+          if pkg_name != pkg:
+              sys.exit(f"Package name mismatch: tag={pkg!r}, pyproject={pkg_name!r}")
+          if pkg_version != tag_version:
+              sys.exit(f"Version mismatch for {pkg}: tag={tag_version!r}, pyproject={pkg_version!r}")
+          print(f"Validated {pkg}=={pkg_version}")
+          '
 
       - name: Build wheel and sdist
         run: uv build --package ${{ steps.package.outputs.package }}

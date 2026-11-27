@@ -16,8 +16,8 @@ GitHub environment `pypi` + OIDC).
 ## Sequence
 
 1. Confirm the tree is clean and every fix that should ship is committed AND pushed (a local-only fix tag silently releases without it — happened once; the tag builds the pushed tree, not your working dir).
-2. Re-run the CI type gate locally with the tool CI uses: `uv run ty check packages/*/src` (`ty` is pinned exactly in the root `dev` group, so local and CI agree). Fix findings properly (declare the missing attributes); prefer structural fixes over `# ty: ignore` suppressions.
-3. Bump `version` in `packages/<pkg>/pyproject.toml`; add a changelog entry to that package's `CHANGELOG.md` (aireloom keeps its changelog in `packages/aireloom/CHANGELOG.md`; aletheca's changelog page lives at `docs/aletheca/changelog.md` — keep both in sync). Commit family style (`chore(release): bump aireloom to X`), push main, then `git tag aireloom-v0.8.1 && git push origin aireloom-v0.8.1`.
+2. Re-run the CI type gate locally with the tool CI uses: `uv run ty check packages/*/src scripts/unasync.py` (`ty` is pinned exactly in the root `dev` group, so local and CI agree). Fix findings properly (declare the missing attributes); prefer structural fixes over `# ty: ignore` suppressions.
+3. Bump `version` in `packages/<pkg>/pyproject.toml`; add a changelog entry to `packages/<pkg>/CHANGELOG.md` (`docs/aletheca/changelog.md` is only a link stub to `packages/aletheca/CHANGELOG.md`). Commit family style (`chore(release): bump aireloom to X`), push main, then `git tag aireloom-v0.8.1 && git push origin aireloom-v0.8.1`.
 4. `gh run watch <run-id> --exit-status`, then verify the release is actually visible: `uv run --no-project python -c "import httpx; print(httpx.get('https://pypi.org/pypi/<pkg>/json').json()['info']['version'])"`.
 5. Wheel-content proof for feature releases: `uv cache clean <pkg>`, then `uv run --no-project --with <pkg>==<ver> python -c "..."` in /tmp and introspect the new API surface (signatures/settings fields). Confirms the published wheel — not just the tag — carries the features.
 

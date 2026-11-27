@@ -60,11 +60,34 @@ STANDARD_REPLACEMENTS = {
 GENERATED_SUFFIX = "_sync"
 
 
-def package_dirs() -> list[Path]:
+def package_dirs(selected: list[str] | None = None) -> list[Path]:
     """Return the workspace member directories, in stable order."""
-    return sorted(
-        p.resolve() for p in Path("packages").iterdir() if (p / "src").is_dir()
-    )
+    available = {
+        p.name: p.resolve() for p in Path("packages").iterdir() if (p / "src").is_dir()
+    }
+    if not selected:
+        return [available[name] for name in sorted(available)]
+    unknown = [name for name in selected if name not in available]
+    if unknown:
+        valid = ", ".join(sorted(available))
+        raise SystemExit(
+            f"Unknown package(s): {', '.join(unknown)}. Available: {valid}."
+        )
+    return [available[name] for name in dict.fromkeys(selected)]
+
+
+def collect_existing_sync(package: Path) -> set[Path]:
+    """List generated ``_sync`` files currently on disk, excluding hand-written twins."""
+    cwd = Path.cwd()
+    existing = [
+        path
+        for path in (package / "src").rglob("*.py")
+        if GENERATED_SUFFIX in path.parts and path.name != "_concurrency.py"
+    ]
+    tests_sync = package / "tests" / GENERATED_SUFFIX
+    if tests_sync.is_dir():
+        existing.extend(tests_sync.rglob("*.py"))
+    return {path.resolve().relative_to(cwd) for path in existing}
 
 
 def extra_replacements(package: Path) -> dict[str, str]:
@@ -133,12 +156,7 @@ def render(files: list[Path], rule: unasync.Rule) -> dict[Path, str]:
             [str(root / rel) for rel in rels],
             [rule],
         )
-        generated: dict[Path, str] = {}
-        for rel in rels:
-            out_rel = Path(str(rel).replace("_async", GENERATED_SUFFIX))
-            text = (root / out_rel).read_text(encoding="utf-8")
-            generated[out_rel] = HEADER + text
-        formatted = list(generated)
+        formatted = [Path(str(rel).replace("_async", GENERATED_SUFFIX)) for rel in rels]
         # unasync can leave imports unsorted (AsyncIterator -> Iterator);
         # sort them before formatting so check and write agree.
         # The scratch tree has no pyproject.toml above it, so ruff would use
@@ -176,7 +194,7 @@ def render(files: list[Path], rule: unasync.Rule) -> dict[Path, str]:
             check=True,
         )
         return {
-            rel: HEADER + (root / rel).read_text(encoding="utf-8") for rel in generated
+            rel: HEADER + (root / rel).read_text(encoding="utf-8") for rel in formatted
         }
 
 
@@ -185,15 +203,25 @@ def main() -> int:
     parser.add_argument(
         "--check",
         action="store_true",
-        help="exit non-zero when a generated file is stale, without writing",
+        help="exit non-zero when a generated file is stale or orphaned, without writing",
+    )
+    parser.add_argument(
+        "--package",
+        action="append",
+        dest="packages",
+        help="workspace package name to process (repeatable; default: all packages)",
     )
     args = parser.parse_args()
 
+    selected_packages = package_dirs(args.packages)
     stale: list[Path] = []
+    orphans: list[Path] = []
     written = 0
-    for package in package_dirs():
+    for package in selected_packages:
         files = collect_sources(package)
         if not files:
+            if args.check:
+                orphans.extend(sorted(collect_existing_sync(package)))
             continue
         replacements = {
             **STANDARD_REPLACEMENTS,
@@ -207,6 +235,9 @@ def main() -> int:
             additional_replacements=replacements,
         )
         rendered = render(files, rule)
+        if args.check:
+            existing = collect_existing_sync(package)
+            orphans.extend(sorted(existing - set(rendered)))
         for rel, content in sorted(rendered.items()):
             target = Path(rel)
             if args.check:
@@ -218,16 +249,19 @@ def main() -> int:
                 target.write_text(content, encoding="utf-8")
                 written += 1
 
-    if stale:
+    if stale or orphans:
         for path in stale:
             print(f"stale: {path}")
+        for path in orphans:
+            print(f"orphan: {path}")
         print(
-            "Run `uv run python scripts/unasync.py` to regenerate the sync twins.",
+            "Run `uv run python scripts/unasync.py` to regenerate the sync twins"
+            " (and delete any orphan `_sync` files).",
             file=sys.stderr,
         )
         return 1
     verb = "checked" if args.check else "generated"
-    print(f"{verb} {written or 'all'} sync files for {len(package_dirs())} packages")
+    print(f"{verb} {written or 'all'} sync files for {len(selected_packages)} packages")
     return 0
 
 

@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.12"
 
 [manifest]
@@ -9,6 +9,7 @@ members = [
     "bibliofabric",
     "stavrophora",
 ]
+default-groups = ["dev", "docs"]
 
 [manifest.dependency-groups]
 dev = [
@@ -22,7 +23,7 @@ dev = [
 docs = [
     { name = "mkdocs", specifier = "~=1.6.0" },
     { name = "mkdocs-material", specifier = "~=9.5.0" },
-    { name = "mkdocstrings", extras = ["python"] },
+    { name = "mkdocstrings", extras = ["python"], specifier = "~=0.29.0" },
 ]
 
 [[package]]

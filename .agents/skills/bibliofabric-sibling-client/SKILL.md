@@ -14,8 +14,8 @@ end-to-end 2026-09-04 with stavrophora (Crossref), alongside aletheca
 
 ## 1. Study, then scaffold
 
-- Read `/home/sam/dev/ut-metadata/docs/research/bibliofabric-family.md` ("Patterns to copy verbatim") and `/home/sam/dev/ut-metadata/docs/research/apis.md` (source facts). Study the closest sibling package completely (aletheca is the canonical shape).
-- Create `packages/<name>/` with the family shape: `src/<pkg>/` with `client.py` (`<Name>Client(BaseApiClient)`, resources as `functools.cached_property`), `config.py` (pydantic-settings, `<PKG>_` env prefix, one `@lru_cache get_settings()`), `dialect.py` (`QueryDialect` instances + the resource base subclass with hook overrides), `unwrapper.py`, `filters.py` (pydantic filter models), `models/` (pydantic `extra="allow"`, all fields optional, SafeStr/SafeList coercion), `resources/` (one small module per entity subclassing the dialect-aware base), tests (pytest-httpx per-entity + unwrapper tests), `py.typed`, `README.md` (PyPI long description), `CHANGELOG.md` (Keep a Changelog).
+- Read the root `AGENTS.md`, `docs/bibliofabric/authoring-sync.md`, and the closest sibling package completely (`packages/aletheca/` is the canonical shape).
+- Create `packages/<name>/` with the family shape: `src/<pkg>/` with `_async/client.py` (`<Name>Client(BaseApiClient)`, resources as `functools.cached_property`), `_async/resources/` (one small module per entity subclassing the dialect-aware base), generated `_sync/` twins (from `uv run python scripts/unasync.py`), pure modules `config.py` (pydantic-settings, `<PKG>_` env prefix, one `@lru_cache get_settings()`), `dialect.py` (`QueryDialect` instances + the resource base subclass with hook overrides), `unwrapper.py`, `filters.py` (pydantic filter models), `models/` (pydantic `extra="allow"`, all fields optional, SafeStr/SafeList coercion), `tests/_async/` (pytest-httpx per-entity + unwrapper tests) + generated `tests/_sync/`, `py.typed`, `LICENSE`, `README.md` (PyPI long description), `CHANGELOG.md` (Keep a Changelog).
 - The `packages/*` workspace glob picks the package up automatically. Declare the dependency `bibliofabric>=0.6,<0.7`; uv resolves it to the sibling via the root `[tool.uv.sources]`. No per-package dev groups, ruff/pytest config, `uv.lock`, `.python-version`, `.pre-commit-config.yaml`, or CI workflow — all of that is root-level now.
 - Conventional commits, no AI attribution. `LICENSE` (MIT, Samuel Mok) exists once at the repo root if needed.
 
@@ -27,7 +27,7 @@ end-to-end 2026-09-04 with stavrophora (Crossref), alongside aletheca
 
 ## 3. Gates
 
-- From the repo root: `uv sync --all-packages --all-groups`, `uv run pytest packages/<name>/tests`, `uv run ruff check`, `uv run ruff format --check`, `uv run ty check packages/*/src` (ty is the family's type checker, no mypy).
+- From the repo root: `uv sync --all-packages --all-groups`, `uv run python scripts/unasync.py --check`, `uv run pytest packages/<name>/tests`, `uv run ruff check`, `uv run ruff format --check`, `uv run ty check packages/*/src scripts/unasync.py` (ty is the family's type checker, no mypy), and `uv run mkdocs build --strict`.
 - Known family gotcha: runtime-valid but spec-invalid annotations (e.g. `TTLCache[str, Any]` with non-generic cachetools classes) pass pytest but fail newer ty — fix the annotation, not the pin.
 
 ## 4. Dedicated live sweep (owner-required standard, same bar for every client)

@@ -1,6 +1,6 @@
 # bibliofabric
 
-Async Python client libraries for scholarly metadata APIs, in one uv
+Async and sync Python client libraries for scholarly metadata APIs, in one uv
 workspace. The [`bibliofabric`](https://pypi.org/project/bibliofabric/) core
 owns HTTP with retries and rate limiting, authentication, error mapping,
 paging, batch retrieval, identifier normalization, and typed resource
@@ -17,12 +17,15 @@ clients. Three libraries build on it, one per API.
 uv add aireloom    # or aletheca, stavrophora, bibliofabric
 ```
 
-Requires Python 3.12 or newer. All four packages are async-only and ship `py.typed`.
+Requires Python 3.12 or newer. All four packages ship async clients alongside
+generated sync twins (`<Name>SyncClient`, generated from `_async/` by
+`scripts/unasync.py`), plus `py.typed`.
 
 ## Workspace layout
 
 ```
 packages/<name>/    one package each: src/, tests/, pyproject.toml, README, CHANGELOG
+scripts/            code generation (scripts/unasync.py generates _sync/ twins)
 docs/               one mkdocs site for the whole family (docs/<name>/)
 archive/            historical documents from the former standalone repos
 .github/workflows/  one CI pipeline: lint, test matrix, docs, tag-driven publish
@@ -32,10 +35,12 @@ Tooling (ruff, ty, pytest, mkdocs) is configured once at the root. From the
 repository root:
 
 ```bash
-uv sync --all-packages --all-groups   # install all packages plus dev/docs groups
-uv run pytest                         # all four test suites (live tests deselected)
-uv run ruff check                     # lint every package
-uv run mkdocs serve                   # docs preview for the whole family
+uv sync --all-packages --all-groups                 # install all packages plus dev/docs groups
+uv run pytest                                       # all four test suites (live tests deselected)
+uv run ruff check                                   # lint every package and scripts/
+uv run ty check packages/*/src scripts/unasync.py   # type gate
+uv run python scripts/unasync.py --check            # verify generated _sync/ twins are fresh
+uv run mkdocs serve                                 # docs preview for the whole family
 ```
 
 Releases are tag-driven: push a tag `<package>-v<version>` (for example

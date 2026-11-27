@@ -4,7 +4,8 @@ Four Python client libraries for scholarly metadata APIs, sharing one core:
 [`bibliofabric`](bibliofabric/index.md) owns HTTP, authentication, retries,
 rate limiting, paging, batch retrieval, identifier normalization, and typed
 resource clients. Each library adds only what is specific to its API. All four
-are async-only and ship `py.typed`. They live in one uv workspace at
+ship async clients alongside generated sync twins (`<Name>SyncClient`) and
+`py.typed`. They live in one uv workspace at
 [github.com/utsmok/bibliofabric](https://github.com/utsmok/bibliofabric)
 (`packages/<name>`); this site documents all of them.
 

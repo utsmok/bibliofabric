@@ -2,12 +2,10 @@
 
 [tool.uv]
 package = false
-pip.generate-hashes = true
 default-groups = ["dev", "docs"]
 
 [tool.uv.workspace]
 members = ["packages/*"]
-exclude = ["**/__pycache__"]
 
 [tool.uv.sources]
 bibliofabric = { workspace = true }
@@ -24,7 +22,7 @@ dev = [
 docs = [
     "mkdocs~=1.6.0",
     "mkdocs-material~=9.5.0",
-    "mkdocstrings[python]",
+    "mkdocstrings[python]~=0.29.0",
 ]
 
 # Ruff config shared by the whole workspace (was identical in each family repo).
@@ -70,6 +68,8 @@ combine-as-imports = true
 "packages/*/tests/**" = ["PLR2004"]  # literal HTTP statuses and counts are the point of the assertions
 
 [tool.pytest.ini_options]
+consider_namespace_packages = true
+pythonpath = ["."]
 testpaths = [
     "packages/bibliofabric/tests",
     "packages/aireloom/tests",
