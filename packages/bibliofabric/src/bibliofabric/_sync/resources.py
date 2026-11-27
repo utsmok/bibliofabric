@@ -606,7 +606,8 @@ class SyncResourceClient[E: BaseModel]:
         cls = type(self)
         adapter = cls.__dict__.get("_list_adapter")
         if adapter is None or cls.__dict__.get("_list_adapter_model") is not self.model:
-            adapter = TypeAdapter(GenericAlias(list, (self.model,)))
+            list_type: Any = GenericAlias(list, (self.model,))
+            adapter = TypeAdapter(list_type)
             cls._list_adapter = adapter
             cls._list_adapter_model = self.model
         return cast(TypeAdapter[list[E]], adapter)
