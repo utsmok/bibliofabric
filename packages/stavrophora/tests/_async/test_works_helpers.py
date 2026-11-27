@@ -19,10 +19,11 @@ async def test_batch_get_by_doi_splits_into_chunks(httpx_mock, client):
 
     requests = httpx_mock.get_requests()
     assert len(requests) == 2
-    assert chunk_filter(requests[0].url.params) == dois[:50]
-    assert chunk_filter(requests[1].url.params) == dois[50:]
-    assert requests[0].url.params["rows"] == "50"
-    assert requests[1].url.params["rows"] == "5"
+    by_rows = {
+        request.url.params["rows"]: chunk_filter(request.url.params)
+        for request in requests
+    }
+    assert by_rows == {"50": dois[:50], "5": dois[50:]}
     assert set(result) == set(dois)
     assert result["10.1000/test000"].doi == "10.1000/test000"
 
