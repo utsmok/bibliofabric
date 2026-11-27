@@ -42,8 +42,8 @@ from .base import (
 OpenAccessRouteType = Literal["gold", "green", "hybrid", "bronze"]
 """Type alias for allowed Open Access routes (e.g., gold, green)."""
 
-RefereedType = Literal["peerReviewed", "nonPeerReviewed", "UNKNOWN"]
-"""Type alias for refereed status (e.g., peerReviewed, nonPeerReviewed)."""
+RefereedType = str
+"""Type alias for refereed status (known values include ``peerReviewed``, ``nonPeerReviewed``, ``UNKNOWN``)."""
 
 ResearchProductType = Literal["publication", "dataset", "software", "other"]
 """Type alias for the type of research product (e.g., publication, dataset)."""
@@ -87,16 +87,19 @@ SafeBestAccessRight = Annotated[
 
 
 class CitationImpact(BaseModel):
-    """Citation-based impact metrics (BIP indicators)."""
+    """Citation-based impact metrics (BIP indicators).
+
+    Known ``*Class`` values include ``C1``, ``C2``, ``C3``, ``C4``, and ``C5``.
+    """
 
     influence: float | None = None
-    influenceClass: Literal["C1", "C2", "C3", "C4", "C5"] | None = None
+    influenceClass: str | None = None
     citationCount: int | None = None
-    citationClass: Literal["C1", "C2", "C3", "C4", "C5"] | None = None
+    citationClass: str | None = None
     popularity: float | None = None
-    popularityClass: Literal["C1", "C2", "C3", "C4", "C5"] | None = None
+    popularityClass: str | None = None
     impulse: float | None = None
-    impulseClass: Literal["C1", "C2", "C3", "C4", "C5"] | None = None
+    impulseClass: str | None = None
 
     model_config = ConfigDict(extra="allow")
 

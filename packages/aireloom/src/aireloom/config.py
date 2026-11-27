@@ -3,6 +3,7 @@
 from functools import lru_cache
 
 from bibliofabric.config import BaseApiSettings
+from pydantic import Field
 from pydantic_settings import SettingsConfigDict
 
 DEFAULT_GRAPH_BASE_URL = "https://api.openaire.eu/graph"
@@ -33,10 +34,12 @@ class AireloomSettings(BaseApiSettings):
     base_url: str = DEFAULT_GRAPH_BASE_URL
     scholix_base_url: str = DEFAULT_SCHOLIX_BASE_URL
 
-    # OAuth2 client credentials (registered service). Both must be set for
-    # authenticated access; without them the client stays anonymous.
+    # OAuth2 client credentials (registered service) or refresh token. Without
+    # credentials the client stays anonymous; partial client credentials raise
+    # ConfigurationError.
     openaire_client_id: str | None = None
     openaire_client_secret: str | None = None
+    openaire_refresh_token: str | None = Field(default=None, repr=False)
     token_url: str = DEFAULT_TOKEN_URL
 
     # D-15: OpenAIRE allows about 7200 requests per rolling hour.

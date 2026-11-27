@@ -2,6 +2,47 @@
 
 All notable changes to AIREloom are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Breaking
+
+- **Scholix date filters fail fast:** Passing `from_date` or `to_date` (or raw
+  `"from"` / `"to"` keys in dict filters) to `client.scholix.search_links`,
+  `iterate_links`, `search_links_v2`, or `iterate_links_v2` now raises
+  `ConfigurationError` instead of routing to V2 with a warning, preventing
+  silent zero-row results on V3 and silent unfiltered results on V2. Filter by
+  `link_publication_date` client-side or query Graph V4 research products with
+  `from_publication_date` / `to_publication_date`.
+- **Partial OAuth2 credentials rejected:** Setting only one of
+  `openaire_client_id` or `openaire_client_secret` (without `refresh_token` or
+  explicit `auth_strategy`) now raises `ConfigurationError` instead of silently
+  falling back to `NoAuth()`.
+
+### Added
+
+- **`RefreshTokenAuth` support:** Added `openaire_refresh_token`
+  (`AIRELOOM_OPENAIRE_REFRESH_TOKEN`, `repr=False`) on `AireloomSettings` and
+  `refresh_token=` on `AireloomClient` / `AireloomSyncClient`, wiring up
+  `bibliofabric.RefreshTokenAuth` when set.
+- **`auth_strategy=` constructor kwarg:** Added keyword-only `auth_strategy=` to
+  `AireloomClient.__init__` / `AireloomSyncClient.__init__` matching sibling
+  clients; `auth=` remains as a deprecated alias (emitting `DeprecationWarning`)
+  and passing both raises `ConfigurationError`.
+- **`retry=` forwarding:** `AireloomClient.request()` /
+  `AireloomSyncClient.request()` now accept and forward `retry: bool | None = None`
+  to match `BaseApiClient.request()`.
+- **Python 3.14:** Added `"Programming Language :: Python :: 3.14"` classifier.
+
+### Changed
+
+- **Relaxed undocumented response `Literal`s:** Relaxed `RefereedType`
+  (`Instance.refereed`, `RelatedInstance.refereed`) and
+  `CitationImpact.*Class` (`influenceClass`, `citationClass`,
+  `popularityClass`, `impulseClass`) to `str | None` while documenting known
+  values in docstrings.
+- **Core offset guard:** Moved the Graph V4 `10_000` offset cap to
+  `GRAPH_DIALECT.max_offset` so `GraphResource` reuses core's offset guard.
+
 ## [0.8.0] - 2026-11-26
 
 ### Breaking

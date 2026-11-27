@@ -268,3 +268,28 @@ def test_unwrapper_edge_cases():
     sx = ScholixUnwrapper()
     with pytest.raises(ValueError, match="no results"):
         sx.item({"result": []})
+
+
+def test_relaxed_refereed_and_citation_impact_classes_accept_unknown_strings():
+    rp = ResearchProduct.model_validate(
+        {
+            "id": "rp::relaxed",
+            "indicators": {
+                "citationImpact": {
+                    "influenceClass": "C6",
+                    "citationClass": "top1%",
+                    "popularityClass": "custom",
+                    "impulseClass": "high",
+                }
+            },
+            "instances": [{"refereed": "openPeerReview"}],
+            "links": [{"instances": [{"refereed": "editorReviewed"}]}],
+        }
+    )
+    impact = rp.indicators.citationImpact
+    assert impact.influenceClass == "C6"
+    assert impact.citationClass == "top1%"
+    assert impact.popularityClass == "custom"
+    assert impact.impulseClass == "high"
+    assert rp.instances[0].refereed == "openPeerReview"
+    assert rp.links[0].instances[0].refereed == "editorReviewed"

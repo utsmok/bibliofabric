@@ -48,11 +48,13 @@ client = AireloomClient(settings=settings)
 ## Authentication
 
 Set `AIRELOOM_OPENAIRE_CLIENT_ID` and `AIRELOOM_OPENAIRE_CLIENT_SECRET` for
-OAuth2 client-credentials access. The client posts to the Keycloak token
-endpoint, caches the bearer token until shortly before it expires, and
+OAuth2 client-credentials access, or `AIRELOOM_OPENAIRE_REFRESH_TOKEN` (or
+`refresh_token=`) for refresh-token access. Setting only one of client ID or
+client secret raises `ConfigurationError`. The client posts to the Keycloak
+token endpoint, caches the bearer token until shortly before it expires, and
 serializes concurrent fetches. Without credentials, or with an explicit
-`auth=` strategy, the client behaves accordingly; an explicit strategy
-always wins.
+`auth_strategy=` (`auth=` is a deprecated alias), the client behaves accordingly;
+an explicit strategy always wins.
 
 The legacy `https://aai.openaire.eu/oidc/token` endpoint was retired on
 2026-11-02 and returns 410 Gone; the default token URL already points at the

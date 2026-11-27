@@ -327,9 +327,10 @@ class ScholixFilters(BaseModel):
     One of ``sourcePid``, ``targetPid``, ``sourcePublisher``,
     ``targetPublisher``, ``sourceType``, or ``targetType`` is required.
     ``linkProvider`` is supported on V2 only (V3 silently ignores it), so
-    queries carrying ``linkProvider`` are routed to V2 automatically. Note that
-    V3 returns zero rows for ``from``/``to`` date filters and V2 ignores date
-    parameters (see ``docs/aireloom/quirks.md``).
+    queries carrying ``linkProvider`` are routed to V2 automatically.
+    ``from_date``/``to_date`` are rejected by :class:`ScholixResource` with
+    :class:`ConfigurationError` because V3 returns zero rows for them and V2
+    silently ignores them (see ``docs/aireloom/quirks.md``).
     """
 
     model_config = ConfigDict(extra="forbid", populate_by_name=True)

@@ -7,13 +7,13 @@ around or documents. All of these were observed against the live services.
 
 - `page_size` must be between `1` and `100` (in both offset and cursor modes);
   larger values return HTTP 400.
-- Offset-based paging is limited to `page * page_size <= 10,000`; use cursor
-  paging (`iterate()` or `cursor="*"`) for larger datasets.
+- Offset-based paging is limited to `offset <= 10,000` (`max_offset=10_000`);
+  use cursor paging (`iterate()` or `cursor="*"`) for larger datasets.
 - A single V4 filter field accepts at most 50 pipe-separated OR values
   (OpenAIRE Graph 1.6.0+); larger lists return HTTP 400.
 
 AIREloom enforces all three caps client-side (`GRAPH_DIALECT.max_page_size = 100`,
-offset check, and 50-value OR check raising `ConfigurationError`).
+`GRAPH_DIALECT.max_offset = 10_000`, and 50-value OR check raising `ConfigurationError`).
 
 ## Scholix V3 `linkProvider` and date-filter limitations
 
@@ -22,9 +22,11 @@ offset check, and 50-value OR check raising `ConfigurationError`).
   `linkProvider` to `/v2/Links` automatically.
 - `/v3/Links` accepts `from` and `to` but returns zero rows for every tested
   date value. `/v2/Links` has no `from`/`to` parameters at all and silently
-  ignores them (returning unfiltered links). Queries carrying `from_date` or
-  `to_date` route to `/v2/Links` with a warning so callers know results are not
-  date-filtered.
+  ignores them (returning unfiltered links). Passing `from_date` or `to_date`
+  to Scholix search or iterate methods raises `ConfigurationError` immediately
+  so callers never receive silent zero-row or unfiltered results; filter results
+  by `link_publication_date` client-side instead, or query Graph V4 research
+  products with `from_publication_date` / `to_publication_date`.
 
 ## V4 group_by totals are uneven
 

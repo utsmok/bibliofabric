@@ -36,7 +36,10 @@ Without credentials the client is anonymous. For the registered-service
 quota, set `AIRELOOM_OPENAIRE_CLIENT_ID` and
 `AIRELOOM_OPENAIRE_CLIENT_SECRET` (environment variables or a `.env` file);
 the client then fetches a bearer token from the OpenAIRE Keycloak endpoint
-and reuses it until it expires.
+and reuses it until it expires. Setting only one of the two raises
+`ConfigurationError`. You can also set `AIRELOOM_OPENAIRE_REFRESH_TOKEN`
+(or pass `refresh_token=`) for OAuth2 refresh-token authentication, or pass an
+explicit `auth_strategy=` (`auth=` is kept as a deprecated alias).
 
 ## Sync usage
 
@@ -80,7 +83,7 @@ attribute of `AireloomSyncClient` (`research_products`, `projects`,
 | `client.data_sources` | V4 data sources | Graph |
 | `client.persons` | V4 persons | Graph |
 | `client.research_products.search_links` | V3 relations between products | Graph |
-| `client.scholix` | Scholexplorer `Links` (V3, V2 for dates) | Scholexplorer |
+| `client.scholix` | Scholexplorer `Links` (V3, V2 for `linkProvider`) | Scholexplorer |
 
 Every entity resource supports `search`, `iterate`, `collect`, `first`,
 `count`, `facets`, and `group_by`. `get(id)` reads the V3 by-id route

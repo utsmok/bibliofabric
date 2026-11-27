@@ -2,12 +2,19 @@
 
 import functools
 import logging
+import warnings
 from collections.abc import Mapping
 from typing import Any
 
 import httpx
 from bibliofabric import BaseApiClient
-from bibliofabric.auth import AuthStrategy, ClientCredentialsAuth, NoAuth
+from bibliofabric.auth import (
+    AuthStrategy,
+    ClientCredentialsAuth,
+    NoAuth,
+    RefreshTokenAuth,
+)
+from bibliofabric.exceptions import ConfigurationError
 
 from ..config import AireloomSettings, get_settings
 from ..unwrapper import OpenAireUnwrapper, ScholixUnwrapper
@@ -25,13 +32,26 @@ logger = logging.getLogger(__name__)
 
 
 def _resolve_auth(settings: AireloomSettings) -> AuthStrategy:
-    """Resolve the auth strategy: client credentials, else anonymous."""
+    """Resolve the auth strategy: refresh token, client credentials, or anonymous."""
+    if settings.openaire_refresh_token:
+        return RefreshTokenAuth(
+            settings.token_url,
+            settings.openaire_refresh_token,
+            client_id=settings.openaire_client_id or None,
+            client_secret=settings.openaire_client_secret or None,
+            user_agent=settings.effective_user_agent(),
+        )
     if settings.openaire_client_id and settings.openaire_client_secret:
         return ClientCredentialsAuth(
             settings.openaire_client_id,
             settings.openaire_client_secret,
             settings.token_url,
             user_agent=settings.effective_user_agent(),
+        )
+    if settings.openaire_client_id or settings.openaire_client_secret:
+        raise ConfigurationError(
+            "Both 'openaire_client_id' and 'openaire_client_secret' must be set "
+            "together for OAuth2 client-credentials authentication."
         )
     return NoAuth()
 
@@ -41,12 +61,14 @@ class AireloomClient(BaseApiClient):
 
     Entity resources are available as typed attributes; single-entity lookups
     go through the V3 by-id routes because V4 has none. Authentication
-    resolves in the constructor: set ``openaire_client_id`` and
-    ``openaire_client_secret`` (settings, ``AIRELOOM_OPENAIRE_CLIENT_ID`` /
-    ``AIRELOOM_OPENAIRE_CLIENT_SECRET``, or ``client_id``/``client_secret``)
-    for OAuth2 client-credentials access against the Keycloak token endpoint;
-    without credentials the client is anonymous. An explicit ``auth`` strategy
-    always wins.
+    resolves in the constructor: set ``openaire_refresh_token`` /
+    ``refresh_token`` for OAuth2 refresh-token access, or set both
+    ``openaire_client_id`` and ``openaire_client_secret`` (settings,
+    ``AIRELOOM_OPENAIRE_CLIENT_ID`` / ``AIRELOOM_OPENAIRE_CLIENT_SECRET``, or
+    ``client_id`` / ``client_secret``) for OAuth2 client-credentials access
+    against the Keycloak token endpoint; partial client credentials raise
+    :class:`ConfigurationError`, and without credentials the client is
+    anonymous. An explicit ``auth_strategy`` always wins.
 
     The Scholix resource talks to the Scholexplorer host through a second
     internal client that shares settings and credentials but throttles itself
@@ -59,11 +81,13 @@ class AireloomClient(BaseApiClient):
         settings: AireloomSettings | None = None,
         auth: AuthStrategy | None = None,
         *,
+        auth_strategy: AuthStrategy | None = None,
         base_url: str | None = None,
         scholix_base_url: str | None = None,
         mailto: str | None = None,
         client_id: str | None = None,
         client_secret: str | None = None,
+        refresh_token: str | None = None,
         http_client: httpx.AsyncClient | None = None,
     ) -> None:
         """Build the client from settings, resolving credentials immediately.
@@ -71,8 +95,25 @@ class AireloomClient(BaseApiClient):
         ``settings`` defaults to :func:`aireloom.config.get_settings`, which
         reads ``AIRELOOM_*`` environment variables and ``.env``. Keyword
         overrides (``base_url``, ``scholix_base_url``, ``mailto``,
-        ``client_id``, ``client_secret``) take precedence over ``settings``.
+        ``client_id``, ``client_secret``, ``refresh_token``) take precedence
+        over ``settings``. Pass ``auth_strategy`` for a custom auth strategy
+        (``auth`` is a deprecated alias).
         """
+        if auth is not None and auth_strategy is not None:
+            raise ConfigurationError(
+                "Pass either 'auth_strategy' or the deprecated 'auth' parameter, "
+                "not both."
+            )
+        if auth is not None:
+            warnings.warn(
+                "The 'auth' parameter is deprecated; use 'auth_strategy' instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            explicit_auth: AuthStrategy | None = auth
+        else:
+            explicit_auth = auth_strategy
+
         resolved = settings or get_settings()
         overrides: dict[str, str] = {}
         if base_url is not None:
@@ -85,9 +126,13 @@ class AireloomClient(BaseApiClient):
             overrides["openaire_client_id"] = client_id
         if client_secret is not None:
             overrides["openaire_client_secret"] = client_secret
+        if refresh_token is not None:
+            overrides["openaire_refresh_token"] = refresh_token
         if overrides:
             resolved = resolved.model_copy(update=overrides)
-        strategy = auth if auth is not None else _resolve_auth(resolved)
+        strategy = (
+            explicit_auth if explicit_auth is not None else _resolve_auth(resolved)
+        )
         super().__init__(
             base_url=resolved.base_url,
             settings=resolved,
@@ -121,6 +166,7 @@ class AireloomClient(BaseApiClient):
         content: str | bytes | None = None,
         headers: Mapping[str, str] | None = None,
         timeout: float | httpx.Timeout | None = None,
+        retry: bool | None = None,
     ) -> httpx.Response:
         """Send a request through the core retry pipeline.
 
@@ -147,6 +193,7 @@ class AireloomClient(BaseApiClient):
             content=content,
             headers=headers,
             timeout=timeout,
+            retry=retry,
         )
 
     @functools.cached_property

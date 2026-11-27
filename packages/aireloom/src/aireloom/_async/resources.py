@@ -15,7 +15,6 @@ from pydantic import BaseModel
 from ..dialect import (
     GRAPH_DIALECT,
     LINKS_DIALECT,
-    MAX_OFFSET_WINDOW,
     MAX_OR_VALUES,
     SCHOLIX_DIALECT,
 )
@@ -150,22 +149,10 @@ class GraphResource[E: BaseModel](ResourceClient[E]):
         cursor: str | None = None,
         params: Mapping[str, Any] | None,
     ) -> dict[str, Any]:
-        if cursor is None and page is not None:
-            if page < self.dialect.page_start:
-                raise ConfigurationError(
-                    f"page must be >= {self.dialect.page_start}, got {page}."
-                )
-            effective_size = (
-                self.dialect.default_page_size
-                if page_size is None
-                else min(page_size, self.dialect.max_page_size)
+        if cursor is None and page is not None and page < self.dialect.page_start:
+            raise ConfigurationError(
+                f"page must be >= {self.dialect.page_start}, got {page}."
             )
-            if page * effective_size > MAX_OFFSET_WINDOW:
-                raise ConfigurationError(
-                    f"Offset paging is limited to {MAX_OFFSET_WINDOW} results "
-                    f"(page={page}, page_size={effective_size} reaches "
-                    f"{page * effective_size}); use cursor paging instead."
-                )
         return super()._search_params(
             filters=filters,
             query=query,
@@ -555,8 +542,8 @@ class ScholixResource:
 
     V3 is the default surface. Queries carrying ``linkProvider`` are routed to
     V2 because V3 silently ignores ``linkProvider``. Queries carrying
-    ``from_date``/``to_date`` also route to V2 with a warning because V3
-    returns zero rows for date filters and V2 does not filter by date.
+    ``from_date`` or ``to_date`` raise :class:`ConfigurationError` because V3
+    returns zero rows for date filters and V2 silently ignores date parameters.
     """
 
     def __init__(self, client: BaseApiClient) -> None:
@@ -575,6 +562,20 @@ class ScholixResource:
             for key in ("from", "to", "from_date", "to_date")
         )
 
+    @classmethod
+    def _reject_date_filter(
+        cls, filters: ScholixFilters | Mapping[str, Any] | None
+    ) -> None:
+        if cls._has_date_filter(filters):
+            raise ConfigurationError(
+                "Scholexplorer does not support 'from_date'/'to_date' filtering "
+                "(V3 returns zero rows for 'from'/'to' and V2 silently ignores "
+                "date parameters). Remove 'from_date'/'to_date' from filters and "
+                "filter results by 'link_publication_date' client-side, or query "
+                "Graph V4 research products with 'from_publication_date' / "
+                "'to_publication_date'."
+            )
+
     @staticmethod
     def _has_link_provider(filters: ScholixFilters | Mapping[str, Any] | None) -> bool:
         if filters is None:
@@ -586,13 +587,7 @@ class ScholixResource:
     def _select_target(
         self, filters: ScholixFilters | Mapping[str, Any] | None
     ) -> _ScholixLinks:
-        if self._has_date_filter(filters):
-            logger.warning(
-                "Scholexplorer V3 returns zero rows for from/to date filters and "
-                "V2 ignores date parameters; routing to /v2/Links, so results "
-                "will not be date-filtered."
-            )
-            return self._v2
+        self._reject_date_filter(filters)
         if self._has_link_provider(filters):
             return self._v2
         return self._v3
@@ -606,10 +601,9 @@ class ScholixResource:
     ) -> Page[ScholixRelationship]:
         """Fetch one page of links as typed records.
 
-        Queries with ``linkProvider`` route to V2 (V3 silently ignores it).
-        Queries with ``from_date`` or ``to_date`` route to V2 with a warning
-        (V3 returns zero rows and V2 ignores date parameters); everything else
-        goes to V3.
+        Queries with ``linkProvider`` route to V2 (V3 silently ignores it);
+        everything else goes to V3. Passing ``from_date`` or ``to_date`` raises
+        :class:`ConfigurationError`.
         """
         target = self._select_target(filters)
         return await target.search(filters, page=page, page_size=page_size)
@@ -626,9 +620,10 @@ class ScholixResource:
     ) -> AsyncIterator[ScholixRelationship]:
         """Iterate over all matching links, 99 per page.
 
-        See :meth:`search_links` for V2/V3 routing rules. The route has no
-        cursor, so page windows are not pinned; the iterator stops on an empty
-        page or when the reported total has been fetched.
+        See :meth:`search_links` for V2/V3 routing rules and date-filter
+        rejection. The route has no cursor, so page windows are not pinned; the
+        iterator stops on an empty page or when the reported total has been
+        fetched.
         """
         target = self._select_target(filters)
         return target.iterate(
@@ -647,7 +642,12 @@ class ScholixResource:
         page: int | None = None,
         page_size: int | None = None,
     ) -> Page[ScholixRelationship]:
-        """Fetch one page of links from the V2 endpoint."""
+        """Fetch one page of links from the V2 endpoint.
+
+        Passing ``from_date`` or ``to_date`` raises :class:`ConfigurationError`
+        because V2 silently ignores date parameters.
+        """
+        self._reject_date_filter(filters)
         return await self._v2.search(filters, page=page, page_size=page_size)
 
     def iterate_links_v2(
@@ -660,7 +660,12 @@ class ScholixResource:
         failures: list[tuple[dict[str, Any], Exception]] | None = None,
         on_page: Callable[[int, str | None], Any] | None = None,
     ) -> AsyncIterator[ScholixRelationship]:
-        """Iterate over all matching links from the V2 endpoint."""
+        """Iterate over all matching links from the V2 endpoint.
+
+        Passing ``from_date`` or ``to_date`` raises :class:`ConfigurationError`
+        because V2 silently ignores date parameters.
+        """
+        self._reject_date_filter(filters)
         return self._v2.iterate(
             filters,
             page_size=page_size,

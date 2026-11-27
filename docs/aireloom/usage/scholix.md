@@ -30,9 +30,12 @@ page = await client.scholix.search_links(
 )
 ```
 
-Queries with `from_date` or `to_date` also route to V2 with a warning: V3
-returns zero rows for date filters and V2 ignores date parameters (see
-[upstream quirks](../quirks.md)).
+Passing `from_date` or `to_date` to `search_links`, `iterate_links`,
+`search_links_v2`, or `iterate_links_v2` raises `ConfigurationError`
+immediately: V3 returns zero rows for date filters and V2 silently ignores
+date parameters (see [upstream quirks](../quirks.md)). Filter results by
+`link_publication_date` client-side, or query Graph V4 research products with
+`from_publication_date` / `to_publication_date`.
 
 `search_links_v2` and `iterate_links_v2` force the V2 endpoint directly.
 

@@ -6,6 +6,7 @@ from datetime import date
 import pytest
 from aireloom import (
     AireloomClient,
+    APIError,
     ConfigurationError,
     ProjectsFilters,
     ResearchProductsFilters,
@@ -103,11 +104,15 @@ async def test_page_size_clamped_to_100(httpx_mock, client):
 
 
 async def test_offset_ceiling_and_invalid_page_rejected(httpx_mock, client):
+    httpx_mock.add_response(**json_response(load("rp_page.json")))
+    await client.research_products.search(page=101, page_size=100)
+    assert params_of(httpx_mock.get_request())["page"] == "101"
+
     with pytest.raises(ConfigurationError, match="10000"):
-        await client.research_products.search(page=101, page_size=100)
+        await client.research_products.search(page=102, page_size=100)
     with pytest.raises(ConfigurationError, match="page must be >= 1"):
         await client.research_products.search(page=0, page_size=10)
-    assert httpx_mock.get_requests() == []
+    assert len(httpx_mock.get_requests()) == 1
 
 
 async def test_empty_filter_model_and_empty_list_omitted(httpx_mock, client):
@@ -217,3 +222,16 @@ async def test_mailto_attached_to_v4_requests_only(httpx_mock, settings):
     assert graph_params["mailto"] == "team@example.org"
     assert leading_slash_params["mailto"] == "team@example.org"
     assert "mailto" not in scholix_params
+
+
+async def test_request_forwards_retry_flag(httpx_mock, client):
+    httpx_mock.add_response(status_code=503)
+    with pytest.raises(APIError):
+        await client.request("GET", "v4/research-products", retry=False)
+    assert len(httpx_mock.get_requests()) == 1
+
+    httpx_mock.add_response(status_code=503)
+    httpx_mock.add_response(**json_response(load("rp_page.json")))
+    response = await client.request("POST", "v4/research-products", retry=True)
+    assert response.status_code == 200
+    assert len(httpx_mock.get_requests()) == 3

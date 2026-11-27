@@ -3,7 +3,7 @@
 from bibliofabric.paging import QueryDialect
 
 MAX_OFFSET_WINDOW = 10_000
-"""Maximum number of results reachable via offset-based paging (``page * page_size <= 10_000``)."""
+"""Maximum offset depth for offset-based paging (``max_offset=10_000``)."""
 
 MAX_OR_VALUES = 50
 """Maximum pipe-separated OR values accepted per filter field by OpenAIRE Graph V4 (1.6.0+)."""
@@ -15,6 +15,7 @@ GRAPH_DIALECT = QueryDialect(
     iterate_page_size=100,
     page_param="page",
     page_start=1,
+    max_offset=MAX_OFFSET_WINDOW,
     cursor_param="cursor",
     cursor_start="*",
     sort_param="sort",
@@ -22,9 +23,8 @@ GRAPH_DIALECT = QueryDialect(
     select_param="select",
 )
 """V4 filter-based entity endpoints: ``page`` is 1-indexed, ``page_size`` goes
-up to 100, offset paging is limited to ``page * page_size <= 10_000``,
-``iterate()`` fetches 100 records per page by default, and cursor paging has no
-depth cap."""
+up to 100, offset paging is limited to ``max_offset=10_000``, ``iterate()``
+fetches 100 records per page by default, and cursor paging has no depth cap."""
 
 LINKS_DIALECT = QueryDialect(
     page_size_param="pageSize",

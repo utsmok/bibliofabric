@@ -27,10 +27,12 @@ src/aireloom/
   models/               # Pydantic models aligned with Graph API 1.6.0 + Scholix V2/V3
 ```
 
-Both hosts share credentials: `openaire_client_id` + `openaire_client_secret`
-resolve to `ClientCredentialsAuth` against the Keycloak token endpoint,
-otherwise `NoAuth`. An explicit `auth=` strategy wins. The Scholix host runs
-on a second internal client throttled to 1 request per second.
+Both hosts share credentials: `openaire_refresh_token` resolves to
+`RefreshTokenAuth`, and `openaire_client_id` + `openaire_client_secret` resolve
+to `ClientCredentialsAuth` against the Keycloak token endpoint (setting only one
+raises `ConfigurationError`), otherwise `NoAuth`. An explicit `auth_strategy=`
+strategy wins (`auth=` is a deprecated alias). The Scholix host runs on a second
+internal client throttled to 1 request per second.
 
 Iteration over graph entities defaults to 100 per page
 (`GRAPH_DIALECT.iterate_page_size`) and stops when the API stops returning
@@ -56,9 +58,9 @@ Conventional commits, `uv` only, no AI attribution.
 
 See `docs/aireloom/quirks.md` for the full list. The ones that bite during
 development: V4 `page_size` is capped at 100 (offset paging capped at
-`page * page_size <= 10_000`, OR lists capped at 50 values per field), Scholix
-V3 silently ignores `linkProvider` (routed to V2) and returns zero rows for
-`from`/`to` date filters while V2 has no date parameters at all (ignores them),
-the links and Scholix routes silently truncate page sizes ≥ 100 to 10 results,
-pages there are not pinned, and V3 by-id paths 404 when the `::` in identifiers
-is percent-encoded.
+`max_offset=10_000`, OR lists capped at 50 values per field), Scholix
+V3 silently ignores `linkProvider` (routed to V2) and `from_date`/`to_date`
+filters raise `ConfigurationError` immediately (V3 returns zero rows and V2
+ignores them), the links and Scholix routes silently truncate page sizes ≥ 100
+to 10 results, pages there are not pinned, and V3 by-id paths 404 when the
+`::` in identifiers is percent-encoded.
