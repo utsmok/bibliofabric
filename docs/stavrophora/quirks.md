@@ -28,3 +28,4 @@ Behavior of the live API that shapes how the client works. Each item is verified
 - Every response wraps in one `message` level: single items live in `message`, lists in `message.items` with totals in `message.total-results`. `Page.meta` carries the envelope minus the results, so facets and totals stay reachable.
 - The published spec is incomplete: several returned fields are absent from it. All models use `extra="allow"`, so unknown fields survive parsing.
 - Reference entries, license entries, and funder entries vary in shape between publishers; every field is optional and tolerant types (`SafeList`, `SafeStr`, `SafeInt`) absorb nulls and scalar-vs-list differences.
+- `event.sponsor` is a string for one sponsor and a list for several (ACM GECCO proceedings print two sponsors). The `Event` model accepts both and always yields a list.

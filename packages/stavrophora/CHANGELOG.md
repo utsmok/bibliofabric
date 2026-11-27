@@ -4,6 +4,16 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- `Work.event.sponsor` accepts the list Crossref prints for conferences with several sponsors (ACM proceedings). One such record on a page raised `ValidationError` for the whole `search()` result, and `works.get()` failed for the record itself.
+
+### Changed
+
+- `Work.event.sponsor` is a list of strings (`SafeStrList`, empty when absent) instead of `str | None`; a single sponsor parses as a one-item list.
+
 ## [0.3.0] - 2026-11-26
 
 ### Changed
