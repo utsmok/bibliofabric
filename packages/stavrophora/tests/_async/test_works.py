@@ -1,7 +1,12 @@
 """The /works route: request shape and parsing of real payloads."""
 
 import pytest
-from bibliofabric.exceptions import ConfigurationError
+from bibliofabric.exceptions import (
+    AuthError,
+    ConfigurationError,
+    NotFoundError,
+    ValidationError,
+)
 from stavrophora import WorksFilters
 
 from .conftest import fixture, work, works_envelope
@@ -127,6 +132,7 @@ async def test_get_parses_real_single_work(httpx_mock, client):
     work_ = await client.works.get("https://doi.org/10.1038/Nature12373")
     request = httpx_mock.get_requests()[0]
     assert request.url.path == "/v1/works/10.1038/nature12373"
+    assert request.url.raw_path.split(b"?")[0] == b"/v1/works/10.1038%2Fnature12373"
     assert work_.doi == "10.1038/nature12373"
     assert work_.title == ["Nanometre-scale thermometry in a living cell"]
     assert work_.member == "297"
@@ -187,9 +193,8 @@ async def test_event_sponsor_string_becomes_a_one_item_list(httpx_mock, client):
 
 async def test_404_raises_not_found_without_retry(httpx_mock, client):
     httpx_mock.add_response(status_code=404, json="Resource not found.")
-    with pytest.raises(Exception, match="404") as exc_info:
+    with pytest.raises(NotFoundError, match="404"):
         await client.works.get("10.1/missing")
-    assert exc_info.type.__name__ == "NotFoundError"
     assert len(httpx_mock.get_requests()) == 1
 
 
@@ -203,9 +208,8 @@ async def test_429_with_retry_after_zero_is_retried(httpx_mock, client):
 
 async def test_403_raises_auth_error_without_retry(httpx_mock, client):
     httpx_mock.add_response(status_code=403, json={})
-    with pytest.raises(Exception, match="403") as exc_info:
+    with pytest.raises(AuthError, match="403"):
         await client.works.search()
-    assert exc_info.type.__name__ == "AuthError"
     assert len(httpx_mock.get_requests()) == 1
 
 
@@ -217,10 +221,10 @@ def _bad_work() -> dict:
 
 async def test_iterate_invalid_record_raises_validation_error(httpx_mock, client):
     httpx_mock.add_response(json=works_envelope([_bad_work()]))
-    with pytest.raises(Exception, match="Work") as exc_info:
+    with pytest.raises(ValidationError, match="Work") as exc_info:
         async for _ in client.works.iterate():
             pass
-    assert exc_info.type.__name__ == "ValidationError"
+    assert isinstance(exc_info.value.raw, dict)
     assert exc_info.value.raw["DOI"] == "10.1/broken"
 
 

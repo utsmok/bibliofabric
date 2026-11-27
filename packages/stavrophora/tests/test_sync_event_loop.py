@@ -16,6 +16,7 @@ def test_sync_client_inside_running_loop(httpx_mock):
     async def main() -> str:
         with StavrophoraSyncClient(settings=settings) as client:
             fetched = await asyncio.to_thread(client.works.get, "10.1038/nature12373")
+            assert fetched.doi is not None
             return fetched.doi
 
     assert asyncio.run(main()) == "10.1038/nature12373"

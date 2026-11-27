@@ -62,6 +62,8 @@ The Crossref API needs no authentication. Two optional credentials change how re
 
 A `plus_token` replaces `mailto` as the credential when both are set. An explicit `auth_strategy=` argument overrides both.
 
+When rate limits are not explicitly configured, `StavrophoraClient` applies pool-aware defaults (Public: `5/1` req/s, Polite: `10/3` req/s, Metadata Plus: `50/50` req/s) and tracks Crossref's `x-api-pool` / `x-rate-limit-*` response headers via `client.last_pool` and `client.last_rate_limit_headers`.
+
 ## Where to go next
 
 - [Works](works.md): search, filters, cursor iteration, batch DOI lookup, facets, sample, agency, and scoped works routes.

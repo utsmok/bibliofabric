@@ -6,13 +6,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
-### Fixed
+### Added
 
-- `Work.event.sponsor` accepts the list Crossref prints for conferences with several sponsors (ACM proceedings). One such record on a page raised `ValidationError` for the whole `search()` result, and `works.get()` failed for the record itself.
+- Pool-aware default rate limits in `StavrophoraClient` when `rate_limits`, `max_concurrency`, and `max_requests_per_second` are not explicitly configured: Metadata Plus (`plus_token` set) defaults to `{"single": 50.0, "list": 50.0}` with `max_concurrency=10`, Polite Pool (`mailto` set) to `{"single": 10.0, "list": 3.0}` with `max_concurrency=3`, and Public Pool (neither set) to `{"single": 5.0, "list": 1.0}` with `max_concurrency=1`.
+- `StavrophoraClient.on_response()` captures Crossref pool and rate-limit headers (`x-api-pool`, `x-rate-limit-limit`, `x-rate-limit-interval`, `x-concurrency-limit`) into read-only `last_pool` and `last_rate_limit_headers` properties.
+- `WorksResource.latest_version(..., update_types=("new_version", "new_edition"))`: filters `updated-by` entries by type by default so retractions and corrections are not mistaken for newer versions; pass `update_types=None` to follow all Crossmark updates.
+- Added `"Programming Language :: Python :: 3.14"` classifier in `pyproject.toml`.
 
 ### Changed
 
+- `CrossrefResourceClient.item_path()` now percent-encodes identifiers with `quote(..., safe="")` (sending `%2F` inside DOIs per Crossref recommendation, matching `FundersResource.works()`).
+- Extracted `_WorksListResource` holding shared list, search, iterate, count, facets, sample, and batch methods; `WorksResource(_WorksListResource)` adds `get`, `exists`, `agency`, and `latest_version`, while `ScopedWorksResource(_WorksListResource)` omits single-work methods statically under `ty` and at runtime.
+- Aligned `CrossrefDialect` / `CrossrefOffsetDialect` (`max_offset=10_000`, `sort_param=None` and `select_param=None` on offset routes) and `TypesResource` (`CrossrefUnpagedDialect` with `page_size_param=None`) with `bibliofabric` fail-fast `_search_params()`.
 - `Work.event.sponsor` is a list of strings (`SafeStrList`, empty when absent) instead of `str | None`; a single sponsor parses as a one-item list.
+
+### Fixed
+
+- `Work.event.sponsor` accepts the list Crossref prints for conferences with several sponsors (ACM proceedings). One such record on a page raised `ValidationError` for the whole `search()` result, and `works.get()` failed for the record itself.
+- Resolved all `ty` diagnostics in `packages/stavrophora/tests/` so `ty check` passes with zero diagnostics and zero ignore comments across both `src/` and `tests/`.
 
 ## [0.3.0] - 2026-11-26
 

@@ -78,9 +78,12 @@ registered = await client.works.exists("10.1038/nature12373")
 
 ```python
 work = await client.works.latest_version("10.12688/f1000research.141553.1")
+all_updates = await client.works.latest_version(
+    "10.12688/f1000research.141553.1", update_types=None
+)
 ```
 
-`latest_version()` resolves a DOI to the newest record in its Crossmark update chain. Older records carry `updated-by` entries naming the works that updated them; the helper follows the entry with the latest timestamp until a record carries no further updates and returns it. A DOI without update data is returned unchanged.
+`latest_version()` resolves a DOI to the newest record in its Crossmark update chain. Older records carry `updated-by` entries naming the works that updated them; by default only `("new_version", "new_edition")` entries are followed so retractions and corrections are not mistaken for newer versions. Pass `update_types=None` to follow all Crossmark update types, or pass a custom collection of update-type names. A DOI without matching update data is returned unchanged.
 
 ## Facets, sample, agency
 
@@ -101,7 +104,7 @@ agency.agency.id  # "crossref"
 
 ## Scoped works
 
-Every parent resource exposes a `works()` method that returns a `ScopedWorksResource` with the full works parameter set:
+Every parent resource exposes a `works()` method that returns a `ScopedWorksResource` with the full works list, search, iterate, count, facets, sample, and batch methods (single-work methods such as `get`, `exists`, `agency`, and `latest_version` are omitted because Crossref serves them only at `/works/{doi}`):
 
 ```python
 page = await client.journals.works("20493630").search(sort="score")

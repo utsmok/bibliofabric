@@ -26,10 +26,12 @@ class StavrophoraSettings(BaseApiSettings):
         env_prefix="STAVROPHORA_", env_file=".env", extra="ignore"
     )
 
-    #: Defaults per D-19 and the 2026-07 polite-pool split: top-level
-    #: ``/works`` searches are the ``list`` class at 3 requests/s, everything
-    #: else (single records, scoped ``/.../works`` routes, other routes) the
-    #: ``single`` class at 10 requests/s; ``max_concurrency`` is shared.
+    #: Defaults for the Crossref polite pool: top-level ``/works`` searches
+    #: are the ``list`` class at 3 requests/s, everything else (single records,
+    #: scoped ``/.../works`` routes, other routes) the ``single`` class at
+    #: 10 requests/s; ``max_concurrency`` is shared. When left unset,
+    #: :class:`StavrophoraClient` selects pool-aware defaults for Public,
+    #: Polite, or Metadata Plus credentials.
     rate_limits: dict[str, float | None] = Field(default_factory=_default_rate_limits)
     max_requests_per_second: float | None = Field(default=3.0, gt=0)
     max_concurrency: int = Field(default=3, gt=0)

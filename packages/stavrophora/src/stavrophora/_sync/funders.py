@@ -26,7 +26,6 @@ class SyncFundersResource(CrossrefResourceSyncClient[Funder]):
     path = "funders"
     model = Funder
     filters_model = FunderFilters
-    supports_query = True
     supports_filter = True
 
     def normalize_id(self, value: str | int) -> str:

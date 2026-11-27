@@ -31,13 +31,16 @@ A 403 from Crossref means the account was blocked, not throttled; stop and inspe
 
 ## Rate limits
 
-The polite pool limits depend on the request type (split introduced 2026-07):
+When `rate_limits`, `max_concurrency`, and `max_requests_per_second` are not explicitly set on `StavrophoraSettings`, `StavrophoraClient` picks pool-aware defaults based on your credentials:
 
-- 3 requests per second for top-level `/works` lists (`x-api-pool: polite-array`)
-- 10 requests per second for single records and scoped works routes (`polite-single`)
-- 3 concurrent requests
-- Limits apply per `mailto` address
+| Pool | Credentials | `rate_limits` (req/s) | `max_concurrency` |
+|---|---|---|---|
+| Public | neither `mailto` nor `plus_token` | `{"single": 5.0, "list": 1.0}` | `1` |
+| Polite | `mailto` set (no `plus_token`) | `{"single": 10.0, "list": 3.0}` | `3` |
+| Metadata Plus | `plus_token` set | `{"single": 50.0, "list": 50.0}` | `10` |
 
-Pacing follows the 2026-07 Crossref split per request class (D-19): top-level `/works` searches run in the `list` class at 3 requests per second; everything else (single records, scoped `/.../works` routes, and all other routes) runs in the `single` class at 10 requests per second. The concurrency bound (3 polite slots) is shared across classes. Configure each class through `STAVROPHORA_RATE_LIMITS` (a JSON object such as `{"single": 10.0, "list": 3.0}`) and the shared bound through `STAVROPHORA_MAX_CONCURRENCY`. A Metadata Plus key raises the limit to 150 requests per second through the `crossref-api-key` header.
+Pacing follows the 2026-07 Crossref split per request class: top-level `/works` searches run in the `list` class, while single records, scoped `/.../works` routes, and all other routes run in the `single` class. The concurrency bound is shared across classes. Override each class through `STAVROPHORA_RATE_LIMITS` (a JSON object such as `{"single": 10.0, "list": 3.0}`) and the shared bound through `STAVROPHORA_MAX_CONCURRENCY`.
+
+Every response is inspected by `StavrophoraClient.on_response()`, which captures Crossref's `x-api-pool`, `x-rate-limit-limit`, `x-rate-limit-interval`, and `x-concurrency-limit` headers into the read-only `client.last_pool` and `client.last_rate_limit_headers` properties.
 
 On 429 the client backs off and retries automatically.

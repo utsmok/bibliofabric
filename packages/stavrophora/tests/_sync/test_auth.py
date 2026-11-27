@@ -2,7 +2,7 @@
 """Credential wiring: what each credential form puts on the wire."""
 
 from bibliofabric.auth import StaticTokenAuth
-from stavrophora import StavrophoraSettings, StavrophoraSyncClient
+from stavrophora import StavrophoraSettings, StavrophoraSyncClient, get_settings
 
 from .conftest import works_envelope
 
@@ -93,3 +93,102 @@ def test_max_requests_per_second_overrides_default_rate_limits():
         max_requests_per_second=5.0, rate_limits={"single": 20.0, "list": None}
     )
     assert custom.rate_limits == {"single": 20.0, "list": None}
+
+
+def _clear_stavrophora_env(monkeypatch) -> None:
+    for var in (
+        "STAVROPHORA_MAILTO",
+        "STAVROPHORA_PLUS_TOKEN",
+        "STAVROPHORA_RATE_LIMITS",
+        "STAVROPHORA_MAX_CONCURRENCY",
+        "STAVROPHORA_MAX_REQUESTS_PER_SECOND",
+    ):
+        monkeypatch.delenv(var, raising=False)
+    get_settings.cache_clear()
+
+
+def test_pool_default_rate_limits(monkeypatch):
+    _clear_stavrophora_env(monkeypatch)
+
+    public = StavrophoraSyncClient()
+    assert public.settings.rate_limits == {"single": 5.0, "list": 1.0}
+    assert public.settings.max_concurrency == 1
+
+    polite = StavrophoraSyncClient(mailto="polite@example.org")
+    assert polite.settings.rate_limits == {"single": 10.0, "list": 3.0}
+    assert polite.settings.max_concurrency == 3
+
+    plus = StavrophoraSyncClient(plus_token="plus-key-1")
+    assert plus.settings.rate_limits == {"single": 50.0, "list": 50.0}
+    assert plus.settings.max_concurrency == 10
+
+    plus_with_mailto = StavrophoraSyncClient(
+        mailto="polite@example.org", plus_token="plus-key-1"
+    )
+    assert plus_with_mailto.settings.rate_limits == {"single": 50.0, "list": 50.0}
+    assert plus_with_mailto.settings.max_concurrency == 10
+
+
+def test_explicit_rate_limits_and_concurrency_are_not_overridden(monkeypatch):
+    _clear_stavrophora_env(monkeypatch)
+
+    explicit = StavrophoraSyncClient(
+        plus_token="plus-key-1",
+        settings=StavrophoraSettings(
+            rate_limits={"single": 20.0, "list": 5.0},
+            max_concurrency=4,
+        ),
+    )
+    assert explicit.settings.rate_limits == {"single": 20.0, "list": 5.0}
+    assert explicit.settings.max_concurrency == 4
+
+    uniform = StavrophoraSyncClient(
+        mailto="polite@example.org",
+        settings=StavrophoraSettings(max_requests_per_second=2.5),
+    )
+    assert uniform.settings.rate_limits == {}
+    assert uniform.settings.max_requests_per_second == 2.5
+    assert uniform.settings.max_concurrency == 3
+
+    unthrottled = StavrophoraSyncClient(
+        settings=StavrophoraSettings(max_requests_per_second=None, max_concurrency=8)
+    )
+    assert unthrottled.settings.rate_limits == {}
+    assert unthrottled.settings.max_concurrency == 8
+
+
+def test_on_response_tracks_crossref_rate_limit_headers(httpx_mock):
+    httpx_mock.add_response(
+        json=EMPTY,
+        headers={
+            "x-api-pool": "polite-array",
+            "x-rate-limit-limit": "3",
+            "x-rate-limit-interval": "1s",
+            "x-concurrency-limit": "3",
+            "x-unrelated-header": "ignored",
+        },
+    )
+    httpx_mock.add_response(json=EMPTY)
+
+    with StavrophoraSyncClient(
+        settings=settings(mailto="tester@example.org")
+    ) as client:
+        assert client.last_pool is None
+        assert client.last_rate_limit_headers == {}
+
+        client.works.search()
+        assert client.last_pool == "polite-array"
+        assert client.last_rate_limit_headers == {
+            "x-api-pool": "polite-array",
+            "x-rate-limit-limit": "3",
+            "x-rate-limit-interval": "1s",
+            "x-concurrency-limit": "3",
+        }
+
+        snapshot = client.last_rate_limit_headers
+        snapshot["x-api-pool"] = "mutated"
+        assert client.last_rate_limit_headers["x-api-pool"] == "polite-array"
+
+        client.works.search()
+        assert client.last_pool is None
+        assert client.last_rate_limit_headers == {}

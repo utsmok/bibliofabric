@@ -10,15 +10,16 @@ import os
 import pytest
 from stavrophora import StavrophoraClient, WorksFilters
 
-pytestmark = pytest.mark.live_api
-
 MAILTO = os.environ.get("STAVROPHORA_MAILTO", "")
+
+pytestmark = [
+    pytest.mark.live_api,
+    pytest.mark.skipif(not MAILTO, reason="set STAVROPHORA_MAILTO to run live checks"),
+]
 
 
 @pytest.fixture
 async def live_client():
-    if not MAILTO:
-        pytest.skip("set STAVROPHORA_MAILTO to run live checks")
     async with StavrophoraClient(mailto=MAILTO) as client:
         yield client
 

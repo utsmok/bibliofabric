@@ -19,7 +19,6 @@ class SyncLicensesResource(CrossrefResourceSyncClient[License]):
 
     path = "licenses"
     model = License
-    supports_query = True
 
     def get(
         self,

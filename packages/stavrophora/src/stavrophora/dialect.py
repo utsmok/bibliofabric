@@ -44,6 +44,7 @@ CrossrefDialect = QueryDialect(
     count_page_size=0,
     page_param=None,
     offset_param="offset",
+    max_offset=MAX_OFFSET_WINDOW,
     cursor_param="cursor",
     cursor_start="*",
     sort_param="sort",
@@ -51,8 +52,9 @@ CrossrefDialect = QueryDialect(
     select_param="select",
 )
 
-#: Non-works dialect: offset-only paging (Crossref rejects ``cursor=*`` on
-#: ``/journals``, ``/funders``, ``/members``, ``/types``, and ``/licenses``).
+#: Non-works dialect: offset-only paging (Crossref rejects ``cursor=*``,
+#: ``sort``, and ``select`` on ``/journals``, ``/funders``, ``/members``, and
+#: ``/licenses``).
 CrossrefOffsetDialect = QueryDialect(
     page_size_param="rows",
     max_page_size=1000,
@@ -61,11 +63,29 @@ CrossrefOffsetDialect = QueryDialect(
     count_page_size=0,
     page_param=None,
     offset_param="offset",
+    max_offset=MAX_OFFSET_WINDOW,
     cursor_param=None,
     cursor_start=None,
-    sort_param="sort",
+    sort_param=None,
     query_param="query",
-    select_param="select",
+    select_param=None,
+)
+
+#: Unpaged dialect: ``/types`` ignores paging parameters and rejects
+#: ``query``, ``sort``, and ``select``.
+CrossrefUnpagedDialect = QueryDialect(
+    page_size_param=None,
+    max_page_size=1000,
+    default_page_size=20,
+    iterate_page_size=ITERATE_PAGE_SIZE,
+    count_page_size=0,
+    page_param=None,
+    offset_param=None,
+    cursor_param=None,
+    cursor_start=None,
+    sort_param=None,
+    query_param=None,
+    select_param=None,
 )
 
 

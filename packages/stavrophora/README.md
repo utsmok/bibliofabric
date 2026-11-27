@@ -83,7 +83,7 @@ The sync client never starts or touches an event loop, so it also works when cal
 
 `search()` returns a `bibliofabric.Page`: `.results` (typed models), `.total`, `.next_cursor`, and `.meta` (the raw envelope minus results, e.g. facets). 
 
-No authentication required. Pass a `mailto` (parameter or `STAVROPHORA_MAILTO` env var) to enter the polite pool: the client paces per request class — 3 requests/s for top-level `/works` searches, 10 requests/s for single records, scoped works routes, and every other route — with 3 concurrent requests shared across classes (since the 2026-07 split). A Metadata Plus key (`STAVROPHORA_PLUS_TOKEN` or `plus_token=`) is sent as `crossref-api-key: Bearer <key>` and replaces the query-parameter mailto as the auth strategy; the mailto still rides the User-Agent.
+No authentication required. When rate limits are not explicitly configured, `StavrophoraClient` applies pool-aware defaults: Public Pool (no credentials) runs at 5 req/s single / 1 req/s list with concurrency 1; Polite Pool (`mailto` or `STAVROPHORA_MAILTO`) runs at 10 req/s single / 3 req/s list with concurrency 3; Metadata Plus (`plus_token` or `STAVROPHORA_PLUS_TOKEN`, sent as `crossref-api-key: Bearer <key>`) runs at 50 req/s for both classes with concurrency 10. When both are set, `plus_token` replaces the query-parameter `mailto` while `mailto` still rides the `User-Agent`. `client.last_pool` and `client.last_rate_limit_headers` expose Crossref's `x-api-pool` / `x-rate-limit-*` headers from the latest response.
 
 ## Basic Usage
 

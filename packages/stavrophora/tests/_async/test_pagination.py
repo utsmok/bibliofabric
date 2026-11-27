@@ -1,6 +1,7 @@
 """Cursor pagination over the Crossref envelope, resume, and count."""
 
 import pytest
+from bibliofabric.exceptions import ValidationError
 from stavrophora import WorksFilters
 
 from .conftest import fixture, work, works_envelope
@@ -159,7 +160,6 @@ async def test_page_exposes_total_and_meta(httpx_mock, client):
 async def test_validated_parsing_reports_the_model_name(httpx_mock, client, bad):
     body = works_envelope([{"DOI": "10.1/x", "title": ["ok"], **bad}])
     httpx_mock.add_response(json=body)
-    with pytest.raises(Exception) as exc_info:
+    with pytest.raises(ValidationError) as exc_info:
         await client.works.search()
-    assert exc_info.type.__name__ == "ValidationError"
     assert exc_info.value.model_name == "Work"

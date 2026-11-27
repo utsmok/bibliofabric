@@ -3,6 +3,7 @@
 
 import re
 from functools import cached_property
+from typing import Any
 
 import httpx
 from bibliofabric import SyncBaseApiClient
@@ -25,6 +26,22 @@ CROSSREF_API_BASE_URL = "https://api.crossref.org/v1"
 #: name is no longer documented).
 PLUS_TOKEN_HEADER = "crossref-api-key"
 
+_PLUS_RATE_LIMITS: dict[str, float | None] = {"single": 50.0, "list": 50.0}
+_PLUS_CONCURRENCY = 10
+
+_POLITE_RATE_LIMITS: dict[str, float | None] = {"single": 10.0, "list": 3.0}
+_POLITE_CONCURRENCY = 3
+
+_PUBLIC_RATE_LIMITS: dict[str, float | None] = {"single": 5.0, "list": 1.0}
+_PUBLIC_CONCURRENCY = 1
+
+_RATE_LIMIT_HEADERS = (
+    "x-api-pool",
+    "x-rate-limit-limit",
+    "x-rate-limit-interval",
+    "x-concurrency-limit",
+)
+
 
 class StavrophoraSyncClient(SyncBaseApiClient):
     """Client for the Crossref API.
@@ -35,11 +52,11 @@ class StavrophoraSyncClient(SyncBaseApiClient):
 
     Credentials are resolved in the constructor: an explicit ``auth_strategy``
     wins, then a Metadata Plus key (``crossref-api-key`` header), then
-    ``mailto`` (polite pool via query parameter). The settings pace per
-    request class (D-19): top-level ``/works`` searches at 3 requests/s and
-    everything else (single records, scoped ``/.../works`` routes, all other
-    routes) at 10 requests/s, with 3 concurrent requests shared across
-    classes.
+    ``mailto`` (polite pool via query parameter). When ``rate_limits``,
+    ``max_concurrency``, and ``max_requests_per_second`` are not explicitly
+    set on ``settings``, pool-aware defaults apply: Metadata Plus
+    (``50/50`` req/s, concurrency ``10``), Polite Pool (``10/3`` req/s,
+    concurrency ``3``), or Public Pool (``5/1`` req/s, concurrency ``1``).
     """
 
     def __init__(
@@ -54,8 +71,31 @@ class StavrophoraSyncClient(SyncBaseApiClient):
         resolved = settings or get_settings()
         mailto = mailto or resolved.mailto
         plus_token = plus_token or resolved.plus_token
+
+        if plus_token:
+            pool_rate_limits = _PLUS_RATE_LIMITS
+            pool_concurrency = _PLUS_CONCURRENCY
+        elif mailto:
+            pool_rate_limits = _POLITE_RATE_LIMITS
+            pool_concurrency = _POLITE_CONCURRENCY
+        else:
+            pool_rate_limits = _PUBLIC_RATE_LIMITS
+            pool_concurrency = _PUBLIC_CONCURRENCY
+
+        fields_set = resolved.model_fields_set
+        updates: dict[str, Any] = {}
         if mailto and resolved.mailto != mailto:
-            resolved = resolved.model_copy(update={"mailto": mailto})
+            updates["mailto"] = mailto
+        if (
+            "rate_limits" not in fields_set
+            and "max_requests_per_second" not in fields_set
+        ):
+            updates["rate_limits"] = dict(pool_rate_limits)
+        if "max_concurrency" not in fields_set:
+            updates["max_concurrency"] = pool_concurrency
+        if updates:
+            resolved = resolved.model_copy(update=updates)
+
         if auth_strategy is not None:
             auth = auth_strategy
         elif plus_token:
@@ -70,6 +110,28 @@ class StavrophoraSyncClient(SyncBaseApiClient):
             unwrapper=CrossrefUnwrapper(),
             auth=auth,
         )
+        self._last_pool: str | None = None
+        self._last_rate_limit_headers: dict[str, str] = {}
+
+    @property
+    def last_pool(self) -> str | None:
+        """The ``x-api-pool`` header value from the most recent response, if any."""
+        return self._last_pool
+
+    @property
+    def last_rate_limit_headers(self) -> dict[str, str]:
+        """Crossref rate-limit headers captured from the most recent response."""
+        return dict(self._last_rate_limit_headers)
+
+    def on_response(self, response: httpx.Response) -> None:
+        """Capture Crossref pool and rate-limit headers from each response."""
+        captured: dict[str, str] = {}
+        for header in _RATE_LIMIT_HEADERS:
+            value = response.headers.get(header)
+            if value is not None:
+                captured[header] = value
+        self._last_rate_limit_headers = captured
+        self._last_pool = captured.get("x-api-pool")
 
     @cached_property
     def works(self) -> SyncWorksResource:

@@ -31,7 +31,9 @@ def test_journal_list_parses_list_titles(httpx_mock, client):
 def test_funder_get_parses_hierarchy(httpx_mock, client):
     httpx_mock.add_response(json=fixture("funder_get.json"))
     funder = client.funders.get("10.13039/100000001")
-    assert httpx_mock.get_requests()[0].url.path == "/v1/funders/10.13039/100000001"
+    request = httpx_mock.get_requests()[0]
+    assert request.url.path == "/v1/funders/10.13039/100000001"
+    assert request.url.raw_path.split(b"?")[0] == b"/v1/funders/10.13039%2F100000001"
     assert funder.id == "100000001"
     assert funder.name == "National Science Foundation"
     assert set(funder.hierarchy_names) == {"100010608", "100000179", "100014411"}

@@ -18,7 +18,6 @@ class LicensesResource(CrossrefResourceClient[License]):
 
     path = "licenses"
     model = License
-    supports_query = True
 
     async def get(
         self,

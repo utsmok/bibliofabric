@@ -36,21 +36,17 @@ def _check_cursor_sort(sort: str | Sequence[str]) -> None:
 class CrossrefResourceSyncClient[E: BaseModel](SyncResourceClient[E]):
     """Base for all Crossref resource clients.
 
-    Subclasses declare ``path``, ``model``, and the ``supports_*`` flags
-    describing which list parameters the route accepts; the works family
-    enables everything and overrides ``dialect`` with cursor-capable
-    :data:`~stavrophora.dialect.CrossrefDialect`, while the other routes use
-    offset-only :data:`~stavrophora.dialect.CrossrefOffsetDialect` and
-    restrict parameters per the Crossref swagger spec (an unsupported
-    parameter is a 400 there, so it is a client-side error here).
+    Subclasses declare ``path``, ``model``, and ``supports_filter`` (when the
+    route accepts ``filter=``); the works family enables filters and overrides
+    ``dialect`` with cursor-capable :data:`~stavrophora.dialect.CrossrefDialect`,
+    while the other routes use offset-only
+    :data:`~stavrophora.dialect.CrossrefOffsetDialect` or unpaged
+    :data:`~stavrophora.dialect.CrossrefUnpagedDialect` so unsupported list
+    parameters fail fast client-side via :meth:`ResourceClient._search_params`.
     """
 
     dialect: ClassVar[QueryDialect] = CrossrefOffsetDialect
-
-    supports_query: ClassVar[bool] = True
     supports_filter: ClassVar[bool] = False
-    supports_sort: ClassVar[bool] = False
-    supports_select: ClassVar[bool] = False
 
     # --- hooks ---------------------------------------------------------
 
@@ -86,13 +82,13 @@ class CrossrefResourceSyncClient[E: BaseModel](SyncResourceClient[E]):
         return str(value).strip()
 
     def item_path(self, id: str | int) -> str:
-        """Return the single-entity path; the slash inside DOIs stays raw."""
+        """Return the single-entity path with the identifier percent-encoded."""
         normalized = self.normalize_id(id)
         if not normalized:
             raise ConfigurationError(
                 f"{type(self).__name__}.item_path requires a non-empty id."
             )
-        return f"{self.path.rstrip('/')}/{quote(normalized, safe='/')}"
+        return f"{self.path.rstrip('/')}/{quote(normalized, safe='')}"
 
     # --- operations ----------------------------------------------------
 
@@ -119,10 +115,6 @@ class CrossrefResourceSyncClient[E: BaseModel](SyncResourceClient[E]):
         (they fail mid-harvest with a 400); sort with a citation field or
         iterate unsorted.
         """
-        if cursor is not None and self.dialect.cursor_param is None:
-            raise ConfigurationError(
-                f"The Crossref /{self.path} route does not support cursor paging."
-            )
         if sort is not None and self.dialect.cursor_param is not None:
             _check_cursor_sort(sort)
         return super().iterate(
@@ -153,18 +145,13 @@ class CrossrefResourceSyncClient[E: BaseModel](SyncResourceClient[E]):
         cursor: str | None = None,
         params: Mapping[str, Any] | None,
     ) -> dict[str, Any]:
-        self._check_route_params(filters=filters, query=query, sort=sort, select=select)
-        if cursor is not None:
-            if self.dialect.cursor_param is None:
-                raise ConfigurationError(
-                    f"The Crossref /{self.path} route does not support cursor paging."
-                )
-            if sort is not None:
-                _check_cursor_sort(sort)
-        elif page is not None and page < self.dialect.page_start:
-            raise ConfigurationError(
-                f"page must be >= {self.dialect.page_start}, got {page}."
-            )
+        self._check_route_params(filters=filters)
+        if (
+            cursor is not None
+            and self.dialect.cursor_param is not None
+            and sort is not None
+        ):
+            _check_cursor_sort(sort)
         query_params = super()._search_params(
             filters=filters,
             query=query,
@@ -180,6 +167,10 @@ class CrossrefResourceSyncClient[E: BaseModel](SyncResourceClient[E]):
             and page is not None
             and self.dialect.offset_param is not None
         ):
+            if page < self.dialect.page_start:
+                raise ConfigurationError(
+                    f"page must be >= {self.dialect.page_start}, got {page}."
+                )
             size = min(
                 page_size if page_size is not None else self.dialect.default_page_size,
                 self.dialect.max_page_size,
@@ -197,27 +188,11 @@ class CrossrefResourceSyncClient[E: BaseModel](SyncResourceClient[E]):
         self,
         *,
         filters: BaseModel | Mapping[str, Any] | None,
-        query: str | None,
-        sort: str | Sequence[str] | None,
-        select: Sequence[str] | None,
     ) -> None:
-        """Reject parameters the route does not accept (they would 400)."""
-        route = f"/{self.path}"
-        if sort is not None and not self.supports_sort:
-            raise ConfigurationError(
-                f"The Crossref {route} route does not support sort."
-            )
-        if select and not self.supports_select:
-            raise ConfigurationError(
-                f"The Crossref {route} route does not support select."
-            )
-        if query and not self.supports_query:
-            raise ConfigurationError(
-                f"The Crossref {route} route does not support query."
-            )
+        """Reject ``filter`` on routes that do not accept it (they would 400)."""
         if filters is not None and not self.supports_filter:
             raise ConfigurationError(
-                f"The Crossref {route} route does not support filter."
+                f"The Crossref /{self.path} route does not support filter."
             )
 
     def _request_page(self, query_params: dict[str, Any], page: int | None) -> Page[E]:

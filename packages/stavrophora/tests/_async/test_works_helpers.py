@@ -1,7 +1,7 @@
 """WorksResource extras: batch DOI lookup, facets, sample, agency."""
 
 import pytest
-from bibliofabric.exceptions import ConfigurationError
+from bibliofabric.exceptions import ConfigurationError, ValidationError
 
 from .conftest import fixture, work, works_envelope
 
@@ -101,6 +101,9 @@ async def test_agency_requests_the_agency_route(httpx_mock, client):
     agency = await client.works.agency("https://doi.org/10.1038/Nature12373")
     request = httpx_mock.get_requests()[0]
     assert request.url.path == "/v1/works/10.1038/nature12373/agency"
+    assert (
+        request.url.raw_path.split(b"?")[0] == b"/v1/works/10.1038%2Fnature12373/agency"
+    )
     assert agency.doi == "10.1038/nature12373"
     assert agency.agency.id == "crossref"
     assert agency.agency.label == "Crossref"
@@ -112,6 +115,7 @@ async def test_exists_sends_head_and_reports_404(httpx_mock, client):
     request = httpx_mock.get_requests()[0]
     assert request.method == "HEAD"
     assert request.url.path == "/v1/works/10.1038/nature12373"
+    assert request.url.raw_path.split(b"?")[0] == b"/v1/works/10.1038%2Fnature12373"
 
     httpx_mock.add_response(status_code=404, text="Resource not found.")
     assert await client.works.exists("10.9999/nope") is False
@@ -147,8 +151,16 @@ async def test_latest_version_falls_back_to_date_parts_and_breaks_redirect_cycle
             "DOI": "10.1/canonical",
             "title": ["V1"],
             "updated-by": [
-                {"DOI": "10.1/v2", "updated": {"date-parts": [[2024, 1, 10]]}},
-                {"DOI": "10.1/v3", "updated": {"date-parts": [[2024, 5, 1]]}},
+                {
+                    "DOI": "10.1/v2",
+                    "type": "new_version",
+                    "updated": {"date-parts": [[2024, 1, 10]]},
+                },
+                {
+                    "DOI": "10.1/v3",
+                    "type": "new_version",
+                    "updated": {"date-parts": [[2024, 5, 1]]},
+                },
             ],
         },
     }
@@ -159,7 +171,11 @@ async def test_latest_version_falls_back_to_date_parts_and_breaks_redirect_cycle
             "DOI": "10.1/v3",
             "title": ["V3"],
             "updated-by": [
-                {"DOI": "10.1/canonical", "updated": {"date-parts": [[2024, 6, 1]]}},
+                {
+                    "DOI": "10.1/canonical",
+                    "type": "new_version",
+                    "updated": {"date-parts": [[2024, 6, 1]]},
+                },
             ],
         },
     }
@@ -170,6 +186,79 @@ async def test_latest_version_falls_back_to_date_parts_and_breaks_redirect_cycle
     assert len(httpx_mock.get_requests()) == 2
 
 
+async def test_latest_version_ignores_retractions_and_corrections_by_default(
+    httpx_mock, client
+):
+    record = {
+        "status": "ok",
+        "message-type": "work",
+        "message": {
+            "DOI": "10.1/orig",
+            "title": ["Original"],
+            "updated-by": [
+                {
+                    "DOI": "10.1/retraction",
+                    "type": "retraction",
+                    "updated": {"timestamp": 1712707200000},
+                },
+                {
+                    "DOI": "10.1/correction",
+                    "type": "correction",
+                    "updated": {"timestamp": 1712000000000},
+                },
+            ],
+        },
+    }
+    httpx_mock.add_response(json=record)
+    latest = await client.works.latest_version("10.1/orig")
+    assert latest.doi == "10.1/orig"
+    assert len(httpx_mock.get_requests()) == 1
+
+
+async def test_latest_version_follows_new_edition_and_allows_unfiltered_updates(
+    httpx_mock, client
+):
+    first = {
+        "status": "ok",
+        "message-type": "work",
+        "message": {
+            "DOI": "10.1/v1",
+            "title": ["Edition 1"],
+            "updated-by": [
+                {
+                    "DOI": "10.1/ed2",
+                    "type": "new_edition",
+                    "updated": {"timestamp": 1700000000000},
+                },
+                {
+                    "DOI": "10.1/retract",
+                    "type": "retraction",
+                    "updated": {"timestamp": 1720000000000},
+                },
+            ],
+        },
+    }
+    second = {
+        "status": "ok",
+        "message-type": "work",
+        "message": {"DOI": "10.1/ed2", "title": ["Edition 2"]},
+    }
+    retraction = {
+        "status": "ok",
+        "message-type": "work",
+        "message": {"DOI": "10.1/retract", "title": ["Retraction notice"]},
+    }
+    httpx_mock.add_response(json=first)
+    httpx_mock.add_response(json=second)
+    latest = await client.works.latest_version("10.1/v1")
+    assert latest.doi == "10.1/ed2"
+
+    httpx_mock.add_response(json=first)
+    httpx_mock.add_response(json=retraction)
+    all_updates = await client.works.latest_version("10.1/v1", update_types=None)
+    assert all_updates.doi == "10.1/retract"
+
+
 async def test_agency_wraps_validation_errors(httpx_mock, client):
     httpx_mock.add_response(
         json={
@@ -178,10 +267,10 @@ async def test_agency_wraps_validation_errors(httpx_mock, client):
             "message": {"DOI": "10.1/x", "agency": "not-an-object"},
         }
     )
-    with pytest.raises(Exception, match="WorkAgency") as exc_info:
+    with pytest.raises(ValidationError, match="WorkAgency") as exc_info:
         await client.works.agency("10.1/x")
-    assert exc_info.type.__name__ == "ValidationError"
     assert exc_info.value.model_name == "WorkAgency"
+    assert isinstance(exc_info.value.raw, dict)
     assert exc_info.value.raw["DOI"] == "10.1/x"
 
 

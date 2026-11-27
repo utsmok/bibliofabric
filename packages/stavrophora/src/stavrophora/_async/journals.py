@@ -18,7 +18,6 @@ class JournalsResource(CrossrefResourceClient[Journal]):
 
     path = "journals"
     model = Journal
-    supports_query = True
 
     def normalize_id(self, value: str | int) -> str:
         """Return the hyphenated uppercase ISSN form."""

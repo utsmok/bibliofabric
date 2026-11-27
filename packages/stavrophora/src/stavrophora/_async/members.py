@@ -18,7 +18,6 @@ class MembersResource(CrossrefResourceClient[Member]):
     path = "members"
     model = Member
     filters_model = MemberFilters
-    supports_query = True
     supports_filter = True
 
     def works(self, member_id: str | int) -> ScopedWorksResource:

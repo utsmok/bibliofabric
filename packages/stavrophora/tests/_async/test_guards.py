@@ -3,6 +3,7 @@
 import pytest
 from bibliofabric.exceptions import ConfigurationError
 from stavrophora import FunderFilters, MemberFilters
+from stavrophora._async.works import _WorksListResource
 
 from .conftest import works_envelope
 
@@ -33,30 +34,33 @@ async def test_cursor_iteration_allows_citation_sort(httpx_mock, client):
 
 
 async def test_journals_reject_sort_and_select(httpx_mock, client):
-    with pytest.raises(
-        ConfigurationError, match="/journals route does not support sort"
-    ):
+    with pytest.raises(ConfigurationError, match="does not support sorting"):
         await client.journals.search(sort="score")
-    with pytest.raises(
-        ConfigurationError, match="/journals route does not support select"
-    ):
+    with pytest.raises(ConfigurationError, match="does not support field selection"):
         await client.journals.search(select=["title"])
+    with pytest.raises(ConfigurationError, match="does not support field selection"):
+        await client.journals.get("2049-3630", select=["title"])
     assert httpx_mock.get_requests() == []
 
 
 async def test_types_reject_query_and_filter(httpx_mock, client):
-    with pytest.raises(ConfigurationError, match="/types route does not support query"):
+    with pytest.raises(ConfigurationError, match="does not support free-text query"):
         await client.types.search(query="journal")
     with pytest.raises(
         ConfigurationError, match="/types route does not support filter"
     ):
         await client.types.search({"type": "journal-article"})
+    with pytest.raises(ConfigurationError, match="does not support page/offset paging"):
+        await client.types.search(page=1)
+    with pytest.raises(ConfigurationError, match="does not support sorting"):
+        await client.types.search(sort="id")
+    with pytest.raises(ConfigurationError, match="does not support field selection"):
+        await client.types.search(select=["id"])
+    assert httpx_mock.get_requests() == []
 
 
 async def test_funders_reject_sort(httpx_mock, client):
-    with pytest.raises(
-        ConfigurationError, match="/funders route does not support sort"
-    ):
+    with pytest.raises(ConfigurationError, match="does not support sorting"):
         await client.funders.search(FunderFilters(location="Netherlands"), sort="score")
 
 
@@ -116,14 +120,11 @@ async def test_licenses_has_no_single_item_route(httpx_mock, client):
     assert httpx_mock.get_requests() == []
 
 
-async def test_scoped_works_rejects_single_work_methods(httpx_mock, client):
+def test_scoped_works_omits_single_work_methods(client):
     scope = client.journals.works("2049-3630")
-    with pytest.raises(ConfigurationError, match="no single-work route"):
-        await scope.get("10.1038/nature12373")
-    with pytest.raises(ConfigurationError, match="no single-work route"):
-        await scope.exists("10.1038/nature12373")
-    with pytest.raises(ConfigurationError, match="no agency route"):
-        await scope.agency("10.1038/nature12373")
-    with pytest.raises(ConfigurationError, match="no single-work route"):
-        await scope.latest_version("10.1038/nature12373")
-    assert httpx_mock.get_requests() == []
+    assert isinstance(client.works, _WorksListResource)
+    assert isinstance(scope, _WorksListResource)
+    for name in ("get", "exists", "agency", "latest_version", "item_path"):
+        assert not hasattr(scope, name)
+    for name in ("get", "exists", "agency", "latest_version"):
+        assert hasattr(client.works, name)
