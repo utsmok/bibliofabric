@@ -3,6 +3,7 @@
 
 import functools
 import logging
+from collections.abc import Mapping
 from typing import Any
 
 import httpx
@@ -42,10 +43,11 @@ class AireloomSyncClient(SyncBaseApiClient):
     Entity resources are available as typed attributes; single-entity lookups
     go through the V3 by-id routes because V4 has none. Authentication
     resolves in the constructor: set ``openaire_client_id`` and
-    ``openaire_client_secret`` (settings or ``AIRELOOM_OPENAIRE_CLIENT_ID`` /
-    ``AIRELOOM_OPENAIRE_CLIENT_SECRET``) for OAuth2 client-credentials access
-    against the Keycloak token endpoint; without credentials the client is
-    anonymous. An explicit ``auth`` strategy always wins.
+    ``openaire_client_secret`` (settings, ``AIRELOOM_OPENAIRE_CLIENT_ID`` /
+    ``AIRELOOM_OPENAIRE_CLIENT_SECRET``, or ``client_id``/``client_secret``)
+    for OAuth2 client-credentials access against the Keycloak token endpoint;
+    without credentials the client is anonymous. An explicit ``auth`` strategy
+    always wins.
 
     The Scholix resource talks to the Scholexplorer host through a second
     internal client that shares settings and credentials but throttles itself
@@ -60,12 +62,17 @@ class AireloomSyncClient(SyncBaseApiClient):
         *,
         base_url: str | None = None,
         scholix_base_url: str | None = None,
+        mailto: str | None = None,
+        client_id: str | None = None,
+        client_secret: str | None = None,
+        http_client: httpx.Client | None = None,
     ) -> None:
         """Build the client from settings, resolving credentials immediately.
 
         ``settings`` defaults to :func:`aireloom.config.get_settings`, which
-        reads ``AIRELOOM_*`` environment variables and ``.env``. The ``base_url``
-        and ``scholix_base_url`` arguments override the settings values.
+        reads ``AIRELOOM_*`` environment variables and ``.env``. Keyword
+        overrides (``base_url``, ``scholix_base_url``, ``mailto``,
+        ``client_id``, ``client_secret``) take precedence over ``settings``.
         """
         resolved = settings or get_settings()
         overrides: dict[str, str] = {}
@@ -73,6 +80,12 @@ class AireloomSyncClient(SyncBaseApiClient):
             overrides["base_url"] = base_url
         if scholix_base_url is not None:
             overrides["scholix_base_url"] = scholix_base_url
+        if mailto is not None:
+            overrides["mailto"] = mailto
+        if client_id is not None:
+            overrides["openaire_client_id"] = client_id
+        if client_secret is not None:
+            overrides["openaire_client_secret"] = client_secret
         if overrides:
             resolved = resolved.model_copy(update=overrides)
         strategy = auth if auth is not None else _resolve_auth(resolved)
@@ -81,6 +94,7 @@ class AireloomSyncClient(SyncBaseApiClient):
             settings=resolved,
             unwrapper=OpenAireUnwrapper(),
             auth=strategy,
+            http_client=http_client,
         )
         self._scholix_api = SyncBaseApiClient(
             base_url=resolved.scholix_base_url,
@@ -92,33 +106,49 @@ class AireloomSyncClient(SyncBaseApiClient):
             unwrapper=ScholixUnwrapper(),
             auth=strategy,
         )
-        logger.debug(
-            "%s initialized (%s).",
-            type(self).__name__,
-            "anonymous" if isinstance(strategy, NoAuth) else "client credentials",
+        auth_label = (
+            "anonymous" if isinstance(strategy, NoAuth) else type(strategy).__name__
         )
+        logger.debug("%s initialized (%s).", type(self).__name__, auth_label)
 
     def request(
         self,
         method: str,
         path: str,
         *,
-        params: Any | None = None,
+        params: Mapping[str, Any] | None = None,
         json: Any | None = None,
-        headers: Any | None = None,
+        data: Mapping[str, Any] | None = None,
+        content: str | bytes | None = None,
+        headers: Mapping[str, str] | None = None,
+        timeout: float | httpx.Timeout | None = None,
     ) -> httpx.Response:
         """Send a request through the core retry pipeline.
 
         V4 accepts ``mailto`` for polite-pool admission (V3 rejects it), so the
         configured contact address is attached to ``v4/`` requests only.
         """
-        if (
-            path.startswith("v4/")
-            and self._settings.mailto
-            and not (params and "mailto" in params)
-        ):
-            params = {"mailto": self._settings.mailto, **(params or {})}
-        return super().request(method, path, params=params, json=json, headers=headers)
+        effective_params: Mapping[str, Any] | None = params
+        if path.lstrip("/").startswith("v4/") and self._settings.mailto:
+            if params is None:
+                effective_params = {"mailto": self._settings.mailto}
+            elif isinstance(params, Mapping):
+                if "mailto" not in params:
+                    effective_params = {"mailto": self._settings.mailto, **params}
+            else:
+                qp = httpx.QueryParams(params)
+                if "mailto" not in qp:
+                    effective_params = qp.set("mailto", self._settings.mailto)
+        return super().request(
+            method,
+            path,
+            params=effective_params,
+            json=json,
+            data=data,
+            content=content,
+            headers=headers,
+            timeout=timeout,
+        )
 
     @functools.cached_property
     def _links(self) -> SyncLinksResource:
@@ -151,18 +181,12 @@ class AireloomSyncClient(SyncBaseApiClient):
 
     @functools.cached_property
     def scholix(self) -> SyncScholixResource:
-        """Search Scholix links on the Scholexplorer host (V3, V2 for dates)."""
+        """Search Scholix links on the Scholexplorer host (V3, V2 for linkProvider)."""
         return SyncScholixResource(self._scholix_api)
 
     def close(self) -> None:
         """Close both the Graph and the Scholix HTTP clients."""
-        super().close()
-        self._scholix_api.close()
-
-    def __exit__(
-        self,
-        exc_type: type[BaseException] | None,
-        exc_val: BaseException | None,
-        exc_tb: object | None,
-    ) -> None:
-        self.close()
+        try:
+            super().close()
+        finally:
+            self._scholix_api.close()

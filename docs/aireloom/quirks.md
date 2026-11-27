@@ -3,11 +3,28 @@
 Behavior of the OpenAIRE and Scholexplorer services that the client works
 around or documents. All of these were observed against the live services.
 
-## Scholix V3 date filters return zero rows
+## V4 page_size, offset, and OR-list caps
 
-`/v3/Links` accepts `from` and `to` but returns an empty result for every
-value. Queries with `from_date` or `to_date` are routed to `/v2/Links`
-automatically, where the date filters work.
+- `page_size` must be between `1` and `100` (in both offset and cursor modes);
+  larger values return HTTP 400.
+- Offset-based paging is limited to `page * page_size <= 10,000`; use cursor
+  paging (`iterate()` or `cursor="*"`) for larger datasets.
+- A single V4 filter field accepts at most 50 pipe-separated OR values
+  (OpenAIRE Graph 1.6.0+); larger lists return HTTP 400.
+
+AIREloom enforces all three caps client-side (`GRAPH_DIALECT.max_page_size = 100`,
+offset check, and 50-value OR check raising `ConfigurationError`).
+
+## Scholix V3 `linkProvider` and date-filter limitations
+
+- `/v3/Links` does not declare `linkProvider` and silently ignores it; `/v2/Links`
+  filters by `linkProvider` properly. AIREloom routes queries carrying
+  `linkProvider` to `/v2/Links` automatically.
+- `/v3/Links` accepts `from` and `to` but returns zero rows for every tested
+  date value. `/v2/Links` has no `from`/`to` parameters at all and silently
+  ignores them (returning unfiltered links). Queries carrying `from_date` or
+  `to_date` route to `/v2/Links` with a warning so callers know results are not
+  date-filtered.
 
 ## V4 group_by totals are uneven
 
@@ -17,10 +34,11 @@ are not guaranteed to agree; per-value counts can also differ from what a
 plain search for that value reports. Treat `group_by` output as a rough
 distribution, not an exact breakdown.
 
-## Graph links route silently truncates at 100
+## Graph links and Scholix routes silently truncate at 100
 
-On `/v3/research-products/links`, a `pageSize` of 100 or more returns 10
-results without an error. The client caps page sizes for this route at 99.
+On `/v3/research-products/links` and Scholexplorer `/v2/Links` & `/v3/Links`,
+a page size of 100 or more silently returns 10 results without an error. The
+client caps page sizes for these routes at 99.
 
 ## Graph links pages are not pinned
 

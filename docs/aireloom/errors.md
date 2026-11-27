@@ -27,8 +27,12 @@ GET requests retry; the client sends no mutating requests.
 
 ## Rate limits
 
-Defaults follow the documented OpenAIRE allowance of about 7200 requests per
-rolling hour:
+According to the [OpenAIRE API terms](https://graph.openaire.eu/docs/apis/terms),
+authenticated requests allow up to 7,200 requests per rolling hour (2 req/s),
+while unauthenticated requests are documented at 60 requests per hour (though
+live V4 responses currently report `x-ratelimit-limit: 7199`).
+
+Client defaults follow the 7,200 req/hour allowance:
 
 - Graph host: at most 2 requests per second, 4 concurrent requests
 - Scholexplorer host: at most 1 request per second (no rate-limit headers,

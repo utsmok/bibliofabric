@@ -10,10 +10,10 @@ AIREloom is a Python client for the [OpenAIRE Graph API](https://graph.openaire.
 
 ## Features
 
-- **Graph API V4 for list operations** — the recommended filter-based queries (`filter=field:value`, `sort=field:dir`, `select`, `facets`, `group_by`, cursor paging up to 10000 per page); single-entity lookups use the stable V3 by-id routes
+- **Graph API V4 for list operations** — the recommended filter-based queries (`filter=field:value`, `sort=field:dir`, `select`, `facets`, `group_by`, `page_size` up to 100 and cursor paging with no depth cap); single-entity lookups use the stable V3 by-id routes
 - **Async first, sync everywhere** — async built on `httpx` + `asyncio` with retries, a client-side rate limiter (2 req/s, concurrency 4), and typed errors; the generated sync twin runs on `httpx.Client`, `time.sleep`, and threads, and works in scripts, notebooks, and inside a running event loop
 - **Typed throughout** — Pydantic models for all inputs and outputs, PEP 561 `py.typed`; `search()` returns `bibliofabric.Page[E]`
-- **Scholix V3 (V2 for date filters)** — typed link records through a dedicated internal client for the Scholexplorer host
+- **Scholix V3 (V2 for `linkProvider`)** — typed link records through a dedicated internal client for the Scholexplorer host
 - **Anonymous or OAuth2** — client credentials against the Keycloak endpoint, or no auth at all
 
 ## Installation
@@ -187,14 +187,18 @@ page = await client.scholix.search_links(
 async for link in client.scholix.iterate_links(
     ScholixFilters(sourcePid="10.1038/s41586-023-06221-2")
 ):
-    print(link.relationship_type.name, link.target.titles[0])
+    rel = link.relationship_type.name if link.relationship_type else ""
+    title = link.target.title if link.target else ""
+    print(rel, title)
 ```
 
-V3 serves all queries; queries with `from_date`/`to_date` are routed to V2
-automatically because the V3 endpoint returns zero rows for date filters.
-`search_links_v2` / `iterate_links_v2` target V2 directly, and
-`list_link_providers` / `list_link_publishers` cover the V2 directory
-endpoints. The V1 endpoints were removed.
+V3 serves default queries. Queries with `linkProvider` are routed to V2
+automatically because V3 silently ignores `linkProvider`. Queries with
+`from_date`/`to_date` also route to V2 with a warning: V3 returns zero rows
+for date filters, and V2 does not filter by date (upstream limitation; see
+`docs/aireloom/quirks.md`). `search_links_v2` / `iterate_links_v2` target V2
+directly, and `list_link_providers` / `list_link_publishers` cover the V2
+directory endpoints. The V1 endpoints were removed.
 
 ## Error Handling
 
@@ -218,6 +222,9 @@ the raw payload.
 
 ## Known OpenAIRE API Issues
 
+- **V4 `page_size` max is 100** (even with cursor paging), offset paging is
+  capped at `page * page_size <= 10,000`, and each filter field accepts at most
+  50 pipe-separated OR values.
 - **Links and Scholix page sizes ≥ 100** silently return 10 results; AIREloom
   caps both at 99.
 - **V4 `group_by` eligibility** is decided server-side per field: some fields
@@ -225,7 +232,9 @@ the raw payload.
   silently return empty counts.
 - **Page-based routes (`links`, Scholix) have no cursor or sort**, so page
   windows can shift between requests during long iterations.
-- **V3 `from`/`to` date filters on `/v3/Links` return zero rows** (V2 works).
+- **Scholix date filters & `linkProvider`**: `/v3/Links` returns zero rows for
+  `from`/`to` and silently ignores `linkProvider`, while `/v2/Links` honors
+  `linkProvider` but has no `from`/`to` support (ignores date parameters).
 
 ## Development
 

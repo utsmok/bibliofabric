@@ -1,5 +1,8 @@
 """Batch lookups: OR expressions, chunk splitting, DOI normalization."""
 
+import pytest
+from aireloom import ConfigurationError
+
 from .conftest import json_response, load, params_of
 
 
@@ -69,3 +72,24 @@ async def test_batch_missing_ids_absent(httpx_mock, client):
     httpx_mock.add_response(**json_response(_page_of([])))
     fetched = await client.projects.batch_get(["p::missing"])
     assert fetched == {}
+
+
+async def test_batch_get_rejects_chunk_above_50(httpx_mock, client):
+    ids = [f"p::{i}" for i in range(51)]
+    with pytest.raises(ConfigurationError, match="at most 50"):
+        await client.projects.batch_get(ids, batch_size=51)
+    assert httpx_mock.get_requests() == []
+
+
+async def test_batch_get_by_orcid_matches_pid_field(httpx_mock, client):
+    records = [
+        {
+            "id": "person::1",
+            "originalId": [],
+            "pid": [{"value": "0000-0002-5965-6560", "typeCode": "orcid"}],
+        }
+    ]
+    httpx_mock.add_response(**json_response(_page_of(records)))
+    fetched = await client.persons.batch_get_by_orcid(["0000-0002-5965-6560"])
+    assert list(fetched) == ["0000-0002-5965-6560"]
+    assert fetched["0000-0002-5965-6560"].id == "person::1"

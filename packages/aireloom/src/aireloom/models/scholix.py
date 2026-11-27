@@ -79,12 +79,13 @@ class ScholixCreator(BaseModel):
 
 
 class ScholixPublisher(BaseModel):
-    """A publisher of a Scholix entity."""
+    """A publisher of a Scholix entity or entry from ``/v2/LinkPublisher``."""
 
     name: SafeStr = Field(alias="Name", default="")
     identifier: SafeList[ScholixIdentifier] = Field(
         alias="Identifier", default_factory=list
     )
+    total_relationships: int | None = Field(alias="totalRelationships", default=None)
 
     model_config = ConfigDict(populate_by_name=True, extra="allow")
 
@@ -130,12 +131,13 @@ class ScholixRelationshipType(BaseModel):
 
 
 class ScholixLinkProvider(BaseModel):
-    """The provider of a Scholix link."""
+    """A Scholix link provider or entry from ``/v2/LinkProvider``."""
 
     name: SafeStr = Field(alias="Name", default="")
     identifier: SafeList[ScholixIdentifier] = Field(
         alias="Identifier", default_factory=list
     )
+    total_relationships: int | None = Field(alias="totalRelationships", default=None)
 
     model_config = ConfigDict(populate_by_name=True, extra="allow")
 
@@ -158,36 +160,5 @@ class ScholixRelationship(BaseModel):
     )
     license_url: str | None = Field(alias="LicenseURL", default=None)
     harvest_date: str | None = Field(alias="HarvestDate", default=None)
-
-    model_config = ConfigDict(populate_by_name=True, extra="allow")
-
-
-class ScholixResponse(BaseModel):
-    """Response structure for the Scholexplorer Links endpoint.
-
-    Envelope: ``{"currentPage", "totalLinks", "totalPages", "result"}`` — note
-    ``result``, not ``results``.
-    """
-
-    current_page: int = Field(
-        default=0,
-        alias="currentPage",
-        description="The current page number (0-indexed).",
-    )
-    total_links: int = Field(
-        default=0,
-        alias="totalLinks",
-        description="Total number of links matching the query.",
-    )
-    total_pages: int = Field(
-        default=0,
-        alias="totalPages",
-        description="Total number of pages available.",
-    )
-    result: list[ScholixRelationship] = Field(
-        default_factory=list,
-        alias="result",
-        description="List of Scholix relationship links.",
-    )
 
     model_config = ConfigDict(populate_by_name=True, extra="allow")

@@ -1,9 +1,8 @@
-"""Base Pydantic models for OpenAIRE API entities and responses.
+"""Base Pydantic models for OpenAIRE API entities.
 
-This module defines foundational Pydantic models used across the `aireloom`
-library to represent common structures in OpenAIRE API responses, such as
-response headers, base entity identifiers, and generic API response envelopes.
-These models provide data validation and a clear structure for API data.
+This module defines foundational Pydantic models shared across the ``aireloom``
+library, including :class:`BaseEntity`, persistent identifier shapes, funding
+hierarchies, and null-tolerant type aliases.
 """
 
 from typing import Annotated
@@ -34,7 +33,10 @@ class BaseEntity(BaseModel):
         if self.id:
             parts.append(f"id={self.id!r}")
         type_val = getattr(self, "type", None)
-        if type_val:
+        if isinstance(type_val, Pid):
+            if type_val.value:
+                parts.append(f"type={type_val.value!r}")
+        elif type_val:
             parts.append(f"type={type_val!r}")
         return f"{cls}({', '.join(parts)})"
 
@@ -177,4 +179,16 @@ class CfHbKeyValue(BaseModel):
 
 SafeCfHbKeyValue = Annotated[
     CfHbKeyValue, BeforeValidator(lambda v: CfHbKeyValue() if v is None else v)
+]
+SafePid = Annotated[Pid, BeforeValidator(lambda v: Pid() if v is None else v)]
+SafeCodeLabel = Annotated[
+    CodeLabel, BeforeValidator(lambda v: CodeLabel() if v is None else v)
+]
+SafeDsRef = Annotated[DsRef, BeforeValidator(lambda v: DsRef() if v is None else v)]
+SafeRelatedRecordHeader = Annotated[
+    RelatedRecordHeader,
+    BeforeValidator(lambda v: RelatedRecordHeader() if v is None else v),
+]
+SafeFundingHierarchy = Annotated[
+    FundingHierarchy, BeforeValidator(lambda v: FundingHierarchy() if v is None else v)
 ]

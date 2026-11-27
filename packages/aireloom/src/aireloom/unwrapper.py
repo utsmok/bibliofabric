@@ -31,6 +31,7 @@ class OpenAireUnwrapper:
             records = body["results"]
             if records and isinstance(records[0], dict):
                 return records[0]
+            raise ValueError("Response envelope contains no results.")
         if isinstance(body, dict):
             return body
         raise ValueError("Response body is not a JSON object.")
@@ -38,7 +39,9 @@ class OpenAireUnwrapper:
     def total(self, body: Any) -> int | None:
         """Return the total number of matching records, or ``None`` if unknown."""
         header = self._header(body)
-        total = header.get("numFound", header.get("totalLinks"))
+        total = header.get("numFound")
+        if total is None:
+            total = header.get("totalLinks")
         return int(total) if total is not None else None
 
     def next_cursor(self, body: Any) -> str | None:
@@ -69,6 +72,7 @@ class ScholixUnwrapper:
             records = body["result"]
             if records and isinstance(records[0], dict):
                 return records[0]
+            raise ValueError("Response envelope contains no results.")
         if isinstance(body, dict):
             return body
         raise ValueError("Response body is not a JSON object.")

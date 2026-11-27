@@ -24,6 +24,9 @@ from .base import (
     CodeLabel,
     FundingHierarchy,
     RelatedRecordHeader,
+    SafeCodeLabel,
+    SafeFundingHierarchy,
+    SafeRelatedRecordHeader,
     TypedPid,
 )
 
@@ -72,15 +75,6 @@ class H2020Programme(BaseModel):
     model_config = ConfigDict(extra="allow")
 
 
-SafeCodeLabel = Annotated[
-    CodeLabel, BeforeValidator(lambda v: CodeLabel() if v is None else v)
-]
-SafeRelatedRecordHeader = Annotated[
-    RelatedRecordHeader,
-    BeforeValidator(lambda v: RelatedRecordHeader() if v is None else v),
-]
-
-
 class ProjectLink(BaseModel):
     """A related-entity link entry in ``Project.links`` (e.g. participant orgs)."""
 
@@ -92,10 +86,6 @@ class ProjectLink(BaseModel):
     model_config = ConfigDict(extra="allow")
 
 
-SafeFundingHierarchy = Annotated[
-    FundingHierarchy, BeforeValidator(lambda v: FundingHierarchy() if v is None else v)
-]
-
 SafeGrant = Annotated[Grant, BeforeValidator(lambda v: Grant() if v is None else v)]
 
 
@@ -106,6 +96,7 @@ class Project(BaseEntity):
     Inherits the ``id`` field from ``BaseEntity``.
     """
 
+    originalIds: SafeList[str] = Field(default_factory=list)
     code: str | None = None
     acronym: SafeStr = ""
     title: SafeStr = ""
@@ -173,14 +164,17 @@ class Project(BaseEntity):
     @field_validator("keywords", mode="before")
     @classmethod
     def parse_keywords_string(cls, v: Any) -> Any:
-        """Split a delimited keyword string (comma, then semicolon) into a list."""
+        """Split a delimited keyword string (comma or semicolon) into a list."""
         if isinstance(v, str):
+            stripped = v.strip()
+            if not stripped:
+                return []
             for delimiter in (",", ";"):
-                parts = [part.strip() for part in v.split(delimiter) if part.strip()]
-                if parts:
-                    return parts
-            return []
+                if delimiter in stripped:
+                    return [
+                        part.strip()
+                        for part in stripped.split(delimiter)
+                        if part.strip()
+                    ]
+            return [stripped]
         return v
-
-
-# Define the specific response type for projects

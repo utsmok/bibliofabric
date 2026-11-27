@@ -59,6 +59,7 @@ from .models import (
     ScholixLinkProvider,
     ScholixPublisher,
     ScholixRelationship,
+    ScholixRelationshipType,
 )
 from .relations import (
     RELATION_INVERSES,
@@ -111,6 +112,7 @@ __all__ = [
     "ScholixLinkProvider",
     "ScholixPublisher",
     "ScholixRelationship",
+    "ScholixRelationshipType",
     "ScholixResource",
     "SyncDataSourcesResource",
     "SyncGraphResource",

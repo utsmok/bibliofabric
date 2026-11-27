@@ -4,24 +4,18 @@
 Reference: https://graph.openaire.eu/docs/data-model/entities/data-source
 """
 
-from typing import Annotated
-
 from bibliofabric import SafeList, SafeStr
-from pydantic import BeforeValidator, Field, computed_field
+from pydantic import Field, computed_field
 
-from .base import BaseEntity, CfHbKeyValue, CodeLabel, Pid
-from .research_product import Container, RelatedRecord
-
-SafePid = Annotated[Pid, BeforeValidator(lambda v: Pid() if v is None else v)]
-SafeContainer = Annotated[
-    Container, BeforeValidator(lambda v: Container() if v is None else v)
-]
-SafeCfHbKeyValue = Annotated[
-    CfHbKeyValue, BeforeValidator(lambda v: CfHbKeyValue() if v is None else v)
-]
-SafeCodeLabel = Annotated[
-    CodeLabel, BeforeValidator(lambda v: CodeLabel() if v is None else v)
-]
+from .base import (
+    BaseEntity,
+    CodeLabel,
+    Pid,
+    SafeCfHbKeyValue,
+    SafeCodeLabel,
+    SafePid,
+)
+from .research_product import Container, RelatedRecord, SafeContainer
 
 
 class DataSource(BaseEntity):
@@ -59,7 +53,6 @@ class DataSource(BaseEntity):
     journal: SafeContainer = Field(default_factory=Container)
     # Harvesting endpoints (e.g. OAI-PMH base URL), added upstream in 1.5.0.
     endpoints: SafeList[str] = Field(default_factory=list)
-    # V3 field)
     collectedFrom: SafeList[SafeCfHbKeyValue] = Field(default_factory=list)
     thematic: bool | None = None
     eoscdatasourcetype: SafeCodeLabel = Field(default_factory=CodeLabel)
@@ -78,6 +71,3 @@ class DataSource(BaseEntity):
         if name:
             return name
         return f"DataSource(id={self.id!r})"
-
-
-# Define the specific response type for data sources

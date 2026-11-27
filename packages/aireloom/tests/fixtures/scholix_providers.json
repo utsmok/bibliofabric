@@ -1,14 +1,14 @@
 [
  {
-  "identifier": [],
-  "name": "Crossref"
+  "name": "Crossref",
+  "totalRelationships": 1200000
  },
  {
-  "identifier": [],
-  "name": "OpenAIRE"
+  "name": "OpenAIRE",
+  "totalRelationships": 850000
  },
  {
-  "identifier": [],
-  "name": "OpenCitations"
+  "name": "OpenCitations",
+  "totalRelationships": 500000
  }
 ]

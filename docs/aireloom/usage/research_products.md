@@ -89,7 +89,8 @@ works = await client.research_products.by_orcid(
 
 Any ORCID spelling works (bare, dashed, or URL); the request uses the
 hyphenated form in the `authorships.author.orcid` V4 filter and returns a
-plain list capped at `limit`.
+plain list capped at `limit` (automatically paginating via cursor when `limit`
+exceeds 100).
 
 ## Sparse batch fetch
 
@@ -100,9 +101,10 @@ records = await client.research_products.get_fields(
 )
 ```
 
-One request: an `id` OR-filter combined with the V4 `select` parameter.
-Records carry only the requested fields, so this is the cheap way to enrich
-local rows; unknown field names are the caller's responsibility.
+Sends concurrent chunks of up to 50 IDs combining an `id` OR-filter with the
+V4 `select` parameter. Records carry only the requested fields, so this is the
+cheap way to enrich local rows; unknown field names are the caller's
+responsibility.
 
 ## Aggregations
 

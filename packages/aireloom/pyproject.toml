@@ -17,12 +17,17 @@ classifiers = [
     "Development Status :: 3 - Alpha",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Framework :: AsyncIO",
     "Typing :: Typed",
 ]
 
 [project.urls]
 "Homepage" = "https://github.com/utsmok/bibliofabric/tree/main/packages/aireloom"
+"Documentation" = "https://utsmok.github.io/bibliofabric/aireloom/"
+"Repository" = "https://github.com/utsmok/bibliofabric"
+"Issues" = "https://github.com/utsmok/bibliofabric/issues"
+"Changelog" = "https://github.com/utsmok/bibliofabric/blob/main/packages/aireloom/CHANGELOG.md"
 
 [build-system]
 requires = ["uv_build>=0.9.22,<0.12"]

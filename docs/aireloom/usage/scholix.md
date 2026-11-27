@@ -20,17 +20,21 @@ The API requires one of `sourcePid`, `targetPid`, `sourcePublisher`,
 
 ## Versions
 
-V3 is the default endpoint. Queries with `from_date` or `to_date` are
-routed to V2 automatically, because the V3 endpoint accepts date parameters
-but returns zero rows for every value (see [upstream quirks](../quirks.md)):
+V3 is the default endpoint. Queries with `linkProvider` are routed to V2
+automatically because `/v3/Links` silently ignores `linkProvider` whereas
+`/v2/Links` filters by it:
 
 ```python
 page = await client.scholix.search_links(
-    ScholixFilters(sourcePid="10.1038/nature12373", from_date="2020-01-01")
+    ScholixFilters(sourcePid="10.1038/nature12373", linkProvider="Crossref")
 )
 ```
 
-`search_links_v2` and `iterate_links_v2` force the V2 endpoint.
+Queries with `from_date` or `to_date` also route to V2 with a warning: V3
+returns zero rows for date filters and V2 ignores date parameters (see
+[upstream quirks](../quirks.md)).
+
+`search_links_v2` and `iterate_links_v2` force the V2 endpoint directly.
 
 ## Providers and publishers
 

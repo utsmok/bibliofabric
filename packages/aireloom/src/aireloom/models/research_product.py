@@ -12,7 +12,14 @@ Reference: https://graph.openaire.eu/docs/data-model/entities/research-product
 from typing import Annotated, Literal
 
 from bibliofabric import SafeList, SafeStr
-from pydantic import BaseModel, BeforeValidator, ConfigDict, Field, computed_field
+from pydantic import (
+    AliasChoices,
+    BaseModel,
+    BeforeValidator,
+    ConfigDict,
+    Field,
+    computed_field,
+)
 
 from .._helpers import extract_all_pids_by_scheme, extract_pid_by_scheme
 from .base import (
@@ -24,24 +31,13 @@ from .base import (
     Pid,
     Provenance,
     RelatedRecordHeader,
+    SafeCfHbKeyValue,
+    SafeCodeLabel,
+    SafeDsRef,
+    SafeFundingHierarchy,
+    SafeRelatedRecordHeader,
+    TypedPid,
 )
-
-SafeFundingHierarchy = Annotated[
-    FundingHierarchy, BeforeValidator(lambda v: FundingHierarchy() if v is None else v)
-]
-
-SafeCodeLabel = Annotated[
-    CodeLabel, BeforeValidator(lambda v: CodeLabel() if v is None else v)
-]
-
-SafeRelatedRecordHeader = Annotated[
-    RelatedRecordHeader,
-    BeforeValidator(lambda v: RelatedRecordHeader() if v is None else v),
-]
-
-SafeCfHbKeyValue = Annotated[
-    CfHbKeyValue, BeforeValidator(lambda v: CfHbKeyValue() if v is None else v)
-]
 
 OpenAccessRouteType = Literal["gold", "green", "hybrid", "bronze"]
 """Type alias for allowed Open Access routes (e.g., gold, green)."""
@@ -233,6 +229,7 @@ SafeContainer = Annotated[
 class GeoLocation(BaseModel):
     """Geolocation information, typically for datasets."""
 
+    point: str | None = None
     box: str | None = None
     place: str | None = None
 
@@ -256,6 +253,61 @@ class DeclaredAffiliation(BaseModel):
     model_config = ConfigDict(extra="allow")
 
 
+class RelatedInstance(BaseModel):
+    """An instance embedded in ``RelatedRecord.instances``.
+
+    OpenAIRE's OpenAPI schema uses lowercase keys here (``accessright``,
+    ``instancetype``, ``url``, ``hostedby``, ``collectedfrom``, ``pid``,
+    ``dateofacceptance``); camelCase aliases are also accepted for tolerance.
+    """
+
+    license: str | None = None
+    accessright: SafeAccessRight = Field(
+        default_factory=AccessRight,
+        validation_alias=AliasChoices("accessright", "accessRight"),
+    )
+    instancetype: SafeStr = Field(
+        default="",
+        validation_alias=AliasChoices("instancetype", "type"),
+    )
+    hostedby: SafeDsRef = Field(
+        default_factory=DsRef,
+        validation_alias=AliasChoices("hostedby", "hostedBy"),
+    )
+    url: SafeList[str] = Field(
+        default_factory=list,
+        validation_alias=AliasChoices("url", "urls"),
+    )
+    distributionlocation: str | None = Field(
+        default=None,
+        validation_alias=AliasChoices("distributionlocation", "distributionLocation"),
+    )
+    collectedfrom: SafeDsRef = Field(
+        default_factory=DsRef,
+        validation_alias=AliasChoices("collectedfrom", "collectedFrom"),
+    )
+    pid: SafeList[TypedPid] = Field(
+        default_factory=list,
+        validation_alias=AliasChoices("pid", "pids"),
+    )
+    alternateIdentifier: SafeList[TypedPid] = Field(
+        default_factory=list,
+        validation_alias=AliasChoices("alternateIdentifier", "alternateIdentifiers"),
+    )
+    dateofacceptance: str | None = Field(
+        default=None,
+        validation_alias=AliasChoices("dateofacceptance", "publicationDate"),
+    )
+    processingcharges: ArticleProcessingCharge | None = Field(
+        default=None,
+        validation_alias=AliasChoices("processingcharges", "articleProcessingCharge"),
+    )
+    refereed: RefereedType | None = None
+    fulltext: str | None = None
+
+    model_config = ConfigDict(extra="allow", populate_by_name=True)
+
+
 class RelatedRecord(BaseModel):
     """An entry in ``links[]``: a related entity in the graph.
 
@@ -275,7 +327,7 @@ class RelatedRecord(BaseModel):
     publisher: SafeStr = ""
     codeRepositoryUrl: str | None = None
     resulttype: str | None = None
-    instances: SafeList[Instance] = Field(default_factory=list)
+    instances: SafeList[RelatedInstance] = Field(default_factory=list)
     officialname: SafeStr = ""
     datasourcetype: SafeCodeLabel = Field(default_factory=CodeLabel)
     datasourcetypeui: SafeCodeLabel = Field(default_factory=CodeLabel)

@@ -18,7 +18,7 @@ from .base import (
 )
 from .data_source import DataSource
 from .organization import Country, Organization
-from .person import Person
+from .person import Category, Concept, Person
 from .project import (
     Funding,
     FundingStream,
@@ -42,6 +42,7 @@ from .research_product import (
     ProductCommunity,
     ProductOrganization,
     ProductProject,
+    RelatedInstance,
     RelatedRecord,
     ResearchProduct,
     Subject,
@@ -53,14 +54,17 @@ from .scholix import (
     ScholixLinkProvider,
     ScholixPublisher,
     ScholixRelationship,
+    ScholixRelationshipType,
 )
 
 __all__ = [
     "Author",
     "AuthorPid",
     "BaseEntity",
+    "Category",
     "CfHbKeyValue",
     "CodeLabel",
+    "Concept",
     "Country",
     "DataSource",
     "DsRef",
@@ -85,6 +89,7 @@ __all__ = [
     "Project",
     "ProjectLink",
     "Provenance",
+    "RelatedInstance",
     "RelatedRecord",
     "RelatedRecordHeader",
     "Relation",
@@ -99,6 +104,7 @@ __all__ = [
     "ScholixLinkProvider",
     "ScholixPublisher",
     "ScholixRelationship",
+    "ScholixRelationshipType",
     "Subject",
     "TypedPid",
 ]

@@ -2,6 +2,8 @@
 """Request shapes of the V4 entity endpoints: filter expression, sort,
 select, paging parameters, count, facets, and group_by."""
 
+from datetime import date
+
 import pytest
 from aireloom import (
     AireloomSyncClient,
@@ -81,7 +83,7 @@ def test_project_filter_aliases_and_status(httpx_mock, client):
     assert parts == {"funder:EC", "project_status:ongoing"}
 
 
-def test_count_sends_minimal_cursor_page(httpx_mock, client):
+def test_count_sends_minimal_page(httpx_mock, client):
     httpx_mock.add_response(
         **json_response({"header": {"numFound": 3927154}, "results": []})
     )
@@ -91,7 +93,88 @@ def test_count_sends_minimal_cursor_page(httpx_mock, client):
     request = httpx_mock.get_request()
     assert request.url.path == "/v4/projects"
     assert params["page_size"] == "1"
-    assert params["cursor"] == "*"
+    assert params["page"] == "1"
+    assert "cursor" not in params
+
+
+def test_page_size_clamped_to_100(httpx_mock, client):
+    httpx_mock.add_response(**json_response(load("rp_page.json")))
+    client.research_products.search(page_size=500)
+    assert params_of(httpx_mock.get_request())["page_size"] == "100"
+
+
+def test_offset_ceiling_and_invalid_page_rejected(httpx_mock, client):
+    with pytest.raises(ConfigurationError, match="10000"):
+        client.research_products.search(page=101, page_size=100)
+    with pytest.raises(ConfigurationError, match="page must be >= 1"):
+        client.research_products.search(page=0, page_size=10)
+    assert httpx_mock.get_requests() == []
+
+
+def test_empty_filter_model_and_empty_list_omitted(httpx_mock, client):
+    httpx_mock.add_response(**json_response(load("rp_page.json")))
+    httpx_mock.add_response(**json_response(load("rp_page.json")))
+    client.research_products.search(ResearchProductsFilters())
+    client.research_products.search(ResearchProductsFilters(subjects=[]))
+    for req in httpx_mock.get_requests():
+        assert "filter" not in params_of(req)
+
+
+def test_filter_or_limit_enforced_client_side(httpx_mock, client):
+    too_many = [f"10.1/{i}" for i in range(51)]
+    with pytest.raises(ConfigurationError, match="at most 50"):
+        client.research_products.search(ResearchProductsFilters(ids_doi=too_many))
+    with pytest.raises(ConfigurationError, match="at most 50"):
+        client.research_products.search({"ids.doi": "|".join(too_many)})
+    assert httpx_mock.get_requests() == []
+
+
+def test_filter_widened_types_dates_ints_or_not(httpx_mock, client):
+    httpx_mock.add_response(**json_response(load("rp_page.json")))
+    httpx_mock.add_response(**json_response(load("projects_page.json")))
+    client.research_products.search(
+        ResearchProductsFilters(
+            type=["publication", "dataset"],
+            from_publication_date=date(2024, 1, 15),
+            impact_citation_count=10,
+        )
+    )
+    client.projects.search(
+        ProjectsFilters(project_status="!completed", start_year=[2023, 2024])
+    )
+    rp_parts = set(params_of(httpx_mock.get_requests()[0])["filter"].split(","))
+    assert rp_parts == {
+        "type:publication|dataset",
+        "from_publication_date:2024-01-15",
+        "impact.citation_count:10",
+    }
+    pr_parts = set(params_of(httpx_mock.get_requests()[1])["filter"].split(","))
+    assert pr_parts == {"project_status:!completed", "start_year:2023|2024"}
+
+
+def test_sort_whitespace_and_empty_handling(httpx_mock, client):
+    httpx_mock.add_response(**json_response(load("rp_page.json")))
+    httpx_mock.add_response(**json_response(load("rp_page.json")))
+    client.research_products.search(sort=" citation_count : DESC ")
+    client.research_products.search(sort=" , ")
+    assert params_of(httpx_mock.get_requests()[0])["sort"] == "citation_count:desc"
+    assert "sort" not in params_of(httpx_mock.get_requests()[1])
+
+
+def test_facets_and_group_by_reject_empty_fields(httpx_mock, client):
+    with pytest.raises(ConfigurationError, match="at least one field"):
+        client.research_products.facets()
+    with pytest.raises(ConfigurationError, match="non-empty field"):
+        client.research_products.group_by("   ")
+    assert httpx_mock.get_requests() == []
+
+
+def test_links_dict_filter_strips_none(httpx_mock, client):
+    httpx_mock.add_response(**json_response(load("links_page.json")))
+    client.research_products.search_links({"sourcePid": "10.1234/x", "targetPid": None})
+    params = params_of(httpx_mock.get_request())
+    assert params["sourcePid"] == "10.1234/x"
+    assert "targetPid" not in params
 
 
 def test_facets_sends_facet_parameter(httpx_mock, client):
@@ -122,10 +205,14 @@ def test_mailto_attached_to_v4_requests_only(httpx_mock, settings):
         settings=make_settings(mailto="team@example.org")
     ) as client:
         httpx_mock.add_response(**json_response(load("rp_page.json")))
+        httpx_mock.add_response(**json_response(load("rp_page.json")))
         httpx_mock.add_response(**json_response(load("scholix_page.json")))
         client.research_products.search()
+        client.request("GET", "/v4/research-products", timeout=5.0)
         client.scholix.search_links(None, page_size=5)
     graph_params = params_of(httpx_mock.get_requests()[0])
-    scholix_params = params_of(httpx_mock.get_requests()[1])
+    leading_slash_params = params_of(httpx_mock.get_requests()[1])
+    scholix_params = params_of(httpx_mock.get_requests()[2])
     assert graph_params["mailto"] == "team@example.org"
+    assert leading_slash_params["mailto"] == "team@example.org"
     assert "mailto" not in scholix_params

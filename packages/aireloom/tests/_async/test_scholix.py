@@ -1,6 +1,9 @@
 """Scholix routing: V3 by default, V2 for date filters, plus V2 helpers."""
 
-from aireloom import ScholixFilters
+import logging
+
+import pytest
+from aireloom import ScholixFilters, ValidationError
 
 from .conftest import json_response, load, params_of
 
@@ -18,18 +21,39 @@ async def test_search_defaults_to_v3(httpx_mock, client):
     assert page.results[0].relationship_type.name == "IsRelatedTo"
 
 
-async def test_date_filters_route_to_v2(httpx_mock, client):
-
+async def test_date_filters_route_to_v2_with_warning(httpx_mock, client, caplog):
     httpx_mock.add_response(**json_response(load("scholix_page.json")))
-    await client.scholix.search_links(
-        ScholixFilters(sourcePid="10.1234/x", from_date="2020-01-01")
-    )
+    with caplog.at_level(logging.WARNING):
+        await client.scholix.search_links(
+            ScholixFilters(sourcePid="10.1234/x", from_date="2020-01-01")
+        )
     request = httpx_mock.get_request()
     assert request.url.path == "/v2/Links"
     params = params_of(request)
     assert params["sourcePid"] == "10.1234/x"
     assert params["from"] == "2020-01-01"
     assert "to" not in params
+    assert "will not be date-filtered" in caplog.text
+
+
+async def test_link_provider_routes_to_v2(httpx_mock, client):
+    httpx_mock.add_response(**json_response(load("scholix_page.json")))
+    await client.scholix.search_links(
+        ScholixFilters(sourcePid="10.1234/x", linkProvider="Crossref")
+    )
+    request = httpx_mock.get_request()
+    assert request.url.path == "/v2/Links"
+    assert params_of(request)["linkProvider"] == "Crossref"
+
+
+async def test_dict_filters_supported_on_scholix(httpx_mock, client):
+    httpx_mock.add_response(**json_response(load("scholix_page.json")))
+    await client.scholix.search_links(
+        {"sourcePid": "10.1234/x", "linkProvider": "OpenCitations"}
+    )
+    request = httpx_mock.get_request()
+    assert request.url.path == "/v2/Links"
+    assert params_of(request)["linkProvider"] == "OpenCitations"
 
 
 async def test_iterate_links_routes_dates_to_v2(httpx_mock, client):
@@ -59,16 +83,55 @@ async def test_list_link_providers(httpx_mock, client):
     providers = await client.scholix.list_link_providers()
     request = httpx_mock.get_request()
     assert request.url.path == "/v2/LinkProvider"
-    assert providers and providers[0].name
+    assert providers and providers[0].name == "Crossref"
+    assert providers[0].total_relationships == 1200000
 
 
-async def test_list_link_publishers_in_target(httpx_mock, client):
+async def test_list_link_publishers_in_target_and_in_source(httpx_mock, client):
+    httpx_mock.add_response(
+        **json_response([{"name": "Elsevier", "totalRelationships": 99}])
+    )
     httpx_mock.add_response(**json_response([]))
     publishers = await client.scholix.list_link_publishers(name="Elsevier")
-    request = httpx_mock.get_request()
-    assert request.url.path == "/v2/LinkPublisher/inTarget"
-    assert params_of(request)["name"] == "Elsevier"
-    assert publishers == []
+    in_source = await client.scholix.list_link_publishers(in_target=False)
+    reqs = httpx_mock.get_requests()
+    assert reqs[0].url.path == "/v2/LinkPublisher/inTarget"
+    assert params_of(reqs[0])["name"] == "Elsevier"
+    assert publishers[0].name == "Elsevier"
+    assert publishers[0].total_relationships == 99
+    assert reqs[1].url.path == "/v2/LinkPublisher/inSource"
+    assert in_source == []
+
+
+async def test_list_link_providers_and_publishers_wrap_validation_error(
+    httpx_mock, client
+):
+    httpx_mock.add_response(**json_response([{"totalRelationships": "not-an-int"}]))
+    with pytest.raises(ValidationError):
+        await client.scholix.list_link_providers()
+
+    httpx_mock.add_response(**json_response([{"totalRelationships": "not-an-int"}]))
+    with pytest.raises(ValidationError):
+        await client.scholix.list_link_publishers()
+
+
+async def test_iterate_links_v2_supports_on_error_skip(httpx_mock, client):
+    bad_page = {
+        "currentPage": 0,
+        "totalLinks": 1,
+        "totalPages": 1,
+        "result": [{"LinkPublicationDate": "not-a-date"}],
+    }
+    httpx_mock.add_response(**json_response(bad_page))
+    failures: list[tuple[dict, Exception]] = []
+    collected = [
+        link
+        async for link in client.scholix.iterate_links_v2(
+            None, on_error="skip", failures=failures
+        )
+    ]
+    assert collected == []
+    assert len(failures) == 1
 
 
 async def test_kpi_returns_document(httpx_mock, client):

@@ -1,7 +1,7 @@
 # AIREloom
 
-AIREloom is an async Python client for the OpenAIRE Graph API and the
-Scholexplorer API. It is built on the shared
+AIREloom is a Python client (async and generated sync twin) for the OpenAIRE
+Graph API and the Scholexplorer API. It is built on the shared
 [bibliofabric](https://github.com/utsmok/bibliofabric) core, which provides
 retries, rate limiting, and pagination; AIREloom adds the OpenAIRE query
 dialect, typed filter models, and response parsing.

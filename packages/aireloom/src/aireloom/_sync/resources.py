@@ -6,13 +6,20 @@ from collections.abc import Callable, Iterator, Mapping, Sequence
 from typing import Any, ClassVar
 from urllib.parse import quote
 
-from bibliofabric import OnError, SyncBaseApiClient, SyncResourceClient
-from bibliofabric.exceptions import ConfigurationError
+from bibliofabric import OnError, SyncBaseApiClient, SyncResourceClient, validate_model
+from bibliofabric._sync._concurrency import run_bounded
+from bibliofabric.exceptions import ConfigurationError, ValidationError
 from bibliofabric.ids import normalize_doi, normalize_orcid
 from bibliofabric.paging import Page, QueryDialect
-from pydantic import BaseModel, ValidationError as PydanticValidationError
+from pydantic import BaseModel
 
-from ..dialect import GRAPH_DIALECT, LINKS_DIALECT, SCHOLIX_DIALECT
+from ..dialect import (
+    GRAPH_DIALECT,
+    LINKS_DIALECT,
+    MAX_OFFSET_WINDOW,
+    MAX_OR_VALUES,
+    SCHOLIX_DIALECT,
+)
 from ..filters import (
     DataSourcesFilters,
     GraphFilters,
@@ -22,7 +29,7 @@ from ..filters import (
     ProjectsFilters,
     ResearchProductsFilters,
     ScholixFilters,
-    encode_filter_value,
+    encode_filter_mapping,
 )
 from ..models import (
     DataSource,
@@ -45,7 +52,8 @@ class SyncGraphResource[E: BaseModel](SyncResourceClient[E]):
 
     Sends all filter criteria as one V4 ``filter`` expression, validates sort
     fields per entity, serves single-entity ``get()`` through the V3 by-id
-    route (V4 has none), and exposes typed ``facets``/``group_by`` helpers.
+    route (V4 has none), enforces offset and OR-list limits client-side, and
+    exposes typed ``facets``/``group_by`` helpers.
     """
 
     dialect: ClassVar[QueryDialect] = GRAPH_DIALECT
@@ -58,22 +66,18 @@ class SyncGraphResource[E: BaseModel](SyncResourceClient[E]):
 
         A ``GraphFilters`` model or a plain mapping both become ``field:value``
         entries joined with commas; list values become pipe-separated ORs.
+        Empty filter models and empty list entries are omitted.
         """
         if filters is None:
             return {}
         if isinstance(filters, Mapping):
-            expression = ",".join(
-                f"{field}:{encode_filter_value(value)}"
-                for field, value in filters.items()
-                if value is not None
-            )
+            expression = encode_filter_mapping(filters)
             return {"filter": expression} if expression else {}
         if isinstance(filters, GraphFilters):
-            return {"filter": filters.to_expression()}
+            expression = filters.to_expression()
+            return {"filter": expression} if expression else {}
         dumped = filters.model_dump(exclude_none=True, by_alias=True)
-        expression = ",".join(
-            f"{field}:{encode_filter_value(value)}" for field, value in dumped.items()
-        )
+        expression = encode_filter_mapping(dumped)
         return {"filter": expression} if expression else {}
 
     def format_sort(self, sort: str | Sequence[str]) -> dict[str, str]:
@@ -91,34 +95,88 @@ class SyncGraphResource[E: BaseModel](SyncResourceClient[E]):
                 piece = raw.strip()
                 if not piece:
                     continue
-                field, has_dir, direction = piece.partition(":")
+                raw_field, has_dir, raw_direction = piece.partition(":")
+                field = raw_field.strip()
                 if field not in self.sort_fields:
                     valid = ", ".join(sorted(self.sort_fields))
                     raise ConfigurationError(
                         f"Invalid sort field {field!r} for {type(self).__name__}. "
                         f"Valid fields: {valid}."
                     )
-                if has_dir and direction.strip().lower() not in ("asc", "desc"):
-                    raise ConfigurationError(
-                        f"Invalid sort direction {direction!r}; use asc or desc."
-                    )
-                normalized.append(
-                    f"{field}:{direction.strip().lower()}" if has_dir else field
-                )
+                if has_dir:
+                    direction = raw_direction.strip().lower()
+                    if direction not in ("asc", "desc"):
+                        raise ConfigurationError(
+                            f"Invalid sort direction {raw_direction!r}; use asc or desc."
+                        )
+                    normalized.append(f"{field}:{direction}")
+                else:
+                    normalized.append(field)
+        if not normalized:
+            return {}
         return {self.dialect.sort_param: ",".join(normalized)}
 
     def build_batch_params(self, field: str, values: Sequence[str]) -> dict[str, Any]:
         """Encode one batch chunk as a V4 OR expression: ``field:a|b|c``."""
+        if len(values) > MAX_OR_VALUES:
+            raise ConfigurationError(
+                f"Batch chunk for {field!r} has {len(values)} values; "
+                f"OpenAIRE V4 accepts at most {MAX_OR_VALUES} OR values per field."
+            )
         return {"filter": f"{field}:{'|'.join(values)}"}
 
-    def item_path(self, id: str) -> str:
+    def item_path(self, id: str | int) -> str:
         """Return the V3 by-id path for ``id``; V4 has no by-id route.
 
         Colons stay unencoded: the V3 by-id routes expect the raw
         ``prefix::suffix`` identifiers and reject the percent-encoded form.
         """
+        normalized = self.normalize_id(str(id))
+        if not normalized:
+            raise ConfigurationError(
+                f"{type(self).__name__}.item_path requires a non-empty id."
+            )
         entity = self.path.partition("/")[2]
-        return f"v3/{entity}/{quote(self.normalize_id(id), safe=':')}"
+        return f"v3/{entity}/{quote(normalized, safe=':')}"
+
+    def _search_params(
+        self,
+        *,
+        filters: BaseModel | Mapping[str, Any] | None,
+        query: str | None = None,
+        sort: str | Sequence[str] | None = None,
+        select: Sequence[str] | None = None,
+        page: int | None = None,
+        page_size: int | None = None,
+        cursor: str | None = None,
+        params: Mapping[str, Any] | None,
+    ) -> dict[str, Any]:
+        if cursor is None and page is not None:
+            if page < self.dialect.page_start:
+                raise ConfigurationError(
+                    f"page must be >= {self.dialect.page_start}, got {page}."
+                )
+            effective_size = (
+                self.dialect.default_page_size
+                if page_size is None
+                else min(page_size, self.dialect.max_page_size)
+            )
+            if page * effective_size > MAX_OFFSET_WINDOW:
+                raise ConfigurationError(
+                    f"Offset paging is limited to {MAX_OFFSET_WINDOW} results "
+                    f"(page={page}, page_size={effective_size} reaches "
+                    f"{page * effective_size}); use cursor paging instead."
+                )
+        return super()._search_params(
+            filters=filters,
+            query=query,
+            sort=sort,
+            select=select,
+            page=page,
+            page_size=page_size,
+            cursor=cursor,
+            params=params,
+        )
 
     def facets(
         self,
@@ -132,11 +190,14 @@ class SyncGraphResource[E: BaseModel](SyncResourceClient[E]):
         Requests records plus aggregations, so pass ``page_size`` to bound
         the record part (the API default page size applies otherwise).
         """
+        cleaned = [field.strip() for field in fields if field and field.strip()]
+        if not cleaned:
+            raise ConfigurationError("facets() requires at least one field name.")
         page = self.search(
             filters,
             query=query,
             page_size=page_size,
-            params={"facets": ",".join(fields)},
+            params={"facets": ",".join(cleaned)},
         )
         raw = page.meta.get("facets") or {}
         return {
@@ -157,10 +218,13 @@ class SyncGraphResource[E: BaseModel](SyncResourceClient[E]):
         ``group_by`` is an aggregation-only mode: the response carries counts
         and an empty ``results`` list.
         """
+        cleaned = field.strip()
+        if not cleaned:
+            raise ConfigurationError("group_by() requires a non-empty field name.")
         page = self.search(
-            filters, query=query, page_size=1, params={"group_by": field}
+            filters, query=query, page_size=1, params={"group_by": cleaned}
         )
-        raw = (page.meta.get("facets") or {}).get(field)
+        raw = (page.meta.get("facets") or {}).get(cleaned)
         if not isinstance(raw, dict):
             return {}
         return {value: int(count) for value, count in raw.items()}
@@ -188,7 +252,11 @@ class SyncOrganizationsResource(SyncGraphResource[Organization]):
     filters_model = OrganizationsFilters
 
     def find_variants(
-        self, names: Sequence[str], *, country: str | None = None
+        self,
+        names: Sequence[str],
+        *,
+        country: str | None = None,
+        page_size: int | None = None,
     ) -> list[Organization]:
         """Search each name fragment and return deduplicated organizations.
 
@@ -201,7 +269,7 @@ class SyncOrganizationsResource(SyncGraphResource[Organization]):
         filters = {"country": country} if country else None
         found: dict[str, Organization] = {}
         for name in names:
-            page = self.search(filters, query=name)
+            page = self.search(filters, query=name, page_size=page_size)
             for org in page.results:
                 found.setdefault(org.id, org)
         return list(found.values())
@@ -221,7 +289,13 @@ class SyncPersonsResource(SyncGraphResource[Person]):
 
     def record_keys(self, entity: Person, field: str) -> list[str]:
         if field == "ids.original":
-            return [normalize_orcid(value) for value in entity.originalId]
+            keys = [normalize_orcid(value) for value in entity.originalId]
+            keys.extend(
+                normalize_orcid(entry.value)
+                for entry in entity.pid
+                if entry.typeCode.lower() == "orcid" and entry.value
+            )
+            return list(dict.fromkeys(keys))
         return super().record_keys(entity, field)
 
     def batch_get_by_orcid(
@@ -277,26 +351,22 @@ class SyncLinksResource(SyncResourceClient[Relation]):
     def get_relations_info(self) -> list[RelationInfo]:
         """Return the relation types the links endpoint can produce."""
         response = self._client.request("GET", f"{self.path}/relations-info")
-        info: list[RelationInfo] = []
-        for entry in response.json():
-            try:
-                info.append(RelationInfo.model_validate(entry))
-            except PydanticValidationError as error:
-                logger.warning("Skipping invalid relations-info entry: %s", error)
-        return info
-
-    def build_filter_params(
-        self, filters: BaseModel | Mapping[str, Any] | None
-    ) -> dict[str, Any]:
-        """Dump ``LinksFilters`` as individual query parameters."""
-        if filters is None:
-            return {}
-        if isinstance(filters, LinksFilters):
-            return {
-                key: str(value)
-                for key, value in filters.model_dump(exclude_none=True).items()
-            }
-        return dict(filters)
+        payload = self._client.parse_json(response)
+        if not isinstance(payload, list):
+            raise ValidationError(
+                "Expected a JSON list from relations-info.",
+                raw=payload,
+                error=TypeError(f"Expected list, got {type(payload).__name__}"),
+                model_name=RelationInfo.__name__,
+                request=response.request,
+                response=response,
+            )
+        return [
+            validate_model(
+                RelationInfo, entry, request=response.request, response=response
+            )
+            for entry in payload
+        ]
 
 
 class SyncResearchProductsResource(SyncGraphResource[ResearchProduct]):
@@ -354,34 +424,59 @@ class SyncResearchProductsResource(SyncGraphResource[ResearchProduct]):
 
         Accepts any spelling ``bibliofabric.ids.normalize_orcid`` handles
         (bare, dashed, or an ``https://orcid.org/`` URL); the filter sends
-        the hyphenated form via the V4 ``authorships.author.orcid`` field.
+        the hyphenated form via the V4 ``authorships.author.orcid`` field and
+        paginates via cursor when ``limit`` exceeds 100.
         """
-        page = self.search(
+        page_size = min(limit, self.dialect.max_page_size) if limit > 0 else None
+        return self.collect(
             ResearchProductsFilters(authorships_author_orcid=normalize_orcid(orcid)),
-            page_size=limit,
+            limit=limit,
+            page_size=page_size,
         )
-        return page.results
 
     def get_fields(
-        self, ids: Sequence[str], fields: Sequence[str]
+        self,
+        ids: Sequence[str],
+        fields: Sequence[str],
+        *,
+        batch_size: int | None = None,
+        concurrency: int = 4,
     ) -> list[ResearchProduct]:
-        """Sparse-fetch ``fields`` for known ids, ``batch_size`` ids per request.
+        """Sparse-fetch ``fields`` for known ids in bounded, concurrent chunks.
 
-        Combines the V4 ``select`` parameter with an ``id`` OR-filter
-        (verified live on 2026-11-19). The returned records carry only the
-        requested fields; every other model field stays at its default.
+        Combines the V4 ``select`` parameter with an ``id`` OR-filter (at most
+        50 ids per chunk). The returned records carry only the requested
+        fields; every other model field stays at its default.
         """
-        wanted = list(dict.fromkeys(ids))
-        results: list[ResearchProduct] = []
-        for start in range(0, len(wanted), self.batch_size):
-            chunk = wanted[start : start + self.batch_size]
-            page = self.search({"id": chunk}, select=list(fields), page_size=len(chunk))
-            results.extend(page.results)
-        return results
+        selected = [field.strip() for field in fields if field and field.strip()]
+        if not selected:
+            raise ConfigurationError("get_fields() requires at least one field name.")
+        size = self.batch_size if batch_size is None else batch_size
+        if size <= 0 or size > MAX_OR_VALUES:
+            raise ConfigurationError(
+                f"batch_size must be between 1 and {MAX_OR_VALUES}, got {size}."
+            )
+        if concurrency <= 0:
+            raise ConfigurationError(
+                f"concurrency must be positive, got {concurrency}."
+            )
+        wanted = list(
+            dict.fromkeys(norm for raw in ids if (norm := self.normalize_id(raw)))
+        )
+        if not wanted:
+            return []
+        chunks = [wanted[start : start + size] for start in range(0, len(wanted), size)]
+
+        def fetch_chunk(chunk: list[str]) -> list[ResearchProduct]:
+            page = self.search({"id": chunk}, select=selected, page_size=len(chunk))
+            return page.results
+
+        chunk_results = run_bounded(fetch_chunk, chunks, concurrency)
+        return [record for group in chunk_results for record in group]
 
     def search_links(
         self,
-        filters: LinksFilters | None = None,
+        filters: LinksFilters | Mapping[str, Any] | None = None,
         *,
         page: int | None = None,
         page_size: int | None = None,
@@ -391,7 +486,7 @@ class SyncResearchProductsResource(SyncGraphResource[ResearchProduct]):
 
     def iterate_links(
         self,
-        filters: LinksFilters | None = None,
+        filters: LinksFilters | Mapping[str, Any] | None = None,
         *,
         page_size: int | None = None,
         limit: int | None = None,
@@ -451,16 +546,16 @@ class SyncScholixV2Links(_ScholixLinks):
 
 
 class SyncScholixResource:
-    """Scholix link search over the Scholexplorer host (V3, V2 for dates).
+    """Scholix link search over the Scholexplorer host (V3 default, V2 fallback).
 
     Backed by a dedicated internal API client for ``api.scholexplorer.openaire.eu``
     that shares the Graph client's credentials and settings but throttles
     itself to one request per second (the host sends no rate-limit headers).
 
-    V3 is the default surface. The V2 endpoint stays available and serves any
-    query that carries date filters, because the V3 endpoint accepts ``from``
-    and ``to`` but returns zero rows for every value (server-side regression,
-    OA-4).
+    V3 is the default surface. Queries carrying ``linkProvider`` are routed to
+    V2 because V3 silently ignores ``linkProvider``. Queries carrying
+    ``from_date``/``to_date`` also route to V2 with a warning because V3
+    returns zero rows for date filters and V2 does not filter by date.
     """
 
     def __init__(self, client: SyncBaseApiClient) -> None:
@@ -469,29 +564,58 @@ class SyncScholixResource:
         self._client = client
 
     @staticmethod
-    def _has_date_filter(filters: ScholixFilters | None) -> bool:
-        return filters is not None and not (
-            filters.from_date is None and filters.to_date is None
+    def _has_date_filter(filters: ScholixFilters | Mapping[str, Any] | None) -> bool:
+        if filters is None:
+            return False
+        if isinstance(filters, ScholixFilters):
+            return filters.from_date is not None or filters.to_date is not None
+        return any(
+            filters.get(key) is not None
+            for key in ("from", "to", "from_date", "to_date")
         )
+
+    @staticmethod
+    def _has_link_provider(filters: ScholixFilters | Mapping[str, Any] | None) -> bool:
+        if filters is None:
+            return False
+        if isinstance(filters, ScholixFilters):
+            return filters.linkProvider is not None
+        return filters.get("linkProvider") is not None
+
+    def _select_target(
+        self, filters: ScholixFilters | Mapping[str, Any] | None
+    ) -> _ScholixLinks:
+        if self._has_date_filter(filters):
+            logger.warning(
+                "Scholexplorer V3 returns zero rows for from/to date filters and "
+                "V2 ignores date parameters; routing to /v2/Links, so results "
+                "will not be date-filtered."
+            )
+            return self._v2
+        if self._has_link_provider(filters):
+            return self._v2
+        return self._v3
 
     def search_links(
         self,
-        filters: ScholixFilters | None = None,
+        filters: ScholixFilters | Mapping[str, Any] | None = None,
         *,
         page: int | None = None,
         page_size: int | None = None,
     ) -> Page[ScholixRelationship]:
         """Fetch one page of links as typed records.
 
-        Queries with ``from_date`` or ``to_date`` are served by V2, where the
-        date filters actually work; everything else goes to V3.
+        Queries with ``linkProvider`` route to V2 (V3 silently ignores it).
+        Queries with ``from_date`` or ``to_date`` route to V2 with a warning
+        (V3 returns zero rows and V2 ignores date parameters); everything else
+        goes to V3.
         """
-        target = self._v2 if self._has_date_filter(filters) else self._v3
+        target = self._select_target(filters)
         return target.search(filters, page=page, page_size=page_size)
 
     def iterate_links(
         self,
-        filters: ScholixFilters | None = None,
+        filters: ScholixFilters | Mapping[str, Any] | None = None,
         *,
         page_size: int | None = None,
         limit: int | None = None,
@@ -501,11 +625,11 @@ class SyncScholixResource:
     ) -> Iterator[ScholixRelationship]:
         """Iterate over all matching links, 99 per page.
 
-        Queries with date filters go to V2 (see :meth:`search_links`). The
-        route has no cursor, so page windows are not pinned; the iterator
-        stops on an empty page or when the reported total has been fetched.
+        See :meth:`search_links` for V2/V3 routing rules. The route has no
+        cursor, so page windows are not pinned; the iterator stops on an empty
+        page or when the reported total has been fetched.
         """
-        target = self._v2 if self._has_date_filter(filters) else self._v3
+        target = self._select_target(filters)
         return target.iterate(
             filters,
             page_size=page_size,
@@ -517,7 +641,7 @@ class SyncScholixResource:
 
     def search_links_v2(
         self,
-        filters: ScholixFilters | None = None,
+        filters: ScholixFilters | Mapping[str, Any] | None = None,
         *,
         page: int | None = None,
         page_size: int | None = None,
@@ -527,20 +651,34 @@ class SyncScholixResource:
 
     def iterate_links_v2(
         self,
-        filters: ScholixFilters | None = None,
+        filters: ScholixFilters | Mapping[str, Any] | None = None,
         *,
         page_size: int | None = None,
         limit: int | None = None,
+        on_error: OnError = "raise",
+        failures: list[tuple[dict[str, Any], Exception]] | None = None,
+        on_page: Callable[[int, str | None], Any] | None = None,
     ) -> Iterator[ScholixRelationship]:
         """Iterate over all matching links from the V2 endpoint."""
-        return self._v2.iterate(filters, page_size=page_size, limit=limit)
+        return self._v2.iterate(
+            filters,
+            page_size=page_size,
+            limit=limit,
+            on_error=on_error,
+            failures=failures,
+            on_page=on_page,
+        )
 
     def list_link_providers(self, name: str | None = None) -> list[ScholixLinkProvider]:
         """List Scholexplorer link providers (V2)."""
         params = {"name": name} if name is not None else None
-        payload = self._client.get_json("v2/LinkProvider", params=params)
+        response = self._client.request("GET", "v2/LinkProvider", params=params)
+        payload = self._client.parse_json(response)
         return [
-            ScholixLinkProvider.model_validate(entry) for entry in _records(payload)
+            validate_model(
+                ScholixLinkProvider, entry, request=response.request, response=response
+            )
+            for entry in _records(payload)
         ]
 
     def list_link_publishers(
@@ -549,8 +687,14 @@ class SyncScholixResource:
         """List publishers of source or target objects (V2)."""
         path = "v2/LinkPublisher/inTarget" if in_target else "v2/LinkPublisher/inSource"
         params = {"name": name} if name is not None else None
-        payload = self._client.get_json(path, params=params)
-        return [ScholixPublisher.model_validate(entry) for entry in _records(payload)]
+        response = self._client.request("GET", path, params=params)
+        payload = self._client.parse_json(response)
+        return [
+            validate_model(
+                ScholixPublisher, entry, request=response.request, response=response
+            )
+            for entry in _records(payload)
+        ]
 
     def get_kpi(self) -> str:
         """Return the Scholexplorer Prometheus KPI document."""

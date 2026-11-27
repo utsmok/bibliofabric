@@ -18,13 +18,13 @@ Generated from the docstrings with mkdocstrings.
 
 ## Resources
 
-::: aireloom._async.resources.ResearchProductsResource
-::: aireloom._async.resources.ProjectsResource
-::: aireloom._async.resources.OrganizationsResource
-::: aireloom._async.resources.DataSourcesResource
-::: aireloom._async.resources.PersonsResource
-::: aireloom._async.resources.LinksResource
-::: aireloom._async.resources.ScholixResource
+::: aireloom.ResearchProductsResource
+::: aireloom.ProjectsResource
+::: aireloom.OrganizationsResource
+::: aireloom.DataSourcesResource
+::: aireloom.PersonsResource
+::: aireloom.LinksResource
+::: aireloom.ScholixResource
 
 ## Sync client
 

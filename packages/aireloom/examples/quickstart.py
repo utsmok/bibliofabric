@@ -1,7 +1,7 @@
 """Quick-start example: search research products and walk projects.
 
-Run with `uv run python examples/quickstart.py`. Anonymous access works for
-read-only calls; set AIRELOOM_OPENAIRE_CLIENT_ID and
+Run with `uv run python packages/aireloom/examples/quickstart.py`. Anonymous
+access works for read-only calls; set AIRELOOM_OPENAIRE_CLIENT_ID and
 AIRELOOM_OPENAIRE_CLIENT_SECRET for the registered-service quota.
 """
 

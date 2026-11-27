@@ -7,12 +7,12 @@ from pydantic_settings import SettingsConfigDict
 
 DEFAULT_GRAPH_BASE_URL = "https://api.openaire.eu/graph"
 DEFAULT_SCHOLIX_BASE_URL = "https://api.scholexplorer.openaire.eu"
-"""OpenAIRE identity-platform (Keycloak) endpoint; the legacy
-``https://aai.openaire.eu/oidc/token`` endpoint was retired on 2026-11-02 and
-returns 410 Gone."""
 DEFAULT_TOKEN_URL = (
     "https://aai.openaire.eu/auth/realms/openaire/protocol/openid-connect/token"
 )
+"""OpenAIRE identity-platform (Keycloak) endpoint; the legacy
+``https://aai.openaire.eu/oidc/token`` endpoint was retired on 2026-11-02 and
+returns 410 Gone."""
 
 
 class AireloomSettings(BaseApiSettings):

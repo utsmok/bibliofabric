@@ -41,7 +41,8 @@ request is sent:
 
 - research products: `relevance`, `publication_date`, `date_of_collection`,
   `citation_count`, `influence`, `popularity`, `impulse`
-- projects, organizations, data sources, persons: `relevance`
+- projects: `relevance`, `start_date`, `end_date`
+- organizations, data sources, persons: `relevance`
 
 Directions are `asc`/`desc`; the default direction depends on the field.
 `sort="relevance"` sorts by match score for free-text queries.

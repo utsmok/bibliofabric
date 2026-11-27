@@ -9,28 +9,77 @@ are expressed through pydantic aliases (``ids_doi`` sends ``ids.doi``). The
 one query parameter, as those routes accept individual parameters.
 """
 
+from collections.abc import Mapping, Sequence
 from datetime import date
 from typing import Any, Literal
 
+from bibliofabric.exceptions import ConfigurationError
 from pydantic import BaseModel, ConfigDict, Field
+
+from .dialect import MAX_OR_VALUES
 
 V4_ENTITY_TYPES = Literal["publication", "dataset", "software", "other"]
 V4_PROJECT_STATUS = Literal["completed", "ongoing", "planned"]
 
+type StrFilter = str | Sequence[str]
+type DateFilter = date | str
+type NumericFilter = int | str | Sequence[int | str]
 
-def encode_filter_value(value: Any) -> str:
-    """Encode one filter value: booleans, dates, and OR-lists become strings.
+
+def encode_filter_value(value: Any, *, field: str | None = None) -> str:
+    """Encode one filter value: booleans, dates, and OR-sequences become strings.
 
     Strings pass through untouched so range operators such as ``">100"`` or
-    quoted values survive verbatim.
+    negations such as ``"!other"`` survive verbatim. Enforces the OpenAIRE V4
+    per-field cap of 50 pipe-separated OR values.
     """
     if isinstance(value, bool):
         return "true" if value else "false"
     if isinstance(value, date):
         return value.isoformat()
-    if isinstance(value, list | tuple):
-        return "|".join(encode_filter_value(entry) for entry in value)
-    return str(value)
+    if isinstance(value, Sequence) and not isinstance(value, str | bytes):
+        items = [encode_filter_value(entry, field=field) for entry in value]
+        items = [item for item in items if item]
+        if len(items) > MAX_OR_VALUES:
+            label = f"Filter field {field!r}" if field else "Filter field"
+            raise ConfigurationError(
+                f"{label} has {len(items)} OR values; OpenAIRE V4 accepts at most "
+                f"{MAX_OR_VALUES} pipe-separated values per field."
+            )
+        return "|".join(items)
+    rendered = str(value)
+    if "|" in rendered:
+        parts = rendered.split("|")
+        if len(parts) > MAX_OR_VALUES:
+            label = f"Filter field {field!r}" if field else "Filter field"
+            raise ConfigurationError(
+                f"{label} has {len(parts)} OR values; OpenAIRE V4 accepts at most "
+                f"{MAX_OR_VALUES} pipe-separated values per field."
+            )
+    return rendered
+
+
+def encode_filter_mapping(items: Mapping[str, Any]) -> str:
+    """Serialize a mapping of ``field -> value`` into one V4 ``filter`` string.
+
+    ``None`` entries and empty sequences are omitted so invalid ``field:``
+    predicates are never sent.
+    """
+    parts: list[str] = []
+    for field, value in items.items():
+        if value is None:
+            continue
+        if (
+            isinstance(value, Sequence)
+            and not isinstance(value, str | bytes)
+            and not value
+        ):
+            continue
+        encoded = encode_filter_value(value, field=field)
+        if not encoded:
+            continue
+        parts.append(f"{field}:{encoded}")
+    return ",".join(parts)
 
 
 class GraphFilters(BaseModel):
@@ -41,9 +90,7 @@ class GraphFilters(BaseModel):
     def to_expression(self) -> str:
         """Dump the set fields into one V4 ``filter`` expression."""
         dumped = self.model_dump(exclude_none=True, by_alias=True)
-        return ",".join(
-            f"{field}:{encode_filter_value(value)}" for field, value in dumped.items()
-        )
+        return encode_filter_mapping(dumped)
 
 
 class ResearchProductsFilters(GraphFilters):
@@ -51,46 +98,47 @@ class ResearchProductsFilters(GraphFilters):
 
     Value strings may carry the operators the API accepts: a leading ``!``
     negates, ``>``/``<`` compare on date and numeric fields such as
-    ``impact_citation_count``, and ``from_``/``to_`` pairs bound ranges.
+    ``impact_citation_count``, sequences join with ``|`` for OR within a field
+    (up to 50 values), and ``from_``/``to_`` pairs bound ranges.
     """
 
-    id: str | None = None
-    ids_doi: str | None = Field(default=None, alias="ids.doi")
-    ids_pmid: str | None = Field(default=None, alias="ids.pmid")
-    ids_pmcid: str | None = Field(default=None, alias="ids.pmcid")
-    ids_arxiv: str | None = Field(default=None, alias="ids.arxiv")
-    ids_handle: str | None = Field(default=None, alias="ids.handle")
-    ids_original: str | None = Field(default=None, alias="ids.original")
-    ids_pid: str | None = Field(default=None, alias="ids.pid")
-    type: V4_ENTITY_TYPES | None = None
-    instance_type: str | None = None
-    subjects: list[str] | None = None
-    sdg: list[str] | None = None
-    fos: list[str] | None = None
-    from_publication_date: str | None = None
-    to_publication_date: str | None = None
+    id: StrFilter | None = None
+    ids_doi: StrFilter | None = Field(default=None, alias="ids.doi")
+    ids_pmid: StrFilter | None = Field(default=None, alias="ids.pmid")
+    ids_pmcid: StrFilter | None = Field(default=None, alias="ids.pmcid")
+    ids_arxiv: StrFilter | None = Field(default=None, alias="ids.arxiv")
+    ids_handle: StrFilter | None = Field(default=None, alias="ids.handle")
+    ids_original: StrFilter | None = Field(default=None, alias="ids.original")
+    ids_pid: StrFilter | None = Field(default=None, alias="ids.pid")
+    type: V4_ENTITY_TYPES | str | Sequence[str] | None = None
+    instance_type: StrFilter | None = None
+    subjects: StrFilter | None = None
+    sdg: StrFilter | None = None
+    fos: StrFilter | None = None
+    from_publication_date: DateFilter | None = None
+    to_publication_date: DateFilter | None = None
     from_publication_year: int | None = None
     to_publication_year: int | None = None
-    date_of_collection: str | None = None
+    date_of_collection: DateFilter | None = None
     title_search: str | None = Field(default=None, alias="title.search")
     abstract_search: str | None = Field(default=None, alias="abstract.search")
     title_and_abstract_search: str | None = Field(
         default=None, alias="title_and_abstract.search"
     )
     default_search: str | None = Field(default=None, alias="default.search")
-    authorships_author_fullname: str | None = Field(
+    authorships_author_fullname: StrFilter | None = Field(
         default=None, alias="authorships.author.fullname"
     )
-    authorships_author_orcid: str | None = Field(
+    authorships_author_orcid: StrFilter | None = Field(
         default=None, alias="authorships.author.orcid"
     )
-    authorships_institutions_ror: str | None = Field(
+    authorships_institutions_ror: StrFilter | None = Field(
         default=None, alias="authorships.institutions.ror"
     )
-    authorships_countries: list[str] | None = Field(
+    authorships_countries: StrFilter | None = Field(
         default=None, alias="authorships.countries"
     )
-    authorships_continent: str | None = Field(
+    authorships_continent: StrFilter | None = Field(
         default=None, alias="authorships.continent"
     )
     authorships_is_global_south: bool | None = Field(
@@ -105,131 +153,141 @@ class ResearchProductsFilters(GraphFilters):
     has_abstract: bool | None = None
     has_grant: bool | None = None
     has_license: bool | None = None
-    best_oa_rights: str | None = Field(default=None, alias="best_oa.rights")
-    oa_color: str | None = None
+    best_oa_rights: StrFilter | None = Field(default=None, alias="best_oa.rights")
+    oa_color: StrFilter | None = None
     is_green: bool | None = None
     is_peer_reviewed: bool | None = None
     is_in_diamond_journal: bool | None = None
     is_publicly_funded: bool | None = None
-    impact_influence_class: str | None = Field(
+    impact_influence_class: StrFilter | None = Field(
         default=None, alias="impact.influence_class"
     )
-    impact_popularity_class: str | None = Field(
+    impact_popularity_class: StrFilter | None = Field(
         default=None, alias="impact.popularity_class"
     )
-    impact_impulse_class: str | None = Field(default=None, alias="impact.impulse_class")
-    impact_citation_count_class: str | None = Field(
+    impact_impulse_class: StrFilter | None = Field(
+        default=None, alias="impact.impulse_class"
+    )
+    impact_citation_count_class: StrFilter | None = Field(
         default=None, alias="impact.citation_count_class"
     )
-    impact_citation_count: str | None = Field(
+    impact_citation_count: int | str | None = Field(
         default=None, alias="impact.citation_count"
     )
-    publisher: str | None = None
-    host_datasource_id: str | None = Field(default=None, alias="host_datasource.id")
-    collected_from_id: str | None = Field(default=None, alias="collected_from.id")
-    grants_project_id: str | None = Field(default=None, alias="grants.project_id")
-    grants_code: str | None = Field(default=None, alias="grants.code")
-    grants_funder_short_name: str | None = Field(
+    publisher: StrFilter | None = None
+    host_datasource_id: StrFilter | None = Field(
+        default=None, alias="host_datasource.id"
+    )
+    collected_from_id: StrFilter | None = Field(default=None, alias="collected_from.id")
+    grants_project_id: StrFilter | None = Field(default=None, alias="grants.project_id")
+    grants_code: StrFilter | None = Field(default=None, alias="grants.code")
+    grants_funder_short_name: StrFilter | None = Field(
         default=None, alias="grants.funder_short_name"
     )
-    grants_funding_stream_id: str | None = Field(
+    grants_funding_stream_id: StrFilter | None = Field(
         default=None, alias="grants.funding_stream_id"
     )
-    affiliations_organization_id: str | None = Field(
+    affiliations_organization_id: StrFilter | None = Field(
         default=None, alias="affiliations.organization_id"
     )
-    communities_id: str | None = Field(default=None, alias="communities.id")
-    language: str | None = None
+    communities_id: StrFilter | None = Field(default=None, alias="communities.id")
+    language: StrFilter | None = None
 
 
 class ProjectsFilters(GraphFilters):
     """V4 filters for ``/v4/projects``."""
 
-    id: str | None = None
-    code: str | None = None
-    acronym: str | None = None
-    pid: str | None = None
-    call_identifier: str | None = None
-    project_status: V4_PROJECT_STATUS | None = None
+    id: StrFilter | None = None
+    code: StrFilter | None = None
+    acronym: StrFilter | None = None
+    pid: StrFilter | None = None
+    call_identifier: StrFilter | None = None
+    project_status: V4_PROJECT_STATUS | str | Sequence[str] | None = None
     title_search: str | None = Field(default=None, alias="title.search")
     keywords_search: str | None = Field(default=None, alias="keywords.search")
     default_search: str | None = Field(default=None, alias="default.search")
-    funder: str | None = None
-    funder_short_name: str | None = None
-    funding_stream_id: str | None = None
-    funding_level_0_id: str | None = None
-    funding_level_1_id: str | None = None
-    funding_level_2_id: str | None = None
-    country: str | None = None
-    continent: str | None = None
+    funder: StrFilter | None = None
+    funder_short_name: StrFilter | None = None
+    funding_stream_id: StrFilter | None = None
+    funding_level_0_id: StrFilter | None = None
+    funding_level_1_id: StrFilter | None = None
+    funding_level_2_id: StrFilter | None = None
+    country: StrFilter | None = None
+    continent: StrFilter | None = None
     is_global_south: bool | None = None
     oa_mandate_publications: bool | None = None
-    from_start_date: str | None = None
-    to_start_date: str | None = None
-    from_end_date: str | None = None
-    to_end_date: str | None = None
-    start_year: str | None = None
-    end_year: str | None = None
-    active_year: str | None = None
-    organizations_id: str | None = Field(default=None, alias="organizations.id")
-    organizations_name: str | None = Field(default=None, alias="organizations.name")
-    organizations_country: str | None = Field(
+    from_start_date: DateFilter | None = None
+    to_start_date: DateFilter | None = None
+    from_end_date: DateFilter | None = None
+    to_end_date: DateFilter | None = None
+    start_year: NumericFilter | None = None
+    end_year: NumericFilter | None = None
+    active_year: NumericFilter | None = None
+    organizations_id: StrFilter | None = Field(default=None, alias="organizations.id")
+    organizations_name: StrFilter | None = Field(
+        default=None, alias="organizations.name"
+    )
+    organizations_country: StrFilter | None = Field(
         default=None, alias="organizations.country"
     )
-    communities_id: str | None = Field(default=None, alias="communities.id")
-    collected_from_id: str | None = Field(default=None, alias="collected_from.id")
+    communities_id: StrFilter | None = Field(default=None, alias="communities.id")
+    collected_from_id: StrFilter | None = Field(default=None, alias="collected_from.id")
 
 
 class OrganizationsFilters(GraphFilters):
     """V4 filters for ``/v4/organizations``."""
 
-    id: str | None = None
-    pid: str | None = None
+    id: StrFilter | None = None
+    pid: StrFilter | None = None
     legal_name_search: str | None = Field(default=None, alias="legal_name.search")
     legal_short_name_search: str | None = Field(
         default=None, alias="legal_short_name.search"
     )
     default_search: str | None = Field(default=None, alias="default.search")
-    country: str | None = None
-    continent: str | None = None
+    country: StrFilter | None = None
+    continent: StrFilter | None = None
     is_global_south: bool | None = None
-    communities_id: str | None = Field(default=None, alias="communities.id")
-    collected_from_id: str | None = Field(default=None, alias="collected_from.id")
+    communities_id: StrFilter | None = Field(default=None, alias="communities.id")
+    collected_from_id: StrFilter | None = Field(default=None, alias="collected_from.id")
 
 
 class DataSourcesFilters(GraphFilters):
     """V4 filters for ``/v4/datasources``."""
 
-    id: str | None = None
-    pid: str | None = None
+    id: StrFilter | None = None
+    pid: StrFilter | None = None
     official_name_search: str | None = Field(default=None, alias="official_name.search")
     english_name_search: str | None = Field(default=None, alias="english_name.search")
     default_search: str | None = Field(default=None, alias="default.search")
-    type: str | None = None
-    subjects: list[str] | None = None
-    content_types: list[str] | None = None
-    eosc_datasource_type: str | None = None
-    jurisdiction: str | None = None
+    type: StrFilter | None = None
+    subjects: StrFilter | None = None
+    content_types: StrFilter | None = None
+    eosc_datasource_type: StrFilter | None = None
+    jurisdiction: StrFilter | None = None
     thematic: bool | None = None
-    od_languages: str | None = None
-    country: str | None = None
-    continent: str | None = None
+    od_languages: StrFilter | None = None
+    country: StrFilter | None = None
+    continent: StrFilter | None = None
     is_global_south: bool | None = None
-    compatibility_id: str | None = Field(default=None, alias="compatibility.id")
-    compatibility_name: str | None = Field(default=None, alias="compatibility.name")
-    organizations_id: str | None = Field(default=None, alias="organizations.id")
-    communities_id: str | None = Field(default=None, alias="communities.id")
-    collected_from_id: str | None = Field(default=None, alias="collected_from.id")
-    collected_from_name: str | None = Field(default=None, alias="collected_from.name")
+    compatibility_id: StrFilter | None = Field(default=None, alias="compatibility.id")
+    compatibility_name: StrFilter | None = Field(
+        default=None, alias="compatibility.name"
+    )
+    organizations_id: StrFilter | None = Field(default=None, alias="organizations.id")
+    communities_id: StrFilter | None = Field(default=None, alias="communities.id")
+    collected_from_id: StrFilter | None = Field(default=None, alias="collected_from.id")
+    collected_from_name: StrFilter | None = Field(
+        default=None, alias="collected_from.name"
+    )
 
 
 class PersonsFilters(GraphFilters):
     """V4 filters for ``/v4/persons``."""
 
-    id: str | None = None
-    ids_original: str | None = Field(default=None, alias="ids.original")
-    given_name: str | None = None
-    last_name: str | None = None
+    id: StrFilter | None = None
+    ids_original: StrFilter | None = Field(default=None, alias="ids.original")
+    given_name: StrFilter | None = None
+    last_name: StrFilter | None = None
     default_search: str | None = Field(default=None, alias="default.search")
 
 
@@ -259,8 +317,8 @@ class LinksFilters(BaseModel):
     relation: str | None = Field(
         default=None, description="Relationship type, e.g. IsSupplementTo"
     )
-    fromDate: str | None = Field(default=None, description="YYYY or YYYY-MM-DD")
-    toDate: str | None = Field(default=None, description="YYYY or YYYY-MM-DD")
+    fromDate: DateFilter | None = Field(default=None, description="YYYY or YYYY-MM-DD")
+    toDate: DateFilter | None = Field(default=None, description="YYYY or YYYY-MM-DD")
 
 
 class ScholixFilters(BaseModel):
@@ -268,8 +326,10 @@ class ScholixFilters(BaseModel):
 
     One of ``sourcePid``, ``targetPid``, ``sourcePublisher``,
     ``targetPublisher``, ``sourceType``, or ``targetType`` is required.
-    ``linkProvider`` is accepted by both versions; the date filters route to
-    V2 automatically because V3 returns zero rows for them (OA-4).
+    ``linkProvider`` is supported on V2 only (V3 silently ignores it), so
+    queries carrying ``linkProvider`` are routed to V2 automatically. Note that
+    V3 returns zero rows for ``from``/``to`` date filters and V2 ignores date
+    parameters (see ``docs/aireloom/quirks.md``).
     """
 
     model_config = ConfigDict(extra="forbid", populate_by_name=True)
@@ -282,22 +342,26 @@ class ScholixFilters(BaseModel):
     targetType: Literal["Publication", "Dataset", "Software", "Other"] | None = None
     relation: str | None = None
     linkProvider: str | None = None
-    from_date: str | None = Field(
+    from_date: DateFilter | None = Field(
         default=None, alias="from", description="YYYY or YYYY-MM-DD"
     )
-    to_date: str | None = Field(
+    to_date: DateFilter | None = Field(
         default=None, alias="to", description="YYYY or YYYY-MM-DD"
     )
 
 
 __all__ = [
     "DataSourcesFilters",
+    "DateFilter",
     "GraphFilters",
     "LinksFilters",
+    "NumericFilter",
     "OrganizationsFilters",
     "PersonsFilters",
     "ProjectsFilters",
     "ResearchProductsFilters",
     "ScholixFilters",
+    "StrFilter",
+    "encode_filter_mapping",
     "encode_filter_value",
 ]

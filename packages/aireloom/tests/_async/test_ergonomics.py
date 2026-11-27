@@ -1,6 +1,7 @@
 """Ergonomics helpers: relation vocabulary, by_orcid, find_variants, get_fields."""
 
-from aireloom import RELATION_INVERSES, relation_inverse
+import pytest
+from aireloom import RELATION_INVERSES, ConfigurationError, relation_inverse
 
 from .conftest import json_response, load, params_of
 
@@ -85,3 +86,51 @@ async def test_get_fields_splits_ids_into_batch_size_requests(httpx_mock, client
     requests = httpx_mock.get_requests()
     assert len(requests) == 2
     assert params_of(requests[1])["filter"] == f"id:{ids[-1]}"
+
+
+async def test_get_fields_rejects_empty_fields_and_normalizes_ids(httpx_mock, client):
+    with pytest.raises(ConfigurationError, match="at least one field"):
+        await client.research_products.get_fields(["x::1"], [])
+    httpx_mock.add_response(**json_response(load("rp_select_page.json")))
+    await client.research_products.get_fields(
+        [" 06cdd3ff4700::3c8734759ca685b966b1d737c37daeed ", ""],
+        ["id", "mainTitle"],
+    )
+    assert (
+        params_of(httpx_mock.get_request())["filter"]
+        == "id:06cdd3ff4700::3c8734759ca685b966b1d737c37daeed"
+    )
+
+
+async def test_by_orcid_paginates_above_100_and_zero_limit(httpx_mock, client):
+    assert await client.research_products.by_orcid("0000-0002-1825-0097", limit=0) == []
+    assert httpx_mock.get_requests() == []
+
+    p1 = {
+        "header": {"numFound": 150, "pageSize": 100, "nextCursor": "c2"},
+        "results": [{"id": f"a::{i}", "type": "publication"} for i in range(100)],
+    }
+    p2 = {
+        "header": {"numFound": 150, "pageSize": 100},
+        "results": [{"id": f"b::{i}", "type": "publication"} for i in range(50)],
+    }
+    httpx_mock.add_response(**json_response(p1))
+    httpx_mock.add_response(**json_response(p2))
+    results = await client.research_products.by_orcid("0000-0002-1825-0097", limit=120)
+    assert len(results) == 120
+    reqs = httpx_mock.get_requests()
+    assert params_of(reqs[0])["page_size"] == "100"
+    assert params_of(reqs[0])["cursor"] == "*"
+    assert params_of(reqs[1])["cursor"] == "c2"
+
+
+async def test_find_variants_forwards_page_size(httpx_mock, client):
+    httpx_mock.add_response(**json_response(EMPTY_PAGE))
+    await client.organizations.find_variants(["twente"], page_size=50)
+    assert params_of(httpx_mock.get_request())["page_size"] == "50"
+
+
+async def test_item_path_accepts_int_and_rejects_empty(client):
+    assert client.research_products.item_path(12345) == "v3/research-products/12345"
+    with pytest.raises(ConfigurationError, match="non-empty id"):
+        client.research_products.item_path("   ")

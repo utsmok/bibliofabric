@@ -31,13 +31,32 @@ class Measure(BaseModel):
     model_config = ConfigDict(extra="allow")
 
 
+class Concept(BaseModel):
+    """A concept entry inside a person's affiliation context category."""
+
+    id: str | None = None
+    label: SafeStr = ""
+
+    model_config = ConfigDict(extra="allow")
+
+
+class Category(BaseModel):
+    """A category entry inside a person's affiliation context."""
+
+    id: str | None = None
+    label: SafeStr = ""
+    concept: SafeList[Concept] = Field(default_factory=list)
+
+    model_config = ConfigDict(extra="allow")
+
+
 class Context(BaseModel):
     """Affiliation context of a person."""
 
     id: str | None = None
     label: SafeStr = ""
     type: str | None = None
-    category: SafeList[str] = Field(default_factory=list)
+    category: SafeList[Category | str] = Field(default_factory=list)
 
     model_config = ConfigDict(extra="allow")
 
@@ -67,7 +86,7 @@ class Person(BaseEntity):
     @computed_field
     @property
     def orcid(self) -> str | None:
-        return extract_orcid(self.originalId, self.id)
+        return extract_orcid(self.originalId, self.id, self.pid)
 
     @computed_field
     @property
@@ -82,6 +101,3 @@ class Person(BaseEntity):
         if name:
             return name
         return f"Person(id={self.id!r})"
-
-
-# Define the specific response type for persons

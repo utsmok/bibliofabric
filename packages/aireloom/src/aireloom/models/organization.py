@@ -4,35 +4,32 @@
 Reference: https://graph.openaire.eu/docs/data-model/entities/organization
 """
 
-from typing import Annotated
-
 from bibliofabric import SafeList, SafeStr
-from pydantic import BeforeValidator, Field, computed_field
+from pydantic import Field, computed_field
 
+from .._helpers import extract_pid_by_scheme
 from .base import (
     BaseEntity,
-    CfHbKeyValue,
     CodeLabel,
     FundingHierarchy,
     Pid,
+    SafeCfHbKeyValue,
+    SafeCodeLabel,
 )
+from .research_product import RelatedRecord
 
 Country = CodeLabel
 """Alias keeping the historical export name; organizations carry ``{code, label}``."""
 
-SafeCountry = Annotated[
-    Country, BeforeValidator(lambda v: Country() if v is None else v)
-]
-SafeCfHbKeyValue = Annotated[
-    CfHbKeyValue, BeforeValidator(lambda v: CfHbKeyValue() if v is None else v)
-]
+SafeCountry = SafeCodeLabel
 
 
 class Organization(BaseEntity):
     """Model representing an OpenAIRE Organization entity.
 
     Captures names, website, country, persistent identifiers, funding records,
-    and provenance. Inherits the ``id`` field from ``BaseEntity``.
+    provenance, and related entity links. Inherits the ``id`` field from
+    ``BaseEntity``.
     """
 
     legalShortName: SafeStr = ""
@@ -44,14 +41,12 @@ class Organization(BaseEntity):
     originalIds: SafeList[str] = Field(default_factory=list)
     collectedFrom: SafeList[SafeCfHbKeyValue] = Field(default_factory=list)
     fundings: SafeList[FundingHierarchy] = Field(default_factory=list)
+    links: SafeList[RelatedRecord] = Field(default_factory=list)
 
     @computed_field
     @property
     def ror_id(self) -> str | None:
-        for pid in self.pids:
-            if pid.scheme and pid.scheme.lower() == "ror" and pid.value:
-                return pid.value
-        return None
+        return extract_pid_by_scheme(self.pids, "ror")
 
     @computed_field
     @property
@@ -71,6 +66,3 @@ class Organization(BaseEntity):
         if self.ror_id:
             parts.append(f"ROR:{self.ror_id}")
         return " | ".join(parts) if parts else f"Organization(id={self.id!r})"
-
-
-# Define the specific response type for organizations
