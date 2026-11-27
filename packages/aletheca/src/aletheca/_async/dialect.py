@@ -9,11 +9,12 @@ normalization, cursor iteration at ``per_page=100``, and a minimal-cost
 """
 
 import re
-from collections.abc import Mapping, Sequence
+from collections.abc import AsyncIterator, Mapping, Sequence
 from typing import Any
 from urllib.parse import quote
 
-from bibliofabric import ResourceClient
+import httpx
+from bibliofabric import OnError, ResourceClient, validate_model
 from bibliofabric.exceptions import ConfigurationError
 from bibliofabric.ids import (
     is_doi,
@@ -23,14 +24,16 @@ from bibliofabric.ids import (
     normalize_ror,
     strip_url_prefix,
 )
+from bibliofabric.paging import Page
 from pydantic import BaseModel
 
 from ..dialect import (
     _OPENALEX_URL_PREFIX,
-    MAX_BASIC_PAGING_RESULTS,
     MAX_OR_VALUES,
+    MAX_SAMPLE_SIZE,
     OPENALEX_DIALECT,
 )
+from ..models import GroupByBucket
 
 #: Filter fields whose values are DOIs and need prefix/case normalization
 #: before they may join a ``filter=`` value (raw URL forms inject colons).
@@ -106,6 +109,13 @@ def serialize_filter_params(
     if not parts:
         return {}
     return {"filter": ",".join(parts)}
+
+
+def _response_request(response: httpx.Response) -> httpx.Request | None:
+    try:
+        return response.request
+    except RuntimeError:
+        return None
 
 
 class OpenAlexResourceClient[E: BaseModel](ResourceClient[E]):
@@ -264,16 +274,16 @@ class OpenAlexResourceClient[E: BaseModel](ResourceClient[E]):
             )
         if page_size is not None and page_size <= 0:
             raise ConfigurationError(f"page_size must be positive, got {page_size}.")
-        if cursor is None and page is not None:
+        if cursor is None and page is not None and self.dialect.max_offset is not None:
             size = (
                 self.dialect.default_page_size
                 if page_size is None
                 else min(page_size, self.dialect.max_page_size)
             )
-            if page * size > MAX_BASIC_PAGING_RESULTS:
+            if page * size > self.dialect.max_offset:
                 raise ConfigurationError(
                     f"OpenAlex caps basic paging at page * per_page <= "
-                    f"{MAX_BASIC_PAGING_RESULTS} (requested page={page}, "
+                    f"{self.dialect.max_offset} (requested page={page}, "
                     f"per_page={size}); use iterate() for deep result sets."
                 )
         return super()._search_params(
@@ -286,6 +296,40 @@ class OpenAlexResourceClient[E: BaseModel](ResourceClient[E]):
             cursor=cursor,
             params=params,
         )
+
+    def _group_by_params(
+        self,
+        group_by: str,
+        *,
+        filters: BaseModel | Mapping[str, Any] | None,
+        query: str | None,
+        cursor: str | None,
+        params: Mapping[str, Any] | None,
+    ) -> dict[str, Any]:
+        if isinstance(filters, str):
+            raise ConfigurationError(
+                f"Got a string as filters ({filters!r}). Pass search text as "
+                f"query={filters!r}; filters takes a filter model or a mapping."
+            )
+        if query is not None and self.dialect.query_param is None:
+            raise ConfigurationError(
+                f"{type(self).__name__} does not support free-text query "
+                "(dialect.query_param is None)."
+            )
+        if cursor is not None and self.dialect.cursor_param is None:
+            raise ConfigurationError(
+                f"{type(self).__name__} does not support cursor paging "
+                "(dialect.cursor_param is None)."
+            )
+        query_params: dict[str, Any] = dict(self.build_filter_params(filters))
+        if query is not None and self.dialect.query_param is not None:
+            query_params[self.dialect.query_param] = query
+        if cursor is not None and self.dialect.cursor_param is not None:
+            query_params[self.dialect.cursor_param] = cursor
+        if params is not None:
+            query_params.update(params)
+        query_params["group_by"] = group_by
+        return query_params
 
     # --- operations ----------------------------------------------------
 
@@ -303,3 +347,162 @@ class OpenAlexResourceClient[E: BaseModel](ResourceClient[E]):
         """
         merged = {"select": "id", **(params or {})}
         return await super().count(filters, query=query, params=merged)
+
+    async def sample(
+        self,
+        n: int,
+        *,
+        seed: int | None = None,
+        filters: BaseModel | Mapping[str, Any] | None = None,
+        query: str | None = None,
+        sort: str | Sequence[str] | None = None,
+        select: Sequence[str] | None = None,
+        page: int | None = None,
+        page_size: int | None = None,
+        cursor: str | None = None,
+        on_error: OnError = "raise",
+        failures: list[tuple[dict[str, Any], Exception]] | None = None,
+        params: Mapping[str, Any] | None = None,
+    ) -> Page[E]:
+        """Return a random sample of up to ``n`` entities (max 10,000).
+
+        Pass ``seed`` for reproducibility. ``Page.total`` reports the sample
+        size, not the size of the filtered corpus.
+        """
+        if not 0 < n <= MAX_SAMPLE_SIZE:
+            raise ConfigurationError(
+                f"sample size must be between 1 and {MAX_SAMPLE_SIZE}, got {n}."
+            )
+        extra: dict[str, Any] = {**(params or {}), "sample": n}
+        if seed is not None:
+            extra["seed"] = seed
+        return await self.search(
+            filters,
+            query=query,
+            sort=sort,
+            select=select,
+            page=page,
+            page_size=page_size,
+            cursor=cursor,
+            on_error=on_error,
+            failures=failures,
+            params=extra,
+        )
+
+    async def group_by(
+        self,
+        group_by: str,
+        *,
+        filters: BaseModel | Mapping[str, Any] | None = None,
+        query: str | None = None,
+        cursor: str | None = None,
+        params: Mapping[str, Any] | None = None,
+    ) -> Page[GroupByBucket]:
+        """Return one page of typed ``group_by`` buckets (costs one credit).
+
+        ``group_by`` accepts up to three comma-separated fields; deeper
+        dimensions nest in :attr:`GroupByBucket.groups`. Responses return up
+        to 200 buckets per call; pass ``cursor="*"`` (or use
+        :meth:`iterate_group_by`) to advance across pages via
+        ``page.next_cursor``. ``page.total`` carries ``meta.count`` and
+        ``page.meta`` preserves envelope metadata including ``groups_count``.
+        """
+        query_params = self._group_by_params(
+            group_by,
+            filters=filters,
+            query=query,
+            cursor=cursor,
+            params=params,
+        )
+        response = await self._client.request("GET", self.path, params=query_params)
+        body = self._client.parse_json(response)
+        raw_buckets = body.get("group_by") if isinstance(body, dict) else None
+        req = _response_request(response)
+        results = [
+            validate_model(
+                GroupByBucket,
+                bucket,
+                request=req,
+                response=response,
+            )
+            for bucket in raw_buckets or []
+        ]
+        unwrapper = self._client.unwrapper
+        meta = unwrapper.meta(body)
+        meta.pop("group_by", None)
+        return Page(
+            results=results,
+            total=unwrapper.total(body),
+            next_cursor=unwrapper.next_cursor(body),
+            page=None,
+            meta=meta,
+        )
+
+    def iterate_group_by(
+        self,
+        group_by: str,
+        *,
+        filters: BaseModel | Mapping[str, Any] | None = None,
+        query: str | None = None,
+        limit: int | None = None,
+        cursor: str | None = None,
+        params: Mapping[str, Any] | None = None,
+    ) -> AsyncIterator[GroupByBucket]:
+        """Iterate over ``group_by`` buckets using cursor pagination."""
+        if limit is not None and limit < 0:
+            raise ConfigurationError(f"limit must be non-negative, got {limit}.")
+        if self.dialect.cursor_param is None:
+            raise ConfigurationError(
+                f"{type(self).__name__} does not support cursor paging "
+                "(dialect.cursor_param is None)."
+            )
+        self._group_by_params(
+            group_by,
+            filters=filters,
+            query=query,
+            cursor=cursor,
+            params=params,
+        )
+        return self._iterate_group_by_cursor(
+            group_by=group_by,
+            filters=filters,
+            query=query,
+            limit=limit,
+            cursor=cursor,
+            params=params,
+        )
+
+    async def _iterate_group_by_cursor(
+        self,
+        *,
+        group_by: str,
+        filters: BaseModel | Mapping[str, Any] | None,
+        query: str | None,
+        limit: int | None,
+        cursor: str | None,
+        params: Mapping[str, Any] | None,
+    ) -> AsyncIterator[GroupByBucket]:
+        if limit == 0:
+            return
+        current = cursor if cursor is not None else self.dialect.cursor_start
+        fetched = 0
+        while True:
+            page = await self.group_by(
+                group_by,
+                filters=filters,
+                query=query,
+                cursor=current,
+                params=params,
+            )
+            for bucket in page.results:
+                yield bucket
+                fetched += 1
+                if limit is not None and fetched >= limit:
+                    return
+            if (
+                not page.results
+                or page.next_cursor is None
+                or page.next_cursor == current
+            ):
+                return
+            current = page.next_cursor

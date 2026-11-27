@@ -48,7 +48,7 @@ async def main():
 asyncio.run(main())
 ```
 
-Every resource client exposes `get()`, `search()`, `iterate()`, `collect()`, `first()`, and `count()`. The works client adds OpenAlex-specific helpers: `batch_get_by_doi()`, `citing()`, `referenced()`, `group_by()`, `sample()`, and `search_scoped()`. The client itself offers free `autocomplete()` and `rate_limit()` endpoints.
+Every resource client exposes `get()`, `search()`, `iterate()`, `collect()`, `first()`, `count()`, `sample()`, `group_by()`, and `iterate_group_by()`. The works client adds OpenAlex-specific helpers: `batch_get_by_doi()`, `citing()`, `referenced()`, `oa_pdf_urls()`, `search_scoped()`, and `corpus=`/`include_parts=`/`include_pulled=`/`rerank=` controls. The client itself offers free `autocomplete()` and `rate_limit()` endpoints, plus `last_rate_limit_headers` after responses.
 
 ## Sync usage
 

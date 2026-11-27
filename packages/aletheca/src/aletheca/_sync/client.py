@@ -95,6 +95,7 @@ class AlethecaSyncClient(SyncBaseApiClient):
             auth = self._resolve_auth(key, scheme)
             keyless = not key
         self._keyless = keyless
+        self._last_rate_limit_headers: dict[str, str] = {}
         super().__init__(
             base_url=base_url or OPENALEX_API_BASE_URL,
             settings=resolved_settings,
@@ -103,6 +104,19 @@ class AlethecaSyncClient(SyncBaseApiClient):
             http_client=http_client,
         )
         logger.debug("%s initialized (keyless=%s).", type(self).__name__, keyless)
+
+    @property
+    def last_rate_limit_headers(self) -> dict[str, str]:
+        """Return ``x-ratelimit-*`` headers captured from the most recent response."""
+        return dict(self._last_rate_limit_headers)
+
+    def on_response(self, response: httpx.Response) -> None:
+        """Capture OpenAlex ``x-ratelimit-*`` headers from the latest response."""
+        self._last_rate_limit_headers = {
+            key.lower(): value
+            for key, value in response.headers.items()
+            if key.lower().startswith("x-ratelimit-")
+        }
 
     @staticmethod
     def _resolve_auth(api_key: str | None, scheme: AuthScheme) -> AuthStrategy:
@@ -130,6 +144,7 @@ class AlethecaSyncClient(SyncBaseApiClient):
         content: str | bytes | None = None,
         headers: Mapping[str, str] | None = None,
         timeout: float | httpx.Timeout | None = None,
+        retry: bool | None = None,
     ) -> httpx.Response:
         """Send a request with retries, mapping keyless 401s to clear errors.
 
@@ -146,6 +161,7 @@ class AlethecaSyncClient(SyncBaseApiClient):
                 content=content,
                 headers=headers,
                 timeout=timeout,
+                retry=retry,
             )
         except AuthError as error:
             response = error.response

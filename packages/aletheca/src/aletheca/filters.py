@@ -16,6 +16,9 @@ Deprecated and paid filters are deliberately absent:
 - ``is_in_jstage*`` on sources: no longer returned or documented upstream.
 - ``parent_works.relationship``: renamed ``parent_works.link_type`` by
   OpenAlex (2026-11-14); the old filter name errors after 2027-03-01.
+- ``best_oa_version`` on works and ``works_count_range`` /
+  ``cited_by_count_range``: non-existent upstream; use ``best_open_version``
+  and range syntax on ``works_count`` / ``cited_by_count`` (e.g. ``">100"``).
 """
 
 from collections.abc import Sequence
@@ -106,7 +109,6 @@ class WorksFilters(BaseModel):
     # Count / attribute filters
     authors_count: IntFilter = None
     best_open_version: StrFilter = None
-    best_oa_version: StrFilter = None
     version: StrFilter = None
     cited_by_count: IntFilter = None
     fwci: FloatFilter = None
@@ -207,9 +209,7 @@ class SourcesFilters(BaseModel):
     issn_l: StrFilter = Field(None, alias="issn_l")
     has_apc: bool | None = None
     works_count: IntFilter = None
-    works_count_range: StrFilter = None
     cited_by_count: IntFilter = None
-    cited_by_count_range: StrFilter = None
     display_name_search: StrFilter = Field(None, alias="display_name.search")
     continent: StrFilter = None
     has_issn: bool | None = None
@@ -231,9 +231,7 @@ class InstitutionsFilters(BaseModel):
     type: StrFilter = None
     ror: StrFilter = None
     works_count: IntFilter = None
-    works_count_range: StrFilter = None
     cited_by_count: IntFilter = None
-    cited_by_count_range: StrFilter = None
     display_name_search: StrFilter = Field(None, alias="display_name.search")
     continent: StrFilter = None
     is_global_south: bool | None = None
@@ -252,7 +250,6 @@ class TopicsFilters(BaseModel):
     field_id: StrFilter = Field(None, alias="field.id")
     domain_id: StrFilter = Field(None, alias="domain.id")
     works_count: IntFilter = None
-    works_count_range: StrFilter = None
     display_name_search: StrFilter = Field(None, alias="display_name.search")
     keywords_search: StrFilter = Field(None, alias="keywords.search")
     keywords_id: StrFilter = Field(None, alias="keywords.id")
@@ -267,7 +264,6 @@ class KeywordsFilters(BaseModel):
 
     display_name: StrFilter = None
     works_count: IntFilter = None
-    works_count_range: StrFilter = None
     display_name_search: StrFilter = Field(None, alias="display_name.search")
 
     model_config = _SharedConfig
@@ -280,7 +276,6 @@ class PublishersFilters(BaseModel):
     country_codes: StrFilter = None
     hierarchy_level: IntFilter = None
     works_count: IntFilter = None
-    works_count_range: StrFilter = None
     display_name_search: StrFilter = Field(None, alias="display_name.search")
     continent: StrFilter = None
     lineage: StrFilter = None
@@ -296,7 +291,6 @@ class FundersFilters(BaseModel):
     country_code: StrFilter = None
     ror: StrFilter = None
     works_count: IntFilter = None
-    works_count_range: StrFilter = None
     display_name_search: StrFilter = Field(None, alias="display_name.search")
     awards_count: IntFilter = None
     continent: StrFilter = None

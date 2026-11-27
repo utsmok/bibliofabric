@@ -13,7 +13,7 @@ Aletheca is a Python client for the [OpenAlex API](https://docs.openalex.org/), 
 - **Cursor pagination** -- efficient iteration over large result sets via cursor-based auto-pagination
 - **Filter serialization** -- automatic conversion to OpenAlex `filter=key:value` syntax with Pydantic filter models
 - **Safe types** -- `SafeList` and `SafeStr` for None-safe traversal of API responses
-- **Ergonomic helpers** -- `batch_get_by_doi()`, `citing()`, `referenced()`, `oa_pdf_urls()`, `search_scoped()`, `sample()`, `group_by()`, `autocomplete()`, and `rate_limit()`
+- **Ergonomic helpers** -- `batch_get_by_doi()`, `citing()`, `referenced()`, `oa_pdf_urls()`, `search_scoped()`, `sample()`, `group_by()`, `iterate_group_by()`, `autocomplete()`, and `rate_limit()`
 
 ## Installation
 
@@ -72,7 +72,7 @@ with AlethecaSyncClient() as client:
         print(work.title)
 ```
 
-Other resource methods: `count()` (minimal-cost `select=id` request), `batch_get(ids, field=..., batch_size=...)`, `batch_get_by_doi(dois)`, `group_by(...)`, `sample(n, seed=...)`, `search_scoped(...)` (`search.title_and_abstract`, `search.exact`, `search.semantic`), and the `corpus=`/`include_pulled=` parameters on `client.works.search(...)`. The client also exposes `client.autocomplete(query)` (free) and `client.rate_limit()` (free budget check).
+Other resource methods: `count()` (minimal-cost `select=id` request), `batch_get(ids, field=..., batch_size=...)`, `batch_get_by_doi(dois)`, `group_by(...)`, `iterate_group_by(...)`, `sample(n, seed=...)`, `search_scoped(...)` (`search.title_and_abstract`, `search.exact`, `search.semantic`), and the `corpus=`/`include_pulled=` parameters on `client.works.search(...)` and `client.works.sample(...)`. The client also exposes `client.autocomplete(query)` (free) and `client.rate_limit()` (free budget check).
 
 ## Examples
 
@@ -172,7 +172,7 @@ uv build --package aletheca           # build package
 
 Shared tooling (ruff, ty, pytest, mkdocs) is configured once at the workspace root; see the root `AGENTS.md`.
 
-Contributions welcome -- see [Contributing](https://utsmok.github.io/bibliofabric/aletheca/contributing/).
+Contributions welcome -- see [Contributing](https://utsmok.github.io/bibliofabric/contributing/).
 
 ## License
 

@@ -1,7 +1,5 @@
 """Shared Pydantic models for common nested types across OpenAlex entities."""
 
-from typing import Literal
-
 from bibliofabric import SafeList, SafeStr
 from pydantic import BaseModel, Field
 from pydantic.config import ConfigDict
@@ -82,9 +80,10 @@ class Location(BaseModel):
     license: SafeStr | None = None
     license_id: SafeStr | None = None
     source: DehydratedSource | None = None
-    version: (
-        Literal["publishedVersion", "acceptedVersion", "submittedVersion"] | None
-    ) = None
+    version: str | None = Field(
+        default=None,
+        description="Known values: 'publishedVersion', 'acceptedVersion', 'submittedVersion'.",
+    )
     raw_source_name: SafeStr | None = None
     raw_type: SafeStr | None = None
     id: SafeStr | None = None
@@ -99,9 +98,10 @@ class OpenAccess(BaseModel):
     """Open access status of a work."""
 
     is_oa: bool | None = None
-    oa_status: (
-        Literal["diamond", "gold", "green", "hybrid", "bronze", "closed"] | None
-    ) = None
+    oa_status: str | None = Field(
+        default=None,
+        description="Known values: 'diamond', 'gold', 'green', 'hybrid', 'bronze', 'closed'.",
+    )
     oa_url: SafeStr | None = None
     any_repository_has_fulltext: bool | None = None
 
@@ -291,7 +291,10 @@ class Geo(BaseModel):
 class Role(BaseModel):
     """Role an organization can play."""
 
-    role: Literal["funder", "publisher", "institution"] | None = None
+    role: str | None = Field(
+        default=None,
+        description="Known values: 'funder', 'publisher', 'institution'.",
+    )
     id: SafeStr = ""
     works_count: int | None = None
 

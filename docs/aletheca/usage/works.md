@@ -93,16 +93,23 @@ refs = await client.works.referenced("W2741809807", limit=100)
 page = await client.works.sample(1_000, seed=42)
 ```
 
-`sample(n)` sends `sample=n` (maximum 10,000) and optionally `seed` for reproducible draws. `page.total` reports the sample size, not the corpus size.
+`sample(n)` sends `sample=n` (maximum 10,000) and optionally `seed` for reproducible draws. `page.total` reports the sample size, not the corpus size. `sample()` is available on every resource client; `client.works.sample()` also accepts `corpus`, `include_parts`, `include_pulled`, and `rerank`.
 
 ## Group by
 
 ```python
-buckets = await client.works.group_by("type")
+page = await client.works.group_by("type")
+print(page.total, page.meta.get("groups_count"))
+for bucket in page.results:
+    print(bucket.key, bucket.count)
+
 multi = await client.works.group_by("type,publication_year")
+
+async for bucket in client.works.iterate_group_by("type", limit=50):
+    print(bucket.key, bucket.count)
 ```
 
-Returns typed `GroupByBucket` objects (up to 200 buckets per call). Multi-field group-by nests deeper dimensions in `bucket.groups`. Use `client.works.search(params={"group_by": ..., "cursor": "*"})` when you need `page.next_cursor` for multi-page bucket iteration.
+`group_by()` returns `Page[GroupByBucket]` (up to 200 buckets per call), preserving `page.total` (`meta.count`), `page.next_cursor` (`meta.next_cursor`), and `page.meta` (including `groups_count`). Multi-field group-by nests deeper dimensions in `bucket.groups`. Use `iterate_group_by()` for cursor-paginated iteration across all buckets (with optional `limit` and `cursor`). Both `group_by()` and `iterate_group_by()` are available on every resource client.
 
 ## Scoped search
 

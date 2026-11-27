@@ -23,6 +23,8 @@ Generated from the source with mkdocstrings.
         - autocomplete
         - rate_limit
         - request
+        - on_response
+        - last_rate_limit_headers
         - is_retryable
 
 ## Sync client
@@ -46,6 +48,8 @@ Generated from the source with mkdocstrings.
         - autocomplete
         - rate_limit
         - request
+        - on_response
+        - last_rate_limit_headers
         - is_retryable
 
 The sync twins of the resource clients are exported from the package root
@@ -75,7 +79,6 @@ shown here.
         - search
         - search_scoped
         - sample
-        - group_by
         - batch_get_by_doi
         - batch_get_by_openalex_id
         - citing
@@ -174,6 +177,7 @@ keys and allows extra fields.
         - OPENALEX_API_BASE_URL
         - MAX_OR_VALUES
         - MAX_BASIC_PAGING_RESULTS
+        - MAX_SAMPLE_SIZE
 
 ::: aletheca._async.dialect.OpenAlexResourceClient
     options:

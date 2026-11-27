@@ -2,10 +2,20 @@
 
 import pytest
 from aletheca import (
+    AlethecaClient,
+    APIError,
     AwardsFilters,
     ConfigurationError,
+    FundersFilters,
+    InstitutionsFilters,
+    KeywordsFilters,
     LinksFilters,
     LocationsFilters,
+    Page,
+    PublishersFilters,
+    RateLimitError,
+    SourcesFilters,
+    TopicsFilters,
     WorksFilters,
 )
 
@@ -332,12 +342,172 @@ async def test_client_request_forwards_data_content_timeout(client, httpx_mock):
     assert request.content == b"payload"
 
 
+async def test_client_request_forwards_retry_policy(settings, httpx_mock):
+    retrying_client = AlethecaClient(
+        settings=settings.model_copy(update={"max_retries": 1})
+    )
+    async with retrying_client:
+        httpx_mock.add_response(status_code=500, json={})
+        with pytest.raises(APIError):
+            await retrying_client.request("GET", "works", retry=False)
+        assert len(httpx_mock.get_requests()) == 1
+
+        httpx_mock.add_response(status_code=500, json={})
+        with pytest.raises(APIError):
+            await retrying_client.request("POST", "works")
+        assert len(httpx_mock.get_requests()) == 2
+
+        httpx_mock.add_response(status_code=500, json={}, headers={"Retry-After": "0"})
+        httpx_mock.add_response(json={"ok": True})
+        response = await retrying_client.request("POST", "works", retry=True)
+        assert response.json() == {"ok": True}
+        assert len(httpx_mock.get_requests()) == 4
+
+
+async def test_on_response_captures_rate_limit_headers(client, httpx_mock):
+    assert client.last_rate_limit_headers == {}
+    httpx_mock.add_response(
+        json=entity("W1"),
+        headers={
+            "X-RateLimit-Limit": "100",
+            "X-RateLimit-Remaining": "99",
+            "X-RateLimit-Credits-Remaining": "1000",
+            "X-Other-Header": "ignored",
+        },
+    )
+    await client.works.get("W1")
+    captured = client.last_rate_limit_headers
+    assert captured == {
+        "x-ratelimit-limit": "100",
+        "x-ratelimit-remaining": "99",
+        "x-ratelimit-credits-remaining": "1000",
+    }
+    captured["x-ratelimit-remaining"] = "mutated"
+    assert client.last_rate_limit_headers["x-ratelimit-remaining"] == "99"
+
+    httpx_mock.add_response(
+        status_code=429,
+        json={"reason": "daily_budget"},
+        headers={"X-RateLimit-Remaining": "0"},
+    )
+    with pytest.raises(RateLimitError):
+        await client.works.search()
+    assert client.last_rate_limit_headers == {"x-ratelimit-remaining": "0"}
+
+    httpx_mock.add_response(json=entity("W2"))
+    await client.works.get("W2")
+    assert client.last_rate_limit_headers == {}
+
+
 async def test_group_by_sends_group_by_param(client, httpx_mock):
     buckets = load_fixture("group_by.json")["group_by"]
-    httpx_mock.add_response(json={"group_by": buckets, "meta": {"count": 2}})
-    result = await client.works.group_by("type")
-    assert result[0].key == buckets[0]["key"]
+    httpx_mock.add_response(
+        json={
+            "group_by": buckets,
+            "meta": {"count": 2, "groups_count": 2, "next_cursor": "C1"},
+        }
+    )
+    page = await client.works.group_by("type")
+    assert isinstance(page, Page)
+    assert page.results[0].key == buckets[0]["key"]
+    assert page.total == 2
+    assert page.next_cursor == "C1"
+    assert page.meta["groups_count"] == 2
     assert last_params(httpx_mock)["group_by"] == "type"
+
+
+async def test_group_by_and_sample_on_entity_resources(client, httpx_mock):
+    buckets = load_fixture("group_by.json")["group_by"]
+    httpx_mock.add_response(
+        json={"group_by": buckets, "meta": {"count": 2, "groups_count": 2}}
+    )
+    author_groups = await client.authors.group_by(
+        "last_known_institutions.country_code"
+    )
+    assert isinstance(author_groups, Page)
+    assert httpx_mock.get_requests()[-1].url.path == "/authors"
+    assert last_params(httpx_mock)["group_by"] == "last_known_institutions.country_code"
+
+    httpx_mock.add_response(json=envelope([entity("S1")], count=5))
+    source_sample = await client.sources.sample(5, seed=7, select=["id"])
+    assert source_sample.results[0].id == "https://openalex.org/S1"
+    assert httpx_mock.get_requests()[-1].url.path == "/sources"
+    assert last_params(httpx_mock)["sample"] == "5"
+    assert last_params(httpx_mock)["seed"] == "7"
+
+
+async def test_iterate_group_by_cursor_and_limit(client, httpx_mock):
+    buckets = load_fixture("group_by.json")["group_by"]
+    httpx_mock.add_response(
+        json={
+            "group_by": [buckets[0]],
+            "meta": {"count": 2, "groups_count": 2, "next_cursor": "G2"},
+        }
+    )
+    httpx_mock.add_response(
+        json={
+            "group_by": [buckets[1]],
+            "meta": {"count": 2, "groups_count": 2, "next_cursor": None},
+        }
+    )
+    collected = [
+        bucket
+        async for bucket in client.institutions.iterate_group_by(
+            "country_code", filters={"is_global_south": True}
+        )
+    ]
+    assert [b.key for b in collected] == ["2021", "2022"]
+    requests = httpx_mock.get_requests()
+    assert requests[0].url.path == "/institutions"
+    assert dict(requests[0].url.params)["cursor"] == "*"
+    assert dict(requests[0].url.params)["group_by"] == "country_code"
+    assert dict(requests[0].url.params)["filter"] == "is_global_south:true"
+    assert dict(requests[1].url.params)["cursor"] == "G2"
+
+    httpx_mock.add_response(
+        json={
+            "group_by": buckets,
+            "meta": {"count": 2, "groups_count": 2, "next_cursor": "G2"},
+        }
+    )
+    limited = [
+        bucket async for bucket in client.works.iterate_group_by("type", limit=1)
+    ]
+    assert len(limited) == 1
+    assert len(httpx_mock.get_requests()) == 3
+
+    zero_limited = [
+        bucket async for bucket in client.works.iterate_group_by("type", limit=0)
+    ]
+    assert zero_limited == []
+    assert len(httpx_mock.get_requests()) == 3
+
+    with pytest.raises(ConfigurationError, match="non-negative"):
+        client.works.iterate_group_by("type", limit=-1)
+
+
+def test_bogus_filters_removed_and_ranges_supported():
+    assert "best_oa_version" not in WorksFilters.model_fields
+    assert "best_open_version" in WorksFilters.model_fields
+
+    for model_cls in (SourcesFilters, InstitutionsFilters):
+        assert "works_count_range" not in model_cls.model_fields
+        assert "cited_by_count_range" not in model_cls.model_fields
+        assert "works_count" in model_cls.model_fields
+        assert "cited_by_count" in model_cls.model_fields
+
+    for model_cls in (
+        TopicsFilters,
+        KeywordsFilters,
+        PublishersFilters,
+        FundersFilters,
+    ):
+        assert "works_count_range" not in model_cls.model_fields
+        assert "works_count" in model_cls.model_fields
+
+    sources_filter = SourcesFilters(works_count=">1000", cited_by_count="100-500")
+    dumped = sources_filter.model_dump(exclude_none=True, by_alias=True)
+    assert dumped == {"works_count": ">1000", "cited_by_count": "100-500"}
 
 
 async def test_batch_get_splits_at_100_and_keys_results(client, httpx_mock):

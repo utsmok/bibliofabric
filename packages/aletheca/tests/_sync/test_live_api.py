@@ -13,14 +13,18 @@ from aletheca import AlethecaSettings, AlethecaSyncClient
 
 from ..conftest import load_fixture
 
-pytestmark = pytest.mark.live_api
+pytestmark = [
+    pytest.mark.live_api,
+    pytest.mark.skipif(
+        not os.environ.get("ALETHECA_API_KEY"),
+        reason="ALETHECA_API_KEY is not exported",
+    ),
+]
 
 
 @pytest.fixture
 def live_client():
-    key = os.environ.get("ALETHECA_API_KEY")
-    if not key:
-        pytest.skip("ALETHECA_API_KEY is not exported")
+    key = os.environ["ALETHECA_API_KEY"]
     settings = AlethecaSettings(_env_file=None, api_key=key)
     with AlethecaSyncClient(settings=settings) as client:
         yield client

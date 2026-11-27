@@ -4,6 +4,7 @@ import pytest
 from aletheca import (
     GroupByBucket,
     LocationRecord,
+    Page,
     Work,
     reconstruct_abstract,
 )
@@ -14,7 +15,9 @@ from aletheca.models import (
     DehydratedConcept,
     DehydratedTopic,
     HasContent,
+    Location,
     OpenAccess,
+    Role,
 )
 
 from ..conftest import load_fixture
@@ -121,10 +124,21 @@ async def test_search_parses_page_envelope(client, httpx_mock):
 
 async def test_group_by_buckets_parse_nested_groups(client, httpx_mock):
     buckets = load_fixture("group_by.json")["group_by"]
-    httpx_mock.add_response(json={"group_by": buckets, "meta": {}})
-    result = await client.works.group_by("type")
-    assert all(isinstance(bucket, GroupByBucket) for bucket in result)
-    assert result[0].count == buckets[0]["count"]
+    httpx_mock.add_response(
+        json={
+            "group_by": buckets,
+            "meta": {"count": 105137, "groups_count": 2, "next_cursor": "C2"},
+        }
+    )
+    page = await client.works.group_by("type")
+    assert isinstance(page, Page)
+    assert page.total == 105137
+    assert page.next_cursor == "C2"
+    assert page.meta["groups_count"] == 2
+    assert "group_by" not in page.meta
+    assert all(isinstance(bucket, GroupByBucket) for bucket in page.results)
+    assert page.results[0].count == buckets[0]["count"]
+    assert page.results[0].groups[0].key_display_name == "article"
 
 
 async def test_autocomplete_parses_rows(client, httpx_mock):
@@ -201,6 +215,33 @@ def test_nullable_model_fields_and_2026_additions():
         {"id": "https://openalex.org/F1", "ror": "https://ror.org/02nr0ka47"}
     )
     assert funder.ror == "https://ror.org/02nr0ka47"
+
+    minimal_work = Work.model_validate({"id": "https://openalex.org/W2"})
+    assert minimal_work.cited_by_count is None
+    assert minimal_work.locations_count is None
+    counted_work = Work.model_validate(
+        {"id": "https://openalex.org/W3", "cited_by_count": 0, "locations_count": 2}
+    )
+    assert counted_work.cited_by_count == 0
+    assert counted_work.locations_count == 2
+
+
+def test_widened_enum_fields_accept_novel_and_null_values():
+    loc = Location.model_validate({"version": "preprintVersion"})
+    assert loc.version == "preprintVersion"
+    assert Location.model_validate({}).version is None
+
+    loc_rec = LocationRecord.model_validate({"version": "customVersion"})
+    assert loc_rec.version == "customVersion"
+    assert LocationRecord.model_validate({}).version is None
+
+    oa = OpenAccess.model_validate({"oa_status": "platinum"})
+    assert oa.oa_status == "platinum"
+    assert OpenAccess.model_validate({}).oa_status is None
+
+    role = Role.model_validate({"role": "sponsor", "id": "https://openalex.org/S1"})
+    assert role.role == "sponsor"
+    assert Role.model_validate({"id": "https://openalex.org/S1"}).role is None
 
 
 def test_reconstruct_abstract_variants():

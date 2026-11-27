@@ -6,6 +6,20 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Breaking Changes
+
+- **`group_by()` now returns `Page[GroupByBucket]`**: preserves `next_cursor`
+  from `meta.next_cursor`, `total` from `meta.count`, and `meta` (including
+  `groups_count`) instead of returning a bare `list[GroupByBucket]`.
+- **`Work.cited_by_count` and `Work.locations_count` default to `None`**:
+  changed from `int = 0` to `int | None = None` so sparse `select=` responses
+  that omit these fields no longer report misleading `0` counts.
+- **Removed non-existent filter fields**: dropped `WorksFilters.best_oa_version`
+  and the 8 bogus `works_count_range` / `cited_by_count_range` fields from
+  `SourcesFilters`, `InstitutionsFilters`, `TopicsFilters`, `KeywordsFilters`,
+  `PublishersFilters`, and `FundersFilters`. Use `best_open_version` and
+  OpenAlex range syntax on `works_count` / `cited_by_count` (e.g. `">100"`).
+
 ### Fixed
 
 - **Free `$0` DOI singleton lookups**: `OpenAlexResourceClient.item_path()` now
@@ -42,8 +56,26 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `:include_unknown`), `LocationRecord.ids`/`urls` use `SafeList`, and nullable
   nested fields (`CitationNormalizedPercentile`, `APCEntry.price`, `HasContent`,
   `OpenAccess.is_oa`, `*.score`) accept `None`.
+- **Widened response enum fields**: relaxed `Location.version`,
+  `LocationRecord.version`, `OpenAccess.oa_status`, and `Role.role` from strict
+  `Literal[...]` annotations to `str | None` (with known values documented in
+  field descriptions) so unexpected upstream values do not fail validation.
+- **`AlethecaClient.request()` retry forwarding**: now accepts and forwards
+  `retry: bool | None = None` to `BaseApiClient.request()`.
+- **`OPENALEX_DIALECT.max_offset`**: set `max_offset=10_000` on
+  `OPENALEX_DIALECT` alongside the inclusive `page * per_page <= 10_000` guard.
 
 ### Added
+
+- **`iterate_group_by()` and resource-wide `group_by()` / `sample()`**:
+  promoted `group_by()`, `iterate_group_by()` (cursor-paginated bucket
+  iterator supporting `limit`), and `sample()` to `OpenAlexResourceClient`,
+  making them available on every resource client (`WorksClient.sample()` keeps
+  `corpus`, `include_parts`, `include_pulled`, and `rerank` kwargs).
+- **Rate-limit header capture**: `AlethecaClient.on_response()` captures
+  OpenAlex `x-ratelimit-*` headers into `client.last_rate_limit_headers`.
+- **Python 3.14 support**: added the `Programming Language :: Python :: 3.14`
+  trove classifier in `pyproject.toml`.
 
 - `AlethecaClient` forwards `http_client`, `data`/`content`/`timeout` on
   `request()`, routes `search.semantic` to the 1 req/s `"semantic"` rate class,

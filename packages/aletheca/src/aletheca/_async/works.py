@@ -3,16 +3,15 @@
 from collections.abc import Mapping, Sequence
 from typing import Any, Literal, TypedDict, Unpack, override
 
-from bibliofabric import OnError, validate_model
+from bibliofabric import OnError
 from bibliofabric.exceptions import ConfigurationError
 from bibliofabric.paging import Page
 from pydantic import BaseModel
 
-from ..models import GroupByBucket, Work
+from ..models import Work
 from .dialect import OpenAlexResourceClient
 
 VALID_CORPUS_VALUES = ("core", "expansion", "all")
-MAX_SAMPLE_SIZE = 10_000
 SEARCH_SCOPES = (
     "title",
     "title_and_abstract",
@@ -20,6 +19,31 @@ SEARCH_SCOPES = (
     "exact",
     "semantic",
 )
+
+
+def _merge_works_params(
+    params: Mapping[str, Any] | None,
+    *,
+    corpus: Literal["core", "expansion", "all"] | None = None,
+    include_parts: bool | None = None,
+    include_pulled: bool | None = None,
+    rerank: bool = False,
+) -> dict[str, Any] | None:
+    """Validate works-only query controls and merge them into ``params``."""
+    extra = dict(params or {})
+    if corpus is not None:
+        if corpus not in VALID_CORPUS_VALUES:
+            raise ConfigurationError(
+                f"corpus must be one of {VALID_CORPUS_VALUES}, got {corpus!r}."
+            )
+        extra["corpus"] = corpus
+    if include_parts is not None:
+        extra["include_parts"] = str(include_parts).lower()
+    if include_pulled is not None:
+        extra["include_pulled"] = str(include_pulled).lower()
+    if rerank:
+        extra["rerank"] = "true"
+    return extra or None
 
 
 class _WorksSearchKwargs(TypedDict, total=False):
@@ -36,16 +60,12 @@ class _WorksSearchKwargs(TypedDict, total=False):
     failures: list[tuple[dict[str, Any], Exception]] | None
 
 
-class _WorksSampleKwargs(_WorksSearchKwargs, total=False):
-    query: str | None
-
-
 class WorksClient(OpenAlexResourceClient[Work]):
     """Client for the ``/works`` endpoint.
 
     Adds the works-only query features: ``corpus``/``include_pulled``/
-    ``include_parts``, ``sample``/``seed``, ``group_by``, the scoped
-    ``search.*`` parameters, and DOI-based batch retrieval.
+    ``include_parts``, corpus-aware ``sample()``, the scoped ``search.*``
+    parameters, and DOI-based batch retrieval.
     """
 
     path = "works"
@@ -82,19 +102,13 @@ class WorksClient(OpenAlexResourceClient[Work]):
         (costs 10 extra credits and requires the relevance sort a ``query``
         gives you); ``page.meta["reranked"]`` reports whether it applied.
         """
-        extra = dict(params or {})
-        if corpus is not None:
-            if corpus not in VALID_CORPUS_VALUES:
-                raise ConfigurationError(
-                    f"corpus must be one of {VALID_CORPUS_VALUES}, got {corpus!r}."
-                )
-            extra["corpus"] = corpus
-        if include_parts is not None:
-            extra["include_parts"] = str(include_parts).lower()
-        if include_pulled is not None:
-            extra["include_pulled"] = str(include_pulled).lower()
-        if rerank:
-            extra["rerank"] = "true"
+        extra = _merge_works_params(
+            params,
+            corpus=corpus,
+            include_parts=include_parts,
+            include_pulled=include_pulled,
+            rerank=rerank,
+        )
         return await super().search(
             filters,
             query=query,
@@ -105,7 +119,7 @@ class WorksClient(OpenAlexResourceClient[Work]):
             cursor=cursor,
             on_error=on_error,
             failures=failures,
-            params=extra or None,
+            params=extra,
         )
 
     async def search_scoped(
@@ -138,64 +152,55 @@ class WorksClient(OpenAlexResourceClient[Work]):
         merged = {**(params or {}), f"search.{scope}": text}
         return await self.search(filters, params=merged, **kwargs)
 
+    @override
     async def sample(
         self,
         n: int,
         *,
         seed: int | None = None,
         filters: BaseModel | Mapping[str, Any] | None = None,
+        query: str | None = None,
+        sort: str | Sequence[str] | None = None,
+        select: Sequence[str] | None = None,
+        page: int | None = None,
+        page_size: int | None = None,
+        cursor: str | None = None,
+        on_error: OnError = "raise",
+        failures: list[tuple[dict[str, Any], Exception]] | None = None,
         params: Mapping[str, Any] | None = None,
-        **kwargs: Unpack[_WorksSampleKwargs],
+        corpus: Literal["core", "expansion", "all"] | None = None,
+        include_parts: bool | None = None,
+        include_pulled: bool | None = None,
+        rerank: bool = False,
     ) -> Page[Work]:
         """Return a random sample of up to ``n`` works (max 10,000).
 
-        Pass ``seed`` for reproducibility. ``Page.total`` reports the sample
-        size, not the size of the filtered corpus.
+        Pass ``seed`` for reproducibility, and works-only ``corpus`` /
+        ``include_parts`` / ``include_pulled`` / ``rerank`` controls.
+        ``Page.total`` reports the sample size, not the size of the filtered
+        corpus.
         """
-        if not 0 < n <= MAX_SAMPLE_SIZE:
-            raise ConfigurationError(
-                f"sample size must be between 1 and {MAX_SAMPLE_SIZE}, got {n}."
-            )
-        extra: dict[str, Any] = {**(params or {}), "sample": n}
-        if seed is not None:
-            extra["seed"] = seed
-        return await self.search(filters, params=extra, **kwargs)
-
-    async def group_by(
-        self,
-        group_by: str,
-        *,
-        filters: BaseModel | Mapping[str, Any] | None = None,
-        query: str | None = None,
-        cursor: str | None = None,
-        params: Mapping[str, Any] | None = None,
-    ) -> list[GroupByBucket]:
-        """Return typed ``group_by`` buckets (costs one credit).
-
-        ``group_by`` accepts up to three comma-separated fields; deeper
-        dimensions nest in :attr:`GroupByBucket.groups`. Responses return up
-        to 200 buckets per call; pass ``cursor`` when advancing manually.
-        """
-        extra = dict(params or {})
-        extra["group_by"] = group_by
-        if cursor is not None:
-            extra["cursor"] = cursor
-        query_params = self.build_filter_params(filters)
-        if query is not None and self.dialect.query_param is not None:
-            query_params[self.dialect.query_param] = query
-        query_params.update(extra)
-        response = await self._client.request("GET", self.path, params=query_params)
-        body = self._client.parse_json(response)
-        buckets = body.get("group_by") if isinstance(body, dict) else None
-        return [
-            validate_model(
-                GroupByBucket,
-                bucket,
-                request=response.request,
-                response=response,
-            )
-            for bucket in buckets or []
-        ]
+        merged = _merge_works_params(
+            params,
+            corpus=corpus,
+            include_parts=include_parts,
+            include_pulled=include_pulled,
+            rerank=rerank,
+        )
+        return await super().sample(
+            n,
+            seed=seed,
+            filters=filters,
+            query=query,
+            sort=sort,
+            select=select,
+            page=page,
+            page_size=page_size,
+            cursor=cursor,
+            on_error=on_error,
+            failures=failures,
+            params=merged,
+        )
 
     async def batch_get_by_doi(
         self, dois: Sequence[str], *, batch_size: int | None = None

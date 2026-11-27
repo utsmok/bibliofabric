@@ -65,7 +65,7 @@ status = await live_or_keyed_client.rate_limit()
 print(status.rate_limit.daily_remaining_usd)
 ```
 
-`rate_limit()` reads the key from settings and never stores the echoed key value.
+`rate_limit()` reads the key from settings and never stores the echoed key value. Every HTTP response also updates `client.last_rate_limit_headers` with any `x-ratelimit-*` headers returned by OpenAlex.
 
 ## Client-side pacing
 

@@ -98,8 +98,8 @@ class Work(BaseEntity):
     )
 
     # Counts
-    cited_by_count: int = 0
-    locations_count: int = 0
+    cited_by_count: int | None = None
+    locations_count: int | None = None
     countries_distinct_count: int | None = None
     institutions_distinct_count: int | None = None
 

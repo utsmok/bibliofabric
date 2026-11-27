@@ -6,8 +6,6 @@
 ``/links``, and ``LocationRecord`` the row of ``/locations``.
 """
 
-from typing import Literal
-
 from bibliofabric import SafeList, SafeStr
 from pydantic import AliasChoices, BaseModel, ConfigDict, Field, field_validator
 
@@ -137,9 +135,10 @@ class LocationRecord(BaseModel):
     source_name: SafeStr | None = None
     publisher: SafeStr | None = None
     is_oa: bool | None = None
-    version: (
-        Literal["publishedVersion", "acceptedVersion", "submittedVersion"] | None
-    ) = None
+    version: str | None = Field(
+        default=None,
+        description="Known values: 'publishedVersion', 'acceptedVersion', 'submittedVersion'.",
+    )
     license: SafeStr | None = None
     language: SafeStr | None = None
     is_retracted: bool | None = None
