@@ -2,7 +2,8 @@
 
 `ResourceClient[E]` is a generic client for one API endpoint. Declare the
 endpoint path, the entity model, and the query dialect; override hook methods
-where the API deviates from the defaults.
+where the API deviates from the defaults. Both `path=` and `dialect=` may also
+be overridden per instance in the constructor.
 
 ```python
 class Works(ResourceClient[Work]):
@@ -18,10 +19,14 @@ class Works(ResourceClient[Work]):
 - `exists(id)` sends a `HEAD` request and returns `True` or `False` (on 404).
 - `search(filters, ..., on_error="raise", failures=None)` fetches one page and
   returns a `Page[E]` with `results`, `total`, `next_cursor`, `page`, and
-  `meta`. Filters accept a pydantic model or a plain dict.
+  `meta`. Filters accept a pydantic model or a plain dict. Passing unsupported
+  dialect parameters (`query`, `select`, `sort`, `cursor`, or `page`) or
+  exceeding `dialect.max_offset` raises `ConfigurationError` before any request
+  is sent.
 - `iterate(...)` yields entities across pages. It uses cursor paging when the
-  dialect has a `cursor_param`, otherwise page or offset paging. It stops at
-  `limit`, on an empty page, or when there is no next cursor.
+  dialect has a `cursor_param`, otherwise page or offset paging (or fetches
+  once for unpaged dialects where `page_param` and `offset_param` are `None`).
+  It stops at `limit`, on an empty page, or when there is no next cursor.
   `on_page(page_number, next_cursor)` checkpoints progress; passing a saved
   cursor back via `cursor=` resumes a cursor-mode harvest.
 - `first(...)` returns the first matching entity (defaulting `page_size=1`), or
@@ -31,6 +36,12 @@ class Works(ResourceClient[Work]):
   normalizes and deduplicates ids, fetches them in concurrent chunks (capped at
   `dialect.max_page_size`), and returns a dict keyed by normalized id. Missing
   ids are absent from the result.
+
+On the default `on_error="raise"` path, `search()`, `batch_get()`, and
+`iterate()` bulk-validate each page or chunk with a lazily cached
+`TypeAdapter(list[E])` per subclass, falling back to per-record validation only
+when a record fails so `ValidationError.raw` still attaches the offending
+record.
 
 ## Hooks
 
@@ -42,6 +53,10 @@ Override these methods on subclasses:
 - `build_batch_params(field, values)` — batch OR syntax (OpenAlex and OpenAIRE
   use pipe-separated values in one `filter` parameter; Crossref repeats keys
   like `doi:a,doi:b`).
+- `_fetch_batch_chunk(field, chunk, *, select=None)` — chunk transport for
+  `batch_get`; override for `POST`-batch APIs (such as Semantic Scholar) or
+  path-encoded batch endpoints while keeping chunking, deduplication,
+  concurrency, validation, `on_error`/`failures`, and keying.
 - `normalize_id(value)` — canonical identifier form (DOIs via
   `bibliofabric.ids.normalize_doi`).
 - `record_keys(entity, field)` — normalized keys an entity matches in `batch_get`.

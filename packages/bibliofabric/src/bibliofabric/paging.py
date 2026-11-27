@@ -16,16 +16,18 @@ class QueryDialect:
     """Declares the query parameter names and paging rules of an API.
 
     Set a parameter name to ``None`` when the API does not support the
-    feature: ``page_param=None`` means the API has no page numbers,
-    ``offset_param`` routes paging through an offset instead, and
+    feature: ``page_size_param=None`` omits the page-size parameter (for
+    example unpaged APIs such as OpenCitations), ``page_param=None`` means
+    the API has no page numbers, ``offset_param`` routes paging through an
+    offset instead, ``max_offset`` caps page/offset depth, and
     ``cursor_param`` enables cursor paging, which takes precedence over page
     and offset paging in ``iterate()``. Set ``cursor_start=None`` for APIs
     whose first cursor request omits the cursor parameter (e.g. token-based
     bulk search).
     """
 
-    page_size_param: str
-    max_page_size: int
+    page_size_param: str | None = "per_page"
+    max_page_size: int = 100
     default_page_size: int = 25
     iterate_page_size: int | None = None
     """Page size ``iterate()`` uses when the caller passes none; falls back to ``default_page_size``."""
@@ -34,6 +36,8 @@ class QueryDialect:
     page_param: str | None = "page"
     page_start: int = 1
     offset_param: str | None = None
+    max_offset: int | None = None
+    """Maximum allowed offset for page/offset paging; ``None`` means unbounded."""
     cursor_param: str | None = None
     cursor_start: str | None = "*"
     sort_param: str | None = "sort"
@@ -62,6 +66,10 @@ class QueryDialect:
             raise ConfigurationError(
                 f"QueryDialect.count_page_size must be between 0 and "
                 f"{self.max_page_size}, got {self.count_page_size}."
+            )
+        if self.max_offset is not None and self.max_offset <= 0:
+            raise ConfigurationError(
+                f"QueryDialect.max_offset must be positive, got {self.max_offset}."
             )
 
 

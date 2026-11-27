@@ -4,9 +4,9 @@ A generic, extensible Python framework for building asynchronous and synchronous
 API clients for scholarly and bibliometric data sources.
 
 Built on `httpx` and `pydantic`, bibliofabric handles the boilerplate every API
-client needs: retries, throttling, authentication, paging, batch retrieval,
-error mapping, and typed resource clients. A client library only adds what is
-specific to its API.
+client needs: retries, throttling, authentication, streaming, paging, batch
+retrieval, error mapping, and typed resource clients. A client library only
+adds what is specific to its API.
 
 ## Who is this for?
 
@@ -19,18 +19,18 @@ not an end-user library. You would use it to build a library like
 
 | Component | Role |
 |---|---|
-| `BaseApiClient` / `SyncBaseApiClient` | Generic async/sync HTTP client: retries, throttling, auth, error mapping |
-| `QueryDialect` | Declares an API's paging, sort, search, and select parameters |
+| `BaseApiClient` / `SyncBaseApiClient` | Generic async/sync HTTP client: idempotent retries, throttling, auth, `on_response()`, `stream()`, error mapping |
+| `QueryDialect` | Declares an API's paging, offset limits, sort, search, and select parameters |
 | `ResourceClient[E]` / `SyncResourceClient[E]` | Typed client for one endpoint: get, exists, search, iterate, count, batch_get |
 | `Page[E]` | Uniform search result envelope |
 | `ResponseUnwrapper` | Protocol for parsing API-specific JSON envelopes |
-| `AuthStrategy` | Pluggable auth: bearer, query parameter, header, OAuth2 |
+| `AuthStrategy` | Pluggable auth: bearer, HTTP Basic, query parameter, header, OAuth2 client-credentials & refresh-token |
 | `BaseApiSettings` | pydantic-settings configuration with env var support |
 
 Start with the [quick start in the README](https://github.com/utsmok/bibliofabric/tree/main/packages/bibliofabric#building-a-client),
 then read:
 
-- [Client](client.md) — HTTP lifecycle, retries, throttling
+- [Client](client.md) — HTTP lifecycle, retries, streaming, throttling
 - [Sync usage](sync.md) — generated sync twins (`SyncBaseApiClient`, `SyncResourceClient`)
 - [Resources](resources.md) — `ResourceClient` and its hooks
 - [Paging](paging.md) — dialects and `Page`

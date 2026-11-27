@@ -3,12 +3,14 @@
 
 ``BaseApiClient`` owns the HTTP lifecycle: retries honoring ``Retry-After``,
 per-request-class pacing, auth strategy application, status-to-exception
-mapping, and credential redaction in debug logs. It never parses models.
+mapping, streaming responses, and credential redaction in debug logs. It
+never parses models.
 """
 
 import logging
 import math
-from collections.abc import Mapping
+from collections.abc import Collection, Generator, Mapping
+from contextlib import contextmanager
 from datetime import UTC, datetime
 from email.utils import parsedate_to_datetime
 from http import HTTPStatus
@@ -36,6 +38,7 @@ from ._concurrency import Limiter
 logger = logging.getLogger(__name__)
 
 RETRYABLE_STATUS_CODES = frozenset({429, 500, 502, 503, 504})
+IDEMPOTENT_METHODS = frozenset({"GET", "HEAD", "OPTIONS", "PUT", "DELETE"})
 
 
 def _retry_after_seconds(response: httpx.Response) -> float | None:
@@ -67,23 +70,43 @@ def _error_body(response: httpx.Response) -> Any:
         return None
 
 
-def _error_for_status(response: httpx.Response) -> BibliofabricError:
+def _error_for_status(
+    response: httpx.Response,
+    *,
+    redacted_query_params: Collection[str] = (),
+) -> BibliofabricError:
     """Map an error status to the bibliofabric exception hierarchy."""
     status = response.status_code
     message = f"API request failed with status {status}"
     body = _error_body(response)
     if status == HTTPStatus.NOT_FOUND:
-        return NotFoundError(message, body=body, response=response)
+        return NotFoundError(
+            message,
+            body=body,
+            response=response,
+            redacted_query_params=redacted_query_params,
+        )
     if status == HTTPStatus.TOO_MANY_REQUESTS:
         return RateLimitError(
             message,
             body=body,
             retry_after=_retry_after_seconds(response),
             response=response,
+            redacted_query_params=redacted_query_params,
         )
     if status in (HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN):
-        return AuthError(message, body=body, response=response)
-    return APIError(message, body=body, response=response)
+        return AuthError(
+            message,
+            body=body,
+            response=response,
+            redacted_query_params=redacted_query_params,
+        )
+    return APIError(
+        message,
+        body=body,
+        response=response,
+        redacted_query_params=redacted_query_params,
+    )
 
 
 class _RetryAfterWait(tenacity.wait.wait_base):
@@ -148,10 +171,45 @@ class SyncBaseApiClient:
         """The settings this client was built with."""
         return self._settings
 
+    @property
+    def _redacted_query_params(self) -> frozenset[str]:
+        return frozenset(getattr(self._auth, "redacted_query_params", ()))
+
+    @property
+    def _redacted_headers(self) -> frozenset[str]:
+        return frozenset(getattr(self._auth, "redacted_headers", ()))
+
+    def _sanitize_url(self, value: object) -> str:
+        return sanitize_url(value, extra_params=self._redacted_query_params)
+
+    def _sanitize_headers(self, headers: Mapping[str, str]) -> dict[str, str]:
+        return sanitize_headers(headers, extra_headers=self._redacted_headers)
+
+    def _invalidate_auth_token(self) -> bool:
+        invalidate = getattr(self._auth, "invalidate_token", None)
+        if callable(invalidate):
+            invalidate()
+            return True
+        return False
+
     def _create_http_client(self) -> httpx.Client:
+        timeout: float | httpx.Timeout = (
+            httpx.Timeout(
+                self._settings.timeout,
+                connect=self._settings.connect_timeout,
+            )
+            if self._settings.connect_timeout is not None
+            else self._settings.timeout
+        )
+        limits = httpx.Limits(
+            max_connections=max(20, self._settings.max_concurrency * 2),
+            max_keepalive_connections=max(10, self._settings.max_concurrency),
+        )
         return httpx.Client(
             base_url=self._base_url,
-            timeout=self._settings.timeout,
+            timeout=timeout,
+            limits=limits,
+            follow_redirects=self._settings.follow_redirects,
             headers={"User-Agent": self._settings.effective_user_agent()},
         )
 
@@ -164,6 +222,12 @@ class SyncBaseApiClient:
         """
         return "default"
 
+    def on_response(self, response: httpx.Response) -> None:
+        """Hook invoked after every HTTP response, before status errors raise.
+
+        Override to inspect rate-limit headers, response timings, or telemetry.
+        """
+
     def is_retryable(self, response: httpx.Response) -> bool:
         """Whether a response should be retried.
 
@@ -172,11 +236,29 @@ class SyncBaseApiClient:
         """
         return response.status_code in RETRYABLE_STATUS_CODES
 
-    def _should_retry(self, retry_state: tenacity.RetryCallState) -> bool:
+    def _should_retry(
+        self,
+        retry_state: tenacity.RetryCallState,
+        *,
+        retry: bool | None = None,
+    ) -> bool:
+        if retry is False:
+            return False
         outcome = retry_state.outcome
         if outcome is None or not outcome.failed:
             return False
         exception = outcome.exception()
+        if retry is None:
+            request = getattr(exception, "request", None)
+            if request is None and retry_state.args:
+                candidate = retry_state.args[0]
+                if isinstance(candidate, httpx.Request):
+                    request = candidate
+            if (
+                isinstance(request, httpx.Request)
+                and request.method.upper() not in IDEMPOTENT_METHODS
+            ):
+                return False
         if isinstance(exception, TimeoutError | NetworkError):
             return True
         if isinstance(exception, APIError):
@@ -192,38 +274,73 @@ class SyncBaseApiClient:
             raise APIError(
                 f"API returned invalid JSON (status {response.status_code}): {error}",
                 response=response,
+                redacted_query_params=self._redacted_query_params,
             ) from error
 
-    def _send_once(self, request: httpx.Request) -> httpx.Response:
-        """Authenticate, throttle, send once, and map error statuses."""
-        self._auth.authenticate(request)
-        logger.debug(
-            "Sending request: %s %s", request.method, sanitize_url(str(request.url))
+    def _clone_request(self, request: httpx.Request) -> httpx.Request:
+        """Create a fresh ``httpx.Request`` copy so retries never mutate prior attempts."""
+        return httpx.Request(
+            request.method,
+            request.url,
+            headers=request.headers.copy(),
+            content=request.content,
+            extensions=dict(request.extensions),
         )
-        logger.debug("Request headers: %s", sanitize_headers(request.headers))
-        self._limiter.acquire(self.rate_class(request))
-        try:
-            response = self._http_client.send(request)
-        except httpx.TimeoutException as error:
-            raise TimeoutError(
-                f"Request timed out: {sanitize_url(str(request.url))}", request=request
-            ) from error
-        except httpx.RequestError as error:
-            raise NetworkError(
-                f"Request failed for {sanitize_url(str(request.url))}: "
-                f"{sanitize_url(str(error))}",
-                request=request,
-            ) from error
-        finally:
-            self._limiter.release()
-        logger.debug(
-            "Received response: %s for %s",
-            response.status_code,
-            sanitize_url(str(request.url)),
-        )
-        if response.status_code >= HTTPStatus.BAD_REQUEST:
-            raise _error_for_status(response)
-        return response
+
+    def _send_once(self, template: httpx.Request) -> httpx.Response:
+        """Authenticate, throttle, send once, refresh token once on 401, and map errors."""
+        for attempt in range(2):
+            request = self._clone_request(template)
+            self._auth.authenticate(request)
+            logger.debug(
+                "Sending request: %s %s",
+                request.method,
+                self._sanitize_url(request.url),
+            )
+            logger.debug("Request headers: %s", self._sanitize_headers(request.headers))
+            self._limiter.acquire(self.rate_class(request))
+            try:
+                response = self._http_client.send(request)
+            except httpx.TimeoutException as error:
+                raise TimeoutError(
+                    f"Request timed out: {self._sanitize_url(request.url)}",
+                    request=request,
+                    redacted_query_params=self._redacted_query_params,
+                ) from error
+            except httpx.RequestError as error:
+                raise NetworkError(
+                    f"Request failed for {self._sanitize_url(request.url)}: "
+                    f"{self._sanitize_url(error)}",
+                    request=request,
+                    redacted_query_params=self._redacted_query_params,
+                ) from error
+            finally:
+                self._limiter.release()
+            logger.debug(
+                "Received response: %s for %s",
+                response.status_code,
+                self._sanitize_url(request.url),
+            )
+            self.on_response(response)
+            if (
+                response.status_code == HTTPStatus.UNAUTHORIZED
+                and attempt == 0
+                and self._invalidate_auth_token()
+            ):
+                logger.debug(
+                    "Received 401 for %s; invalidating cached token and retrying once",
+                    self._sanitize_url(request.url),
+                )
+                continue
+            if response.status_code >= HTTPStatus.BAD_REQUEST:
+                raise _error_for_status(
+                    response,
+                    redacted_query_params=self._redacted_query_params,
+                )
+            return response
+        raise RuntimeError(
+            "Unreachable: token refresh loop exhausted"
+        )  # pragma: no cover
 
     def _resolve_url(self, path: str) -> str:
         """Resolve relative ``path`` against ``self._base_url`` when needed."""
@@ -262,8 +379,15 @@ class SyncBaseApiClient:
         content: str | bytes | None = None,
         headers: Mapping[str, str] | None = None,
         timeout: float | httpx.Timeout | None = None,
+        retry: bool | None = None,
     ) -> httpx.Response:
         """Send a request with retries and return the response.
+
+        By default (``retry=None``), automatic retries apply only to idempotent
+        HTTP methods (``GET``, ``HEAD``, ``OPTIONS``, ``PUT``, ``DELETE``). Pass
+        ``retry=True`` to allow retries on non-idempotent methods (such as
+        read-only ``POST`` batch APIs), or ``retry=False`` to disable retries
+        for this call.
 
         Raises on status >= 400: 404 is :class:`NotFoundError`, 429 is
         :class:`RateLimitError`, 401/403 is :class:`AuthError`, other statuses
@@ -280,13 +404,101 @@ class SyncBaseApiClient:
             headers=self._effective_headers(headers),
             timeout=httpx.USE_CLIENT_DEFAULT if timeout is None else timeout,
         )
+        if retry is False:
+            return self._send_once(request)
         retrying = Retrying(
             stop=stop_after_attempt(self._settings.max_retries + 1),
             wait=_RetryAfterWait(max_retry_wait=self._settings.max_retry_wait),
-            retry=self._should_retry,
+            retry=lambda state: self._should_retry(state, retry=retry),
             reraise=True,
         )
         return retrying(self._send_once, request)
+
+    @contextmanager
+    def stream(
+        self,
+        method: str,
+        path: str,
+        *,
+        params: Mapping[str, Any] | None = None,
+        headers: Mapping[str, str] | None = None,
+        timeout: float | httpx.Timeout | None = None,
+    ) -> Generator[httpx.Response]:
+        """Open a streaming HTTP response with auth, rate limiting, and error mapping.
+
+        Yields the open :class:`httpx.Response` for incremental consumption (for
+        example downloading Zenodo files or large dumps). Calls
+        :meth:`on_response` before raising typed errors on status >= 400, and
+        refreshes cached OAuth tokens once on HTTP 401.
+        """
+        effective_timeout = httpx.USE_CLIENT_DEFAULT if timeout is None else timeout
+        for attempt in range(2):
+            request = self._http_client.build_request(
+                method,
+                self._resolve_url(path),
+                params=params,
+                headers=self._effective_headers(headers),
+                timeout=effective_timeout,
+            )
+            self._auth.authenticate(request)
+            logger.debug(
+                "Sending request: %s %s",
+                request.method,
+                self._sanitize_url(request.url),
+            )
+            logger.debug("Request headers: %s", self._sanitize_headers(request.headers))
+            should_retry_auth = False
+            self._limiter.acquire(self.rate_class(request))
+            try:
+                try:
+                    with self._http_client.stream(
+                        request.method,
+                        request.url,
+                        headers=request.headers,
+                        timeout=effective_timeout,
+                    ) as response:
+                        logger.debug(
+                            "Received response: %s for %s",
+                            response.status_code,
+                            self._sanitize_url(request.url),
+                        )
+                        self.on_response(response)
+                        if (
+                            response.status_code == HTTPStatus.UNAUTHORIZED
+                            and attempt == 0
+                            and self._invalidate_auth_token()
+                        ):
+                            logger.debug(
+                                "Received 401 for %s; invalidating cached token and retrying once",
+                                self._sanitize_url(request.url),
+                            )
+                            should_retry_auth = True
+                        elif response.status_code >= HTTPStatus.BAD_REQUEST:
+                            response.read()
+                            raise _error_for_status(
+                                response,
+                                redacted_query_params=self._redacted_query_params,
+                            )
+                        else:
+                            yield response
+                            return
+                except httpx.TimeoutException as error:
+                    raise TimeoutError(
+                        f"Request timed out: {self._sanitize_url(request.url)}",
+                        request=request,
+                        redacted_query_params=self._redacted_query_params,
+                    ) from error
+                except httpx.RequestError as error:
+                    raise NetworkError(
+                        f"Request failed for {self._sanitize_url(request.url)}: "
+                        f"{self._sanitize_url(error)}",
+                        request=request,
+                        redacted_query_params=self._redacted_query_params,
+                    ) from error
+            finally:
+                self._limiter.release()
+            if not should_retry_auth:
+                return
 
     def get_json(
         self,

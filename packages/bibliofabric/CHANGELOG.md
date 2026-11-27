@@ -5,6 +5,54 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Idempotent-by-default retry policy (`GET`, `HEAD`, `OPTIONS`, `PUT`, `DELETE`)
+  with per-call `retry: bool | None = None` override on `BaseApiClient.request()`
+  (enabling retries on read-only `POST` batch calls with `retry=True` or
+  disabling retries with `retry=False`).
+- `BaseApiSettings.follow_redirects` (default `False`) and
+  `BaseApiSettings.connect_timeout` (default `None`), plus automatic
+  `httpx.Limits` sizing (`max_connections=max(20, max_concurrency * 2)`,
+  `max_keepalive_connections=max(10, max_concurrency)`) for owned `httpx`
+  clients.
+- `BasicAuth(username, password)` and `RefreshTokenAuth(token_url, refresh_token, ...)`
+  auth strategies (exported from `bibliofabric` and `bibliofabric.auth`).
+- `ClientCredentialsAuth` now supports `scope`, `token_auth_method`
+  (`"basic"` or `"post"`), `timeout`, caller-owned `http_client`, and
+  `invalidate_token()`.
+- Single-retry-on-401 token refresh in `BaseApiClient.request()` and `stream()`
+  when the auth strategy exposes `invalidate_token()`.
+- Automatic custom credential redaction via `redacted_query_params` and
+  `redacted_headers` on auth strategies (`QueryParameterAuth`, `HeaderAuth`,
+  `BasicAuth`, `StaticTokenAuth`, OAuth2 strategies), applied to debug logs and
+  exception messages.
+- `BaseApiClient.on_response(response)` hook called after every HTTP response
+  before status errors raise.
+- `BaseApiClient.stream(method, path, *, params=None, headers=None, timeout=None)`
+  context manager (async and sync) for streaming responses with auth, rate
+  limiting, `on_response`, 401 refresh, and error mapping.
+- Overridable `ResourceClient._fetch_batch_chunk(field, chunk, *, select=None)`
+  hook so `POST`-batch and path-batch clients inherit chunking, deduplication,
+  concurrency, validation, `on_error`/`failures`, and keying from `batch_get()`.
+- Flexible `QueryDialect`: `page_size_param` may be `None` (unpaged APIs),
+  `max_offset` caps page/offset depth, and `ResourceClient(..., dialect=...)`
+  allows per-instance dialect overrides.
+- Fast-path bulk validation using a lazily cached `TypeAdapter(list[E])` per
+  `ResourceClient` subclass on the `on_error="raise"` path, falling back to
+  per-record validation on failure so `ValidationError.raw` still attaches the
+  offending record.
+- Python 3.14 trove classifier in `pyproject.toml`.
+
+### Changed
+
+- `ResourceClient._search_params()` (plus `get()`, `batch_get()`, and
+  `iterate()`) now fail fast with `ConfigurationError` when callers pass
+  `query`, `select`, `sort`, `cursor`, or `page` against a `QueryDialect` that
+  does not declare the corresponding parameter.
+
 ## [0.6.0] - 2026-11-26
 
 Overhaul of the public API. Versions of the client libraries after this

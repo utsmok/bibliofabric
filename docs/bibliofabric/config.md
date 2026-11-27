@@ -23,13 +23,20 @@ Each client library exposes one `get_settings()` function decorated with
 | Field | Default | Meaning |
 |---|---|---|
 | `timeout` | 30.0 | Request timeout in seconds (`> 0`) |
+| `connect_timeout` | None | Optional TCP/TLS connect timeout in seconds (`> 0`); defaults to `timeout` |
+| `follow_redirects` | False | Whether owned `httpx` clients follow HTTP 3xx redirects |
 | `max_retries` | 3 | Retries per request (`>= 0`) |
 | `max_retry_wait` | 60.0 | Upper bound on a single retry wait (`>= 0`) |
 | `max_requests_per_second` | None | Default-class client-side rate limit (`> 0`); `None` disables it |
-| `max_concurrency` | 10 | Shared concurrent requests bound (`> 0`) |
-| `rate_limits` | `{}` | Optional per-class rates (`dict[str, float | None]`) used with `BaseApiClient.rate_class()` |
+| `max_concurrency` | 10 | Shared concurrent requests bound (`> 0`); also auto-sizes connection pools |
+| `rate_limits` | `{}` | Optional per-class rates (`dict[str, float \| None]`) used with `BaseApiClient.rate_class()` |
 | `user_agent` | None | Overrides the default User-Agent |
 | `mailto` | None | Contact address, added to the User-Agent |
+
+When creating an owned `httpx.AsyncClient` / `httpx.Client`, `BaseApiClient`
+auto-sizes `httpx.Limits` from `max_concurrency`:
+`max_connections=max(20, max_concurrency * 2)` and
+`max_keepalive_connections=max(10, max_concurrency)`.
 
 When `user_agent` is not set, the client builds
 `<package>/<version> (+<homepage>; mailto:<mailto>)` from the settings

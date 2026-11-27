@@ -20,6 +20,10 @@ class BaseApiSettings(BaseSettings):
     )
 
     timeout: float = Field(default=30.0, gt=0)
+    connect_timeout: float | None = Field(default=None, gt=0)
+    """Optional TCP/TLS connect timeout in seconds (``> 0``); defaults to ``timeout``."""
+    follow_redirects: bool = False
+    """Whether owned ``httpx`` clients follow HTTP 3xx redirects."""
     max_retries: int = Field(default=3, ge=0)
     max_retry_wait: float = Field(default=60.0, ge=0)
     max_requests_per_second: float | None = Field(default=None, gt=0)
@@ -37,7 +41,9 @@ class BaseApiSettings(BaseSettings):
     user_agent: str | None = None
     mailto: str | None = None
 
-    @field_validator("timeout", "max_retry_wait", "max_requests_per_second")
+    @field_validator(
+        "timeout", "connect_timeout", "max_retry_wait", "max_requests_per_second"
+    )
     @classmethod
     def _validate_finite_float(cls, value: float | None) -> float | None:
         if value is not None and not math.isfinite(value):

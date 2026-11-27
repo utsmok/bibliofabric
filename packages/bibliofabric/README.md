@@ -127,5 +127,5 @@ running event loop. See the "Sync usage" docs page.
 
 ## Contributing and license
 
-See [contributing.md](https://github.com/utsmok/bibliofabric/blob/main/docs/bibliofabric/contributing.md).
+See the [contributing guide](https://utsmok.github.io/bibliofabric/contributing/).
 This project is licensed under the MIT License.

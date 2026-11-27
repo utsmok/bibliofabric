@@ -96,23 +96,40 @@ def test_sanitize_url_and_headers():
         sanitize_url("https://api.test/w?mailto=a@b.org&api_key=sec&token=tok")
         == "https://api.test/w?mailto=a@b.org&api_key=***&token=***"
     )
+    assert (
+        sanitize_url(
+            "https://api.test/w?mailto=a@b.org&custom_cred=sec123",
+            extra_params={"custom_cred"},
+        )
+        == "https://api.test/w?mailto=a@b.org&custom_cred=***"
+    )
     redacted = sanitize_headers(
         {
             "Authorization": "Bearer abc",
             "X-Api-Key": "secret",
             "Cookie": "sid=xyz",
+            "X-Custom-Pass": "s3cr3t",
             "User-Agent": "bibliofabric/0.6.0",
-        }
+        },
+        extra_headers={"x-custom-pass"},
     )
     assert redacted == {
         "Authorization": "***",
         "X-Api-Key": "***",
         "Cookie": "***",
+        "X-Custom-Pass": "***",
         "User-Agent": "bibliofabric/0.6.0",
     }
 
 
 def test_settings_constraints_and_user_agent():
+    defaults = BaseApiSettings()
+    assert defaults.follow_redirects is False
+    assert defaults.connect_timeout is None
+    assert (
+        BaseApiSettings(connect_timeout=5.0, follow_redirects=True).connect_timeout
+        == 5.0
+    )
     assert (
         BaseApiSettings(user_agent="my-app/1.0").effective_user_agent() == "my-app/1.0"
     )
@@ -126,6 +143,10 @@ def test_settings_constraints_and_user_agent():
     for invalid in (
         {"timeout": 0},
         {"timeout": float("inf")},
+        {"connect_timeout": 0},
+        {"connect_timeout": -1},
+        {"connect_timeout": float("inf")},
+        {"connect_timeout": float("nan")},
         {"max_retries": -1},
         {"max_retry_wait": -1},
         {"max_concurrency": 0},
@@ -156,12 +177,27 @@ def test_query_dialect_invariants():
             default_page_size=5,
             count_page_size=-1,
         )
+    with pytest.raises(ConfigurationError):
+        QueryDialect(
+            page_size_param="size", max_page_size=10, default_page_size=5, max_offset=0
+        )
+    with pytest.raises(ConfigurationError):
+        QueryDialect(
+            page_size_param="size",
+            max_page_size=10,
+            default_page_size=5,
+            max_offset=-10,
+        )
     assert (
         QueryDialect(
             page_size_param="size",
             max_page_size=10,
             default_page_size=5,
             count_page_size=0,
-        ).count_page_size
-        == 0
+            max_offset=1000,
+        ).max_offset
+        == 1000
     )
+    unpaged = QueryDialect(page_size_param=None, page_param=None)
+    assert unpaged.page_size_param is None
+    assert unpaged.page_param is None

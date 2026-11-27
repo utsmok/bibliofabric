@@ -7,6 +7,7 @@ in its string form.
 
 import builtins
 import json
+from collections.abc import Collection
 from typing import Any
 
 import httpx
@@ -42,7 +43,12 @@ def _truncate(text: str, max_length: int = _MAX_BODY_SUMMARY_CHARS) -> str:
     return f"{compact[: max_length - 3].rstrip()}..."
 
 
-def _summarize_body(body: Any, response: httpx.Response | None = None) -> str | None:
+def _summarize_body(
+    body: Any,
+    response: httpx.Response | None = None,
+    *,
+    extra_params: Collection[str] = (),
+) -> str | None:
     """Build a concise, sanitized summary of an upstream error body."""
     if isinstance(body, dict):
         parts: list[str] = []
@@ -61,30 +67,38 @@ def _summarize_body(body: Any, response: httpx.Response | None = None) -> str | 
                     encoded = str(value)
                 parts.append(f"{key}={encoded}")
         if parts:
-            return _truncate(sanitize_url(", ".join(parts)))
+            return _truncate(sanitize_url(", ".join(parts), extra_params=extra_params))
         if body:
             try:
                 encoded = json.dumps(body, ensure_ascii=False, separators=(",", ":"))
             except (TypeError, ValueError):
                 encoded = str(body)
-            return _truncate(sanitize_url(encoded))
+            return _truncate(sanitize_url(encoded, extra_params=extra_params))
         return None
     if isinstance(body, str):
         stripped = body.strip()
-        return _truncate(sanitize_url(stripped)) if stripped else None
+        return (
+            _truncate(sanitize_url(stripped, extra_params=extra_params))
+            if stripped
+            else None
+        )
     if body is not None:
         try:
             encoded = json.dumps(body, ensure_ascii=False, separators=(",", ":"))
         except (TypeError, ValueError):
             encoded = str(body)
-        return _truncate(sanitize_url(encoded)) if encoded else None
+        return (
+            _truncate(sanitize_url(encoded, extra_params=extra_params))
+            if encoded
+            else None
+        )
     if response is not None:
         try:
             text = response.text.strip()
         except (httpx.ResponseNotRead, UnicodeDecodeError):
             return None
         if text:
-            return _truncate(sanitize_url(text))
+            return _truncate(sanitize_url(text, extra_params=extra_params))
     return None
 
 
@@ -97,11 +111,13 @@ class BibliofabricError(Exception):
         *,
         request: httpx.Request | None = None,
         response: httpx.Response | None = None,
+        redacted_query_params: Collection[str] = (),
     ) -> None:
         super().__init__(message)
         self.message = message
         self.response = response
         self.request = request if request is not None else _extract_request(response)
+        self._redacted_query_params: frozenset[str] = frozenset(redacted_query_params)
 
     @property
     def status_code(self) -> int | None:
@@ -109,17 +125,18 @@ class BibliofabricError(Exception):
         return self.response.status_code if self.response is not None else None
 
     def __str__(self) -> str:
-        message = sanitize_url(self.message)
+        extra = self._redacted_query_params
+        message = sanitize_url(self.message, extra_params=extra)
         request = _extract_request(self.response) or self.request
         if self.response is not None:
             if request is not None:
                 return (
                     f"{message} (status: {self.response.status_code}, "
-                    f"URL: {sanitize_url(request.url)})"
+                    f"URL: {sanitize_url(request.url, extra_params=extra)})"
                 )
             return f"{message} (status: {self.response.status_code})"
         if request is not None:
-            return f"{message} (URL: {sanitize_url(request.url)})"
+            return f"{message} (URL: {sanitize_url(request.url, extra_params=extra)})"
         return message
 
 
@@ -137,13 +154,21 @@ class AuthError(BibliofabricError):
         body: Any = None,
         request: httpx.Request | None = None,
         response: httpx.Response | None = None,
+        redacted_query_params: Collection[str] = (),
     ) -> None:
-        super().__init__(message, request=request, response=response)
+        super().__init__(
+            message,
+            request=request,
+            response=response,
+            redacted_query_params=redacted_query_params,
+        )
         self.body = body
 
     def __str__(self) -> str:
         base = super().__str__()
-        summary = _summarize_body(self.body, self.response)
+        summary = _summarize_body(
+            self.body, self.response, extra_params=self._redacted_query_params
+        )
         return f"{base}: {summary}" if summary else base
 
 
@@ -169,13 +194,21 @@ class APIError(BibliofabricError):
         body: Any = None,
         request: httpx.Request | None = None,
         response: httpx.Response | None = None,
+        redacted_query_params: Collection[str] = (),
     ) -> None:
-        super().__init__(message, request=request, response=response)
+        super().__init__(
+            message,
+            request=request,
+            response=response,
+            redacted_query_params=redacted_query_params,
+        )
         self.body = body
 
     def __str__(self) -> str:
         base = super().__str__()
-        summary = _summarize_body(self.body, self.response)
+        summary = _summarize_body(
+            self.body, self.response, extra_params=self._redacted_query_params
+        )
         return f"{base}: {summary}" if summary else base
 
 
@@ -194,8 +227,15 @@ class RateLimitError(APIError):
         retry_after: float | None = None,
         request: httpx.Request | None = None,
         response: httpx.Response | None = None,
+        redacted_query_params: Collection[str] = (),
     ) -> None:
-        super().__init__(message, body=body, request=request, response=response)
+        super().__init__(
+            message,
+            body=body,
+            request=request,
+            response=response,
+            redacted_query_params=redacted_query_params,
+        )
         self.retry_after = retry_after
 
 
@@ -215,8 +255,14 @@ class ValidationError(BibliofabricError):
         model_name: str | None = None,
         request: httpx.Request | None = None,
         response: httpx.Response | None = None,
+        redacted_query_params: Collection[str] = (),
     ) -> None:
-        super().__init__(message, request=request, response=response)
+        super().__init__(
+            message,
+            request=request,
+            response=response,
+            redacted_query_params=redacted_query_params,
+        )
         self.raw = raw
         self.error = error
         self.model_name = model_name

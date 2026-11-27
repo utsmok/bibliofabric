@@ -1,8 +1,11 @@
 """Query building, iteration, count, and batch_get across the three dialects."""
 
+from collections.abc import Sequence
 from typing import Any, cast
 
+import httpx
 import pytest
+from bibliofabric import ResourceClient
 from bibliofabric.exceptions import ConfigurationError, ValidationError
 from bibliofabric.paging import Page, QueryDialect
 from pydantic import BaseModel
@@ -539,3 +542,239 @@ async def test_validation_error_carries_raw_payload_and_request(
     assert excinfo.value.model_name == "Widget"
     assert excinfo.value.request is not None
     assert excinfo.value.response is not None
+
+
+async def test_fail_fast_unsupported_search_kwargs(httpx_mock, make_client):
+    minimal_dialect = QueryDialect(
+        page_size_param=None,
+        page_param=None,
+        offset_param=None,
+        cursor_param=None,
+        sort_param=None,
+        query_param=None,
+        select_param=None,
+    )
+
+    class MinimalWidgets(Widgets):
+        dialect = minimal_dialect
+
+    client = make_client()
+    works = MinimalWidgets(client)
+
+    with pytest.raises(ConfigurationError, match="query_param"):
+        await works.search(query="hello")
+    with pytest.raises(ConfigurationError, match="select_param"):
+        await works.search(select=["id"])
+    with pytest.raises(ConfigurationError, match="sort_param"):
+        await works.search(sort="title")
+    with pytest.raises(ConfigurationError, match="cursor_param"):
+        await works.search(cursor="*")
+    with pytest.raises(ConfigurationError, match="page_param"):
+        await works.search(page=2)
+    with pytest.raises(ConfigurationError, match="select_param"):
+        await works.get("w1", select=["id"])
+    with pytest.raises(ConfigurationError, match="select_param"):
+        await works.batch_get(["w1"], select=["id"])
+    with pytest.raises(ConfigurationError, match="cursor_param"):
+        works.iterate(cursor="abc")
+    assert httpx_mock.get_requests() == []
+
+
+async def test_unpaged_dialect_skips_page_size_and_iterates_once(
+    httpx_mock, make_client
+):
+    unpaged_dialect = QueryDialect(
+        page_size_param=None,
+        page_param=None,
+        offset_param=None,
+        cursor_param=None,
+        sort_param=None,
+    )
+    client = make_client()
+    # Also verifies per-instance dialect override does not mutate class dialect.
+    original_dialect = PageWidgets.dialect
+    works = PageWidgets(client, dialect=unpaged_dialect)
+    assert works.dialect is unpaged_dialect
+    assert PageWidgets.dialect is original_dialect
+
+    httpx_mock.add_response(
+        url=f"{BASE_URL}/works",
+        json=_json_page([{"id": "w1"}, {"id": "w2"}]),
+    )
+    page = await works.search()
+    assert [w.id for w in page.results] == ["w1", "w2"]
+    assert page.page is None
+
+    httpx_mock.add_response(
+        url=f"{BASE_URL}/works",
+        json=_json_page([{"id": "w1"}, {"id": "w2"}]),
+    )
+    collected = await works.collect()
+    assert [w.id for w in collected] == ["w1", "w2"]
+    assert len(httpx_mock.get_requests()) == 2
+
+    httpx_mock.add_response(
+        url=f"{BASE_URL}/works?id=w1",
+        json=_json_page([{"id": "w1"}]),
+    )
+    batched = await works.batch_get(["w1"])
+    assert set(batched) == {"w1"}
+
+
+async def test_max_offset_enforced_for_page_and_offset_but_not_cursor(
+    httpx_mock, make_client
+):
+    capped_page = QueryDialect(
+        page_size_param="per_page",
+        max_page_size=100,
+        default_page_size=10,
+        page_param="page",
+        page_start=1,
+        max_offset=20,
+        cursor_param="cursor",
+    )
+    capped_offset = QueryDialect(
+        page_size_param="rows",
+        max_page_size=100,
+        default_page_size=10,
+        page_param=None,
+        offset_param="offset",
+        page_start=1,
+        max_offset=20,
+    )
+    client = make_client()
+    page_works = PageWidgets(client, dialect=capped_page)
+    offset_works = OffsetWidgets(client, dialect=capped_offset)
+
+    # page=3 with size=10 -> offset=20 (allowed); page=4 -> offset=30 (rejected).
+    httpx_mock.add_response(
+        url=f"{BASE_URL}/works?per_page=10&page=3", json=_json_page([])
+    )
+    await page_works.search(page=3, page_size=10)
+    with pytest.raises(ConfigurationError, match="max_offset"):
+        await page_works.search(page=4, page_size=10)
+
+    # Cursor paging bypasses max_offset.
+    httpx_mock.add_response(
+        url=f"{BASE_URL}/works?per_page=10&cursor=c99", json=_json_page([])
+    )
+    await page_works.search(cursor="c99", page_size=10)
+
+    # Offset dialect enforcement.
+    httpx_mock.add_response(
+        url=f"{BASE_URL}/works?rows=10&offset=20", json=_json_page([])
+    )
+    await offset_works.search(page=3, page_size=10)
+    with pytest.raises(ConfigurationError, match="max_offset"):
+        await offset_works.search(page=4, page_size=10)
+
+
+async def test_fetch_batch_chunk_override_for_post_batch(httpx_mock, make_client):
+    class PostBatchWidgets(CursorWidgets):
+        async def _fetch_batch_chunk(
+            self,
+            field: str,
+            chunk: list[str],
+            *,
+            select: Sequence[str] | None = None,
+        ) -> tuple[list[dict[str, Any]], httpx.Response]:
+            params = {"fields": ",".join(select)} if select else None
+            response = await self._client.request(
+                "POST",
+                f"{self.path}/batch",
+                params=params,
+                json={"ids": chunk},
+                retry=True,
+            )
+            records = self._client.unwrapper.results(self._client.parse_json(response))
+            return records, response
+
+    httpx_mock.add_response(
+        url=f"{BASE_URL}/works/batch?fields=id,title",
+        method="POST",
+        match_json={"ids": ["w1", "w2"]},
+        json=_json_page([{"id": "w1", "title": "A"}, {"title": 123}]),
+    )
+    httpx_mock.add_response(
+        url=f"{BASE_URL}/works/batch?fields=id,title",
+        method="POST",
+        match_json={"ids": ["w3"]},
+        json=_json_page([{"id": "w3", "title": "C"}]),
+    )
+    client = make_client()
+    failures: list[tuple[dict[str, Any], Exception]] = []
+    result = await PostBatchWidgets(client).batch_get(
+        [" w1 ", "w2", "w1", "w3"],
+        select=["id", "title"],
+        on_error="skip",
+        failures=failures,
+    )
+    assert set(result) == {"w1", "w3"}
+    assert len(failures) == 1
+    assert failures[0][0] == {"title": 123}
+    assert len(httpx_mock.get_requests(method="POST")) == 2
+
+
+async def test_bulk_list_adapter_cached_per_subclass_and_preserves_raw_error(
+    httpx_mock, make_client
+):
+    class OtherWidget(BaseModel):
+        code: int
+
+    class OtherWidgets(ResourceClient[OtherWidget]):
+        path = "others"
+        model = OtherWidget
+        dialect = PageWidgets.dialect
+
+    client = make_client()
+    page_works = PageWidgets(client)
+    other_works = OtherWidgets(client)
+
+    httpx_mock.add_response(
+        url=f"{BASE_URL}/works?pageSize=25&page=1",
+        json=_json_page([{"id": "w1"}, {"id": "w2"}]),
+    )
+    page = await page_works.search()
+    assert [w.id for w in page.results] == ["w1", "w2"]
+    first_adapter = PageWidgets._list_adapter
+    assert first_adapter is not None
+
+    # Second call reuses the cached adapter.
+    httpx_mock.add_response(
+        url=f"{BASE_URL}/works?pageSize=25&page=1",
+        json=_json_page([{"id": "w3"}]),
+    )
+    await page_works.search()
+    assert PageWidgets._list_adapter is first_adapter
+
+    # Subclass with a different model gets its own adapter.
+    httpx_mock.add_response(
+        url=f"{BASE_URL}/others?pageSize=25&page=1",
+        json=_json_page([{"code": 7}]),
+    )
+    other_page = await other_works.search()
+    assert [o.code for o in other_page.results] == [7]
+    assert OtherWidgets._list_adapter is not None
+    assert OtherWidgets._list_adapter is not first_adapter
+
+    # Validation error in a multi-record page falls back to _validate() and
+    # attaches the exact offending record in .raw.
+    httpx_mock.add_response(
+        url=f"{BASE_URL}/works?pageSize=25&page=1",
+        json=_json_page([{"id": "ok"}, {"title": 999}]),
+    )
+    with pytest.raises(ValidationError) as excinfo:
+        await page_works.search()
+    assert excinfo.value.raw == {"title": 999}
+    assert excinfo.value.model_name == "Widget"
+    assert excinfo.value.request is not None
+    assert excinfo.value.response is not None
+
+    # iterate(limit=1) only validates up to the limit, so a trailing bad record
+    # beyond limit does not cause a spurious failure.
+    httpx_mock.add_response(
+        url=f"{BASE_URL}/works?pageSize=2&page=1",
+        json=_json_page([{"id": "good"}, {"title": 999}]),
+    )
+    limited = await page_works.collect(page_size=2, limit=1)
+    assert [w.id for w in limited] == ["good"]

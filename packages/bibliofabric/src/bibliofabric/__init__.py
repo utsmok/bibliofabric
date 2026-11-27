@@ -21,10 +21,12 @@ from ._sync.client import SyncBaseApiClient
 from ._sync.resources import SyncResourceClient
 from .auth import (
     AuthStrategy,
+    BasicAuth,
     ClientCredentialsAuth,
     HeaderAuth,
     NoAuth,
     QueryParameterAuth,
+    RefreshTokenAuth,
     StaticTokenAuth,
 )
 from .config import BaseApiSettings
@@ -61,6 +63,7 @@ __all__ = [
     "AuthStrategy",
     "BaseApiClient",
     "BaseApiSettings",
+    "BasicAuth",
     "BibliofabricError",
     "ClientCredentialsAuth",
     "ConfigurationError",
@@ -71,7 +74,9 @@ __all__ = [
     "OnError",
     "Page",
     "QueryDialect",
+    "QueryParameterAuth",
     "RateLimitError",
+    "RefreshTokenAuth",
     "ResourceClient",
     "ResponseUnwrapper",
     "SafeList",
