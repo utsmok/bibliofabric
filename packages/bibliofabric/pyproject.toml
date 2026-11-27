@@ -1,6 +1,6 @@
 [project]
 name = "bibliofabric"
-version = "0.6.0"
+version = "0.7.0"
 description = "Shared core for scholarly API clients: HTTP, auth, retries, paging, and typed resource clients"
 readme = "README.md"
 authors = [

@@ -61,7 +61,7 @@ uv run mkdocs build --strict                      # docs gate
 uv build --package <name>                         # build one package (wheel contains py.typed)
 ```
 
-Client packages depend on `bibliofabric>=0.6,<0.7`; inside the workspace uv
+Client packages depend on `bibliofabric>=0.7,<0.8`; inside the workspace uv
 resolves that to the sibling package (`[tool.uv.sources]` at the root).
 
 ## Release flow

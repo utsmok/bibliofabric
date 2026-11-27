@@ -4,6 +4,8 @@ All notable changes to AIREloom are documented here. Format follows [Keep a Chan
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-11-27
+
 ### Breaking
 
 - **Scholix date filters fail fast:** Passing `from_date` or `to_date` (or raw
@@ -28,6 +30,10 @@ All notable changes to AIREloom are documented here. Format follows [Keep a Chan
   `AireloomClient.__init__` / `AireloomSyncClient.__init__` matching sibling
   clients; `auth=` remains as a deprecated alias (emitting `DeprecationWarning`)
   and passing both raises `ConfigurationError`.
+- **Client kwargs & error-collection alignment:** Added `http_client=`,
+  `mailto=`, `client_id=`, and `client_secret=` constructor kwargs on
+  `AireloomClient` / `AireloomSyncClient`, and aligned `on_error` / `failures`
+  forwarding across Graph and Scholix resources.
 - **`retry=` forwarding:** `AireloomClient.request()` /
   `AireloomSyncClient.request()` now accept and forward `retry: bool | None = None`
   to match `BaseApiClient.request()`.
@@ -35,6 +41,7 @@ All notable changes to AIREloom are documented here. Format follows [Keep a Chan
 
 ### Changed
 
+- **Core dependency:** Updated `bibliofabric` dependency to `>=0.7,<0.8`.
 - **Relaxed undocumented response `Literal`s:** Relaxed `RefereedType`
   (`Instance.refereed`, `RelatedInstance.refereed`) and
   `CitationImpact.*Class` (`influenceClass`, `citationClass`,
@@ -42,6 +49,26 @@ All notable changes to AIREloom are documented here. Format follows [Keep a Chan
   values in docstrings.
 - **Core offset guard:** Moved the Graph V4 `10_000` offset cap to
   `GRAPH_DIALECT.max_offset` so `GraphResource` reuses core's offset guard.
+
+### Fixed
+
+- **Graph V4 pagination & limits:** Set `GRAPH_DIALECT.max_page_size = 100`,
+  fixed `ResearchProductsResource.by_orcid()` to paginate up to `limit`,
+  enforced OpenAIRE's 50-value OR filter cap client-side, and bounded
+  concurrency in `ResearchProductsResource.get_fields()`.
+- **Filter serialization:** Fixed empty `GraphFilters` serialization and
+  list-valued filter handling (skipping `None` and empty collections, proper OR
+  grouping and value quoting).
+- **Scholix & validation:** Fixed Scholix `linkProvider` V2 routing and wrapped
+  custom model validation through `bibliofabric.validate_model` and `parse_json`
+  so schema errors consistently raise `bibliofabric.ValidationError`.
+- **Models & unwrapper:** Fixed `Project.parse_keywords_string` to split
+  semicolon-separated keywords, fixed nullable/computed fields across Graph and
+  Scholix models, and fixed `OpenAireUnwrapper` edge cases for metadata, totals,
+  and single-item payloads.
+- **Safe client teardown:** Wrapped Graph and Scholix client shutdown in
+  `aclose()` / `close()` with `try`/`finally` so an error closing one client
+  never leaks the other.
 
 ## [0.8.0] - 2026-11-26
 

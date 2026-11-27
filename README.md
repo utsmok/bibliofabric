@@ -8,10 +8,10 @@ clients. Three libraries build on it, one per API.
 
 | Package | API | Version | Docs |
 |---|---|---|---|
-| [bibliofabric](packages/bibliofabric/README.md) | core framework (no API) | [0.6.0](https://pypi.org/project/bibliofabric/) | [docs](https://utsmok.github.io/bibliofabric/bibliofabric/) |
-| [aireloom](packages/aireloom/README.md) | OpenAIRE Graph API (V4), Scholexplorer | [0.8.0](https://pypi.org/project/aireloom/) | [docs](https://utsmok.github.io/bibliofabric/aireloom/) |
-| [aletheca](packages/aletheca/README.md) | OpenAlex | [0.4.0](https://pypi.org/project/aletheca/) | [docs](https://utsmok.github.io/bibliofabric/aletheca/) |
-| [stavrophora](packages/stavrophora/README.md) | Crossref REST API | [0.3.0](https://pypi.org/project/stavrophora/) | [docs](https://utsmok.github.io/bibliofabric/stavrophora/) |
+| [bibliofabric](packages/bibliofabric/README.md) | core framework (no API) | [0.7.0](https://pypi.org/project/bibliofabric/) | [docs](https://utsmok.github.io/bibliofabric/bibliofabric/) |
+| [aireloom](packages/aireloom/README.md) | OpenAIRE Graph API (V4), Scholexplorer | [0.9.0](https://pypi.org/project/aireloom/) | [docs](https://utsmok.github.io/bibliofabric/aireloom/) |
+| [aletheca](packages/aletheca/README.md) | OpenAlex | [0.5.0](https://pypi.org/project/aletheca/) | [docs](https://utsmok.github.io/bibliofabric/aletheca/) |
+| [stavrophora](packages/stavrophora/README.md) | Crossref REST API | [0.4.0](https://pypi.org/project/stavrophora/) | [docs](https://utsmok.github.io/bibliofabric/stavrophora/) |
 
 ```bash
 uv add aireloom    # or aletheca, stavrophora, bibliofabric

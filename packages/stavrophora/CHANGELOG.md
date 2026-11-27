@@ -6,23 +6,37 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-27
+
 ### Added
 
 - Pool-aware default rate limits in `StavrophoraClient` when `rate_limits`, `max_concurrency`, and `max_requests_per_second` are not explicitly configured: Metadata Plus (`plus_token` set) defaults to `{"single": 50.0, "list": 50.0}` with `max_concurrency=10`, Polite Pool (`mailto` set) to `{"single": 10.0, "list": 3.0}` with `max_concurrency=3`, and Public Pool (neither set) to `{"single": 5.0, "list": 1.0}` with `max_concurrency=1`.
 - `StavrophoraClient.on_response()` captures Crossref pool and rate-limit headers (`x-api-pool`, `x-rate-limit-limit`, `x-rate-limit-interval`, `x-concurrency-limit`) into read-only `last_pool` and `last_rate_limit_headers` properties.
 - `WorksResource.latest_version(..., update_types=("new_version", "new_edition"))`: filters `updated-by` entries by type by default so retractions and corrections are not mistaken for newer versions; pass `update_types=None` to follow all Crossmark updates.
+- `on_error` / `failures` passthrough aligned with `bibliofabric` across resource `search()` and `batch_get()` calls.
+- Added model fields `Work.published_other`, `Work.content_created`, `Work.content_updated`, `CrossRefDate.version`, and `Event.theme`, and widened `Funder.hierarchy` to `dict[str, Any] | None`.
+- Exported `JournalsResource` and `LicensesResource` in `stavrophora.__all__`.
 - Added `"Programming Language :: Python :: 3.14"` classifier in `pyproject.toml`.
 
 ### Changed
 
+- Updated `bibliofabric` dependency to `>=0.7,<0.8`.
 - `CrossrefResourceClient.item_path()` now percent-encodes identifiers with `quote(..., safe="")` (sending `%2F` inside DOIs per Crossref recommendation, matching `FundersResource.works()`).
 - Extracted `_WorksListResource` holding shared list, search, iterate, count, facets, sample, and batch methods; `WorksResource(_WorksListResource)` adds `get`, `exists`, `agency`, and `latest_version`, while `ScopedWorksResource(_WorksListResource)` omits single-work methods statically under `ty` and at runtime.
 - Aligned `CrossrefDialect` / `CrossrefOffsetDialect` (`max_offset=10_000`, `sort_param=None` and `select_param=None` on offset routes) and `TypesResource` (`CrossrefUnpagedDialect` with `page_size_param=None`) with `bibliofabric` fail-fast `_search_params()`.
-- `Work.event.sponsor` is a list of strings (`SafeStrList`, empty when absent) instead of `str | None`; a single sponsor parses as a one-item list.
+- Widened `WorksFilters`, `MemberFilters`, and `FunderFilters` fields to accept sequences and integer IDs, and widened single-resource identifier typing (`str | int`, e.g. `members.get(297)`).
+- `Work.event.sponsor` is a list of strings (`SafeStrList`, empty when absent) instead of `str | None`; a single sponsor parses as a one-item list (#15).
 
 ### Fixed
 
-- `Work.event.sponsor` accepts the list Crossref prints for conferences with several sponsors (ACM proceedings). One such record on a page raised `ValidationError` for the whole `search()` result, and `works.get()` failed for the record itself.
+- Split cursor-enabled `CrossrefDialect` from offset-only `CrossrefOffsetDialect`, fixing invalid `cursor=*` queries on non-works endpoints and handling unpaged `/types` `count()` / `iterate()` cleanly.
+- Propagated constructor `mailto=` into `StavrophoraSettings` so the `User-Agent` header includes the caller's address.
+- Fixed the `rate_limits` settings validator so an explicit `max_requests_per_second` override controls pacing instead of being shadowed by default class rates.
+- Fixed `rate_class()` URL path regex matching for top-level `/works` vs scoped and single-item routes.
+- Wrapped `works.agency()` validation through `bibliofabric.validate_model` (raising `bibliofabric.ValidationError` instead of raw `pydantic.ValidationError`) and guarded JSON decoding with `parse_json`.
+- Fixed `FunderWorksResource` (`funders.works(..., include_descendants=True)`) so `facets()` and `sample()` apply descendant funder filters as well.
+- Fixed `rows=0` handling for `facets()` requests and hardened client-side route guards across endpoints.
+- `Work.event.sponsor` accepts the list Crossref prints for conferences with several sponsors (ACM proceedings). One such record on a page raised `ValidationError` for the whole `search()` result, and `works.get()` failed for the record itself (#15).
 - Resolved all `ty` diagnostics in `packages/stavrophora/tests/` so `ty check` passes with zero diagnostics and zero ignore comments across both `src/` and `tests/`.
 
 ## [0.3.0] - 2026-11-26

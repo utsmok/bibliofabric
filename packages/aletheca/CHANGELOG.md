@@ -6,6 +6,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-11-27
+
+Requires `bibliofabric>=0.7,<0.8`.
+
 ### Breaking Changes
 
 - **`group_by()` now returns `Page[GroupByBucket]`**: preserves `next_cursor`
@@ -76,7 +80,6 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   OpenAlex `x-ratelimit-*` headers into `client.last_rate_limit_headers`.
 - **Python 3.14 support**: added the `Programming Language :: Python :: 3.14`
   trove classifier in `pyproject.toml`.
-
 - `AlethecaClient` forwards `http_client`, `data`/`content`/`timeout` on
   `request()`, routes `search.semantic` to the 1 req/s `"semantic"` rate class,
   and supports `filters=` plus entity validation on `autocomplete()`.
@@ -322,7 +325,8 @@ changes are listed under each heading.
 - MkDocs documentation
 - Marimo notebook examples
 
-[Unreleased]: https://github.com/utsmok/bibliofabric/compare/aletheca-v0.4.0...HEAD
+[Unreleased]: https://github.com/utsmok/bibliofabric/compare/aletheca-v0.5.0...HEAD
+[0.5.0]: https://github.com/utsmok/bibliofabric/releases/tag/aletheca-v0.5.0
 [0.4.0]: https://github.com/utsmok/bibliofabric/releases/tag/aletheca-v0.4.0
 [0.3.0]: https://github.com/utsmok/aletheca/releases/tag/v0.3.0
 [0.2.2]: https://github.com/utsmok/aletheca/releases/tag/v0.2.2

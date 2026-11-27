@@ -7,8 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-11-27
+
+Companion client versions built on this release: aireloom 0.9.0, aletheca 0.5.0,
+and stavrophora 0.4.0 (all pinning `bibliofabric>=0.7,<0.8`).
+
 ### Added
 
+- `on_error` (`"raise"` / `"skip"`) and `failures` collector on
+  `ResourceClient.search()` and `ResourceClient.batch_get()` (#16).
+- Concise, sanitized upstream HTTP error body summaries in `APIError` and
+  `AuthError` `__str__`, plus `APIError.status_code` and
+  `RateLimitError.retry_after` (#18).
+- `validate_model()` helper exported from `bibliofabric` (wrapping
+  `pydantic.ValidationError` into `bibliofabric.ValidationError` with the
+  offending payload attached) and `parse_json()` guarding 2xx JSON decoding.
+- `select=` and `params=` passthrough on `ResourceClient.get()`,
+  `ResourceClient.exists()`, and `id: str | int` identifier widening across
+  resource lookups and `normalize_id()`.
+- `QueryDialect.count_page_size` to control the page size used by `count()`.
 - Idempotent-by-default retry policy (`GET`, `HEAD`, `OPTIONS`, `PUT`, `DELETE`)
   with per-call `retry: bool | None = None` override on `BaseApiClient.request()`
   (enabling retries on read-only `POST` batch calls with `retry=True` or
@@ -52,6 +69,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `iterate()`) now fail fast with `ConfigurationError` when callers pass
   `query`, `select`, `sort`, `cursor`, or `page` against a `QueryDialect` that
   does not declare the corresponding parameter.
+- `BaseApiSettings` validates positive/non-negative bounds and finiteness for
+  `timeout`, `max_retries`, `max_retry_wait`, `max_requests_per_second`,
+  `max_concurrency`, and `rate_limits` entries (allowing `None` to disable
+  pacing for a specific rate class).
+
+### Fixed
+
+- Non-starving O(1) `Limiter`: reserves rate-class slots monotonically before
+  acquiring concurrency slots so long spacing or 429 backoff sleeps do not
+  block sibling classes or workers.
+- `ResourceClient.first()` now requests `page_size=1` instead of fetching a full
+  default page.
+- `ResourceClient.count()` omits the cursor parameter when counting and honors
+  `QueryDialect.count_page_size`.
+- Injected `http_client` instances now resolve `base_url` properly and receive
+  the configured `User-Agent` header when not already set.
+- `ClientCredentialsAuth` uses monotonic clocks for token expiry, handles
+  missing/short expiry cleanly, and surfaces token-endpoint errors consistently.
+- `normalize_orcid()` strips trailing slashes and validates digit/checksum
+  format before hyphenating; `normalize_ror()` strips trailing slashes before
+  lowercasing.
 
 ## [0.6.0] - 2026-11-26
 
