@@ -1,0 +1,54 @@
+{
+ "message": {
+  "DOI": "10.1145/1388969.1389056",
+  "URL": "https://doi.org/10.1145/1388969.1389056",
+  "author": [
+   {
+    "affiliation": [
+     {
+      "name": "Michigan State University"
+     }
+    ],
+    "family": "Goodman",
+    "given": "Erik D.",
+    "role": [
+     {
+      "role": "author",
+      "vocabulary": "crossref"
+     }
+    ],
+    "sequence": "first"
+   }
+  ],
+  "container-title": [
+   "Proceedings of the 10th annual conference companion on Genetic and evolutionary computation"
+  ],
+  "event": {
+   "acronym": "GECCO08",
+   "location": "Atlanta GA USA",
+   "name": "GECCO08: Genetic and Evolutionary Computation Conference",
+   "sponsor": [
+    "SIGEVO ACM Special Interest Group on Genetic and Evolutionary Computation",
+    "ACM Association for Computing Machinery"
+   ]
+  },
+  "issued": {
+   "date-parts": [
+    [
+     2008,
+     7,
+     12
+    ]
+   ]
+  },
+  "page": "2277-2298",
+  "publisher": "ACM",
+  "title": [
+   "Introduction to genetic algorithms"
+  ],
+  "type": "proceedings-article"
+ },
+ "message-type": "work",
+ "message-version": "1.0.0",
+ "status": "ok"
+}

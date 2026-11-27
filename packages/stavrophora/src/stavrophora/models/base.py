@@ -2,7 +2,7 @@
 
 from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
-from .safe_types import SafeInt, SafeList, SafeStr
+from .safe_types import SafeInt, SafeList, SafeStr, SafeStrList
 
 
 class EntityModel(BaseModel):
@@ -209,7 +209,8 @@ class Event(EntityModel):
     acronym: str | None = None
     number: str | None = None
     location: str | None = None
-    sponsor: str | None = None
+    #: a bare string for one sponsor, a list for several (the deposit schema allows ten)
+    sponsor: SafeStrList = Field(default_factory=list)
     start: CrossRefDate | None = None
     end: CrossRefDate | None = None
 

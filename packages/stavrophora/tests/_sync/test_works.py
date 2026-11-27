@@ -126,6 +126,39 @@ def test_get_parses_drift_fixed_funder_fields(httpx_mock, client):
     assert funder.id[0].id_type == "DOI"
 
 
+def test_get_parses_event_sponsor_list(httpx_mock, client):
+    """ACM proceedings print ``event.sponsor`` as a list (live 2026-11-27)."""
+    httpx_mock.add_response(json=fixture("work_event_sponsor_list.json"))
+    work_ = client.works.get("10.1145/1388969.1389056")
+    assert work_.event is not None
+    assert work_.event.acronym == "GECCO08"
+    assert work_.event.sponsor == [
+        "SIGEVO ACM Special Interest Group on Genetic and Evolutionary Computation",
+        "ACM Association for Computing Machinery",
+    ]
+
+
+def test_search_keeps_a_page_with_an_event_sponsor_list(httpx_mock, client):
+    sponsored = fixture("work_event_sponsor_list.json")["message"]
+    httpx_mock.add_response(
+        json=works_envelope([work("10.1/first"), sponsored, work("10.1/last")])
+    )
+    page = client.works.search(query="introduction to genetic algorithms")
+    assert [item.doi for item in page.results] == [
+        "10.1/first",
+        "10.1145/1388969.1389056",
+        "10.1/last",
+    ]
+
+
+def test_event_sponsor_string_becomes_a_one_item_list(httpx_mock, client):
+    single = work("10.1/sponsor")
+    single["event"] = {"name": "GECCO '11", "sponsor": "ACM"}
+    httpx_mock.add_response(json=works_envelope([single]))
+    page = client.works.search()
+    assert page.results[0].event.sponsor == ["ACM"]
+
+
 def test_404_raises_not_found_without_retry(httpx_mock, client):
     httpx_mock.add_response(status_code=404, json="Resource not found.")
     with pytest.raises(Exception, match="404") as exc_info:
