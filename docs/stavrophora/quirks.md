@@ -11,7 +11,7 @@ Behavior of the live API that shapes how the client works. Each item is verified
 ## Paging
 
 - There is no `page` parameter. Paging is `offset` plus `rows`, with `offset + rows <= 10000` and `rows <= 1000`. `search()` raises `ConfigurationError` before sending a request past the cap.
-- Deep paging uses `cursor`. Cursor exhaustion is implicit: the last non-empty page still returns a `next-cursor`; only the following request returns empty `items`.
+- Deep paging uses `cursor` on `/works` and scoped `*/works` routes; non-works list routes (`/journals`, `/funders`, `/members`, `/licenses`) reject `cursor` with 400 and use offset paging instead. Cursor exhaustion is implicit: the last non-empty page still returns a `next-cursor`; only the following request returns empty `items`.
 - Cursor requests reject the `issued` and `published*` sorts with a `sort-criteria-incompatible-with-cursor` 400 (since 2026-08-24). Cursor result sets are no longer stable under index-date windows, so incremental sync should prefer `from-created-date` / `until-created-date` windows over `from-index-date`.
 - `sample` caps at 100 and cannot combine with `rows` or `offset`; `sample()` handles both.
 - The API serves both `https://api.crossref.org` and `https://api.crossref.org/v1` with identical payloads; stavrophora pins `/v1`.

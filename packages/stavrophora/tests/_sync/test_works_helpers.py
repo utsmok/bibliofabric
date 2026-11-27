@@ -54,7 +54,7 @@ def test_facets_flatten_the_nested_values_shape(httpx_mock, client):
     facets = client.works.facets(query="climate", facets=("archive",))
     request = httpx_mock.get_requests()[0]
     assert request.url.params["facet"] == "archive:*"
-    assert request.url.params["rows"] == "1"
+    assert request.url.params["rows"] == "0"
     assert request.url.params["offset"] == "0"
     assert facets == {
         "archive": {
@@ -134,3 +134,63 @@ def test_latest_version_returns_records_without_updates_unchanged(httpx_mock, cl
     latest = client.works.latest_version("10.12688/f1000research.141553.3")
     assert len(httpx_mock.get_requests()) == 1
     assert latest.doi == "10.12688/f1000research.141553.3"
+
+
+def test_latest_version_falls_back_to_date_parts_and_breaks_redirect_cycles(
+    httpx_mock, client
+):
+    first = {
+        "status": "ok",
+        "message-type": "work",
+        "message": {
+            "DOI": "10.1/canonical",
+            "title": ["V1"],
+            "updated-by": [
+                {"DOI": "10.1/v2", "updated": {"date-parts": [[2024, 1, 10]]}},
+                {"DOI": "10.1/v3", "updated": {"date-parts": [[2024, 5, 1]]}},
+            ],
+        },
+    }
+    third = {
+        "status": "ok",
+        "message-type": "work",
+        "message": {
+            "DOI": "10.1/v3",
+            "title": ["V3"],
+            "updated-by": [
+                {"DOI": "10.1/canonical", "updated": {"date-parts": [[2024, 6, 1]]}},
+            ],
+        },
+    }
+    httpx_mock.add_response(json=first)
+    httpx_mock.add_response(json=third)
+    latest = client.works.latest_version("10.1/alias")
+    assert latest.doi == "10.1/v3"
+    assert len(httpx_mock.get_requests()) == 2
+
+
+def test_agency_wraps_validation_errors(httpx_mock, client):
+    httpx_mock.add_response(
+        json={
+            "status": "ok",
+            "message-type": "work-agency",
+            "message": {"DOI": "10.1/x", "agency": "not-an-object"},
+        }
+    )
+    with pytest.raises(Exception, match="WorkAgency") as exc_info:
+        client.works.agency("10.1/x")
+    assert exc_info.type.__name__ == "ValidationError"
+    assert exc_info.value.model_name == "WorkAgency"
+    assert exc_info.value.raw["DOI"] == "10.1/x"
+
+
+def test_batch_get_by_doi_on_error_skip(httpx_mock, client):
+    bad = work("10.1/bad")
+    bad["issued"] = 12345
+    httpx_mock.add_response(json=works_envelope([bad, work("10.1/good")]))
+    failures: list = []
+    result = client.works.batch_get_by_doi(
+        ["10.1/bad", "10.1/good"], on_error="skip", failures=failures
+    )
+    assert list(result) == ["10.1/good"]
+    assert len(failures) == 1

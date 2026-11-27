@@ -13,10 +13,23 @@ from ..dialect import (
     CURSOR_INCOMPATIBLE_SORTS,
     ITERATE_PAGE_SIZE,
     MAX_OFFSET_WINDOW,
-    CrossrefDialect,
+    CrossrefOffsetDialect,
     _serialize_filters,
     _split_sort,
 )
+
+
+def _check_cursor_sort(sort: str | Sequence[str]) -> None:
+    """Reject publication-date sorts that Crossref forbids with cursors."""
+    field, _ = _split_sort(sort)
+    if field in CURSOR_INCOMPATIBLE_SORTS:
+        raise ConfigurationError(
+            f"Cursor iteration cannot be combined with sort={field!r}: "
+            "the Crossref API rejects cursor requests sorted by "
+            f"{sorted(CURSOR_INCOMPATIBLE_SORTS)}. Iterate unsorted, or "
+            "sort by a cursor-compatible field such as "
+            "'is-referenced-by-count'."
+        )
 
 
 class CrossrefResourceClient[E: BaseModel](ResourceClient[E]):
@@ -24,12 +37,14 @@ class CrossrefResourceClient[E: BaseModel](ResourceClient[E]):
 
     Subclasses declare ``path``, ``model``, and the ``supports_*`` flags
     describing which list parameters the route accepts; the works family
-    enables everything, the other routes restrict per the Crossref swagger
-    spec (an unsupported parameter is a 400 there, so it is a client-side
-    error here).
+    enables everything and overrides ``dialect`` with cursor-capable
+    :data:`~stavrophora.dialect.CrossrefDialect`, while the other routes use
+    offset-only :data:`~stavrophora.dialect.CrossrefOffsetDialect` and
+    restrict parameters per the Crossref swagger spec (an unsupported
+    parameter is a 400 there, so it is a client-side error here).
     """
 
-    dialect: ClassVar[QueryDialect] = CrossrefDialect
+    dialect: ClassVar[QueryDialect] = CrossrefOffsetDialect
 
     supports_query: ClassVar[bool] = True
     supports_filter: ClassVar[bool] = False
@@ -69,9 +84,14 @@ class CrossrefResourceClient[E: BaseModel](ResourceClient[E]):
         """Canonicalize an identifier; member and type ids may be ints."""
         return str(value).strip()
 
-    def item_path(self, id: str) -> str:
+    def item_path(self, id: str | int) -> str:
         """Return the single-entity path; the slash inside DOIs stays raw."""
-        return f"{self.path}/{quote(self.normalize_id(id), safe='/')}"
+        normalized = self.normalize_id(id)
+        if not normalized:
+            raise ConfigurationError(
+                f"{type(self).__name__}.item_path requires a non-empty id."
+            )
+        return f"{self.path.rstrip('/')}/{quote(normalized, safe='/')}"
 
     # --- operations ----------------------------------------------------
 
@@ -90,22 +110,20 @@ class CrossrefResourceClient[E: BaseModel](ResourceClient[E]):
         on_page: Callable[[int, str | None], Any] | None = None,
         params: Mapping[str, Any] | None = None,
     ) -> AsyncIterator[E]:
-        """Iterate all matching entities via Crossref cursor paging.
+        """Iterate all matching entities.
 
-        Defaults to 1000 rows per page. Rejects the publication-date sorts
-        the API no longer allows together with cursors (they fail mid-harvest
-        with a 400); sort with a citation field or iterate unsorted.
+        Uses Crossref cursor paging on works routes and offset paging on
+        non-works routes, defaulting to 1000 rows per page. Rejects the
+        publication-date sorts the API no longer allows together with cursors
+        (they fail mid-harvest with a 400); sort with a citation field or
+        iterate unsorted.
         """
-        if sort is not None:
-            field, _ = _split_sort(sort)
-            if field in CURSOR_INCOMPATIBLE_SORTS:
-                raise ConfigurationError(
-                    f"Cursor iteration cannot be combined with sort={field!r}: "
-                    "the Crossref API rejects cursor requests sorted by "
-                    f"{sorted(CURSOR_INCOMPATIBLE_SORTS)}. Iterate unsorted, or "
-                    "sort by a cursor-compatible field such as "
-                    "'is-referenced-by-count'."
-                )
+        if cursor is not None and self.dialect.cursor_param is None:
+            raise ConfigurationError(
+                f"The Crossref /{self.path} route does not support cursor paging."
+            )
+        if sort is not None and self.dialect.cursor_param is not None:
+            _check_cursor_sort(sort)
         return super().iterate(
             filters,
             query=query,
@@ -135,6 +153,17 @@ class CrossrefResourceClient[E: BaseModel](ResourceClient[E]):
         params: Mapping[str, Any] | None,
     ) -> dict[str, Any]:
         self._check_route_params(filters=filters, query=query, sort=sort, select=select)
+        if cursor is not None:
+            if self.dialect.cursor_param is None:
+                raise ConfigurationError(
+                    f"The Crossref /{self.path} route does not support cursor paging."
+                )
+            if sort is not None:
+                _check_cursor_sort(sort)
+        elif page is not None and page < self.dialect.page_start:
+            raise ConfigurationError(
+                f"page must be >= {self.dialect.page_start}, got {page}."
+            )
         query_params = super()._search_params(
             filters=filters,
             query=query,
@@ -195,7 +224,7 @@ class CrossrefResourceClient[E: BaseModel](ResourceClient[E]):
     ) -> Page[E]:
         """Fetch one list page and wrap it in a :class:`~bibliofabric.paging.Page`."""
         response = await self._client.request("GET", self.path, params=query_params)
-        body = response.json()
+        body = self._client.parse_json(response)
         unwrapper = self._client.unwrapper
         results = [
             self._validate(record, request=response.request, response=response)

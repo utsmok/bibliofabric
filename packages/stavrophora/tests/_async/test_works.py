@@ -52,10 +52,37 @@ async def test_filter_aliases_serialize_to_kebab_case(httpx_mock, client):
     )
 
 
-async def test_query_title_escape_hatch(httpx_mock, client):
+async def test_query_bibliographic_escape_hatch(httpx_mock, client):
     httpx_mock.add_response(json=works_envelope([]))
-    await client.works.search(params={"query.title": "climate"})
-    assert httpx_mock.get_requests()[0].url.params["query.title"] == "climate"
+    await client.works.search(params={"query.bibliographic": "climate"})
+    assert httpx_mock.get_requests()[0].url.params["query.bibliographic"] == "climate"
+
+
+async def test_works_filters_accept_lists_and_integer_ids(httpx_mock, client):
+    httpx_mock.add_response(json=works_envelope([]))
+    filters = WorksFilters(
+        type=["journal-article", "book-chapter"],
+        doi=["10.1038/nature12373", "10.1109/tip.2009.2037465"],
+        member=297,
+        license_delay=0,
+    )
+    await client.works.search(filters)
+    assert httpx_mock.get_requests()[0].url.params["filter"] == (
+        "type:journal-article,type:book-chapter,"
+        "doi:10.1038/nature12373,doi:10.1109/tip.2009.2037465,"
+        "member:297,license.delay:0"
+    )
+
+
+async def test_dict_filters_skip_none_values(httpx_mock, client):
+    httpx_mock.add_response(json=works_envelope([]))
+    await client.works.search(
+        {"type": "journal-article", "issn": None, "doi": ["10.1/a", None]}
+    )
+    assert (
+        httpx_mock.get_requests()[0].url.params["filter"]
+        == "type:journal-article,doi:10.1/a"
+    )
 
 
 async def test_multiple_sort_fields_are_rejected(client):
@@ -206,3 +233,39 @@ async def test_iterate_on_error_skip_records_failures(httpx_mock, client):
     assert [item.doi for item in collected] == ["10.1/ok"]
     assert len(failures) == 1
     assert failures[0][0]["DOI"] == "10.1/broken"
+
+
+async def test_search_on_error_skip_keeps_valid_works(httpx_mock, client):
+    httpx_mock.add_response(json=works_envelope([_bad_work(), work("10.1/ok")]))
+    failures: list = []
+    page = await client.works.search(on_error="skip", failures=failures)
+    assert [item.doi for item in page.results] == ["10.1/ok"]
+    assert len(failures) == 1
+    assert failures[0][0]["DOI"] == "10.1/broken"
+
+
+async def test_work_parses_null_date_parts_and_extra_typed_fields(httpx_mock, client):
+    payload = work("10.1/grant")
+    payload.update(
+        {
+            "issued": {"date-parts": [[None]]},
+            "indexed": {"date-parts": [[2026, 11, 18]], "version": "4.10.2"},
+            "published-other": {"date-parts": [[2025]]},
+            "content-created": {"date-parts": [[2025, 1, 2]]},
+            "content-updated": {"date-parts": [[2025, 3, 4]]},
+            "degree": "PhD",
+            "project": [{"project-title": [{"title": "Grant A"}]}],
+            "event": {"name": "Conf", "theme": "AI"},
+        }
+    )
+    httpx_mock.add_response(json=works_envelope([payload]))
+    page = await client.works.search()
+    record = page.results[0]
+    assert record.issued is not None and record.issued.year is None
+    assert record.indexed is not None and record.indexed.version == "4.10.2"
+    assert record.published_other is not None and record.published_other.year == 2025
+    assert record.content_created is not None and record.content_created.year == 2025
+    assert record.content_updated is not None and record.content_updated.year == 2025
+    assert record.degree == ["PhD"]
+    assert record.project == [{"project-title": [{"title": "Grant A"}]}]
+    assert record.event is not None and record.event.theme == ["AI"]

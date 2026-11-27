@@ -2,6 +2,9 @@
 """Parsing of real payloads for the journals, funders, members, types,
 prefixes, and licenses routes."""
 
+import stavrophora
+from stavrophora import MemberFilters
+
 from .conftest import fixture
 
 
@@ -80,3 +83,20 @@ def test_licenses_list(httpx_mock, client):
     license_ = page.results[0]
     assert license_.url == "HTTPS://CREATIVECOMMONS.ORG/LICENSES/BY/4.0/"
     assert license_.work_count == 1
+
+
+def test_member_filters_accept_integer_counts(httpx_mock, client):
+    httpx_mock.add_response(
+        json={"status": "ok", "message": {"items": [], "total-results": 0}}
+    )
+    client.members.search(MemberFilters(backfile_doi_count=100, current_doi_count=50))
+    assert (
+        httpx_mock.get_requests()[0].url.params["filter"]
+        == "backfile-doi-count:100,current-doi-count:50"
+    )
+
+
+def test_top_level_all_exports_resources():
+    assert "SyncJournalsResource" in stavrophora.__all__
+    assert "SyncLicensesResource" in stavrophora.__all__
+    assert not hasattr(stavrophora, "PackageNotFoundError")

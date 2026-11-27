@@ -48,6 +48,7 @@
 
 ## Models
 
+::: stavrophora.models.base
 ::: stavrophora.models.work
 ::: stavrophora.models.entities
 ::: stavrophora.models.agency

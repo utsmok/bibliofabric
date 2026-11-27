@@ -23,7 +23,11 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/utsmok/bibliofabric/tree/main/packages/stavrophora"
+Homepage = "https://github.com/utsmok/bibliofabric/tree/main/packages/stavrophora"
+Repository = "https://github.com/utsmok/bibliofabric"
+Documentation = "https://utsmok.github.io/bibliofabric/stavrophora/"
+Issues = "https://github.com/utsmok/bibliofabric/issues"
+Changelog = "https://github.com/utsmok/bibliofabric/blob/main/packages/stavrophora/CHANGELOG.md"
 
 [build-system]
 requires = ["uv_build>=0.9.22,<0.12"]

@@ -4,6 +4,7 @@ from collections.abc import AsyncIterator, Mapping, Sequence
 from typing import Any
 from urllib.parse import quote
 
+from bibliofabric import BaseApiClient, OnError
 from bibliofabric.exceptions import ConfigurationError
 from bibliofabric.ids import normalize_doi
 from bibliofabric.paging import Page
@@ -72,7 +73,7 @@ class FunderWorksResource(ScopedWorksResource):
 
     def __init__(
         self,
-        client,
+        client: BaseApiClient,
         *,
         path: str,
         funders: FundersResource,
@@ -118,6 +119,8 @@ class FunderWorksResource(ScopedWorksResource):
         page: int | None = None,
         page_size: int | None = None,
         cursor: str | None = None,
+        on_error: OnError = "raise",
+        failures: list[tuple[dict[str, Any], Exception]] | None = None,
         params: Mapping[str, Any] | None = None,
     ) -> Page[Work]:
         await self._funder_ids()
@@ -129,6 +132,8 @@ class FunderWorksResource(ScopedWorksResource):
             page=page,
             page_size=page_size,
             cursor=cursor,
+            on_error=on_error,
+            failures=failures,
             params=params,
         )
 
@@ -141,6 +146,34 @@ class FunderWorksResource(ScopedWorksResource):
     ) -> int:
         await self._funder_ids()
         return await super().count(filters, query=query, params=params)
+
+    async def facets(
+        self,
+        filters: BaseModel | Mapping[str, Any] | None = None,
+        *,
+        query: str | None = None,
+        facets: Sequence[str] = ("*",),
+        count: int | None = None,
+        params: Mapping[str, Any] | None = None,
+    ) -> dict[str, dict[str, int]]:
+        await self._funder_ids()
+        return await super().facets(
+            filters, query=query, facets=facets, count=count, params=params
+        )
+
+    async def sample(
+        self,
+        n: int = 100,
+        filters: BaseModel | Mapping[str, Any] | None = None,
+        *,
+        query: str | None = None,
+        select: Sequence[str] | None = None,
+        params: Mapping[str, Any] | None = None,
+    ) -> Page[Work]:
+        await self._funder_ids()
+        return await super().sample(
+            n, filters, query=query, select=select, params=params
+        )
 
     def iterate(
         self,

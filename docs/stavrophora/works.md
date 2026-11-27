@@ -21,11 +21,13 @@ page.meta  # the envelope minus the results (facets, totals)
 
 `sort` takes one field, optionally with `:asc` or `:desc`. Crossref accepts a single sort field; two fields raise `ConfigurationError`.
 
-`select` takes a list of field names. Works also accept the `query.*` sub-fields through `params`:
+`select` takes a list of field names. Works also accept the `query.*` sub-fields through `params` (prefer `query.bibliographic` for citation matching; `query.title` is deprecated by Crossref):
 
 ```python
-page = await client.works.search(params={"query.title": "crispr"})
+page = await client.works.search(params={"query.bibliographic": "crispr"})
 ```
+
+Pass `on_error="skip"` with a `failures` list to drop records that fail validation instead of raising `ValidationError` for the whole page.
 
 ## Filters
 
@@ -55,7 +57,7 @@ async for work in client.works.iterate(filters, query="crispr"):
 
 `iterate()` pages with `cursor`, defaults to 1,000 rows, and repeats every parameter on each page. It rejects the `issued` and `published*` sorts, which the API no longer allows with cursors. `on_page(page_number, next_cursor)` records checkpoints; pass a saved cursor back with `cursor=` to resume. `collect(limit=100)` gathers results into a list, and `first()` returns the first match or `None`.
 
-`count()` requests a single row and returns the total.
+`count()` requests zero rows (`rows=0`) and returns the total.
 
 ## Batch DOI lookup
 

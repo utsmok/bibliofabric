@@ -86,9 +86,65 @@ async def test_count_requests_a_minimal_page(httpx_mock, client):
     httpx_mock.add_response(json=fixture("facet_archive.json"))
     total = await client.works.count(query="climate")
     request = httpx_mock.get_requests()[0]
-    assert request.url.params["rows"] == "1"
-    assert request.url.params["cursor"] == "*"
+    assert request.url.params["rows"] == "0"
+    assert request.url.params["offset"] == "0"
+    assert "cursor" not in request.url.params
     assert total == 641402
+
+
+@pytest.mark.parametrize(
+    "resource_name", ["journals", "funders", "members", "licenses"]
+)
+async def test_non_works_count_omits_cursor(httpx_mock, client, resource_name):
+    httpx_mock.add_response(
+        json={"status": "ok", "message": {"items": [], "total-results": 42}}
+    )
+    resource = getattr(client, resource_name)
+    assert await resource.count() == 42
+    params = httpx_mock.get_requests()[0].url.params
+    assert params["rows"] == "0"
+    assert params["offset"] == "0"
+    assert "cursor" not in params
+
+
+async def test_non_works_iterate_uses_offset_paging_without_cursor(httpx_mock, client):
+    httpx_mock.add_response(json=fixture("license_list.json"))
+    httpx_mock.add_response(
+        json={"status": "ok", "message": {"items": [], "total-results": 2}}
+    )
+    items = [item async for item in client.licenses.iterate(page_size=2)]
+    assert len(items) == 2
+    requests = httpx_mock.get_requests()
+    assert len(requests) == 2
+    assert requests[0].url.params["offset"] == "0"
+    assert requests[1].url.params["offset"] == "2"
+    assert all("cursor" not in r.url.params for r in requests)
+
+
+async def test_types_count_and_iterate_use_single_unpaged_fetch(httpx_mock, client):
+    httpx_mock.add_response(json=fixture("type_list.json"))
+    httpx_mock.add_response(json=fixture("type_list.json"))
+    checkpoints: list[tuple[int, str | None]] = []
+
+    assert await client.types.count() == 30
+    items = [
+        item
+        async for item in client.types.iterate(
+            limit=1, on_page=lambda page, cursor: checkpoints.append((page, cursor))
+        )
+    ]
+    assert [item.id for item in items] == ["book-section"]
+    assert checkpoints == [(1, None)]
+    for request in httpx_mock.get_requests():
+        assert "cursor" not in request.url.params
+        assert "rows" not in request.url.params
+        assert "offset" not in request.url.params
+
+
+async def test_types_iterate_limit_zero_sends_no_requests(httpx_mock, client):
+    items = [item async for item in client.types.iterate(limit=0)]
+    assert items == []
+    assert httpx_mock.get_requests() == []
 
 
 async def test_page_exposes_total_and_meta(httpx_mock, client):

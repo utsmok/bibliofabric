@@ -70,3 +70,18 @@ def test_include_descendants_applies_to_count_and_iterate(httpx_mock, client):
     for request in requests[1:]:
         assert "funder:10.13039/100000001" in request.url.params["filter"]
     assert collected == []
+
+
+def test_include_descendants_applies_to_facets_and_sample(httpx_mock, client):
+    httpx_mock.add_response(json=fixture("funder_get.json"))
+    httpx_mock.add_response(json=fixture("facet_archive.json"))
+    httpx_mock.add_response(json=works_envelope([]))
+    scope = client.funders.works("10.13039/100000001", include_descendants=True)
+    facets = scope.facets(facets=("archive",))
+    scope.sample(3)
+    requests = httpx_mock.get_requests()
+    assert len(requests) == 3
+    assert "archive" in facets
+    for request in requests[1:]:
+        assert "funder:10.13039/100000001" in request.url.params["filter"]
+        assert f"funder:{FIXTURE_DESCENDANTS[0]}" in request.url.params["filter"]

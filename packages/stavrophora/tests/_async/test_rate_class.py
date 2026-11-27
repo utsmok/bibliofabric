@@ -9,6 +9,9 @@ def _request(path: str) -> httpx.Request:
 
 def test_top_level_works_is_list_class(client):
     assert client.rate_class(_request("/v1/works")) == "list"
+    assert client.rate_class(_request("/v1/works/")) == "list"
+    assert client.rate_class(_request("/works")) == "list"
+    assert client.rate_class(_request("/works/")) == "list"
 
 
 def test_single_records_are_single_class(client):

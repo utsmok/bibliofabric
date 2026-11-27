@@ -74,3 +74,56 @@ async def test_prefixes_has_no_list_route(client):
             await call()
     with pytest.raises(ConfigurationError, match="no /prefixes list route"):
         [item async for item in client.prefixes.iterate()]
+
+
+async def test_search_with_cursor_also_rejects_date_sorts(httpx_mock, client):
+    with pytest.raises(ConfigurationError, match="published"):
+        await client.works.search(cursor="*", sort="published:desc")
+    assert httpx_mock.get_requests() == []
+
+
+@pytest.mark.parametrize("sort", ["score:invalid", "score:", ":desc"])
+async def test_invalid_sort_order_or_empty_field_is_rejected(httpx_mock, client, sort):
+    with pytest.raises(ConfigurationError):
+        await client.works.search(sort=sort)
+    assert httpx_mock.get_requests() == []
+
+
+@pytest.mark.parametrize("page", [0, -1])
+async def test_non_positive_page_is_rejected(httpx_mock, client, page):
+    with pytest.raises(ConfigurationError, match="page must be >= 1"):
+        await client.works.search(page=page)
+    assert httpx_mock.get_requests() == []
+
+
+@pytest.mark.parametrize(
+    "resource_name", ["journals", "funders", "members", "types", "licenses"]
+)
+async def test_non_works_routes_reject_cursor(httpx_mock, client, resource_name):
+    resource = getattr(client, resource_name)
+    with pytest.raises(ConfigurationError, match="does not support cursor"):
+        await resource.search(cursor="*")
+    with pytest.raises(ConfigurationError, match="does not support cursor"):
+        [item async for item in resource.iterate(cursor="*")]
+    assert httpx_mock.get_requests() == []
+
+
+async def test_licenses_has_no_single_item_route(httpx_mock, client):
+    with pytest.raises(ConfigurationError, match="no /licenses/\\{id\\} route"):
+        await client.licenses.get("https://creativecommons.org/licenses/by/4.0/")
+    with pytest.raises(ConfigurationError, match="no /licenses/\\{id\\} route"):
+        await client.licenses.exists("https://creativecommons.org/licenses/by/4.0/")
+    assert httpx_mock.get_requests() == []
+
+
+async def test_scoped_works_rejects_single_work_methods(httpx_mock, client):
+    scope = client.journals.works("2049-3630")
+    with pytest.raises(ConfigurationError, match="no single-work route"):
+        await scope.get("10.1038/nature12373")
+    with pytest.raises(ConfigurationError, match="no single-work route"):
+        await scope.exists("10.1038/nature12373")
+    with pytest.raises(ConfigurationError, match="no agency route"):
+        await scope.agency("10.1038/nature12373")
+    with pytest.raises(ConfigurationError, match="no single-work route"):
+        await scope.latest_version("10.1038/nature12373")
+    assert httpx_mock.get_requests() == []

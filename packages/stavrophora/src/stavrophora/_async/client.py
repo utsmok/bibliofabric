@@ -53,6 +53,8 @@ class StavrophoraClient(BaseApiClient):
         resolved = settings or get_settings()
         mailto = mailto or resolved.mailto
         plus_token = plus_token or resolved.plus_token
+        if mailto and resolved.mailto != mailto:
+            resolved = resolved.model_copy(update={"mailto": mailto})
         if auth_strategy is not None:
             auth = auth_strategy
         elif plus_token:
@@ -107,7 +109,7 @@ class StavrophoraClient(BaseApiClient):
     #: single records, scoped ``/.../works`` routes, and all other routes —
     #: reports the ``polite-single`` pool in Crossref's ``x-api-pool`` header
     #: (2026-07-21 rate split; see the README and the phase 2 research).
-    _TOP_LEVEL_WORKS = re.compile(r"/v1/works$")
+    _TOP_LEVEL_WORKS = re.compile(r"^(/v1)?/works/?$")
 
     def rate_class(self, request: httpx.Request) -> str:
         """Map the request onto Crossref's polite pools (D-19)."""

@@ -2,7 +2,7 @@
 
 Run with a polite-pool email:
 
-    STAVROPHORA_MAILTO=you@example.org uv run python examples/quickstart.py
+    STAVROPHORA_MAILTO=you@example.org uv run python packages/stavrophora/examples/quickstart.py
 """
 
 import asyncio

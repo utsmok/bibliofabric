@@ -64,3 +64,32 @@ def test_env_mapping(monkeypatch):
     loaded = StavrophoraSettings()
     assert loaded.mailto == "env@example.org"
     assert loaded.plus_token == "env-token"
+
+
+def test_mailto_kwarg_rides_user_agent(httpx_mock):
+    client = StavrophoraSyncClient(settings=settings(), mailto="kwarg@example.org")
+    with client:
+        request = single_request(httpx_mock, client)
+    assert request.url.params["mailto"] == "kwarg@example.org"
+    assert "mailto:kwarg@example.org" in request.headers["user-agent"]
+
+
+def test_plus_token_keeps_kwarg_mailto_in_user_agent(httpx_mock):
+    client = StavrophoraSyncClient(
+        settings=settings(), mailto="kwarg@example.org", plus_token="plus-key-1"
+    )
+    with client:
+        request = single_request(httpx_mock, client)
+    assert request.headers["crossref-api-key"] == "Bearer plus-key-1"
+    assert "mailto" not in request.url.params
+    assert "mailto:kwarg@example.org" in request.headers["user-agent"]
+
+
+def test_max_requests_per_second_overrides_default_rate_limits():
+    assert StavrophoraSettings().rate_limits == {"single": 10.0, "list": 3.0}
+    assert StavrophoraSettings(max_requests_per_second=None).rate_limits == {}
+    assert StavrophoraSettings(max_requests_per_second=5.0).rate_limits == {}
+    custom = StavrophoraSettings(
+        max_requests_per_second=5.0, rate_limits={"single": 20.0, "list": None}
+    )
+    assert custom.rate_limits == {"single": 20.0, "list": None}

@@ -28,6 +28,7 @@ class CrossRefDate(EntityModel):
     date_time: str | None = Field(None, alias="date-time")
     timestamp: int | None = None
     source: str | None = None
+    version: str | None = None
 
     @property
     def year(self) -> int | None:
@@ -211,6 +212,7 @@ class Event(EntityModel):
     location: str | None = None
     #: a bare string for one sponsor, a list for several (the deposit schema allows ten)
     sponsor: SafeStrList = Field(default_factory=list)
+    theme: SafeStrList = Field(default_factory=list)
     start: CrossRefDate | None = None
     end: CrossRefDate | None = None
 

@@ -1,5 +1,7 @@
 """Pydantic models for the Work entity and its nested types."""
 
+from typing import Any
+
 from pydantic import AliasChoices, Field
 
 from .base import (
@@ -60,9 +62,12 @@ class Work(EntityModel):
     published: CrossRefDate | None = None
     published_print: CrossRefDate | None = Field(None, alias="published-print")
     published_online: CrossRefDate | None = Field(None, alias="published-online")
+    published_other: CrossRefDate | None = Field(None, alias="published-other")
     created: CrossRefDate | None = None
     deposited: CrossRefDate | None = None
     indexed: CrossRefDate | None = None
+    content_created: CrossRefDate | None = Field(None, alias="content-created")
+    content_updated: CrossRefDate | None = Field(None, alias="content-updated")
     approved: CrossRefDate | None = None
     posted: CrossRefDate | None = None
     accepted: CrossRefDate | None = None
@@ -129,6 +134,8 @@ class Work(EntityModel):
     event: Event | None = None
     agent: SafeStr | None = None
     institution: SafeList[Institution] = Field(default_factory=list)
+    degree: SafeStrList = Field(default_factory=list)
+    project: SafeList[dict[str, Any]] = Field(default_factory=list)
     standards_body: StandardsBody | None = Field(None, alias="standards-body")
     #: documented in the swagger spec, not yet seen on live probes
     review: dict | None = None

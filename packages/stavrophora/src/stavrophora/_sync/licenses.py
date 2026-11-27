@@ -5,6 +5,11 @@ Crossref has no single-license route (verified live: ``/licenses/{id}``
 returns 404); only the list endpoint exists.
 """
 
+from collections.abc import Mapping, Sequence
+from typing import Any
+
+from bibliofabric.exceptions import ConfigurationError
+
 from ..models import License
 from .dialect import CrossrefResourceSyncClient
 
@@ -15,3 +20,21 @@ class SyncLicensesResource(CrossrefResourceSyncClient[License]):
     path = "licenses"
     model = License
     supports_query = True
+
+    def get(
+        self,
+        id: str | int,
+        *,
+        select: Sequence[str] | None = None,
+        params: Mapping[str, Any] | None = None,
+    ) -> License:
+        """Not supported: Crossref has no ``/licenses/{id}`` route."""
+        raise ConfigurationError(
+            "Crossref has no /licenses/{id} route; use search() or iterate()."
+        )
+
+    def exists(self, id: str | int) -> bool:
+        """Not supported: Crossref has no ``/licenses/{id}`` route."""
+        raise ConfigurationError(
+            "Crossref has no /licenses/{id} route; use search() or iterate()."
+        )

@@ -1,10 +1,13 @@
 """Stavrophora: Python interface for the Crossref API."""
 
 try:
-    from importlib.metadata import PackageNotFoundError, version as _get_version
+    from importlib.metadata import (
+        PackageNotFoundError as _PackageNotFoundError,
+        version as _get_version,
+    )
 
     __version__ = _get_version("stavrophora")
-except PackageNotFoundError:
+except _PackageNotFoundError:
     __version__ = "0.0.0"
 
 from bibliofabric import Page
@@ -77,8 +80,10 @@ __all__ = [
     "get_settings",
     "IssnType",
     "Journal",
+    "JournalsResource",
     "License",
     "LicenseRef",
+    "LicensesResource",
     "Member",
     "MemberFilters",
     "MembersResource",

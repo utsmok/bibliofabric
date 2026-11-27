@@ -5,6 +5,7 @@ from collections.abc import Iterator, Mapping, Sequence
 from typing import Any
 from urllib.parse import quote
 
+from bibliofabric import OnError, SyncBaseApiClient
 from bibliofabric.exceptions import ConfigurationError
 from bibliofabric.ids import normalize_doi
 from bibliofabric.paging import Page
@@ -73,7 +74,7 @@ class SyncFunderWorksResource(SyncScopedWorksResource):
 
     def __init__(
         self,
-        client,
+        client: SyncBaseApiClient,
         *,
         path: str,
         funders: SyncFundersResource,
@@ -119,6 +120,8 @@ class SyncFunderWorksResource(SyncScopedWorksResource):
         page: int | None = None,
         page_size: int | None = None,
         cursor: str | None = None,
+        on_error: OnError = "raise",
+        failures: list[tuple[dict[str, Any], Exception]] | None = None,
         params: Mapping[str, Any] | None = None,
     ) -> Page[Work]:
         self._funder_ids()
@@ -130,6 +133,8 @@ class SyncFunderWorksResource(SyncScopedWorksResource):
             page=page,
             page_size=page_size,
             cursor=cursor,
+            on_error=on_error,
+            failures=failures,
             params=params,
         )
 
@@ -142,6 +147,32 @@ class SyncFunderWorksResource(SyncScopedWorksResource):
     ) -> int:
         self._funder_ids()
         return super().count(filters, query=query, params=params)
+
+    def facets(
+        self,
+        filters: BaseModel | Mapping[str, Any] | None = None,
+        *,
+        query: str | None = None,
+        facets: Sequence[str] = ("*",),
+        count: int | None = None,
+        params: Mapping[str, Any] | None = None,
+    ) -> dict[str, dict[str, int]]:
+        self._funder_ids()
+        return super().facets(
+            filters, query=query, facets=facets, count=count, params=params
+        )
+
+    def sample(
+        self,
+        n: int = 100,
+        filters: BaseModel | Mapping[str, Any] | None = None,
+        *,
+        query: str | None = None,
+        select: Sequence[str] | None = None,
+        params: Mapping[str, Any] | None = None,
+    ) -> Page[Work]:
+        self._funder_ids()
+        return super().sample(n, filters, query=query, select=select, params=params)
 
     def iterate(
         self,

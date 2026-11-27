@@ -1,5 +1,7 @@
 """Pydantic models for Crossref journal, funder, member, type, prefix and license entities."""
 
+from typing import Any
+
 from pydantic import Field
 
 from .base import Breakdowns, Counts, EntityModel, IssnType
@@ -58,7 +60,7 @@ class Funder(EntityModel):
     work_count: SafeInt = Field(0, alias="work-count")
     descendant_work_count: SafeInt = Field(0, alias="descendant-work-count")
     #: nested ``{funder-id: {child-funder-id: {...}}}`` tree; recursive, so kept as dicts
-    hierarchy: dict[str, dict] | None = None
+    hierarchy: dict[str, Any] | None = None
     hierarchy_names: dict[str, str] | None = Field(None, alias="hierarchy-names")
     descendants: SafeList[str] = Field(default_factory=list)
 
