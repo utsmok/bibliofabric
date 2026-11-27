@@ -25,9 +25,14 @@ ship async clients alongside generated sync twins (`<Name>SyncClient`) and
 - You want records from **Crossref** (works, journals, funders, members):
   use **stavrophora**.
 - You are building a client for **another scholarly API** in this style:
-  build on **bibliofabric**. Its [quick start](bibliofabric/client.md) shows
-  the four pieces a client defines: a settings class, an unwrapper, a query
-  dialect, and one resource client per endpoint.
+  build on **bibliofabric**. Start with the
+  [Building a client guide](bibliofabric/writing-a-client.md) (and the
+  [client quick start](bibliofabric/client.md)) covering settings, auth,
+  dialects, unwrappers, resource hooks, sync twins, and monorepo registration.
+- You want to see **planned API clients and the canonical entity fusion
+  architecture**: explore the [Roadmap & Architecture](roadmap/index.md)
+  section, including the 2025–2026 academic API catalogs, Wave 1 starter specs,
+  and fusion blueprint.
 
 Requires Python 3.12 or newer. See the [contributing guide](contributing.md)
 to set up the workspace and run the test and lint gates.

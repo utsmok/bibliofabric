@@ -47,6 +47,7 @@ nav:
           - Identifiers: bibliofabric/ids.md
           - Types: bibliofabric/types.md
           - Exceptions: bibliofabric/exceptions.md
+      - Building a client: bibliofabric/writing-a-client.md
       - Writing a client with sync support: bibliofabric/authoring-sync.md
       - Changelog: https://github.com/utsmok/bibliofabric/blob/main/packages/bibliofabric/CHANGELOG.md
   - aireloom:
@@ -92,3 +93,9 @@ nav:
       - Crossref quirks: stavrophora/quirks.md
       - API reference: stavrophora/reference.md
       - Changelog: https://github.com/utsmok/bibliofabric/blob/main/packages/stavrophora/CHANGELOG.md
+  - Roadmap & Architecture:
+      - Overview: roadmap/index.md
+      - Works, Data & OA APIs: roadmap/api-landscape-works.md
+      - Authority Registries & PIDs: roadmap/api-landscape-registries.md
+      - Wave 1 Client Specs & Core Enablers: roadmap/wave-1-clients.md
+      - Canonical Entity Fusion: roadmap/canonical-fusion.md
