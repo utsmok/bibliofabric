@@ -18,6 +18,14 @@ ORCID_TOKEN_URL = "https://orcid.org/oauth/token"
 #: Scope of the token that the client mints from client credentials.
 ORCID_READ_PUBLIC_SCOPE = "/read-public"
 
+#: Put codes per ``/{orcid}/works/{codes}`` request; ORCID documents 100.
+WORKS_BULK_MAX = 100
+
+#: Person sections that serve one item by put code (``/{orcid}/{kind}/{put}``).
+PERSON_ITEM_KINDS = frozenset(
+    {"address", "external-identifiers", "keywords", "other-names", "researcher-urls"}
+)
+
 #: Expanded search answers at most this many results per page; a larger
 #: ``rows`` value makes Solr fail with HTTP 500 (verified 2026-11-27 with
 #: ``rows=1000``).

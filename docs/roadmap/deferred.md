@@ -83,7 +83,7 @@ Wave 1 needed two of the six planned core additions. `BaseApiClient.default_head
 | Member API on `api.orcid.org` | The token and the client credentials on hand are public API credentials: the member API answered 403 for both on 2026-11-28. The member read routes have the same paths as the public ones. | ORCID member credentials, then a base URL setting and a live run. |
 | Write routes (`POST`, `PUT`, and `DELETE` on record sections) | They need a member token and are out of scope for this wave. | A member token. |
 | `application/ld+json` representations | The API answers 406 for that media type. | The API serving JSON-LD. |
-| The `/{orcid}/invited-to-peer-review` route | The activities summary lists peer reviews under `peer-reviews`, which the client wraps. | A decision on whether the standalone route adds anything. |
+| The `/{orcid}/invited-to-peer-review` route | The public API answers 404 for it (verified 2026-11-28). The activities summary lists peer reviews under `peer-reviews`, which the client wraps. | ORCID serving the route on the public API. |
 | Download of the public data file | The 2025 edition is a 17.4 GB archive of XML files. | A decision to ship a bulk loader, as the ROR client has. |
 
 ## Europe PMC (`europaea`)

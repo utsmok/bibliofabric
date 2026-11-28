@@ -136,6 +136,36 @@ def test_nulls_coerce_and_extras_are_kept():
     assert work.model_extra == {"bogus-extra": 3}
 
 
+def test_null_identifier_list_and_normalization_errors_parse():
+    # Both shapes come from live work summaries of 2026-11-28.
+    work = Work.model_validate(
+        {
+            "external-ids": {
+                "external-id": [
+                    {
+                        "external-id-type": "isbn",
+                        "external-id-value": "21581118 10774076",
+                        "external-id-normalized": None,
+                        "external-id-normalized-error": {
+                            "error-code": "8001",
+                            "error-message": "Cannot normalize identifier value",
+                            "transient": True,
+                        },
+                    }
+                ]
+            },
+            "contributors": {"contributor": None},
+        }
+    )
+    assert work.external_ids is not None
+    error = work.external_ids.external_id[0].normalized_error
+    assert error is not None
+    assert error.error_code == "8001"
+    empty = Work.model_validate({"external-ids": {"external-id": None}})
+    assert empty.external_ids is not None
+    assert empty.external_ids.external_id == []
+
+
 def test_client_exposes_resources():
     client = OrchisClient(
         settings=OrchisSettings(

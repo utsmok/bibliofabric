@@ -11,6 +11,10 @@ The person section (`GET /{orcid}/person`) holds the name, other names, biograph
 | `addresses(orcid)` | `/{orcid}/address` | two-letter countries |
 | `keywords(orcid)` | `/{orcid}/keywords` | |
 | `external_identifiers(orcid)` | `/{orcid}/external-identifiers` | Scopus, ISNI, and so on |
+| `other_names(orcid)` | `/{orcid}/other-names` | |
+| `item(orcid, kind, put_code)` | `/{orcid}/{kind}/{put-code}` | one item as a parsed JSON object |
+
+`item()` reads one entry of `address`, `keywords`, `other-names`, `researcher-urls`, or `external-identifiers` by its put code. The section routes return the same entries in their lists.
 
 ```python
 person = await client.person.get("0000-0002-1694-233X")

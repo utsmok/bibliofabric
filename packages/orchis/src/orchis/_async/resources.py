@@ -6,6 +6,7 @@ the record has none of that kind (verified for ``biography`` and ``emails``
 on 2026-11-27), so the section readers turn a 404 into ``None`` by default.
 """
 
+from collections.abc import Sequence
 from typing import Any, override
 from urllib.parse import quote
 
@@ -14,7 +15,12 @@ from bibliofabric.exceptions import ConfigurationError, NotFoundError
 from bibliofabric.ids import normalize_orcid
 from pydantic import BaseModel
 
-from ..dialect import ORCID_ITEM_DIALECT, ORCID_SEARCH_DIALECT
+from ..dialect import (
+    ORCID_ITEM_DIALECT,
+    ORCID_SEARCH_DIALECT,
+    PERSON_ITEM_KINDS,
+    WORKS_BULK_MAX,
+)
 from ..models import (
     ActivitiesSummary,
     Addresses,
@@ -31,6 +37,7 @@ from ..models import (
     Keywords,
     MembershipsSection,
     OrchisRecord,
+    OtherNames,
     PeerReview,
     PeerReviewsSection,
     Person,
@@ -181,6 +188,35 @@ class PersonClient(OrchisResourceClient[Person]):
             not_found_ok=True,
         )
 
+    async def other_names(self, orcid: str) -> OtherNames | None:
+        """Fetch ``/{orcid}/other-names``."""
+        return await _fetch_model(
+            self._client,
+            f"{self._base(orcid)}/other-names",
+            OtherNames,
+            not_found_ok=True,
+        )
+
+    async def item(self, orcid: str, kind: str, put_code: int) -> dict[str, Any]:
+        """Fetch one person item as the parsed JSON object.
+
+        ``kind`` is the route segment of the section: ``address``,
+        ``keywords``, ``other-names``, ``researcher-urls``, or
+        ``external-identifiers``. The section routes above return the same
+        items in their lists.
+        """
+        if kind not in PERSON_ITEM_KINDS:
+            raise ConfigurationError(
+                f"kind must be one of {sorted(PERSON_ITEM_KINDS)}, got {kind!r}."
+            )
+        response = await self._client.request(
+            "GET", f"{self._base(orcid)}/{kind}/{put_code}"
+        )
+        body = self._client.parse_json(response)
+        if not isinstance(body, dict):
+            raise ConfigurationError(f"ORCID answered a non-object body for {kind}.")
+        return body
+
 
 class ActivitiesClient(OrchisResourceClient[ActivitiesSummary]):
     """Client for the activities summary, its sections, and single items.
@@ -302,6 +338,35 @@ class ActivitiesClient(OrchisResourceClient[ActivitiesSummary]):
         assert work is not None
         return work
 
+    async def works_bulk(self, orcid: str, put_codes: Sequence[int]) -> list[Work]:
+        """Fetch full works by put code, up to 100 per request.
+
+        Uses ``/{orcid}/works/{code},{code},...`` and splits longer lists
+        into requests of 100. ORCID answers an ``error`` entry for a put
+        code it does not know; those codes are absent from the result.
+        """
+        codes = list(dict.fromkeys(int(code) for code in put_codes))
+        works: list[Work] = []
+        for start in range(0, len(codes), WORKS_BULK_MAX):
+            chunk = ",".join(
+                str(code) for code in codes[start : start + WORKS_BULK_MAX]
+            )
+            response = await self._client.request(
+                "GET", f"{self._base(orcid)}/works/{chunk}"
+            )
+            body = self._client.parse_json(response)
+            entries = body.get("bulk") if isinstance(body, dict) else None
+            if not isinstance(entries, list):
+                raise ConfigurationError("ORCID answered a works bulk without 'bulk'.")
+            works.extend(
+                validate_model(
+                    Work, entry["work"], request=response.request, response=response
+                )
+                for entry in entries
+                if isinstance(entry, dict) and isinstance(entry.get("work"), dict)
+            )
+        return works
+
     async def funding(self, orcid: str, put_code: int) -> Funding:
         """Fetch one full funding entry (``/{orcid}/funding/{put-code}``)."""
         funding = await _fetch_model(
@@ -393,6 +458,35 @@ class ExpandedSearchClient(OrchisResourceClient[ExpandedResult]):
         if query is None:
             raise ConfigurationError("expanded search requires a query string.")
         return await super().search(filters, query=query, **kwargs)
+
+    async def csv(
+        self,
+        query: str,
+        *,
+        fields: Sequence[str] | None = None,
+        rows: int | None = None,
+        start: int | None = None,
+    ) -> str:
+        """Return one page of the CSV search (``/csv-search``) as text.
+
+        The route searches the same index as the expanded search and answers
+        CSV with a header row. ``fields`` picks the columns (the ``fl``
+        parameter, for example ``["orcid", "given-names", "family-name"]``);
+        without it ORCID answers its nine default columns.
+        """
+        if not query:
+            raise ConfigurationError("csv search requires a query string.")
+        params: dict[str, Any] = {"q": query}
+        if fields:
+            params["fl"] = ",".join(fields)
+        if rows is not None:
+            params["rows"] = rows
+        if start is not None:
+            params["start"] = start
+        response = await self._client.request(
+            "GET", "csv-search/", params=params, headers={"Accept": "text/csv"}
+        )
+        return response.text
 
 
 class SolrSearchClient(OrchisResourceClient[SolrResult]):

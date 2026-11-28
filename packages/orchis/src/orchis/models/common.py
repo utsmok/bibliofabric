@@ -1,6 +1,6 @@
 """Models shared across ORCID sections."""
 
-from bibliofabric import SafeStr
+from bibliofabric import SafeList, SafeStr
 from pydantic import BaseModel, ConfigDict, Field
 
 from .values import IntValue, TextValue
@@ -62,17 +62,32 @@ class FuzzyDate(BaseModel):
         return "-".join(part for part in parts if part)
 
 
+class NormalizationError(BaseModel):
+    """Why ORCID could not normalize an external identifier.
+
+    For example ``{"error-code": "8001", "error-message": "Cannot normalize
+    identifier value isbn:...", "transient": true}``.
+    """
+
+    error_code: SafeStr | None = Field(default=None, alias="error-code")
+    error_message: SafeStr | None = Field(default=None, alias="error-message")
+    transient: bool | None = None
+
+    model_config = ConfigDict(extra="allow", populate_by_name=True)
+
+
 class ExternalId(BaseModel):
     """One external identifier attached to an ORCID element.
 
     ``type`` is for example ``doi``, ``issn``, ``pmid``, or ``grant_number``.
-    ``normalized`` is the identifier in ORCID's canonical spelling.
+    ``normalized`` is the identifier in ORCID's canonical spelling, and
+    ``normalized_error`` says why ORCID could not compute it.
     """
 
     type: SafeStr | None = Field(default=None, alias="external-id-type")
     value: SafeStr | None = Field(default=None, alias="external-id-value")
     normalized: TextValue | None = Field(default=None, alias="external-id-normalized")
-    normalized_error: str | None = Field(
+    normalized_error: NormalizationError | None = Field(
         default=None, alias="external-id-normalized-error"
     )
     url: TextValue | None = Field(default=None, alias="external-id-url")
@@ -87,7 +102,7 @@ class ExternalIds(BaseModel):
     last_modified_date: IntValue | None = Field(
         default=None, alias="last-modified-date"
     )
-    external_id: list[ExternalId] = Field(default_factory=list, alias="external-id")
+    external_id: SafeList[ExternalId] = Field(default_factory=list, alias="external-id")
 
     model_config = ConfigDict(extra="allow", populate_by_name=True)
 
@@ -152,7 +167,7 @@ class Contributor(BaseModel):
 class Contributors(BaseModel):
     """The contributor list of a work or funding entry."""
 
-    contributor: list[Contributor] = Field(default_factory=list)
+    contributor: SafeList[Contributor] = Field(default_factory=list)
 
     model_config = ConfigDict(extra="allow", populate_by_name=True)
 

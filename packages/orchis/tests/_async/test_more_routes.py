@@ -1,0 +1,66 @@
+"""Other names, person items, bulk works, and the CSV search."""
+
+import pytest
+from orchis import ConfigurationError
+
+from ..conftest import ORCID_ID, load_fixture
+
+WORK = load_fixture("work.json")
+ADDRESS = load_fixture("address.json")
+
+
+def last_request(httpx_mock):
+    return httpx_mock.get_requests()[-1]
+
+
+async def test_other_names_route(client, httpx_mock):
+    httpx_mock.add_response(
+        json={"other-name": [{"content": "T. B. Hickey", "put-code": 732912}]}
+    )
+    names = await client.person.other_names(ORCID_ID)
+    assert last_request(httpx_mock).url.path == f"/v3.0/{ORCID_ID}/other-names"
+    assert names is not None
+    assert names.other_name[0].content == "T. B. Hickey"
+
+
+async def test_person_item_route_and_kind_guard(client, httpx_mock):
+    httpx_mock.add_response(json=ADDRESS)
+    item = await client.person.item(ORCID_ID, "address", 379780)
+    assert last_request(httpx_mock).url.path == f"/v3.0/{ORCID_ID}/address/379780"
+    assert isinstance(item, dict)
+    with pytest.raises(ConfigurationError):
+        await client.person.item(ORCID_ID, "emails", 1)
+
+
+async def test_works_bulk_joins_put_codes_and_drops_error_entries(client, httpx_mock):
+    error = {"error": {"response-code": 404, "developer-message": "not found"}}
+    httpx_mock.add_response(json={"bulk": [{"work": WORK}, error]})
+    works = await client.activities.works_bulk(ORCID_ID, [145464015, 1, 145464015])
+    assert last_request(httpx_mock).url.path == f"/v3.0/{ORCID_ID}/works/145464015,1"
+    assert len(works) == 1
+
+
+async def test_works_bulk_splits_at_100_codes(client, httpx_mock):
+    httpx_mock.add_response(json={"bulk": []}, is_reusable=True)
+    await client.activities.works_bulk(ORCID_ID, range(1, 202))
+    sizes = [
+        len(request.url.path.rsplit("/", 1)[1].split(","))
+        for request in httpx_mock.get_requests()
+    ]
+    assert sizes == [100, 100, 1]
+
+
+async def test_csv_search_sends_accept_and_columns(client, httpx_mock):
+    httpx_mock.add_response(text="orcid,family-name\n0000-0003-4544-3254,Hickey\n")
+    text = await client.expanded_search.csv(
+        "family-name:hickey", fields=["orcid", "family-name"], rows=2
+    )
+    request = last_request(httpx_mock)
+    assert request.url.path == "/v3.0/csv-search/"
+    assert request.headers["accept"] == "text/csv"
+    assert dict(request.url.params) == {
+        "q": "family-name:hickey",
+        "fl": "orcid,family-name",
+        "rows": "2",
+    }
+    assert text.splitlines()[0] == "orcid,family-name"

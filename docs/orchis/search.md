@@ -33,6 +33,16 @@ page = await client.search.search(query="family-name:Kucsko", page_size=10)
 print(page.total, [r.orcid_identifier.path for r in page.results])
 ```
 
+## CSV search
+
+`/csv-search/` answers the same index as CSV text with a header row. `fields` picks the columns through the `fl` parameter; without it ORCID answers nine columns (`orcid`, `email`, `given-names`, `family-name`, `given-and-family-names`, `current-institution-affiliation-name`, `past-institution-affiliation-name`, `credit-name`, `other-names`).
+
+```python
+csv_text = await client.expanded_search.csv(
+    "family-name:hickey", fields=["orcid", "given-names", "family-name"], rows=100
+)
+```
+
 ## Query syntax
 
 The query is a Solr query string over indexed fields: `family-name:Kucsko`, `given-names:Georg`, `text-and-title:magnetic`, `doi:10.1088/...`, and so on. A plain word searches the default fields. An unknown field name makes the server answer HTTP 500 rather than a validation error, so quote field values and check spellings before paging through results.

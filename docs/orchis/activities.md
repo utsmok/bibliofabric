@@ -37,6 +37,7 @@ Each put-code has a full route that returns the complete element, not the summar
 | Method | Route | Returns |
 |---|---|---|
 | `work(orcid, put_code)` | `/{orcid}/work/{put-code}` | `Work` |
+| `works_bulk(orcid, put_codes)` | `/{orcid}/works/{code},{code},...` | `list[Work]`, up to 100 codes per request |
 | `funding(orcid, put_code)` | `/{orcid}/funding/{put-code}` | `Funding` |
 | `peer_review(orcid, put_code)` | `/{orcid}/peer-review/{put-code}` | `PeerReview` |
 | `education(orcid, put_code)` | `/{orcid}/education/{put-code}` | parsed JSON object |
@@ -44,6 +45,8 @@ Each put-code has a full route that returns the complete element, not the summar
 | `affiliation_item(orcid, kind, put_code)` | `/{orcid}/{kind}/{put-code}` | parsed JSON object |
 
 `affiliation_item` covers `qualification`, `membership`, `service`, `distinction`, `invited-position`, and `research-resource`. These six share one shape with the affiliation summaries, so the client returns the parsed JSON object instead of one model per kind.
+
+`works_bulk()` fetches many full works in one request per 100 put codes, which is the fastest way to read every work of a record: take the put codes from `works(orcid)` and pass them in. A put code that ORCID does not know answers an `error` entry and is absent from the result.
 
 ```python
 work = await client.activities.work("0000-0002-1694-233X", 145464015)
