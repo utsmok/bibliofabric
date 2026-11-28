@@ -84,6 +84,8 @@ def test_normalize_ror():
     assert normalize_ror("https://ror.org/0524b2x58") == "0524b2x58"
     assert normalize_ror("https://ror.org/0524b2x58/") == "0524b2x58"
     assert normalize_ror("ror:0524B2X58") == "0524b2x58"
+    assert normalize_ror("ror.org/0524b2x58") == "0524b2x58"
+    assert normalize_ror("https://www.ror.org/0524b2x58") == "0524b2x58"
 
 
 def test_normalize_issn():

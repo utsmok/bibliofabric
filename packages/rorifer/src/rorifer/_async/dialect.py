@@ -16,10 +16,6 @@ from pydantic import BaseModel
 
 from ..dialect import ROR_DIALECT
 
-#: Domain form of a record id that ROR accepts (``ror.org/006hf6230``). The
-#: core normalizer strips the URL scheme form only.
-_ROR_DOMAIN_PREFIX = "ror.org/"
-
 
 def serialize_filter_params(
     filters: BaseModel | Mapping[str, Any] | None,
@@ -72,10 +68,7 @@ class RoriferResourceClient[E: BaseModel](ResourceClient[E]):
         ``https://ror.org/006hf6230``, ``ror.org/006hf6230``, and
         ``006hf6230`` all become ``006hf6230``; ROR accepts the three forms.
         """
-        normalized = normalize_ror(value)
-        if normalized.lower().startswith(_ROR_DOMAIN_PREFIX):
-            normalized = normalized[len(_ROR_DOMAIN_PREFIX) :]
-        return normalized
+        return normalize_ror(value)
 
     @override
     async def exists(self, id: str | int) -> bool:

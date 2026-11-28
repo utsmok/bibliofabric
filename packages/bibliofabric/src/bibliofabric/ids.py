@@ -18,7 +18,13 @@ _DOI_PREFIXES = (
     "doi:",
 )
 _ORCID_PREFIXES = ("https://orcid.org/", "http://orcid.org/", "orcid:")
-_ROR_PREFIXES = ("https://ror.org/", "http://ror.org/", "ror:")
+_ROR_PREFIXES = (
+    "https://ror.org/",
+    "http://ror.org/",
+    "https://www.ror.org/",
+    "ror.org/",
+    "ror:",
+)
 _ISBN_PREFIXES = (
     "https://www.worldcat.org/isbn/",
     "urn:isbn:",

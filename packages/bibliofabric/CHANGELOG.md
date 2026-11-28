@@ -27,6 +27,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `normalize_isni`, `normalize_arxiv`, `normalize_pmid`, `normalize_pmcid`,
   `normalize_wikidata_qid`, `normalize_gnd`, and `normalize_viaf`.
 
+### Changed
+
+- `normalize_ror` also strips the `ror.org/` and `https://www.ror.org/`
+  prefixes.
+
 ## [0.7.0] - 2026-11-27
 
 Companion client versions built on this release: aireloom 0.9.0, aletheca 0.5.0,
