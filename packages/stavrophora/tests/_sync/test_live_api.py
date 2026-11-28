@@ -139,3 +139,17 @@ def test_prefixes(live_client):
 def test_licenses(live_client):
     page = live_client.licenses.search(page_size=2)
     assert page.results
+
+
+def test_data_citations(live_client):
+    page = live_client.data_citations.search(object_id="10.3886/ICPSR01132.v1", rows=5)
+    assert page.total and page.total > 0
+    assert page.results[0].object.id == "10.3886/icpsr01132.v1"
+    assert live_client.last_pool == "datacitations"
+    every_citation = [
+        citation
+        for citation in live_client.data_citations.iterate(
+            object_id="10.3886/icpsr01132.v1", rows=20
+        )
+    ]
+    assert len(every_citation) == page.total

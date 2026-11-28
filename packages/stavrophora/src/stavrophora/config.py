@@ -9,7 +9,7 @@ from pydantic_settings import SettingsConfigDict
 
 
 def _default_rate_limits() -> dict[str, float | None]:
-    return {"single": 10.0, "list": 3.0}
+    return {"single": 10.0, "list": 3.0, "datacitations": 3.0}
 
 
 class StavrophoraSettings(BaseApiSettings):
@@ -27,9 +27,10 @@ class StavrophoraSettings(BaseApiSettings):
     )
 
     #: Defaults for the Crossref polite pool: top-level ``/works`` searches
-    #: are the ``list`` class at 3 requests/s, everything else (single records,
-    #: scoped ``/.../works`` routes, other routes) the ``single`` class at
-    #: 10 requests/s; ``max_concurrency`` is shared. When left unset,
+    #: are the ``list`` class at 3 requests/s, the beta data citations route
+    #: the ``datacitations`` class at 3 requests/s, everything else (single
+    #: records, scoped ``/.../works`` routes, other routes) the ``single``
+    #: class at 10 requests/s; ``max_concurrency`` is shared. When left unset,
     #: :class:`StavrophoraClient` selects pool-aware defaults for Public,
     #: Polite, or Metadata Plus credentials.
     rate_limits: dict[str, float | None] = Field(default_factory=_default_rate_limits)

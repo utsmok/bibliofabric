@@ -1,6 +1,6 @@
 # Stavrophora
 
-Stavrophora is a Python client for the [Crossref REST API](https://www.crossref.org/documentation/retrieve-metadata/rest-api/), with an async variant and a generated sync twin. It is built on [bibliofabric](https://github.com/utsmok/bibliofabric) and covers the works, journals, funders, members, types, prefixes, and licenses routes with typed Pydantic models.
+Stavrophora is a Python client for the [Crossref REST API](https://www.crossref.org/documentation/retrieve-metadata/rest-api/), with an async variant and a generated sync twin. It is built on [bibliofabric](https://github.com/utsmok/bibliofabric) and covers the works, journals, funders, members, types, prefixes, and licenses routes with typed Pydantic models, plus the beta [Data Citations API](data-citations.md).
 
 ## Install
 

@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- `client.data_citations` for the beta Crossref Data Citations API
+  (`/beta/datacitations`): `search()` with the `subject_id`, `object_id`,
+  `member_id`, `relation`, `from_created_date`, and `until_created_date`
+  filters and 0-based page numbers, `iterate()`, and `count()`, with the
+  `DataCitation` and `DataCitationEnd` models. The route runs in its own
+  `datacitations` rate class at 3 requests per second.
+- Retraction helpers: `Work.retractions` (the `updated-by` entries of type
+  `retraction`) and `Work.is_retracted`, and `UpdateTo.record_id` for the
+  Retraction Watch record id that Crossref attaches to entries with
+  `source="retraction-watch"`.
+
 ### Changed
 
 - Requires `bibliofabric>=0.8,<0.9` (the workspace core is now 0.8.0).

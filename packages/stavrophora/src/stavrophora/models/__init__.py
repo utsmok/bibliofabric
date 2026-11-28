@@ -8,6 +8,7 @@ from .base import (
     IssnType,
     LicenseRef,
 )
+from .datacitation import DataCitation, DataCitationEnd
 from .entities import CrossRefType, Funder, Journal, License, Member, Prefix
 from .safe_types import SafeInt, SafeList, SafeStr, SafeStrList
 from .work import Work
@@ -17,6 +18,8 @@ __all__ = [
     "Contributor",
     "CrossRefDate",
     "CrossRefType",
+    "DataCitation",
+    "DataCitationEnd",
     "Funder",
     "FunderRef",
     "IssnType",

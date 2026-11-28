@@ -144,3 +144,18 @@ class Work(EntityModel):
     def primary_title(self) -> str:
         """First title string, or ``""`` when absent (SafeStr-style access)."""
         return self.title[0] if self.title else ""
+
+    @property
+    def retractions(self) -> list[UpdateTo]:
+        """The ``updated-by`` entries of type ``retraction``.
+
+        Each entry names the DOI of a retraction notice. Crossref lists the
+        publisher's notice and the Retraction Watch record separately, so one
+        retraction can appear twice with different ``source`` values.
+        """
+        return [entry for entry in self.updated_by if entry.type == "retraction"]
+
+    @property
+    def is_retracted(self) -> bool:
+        """Whether a publisher or Retraction Watch reports a retraction."""
+        return bool(self.retractions)

@@ -31,6 +31,7 @@
 ::: stavrophora._async.types
 ::: stavrophora._async.prefixes
 ::: stavrophora._async.licenses
+::: stavrophora._async.datacitations
 
 ## Sync resources
 
@@ -41,6 +42,7 @@
 ::: stavrophora._sync.types
 ::: stavrophora._sync.prefixes
 ::: stavrophora._sync.licenses
+::: stavrophora._sync.datacitations
 
 ## Filters
 
@@ -52,6 +54,7 @@
 ::: stavrophora.models.work
 ::: stavrophora.models.entities
 ::: stavrophora.models.agency
+::: stavrophora.models.datacitation
 
 ## Exceptions
 

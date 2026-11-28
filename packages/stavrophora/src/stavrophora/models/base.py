@@ -255,13 +255,20 @@ class JournalIssue(EntityModel):
 
 
 class UpdateTo(EntityModel):
-    """Entry in a work's ``update-to`` list (earlier versions)."""
+    """Entry in a work's ``update-to`` or ``updated-by`` list.
+
+    ``type`` names the update (``retraction``, ``correction``,
+    ``new_version``, ...) and ``source`` who asserted it: ``publisher`` or
+    ``retraction-watch``. Entries from Retraction Watch carry the Retraction
+    Watch database id in ``record_id``.
+    """
 
     doi: str | None = Field(None, alias="DOI")
     type: str | None = None
     label: str | None = None
     source: str | None = None
     updated: CrossRefDate | None = None
+    record_id: str | None = Field(None, alias="record-id")
 
 
 __all__ = [

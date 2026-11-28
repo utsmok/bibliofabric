@@ -35,11 +35,11 @@ When `rate_limits`, `max_concurrency`, and `max_requests_per_second` are not exp
 
 | Pool | Credentials | `rate_limits` (req/s) | `max_concurrency` |
 |---|---|---|---|
-| Public | neither `mailto` nor `plus_token` | `{"single": 5.0, "list": 1.0}` | `1` |
-| Polite | `mailto` set (no `plus_token`) | `{"single": 10.0, "list": 3.0}` | `3` |
-| Metadata Plus | `plus_token` set | `{"single": 50.0, "list": 50.0}` | `10` |
+| Public | neither `mailto` nor `plus_token` | `{"single": 5.0, "list": 1.0, "datacitations": 3.0}` | `1` |
+| Polite | `mailto` set (no `plus_token`) | `{"single": 10.0, "list": 3.0, "datacitations": 3.0}` | `3` |
+| Metadata Plus | `plus_token` set | `{"single": 50.0, "list": 50.0, "datacitations": 3.0}` | `10` |
 
-Pacing follows the 2026-07 Crossref split per request class: top-level `/works` searches run in the `list` class, while single records, scoped `/.../works` routes, and all other routes run in the `single` class. The concurrency bound is shared across classes. Override each class through `STAVROPHORA_RATE_LIMITS` (a JSON object such as `{"single": 10.0, "list": 3.0}`) and the shared bound through `STAVROPHORA_MAX_CONCURRENCY`.
+Pacing follows the 2026-07 Crossref split per request class: top-level `/works` searches run in the `list` class, the beta [data citations](data-citations.md) route runs in the `datacitations` class, and single records, scoped `/.../works` routes, and all other routes run in the `single` class. The concurrency bound is shared across classes. Override each class through `STAVROPHORA_RATE_LIMITS` (a JSON object such as `{"single": 10.0, "list": 3.0, "datacitations": 3.0}`) and the shared bound through `STAVROPHORA_MAX_CONCURRENCY`.
 
 Every response is inspected by `StavrophoraClient.on_response()`, which captures Crossref's `x-api-pool`, `x-rate-limit-limit`, `x-rate-limit-interval`, and `x-concurrency-limit` headers into the read-only `client.last_pool` and `client.last_rate_limit_headers` properties.
 

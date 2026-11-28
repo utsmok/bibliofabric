@@ -115,6 +115,7 @@ nav:
           - Types: stavrophora/types.md
           - Prefixes: stavrophora/prefixes.md
           - Licenses: stavrophora/licenses.md
+          - Data citations (beta): stavrophora/data-citations.md
       - Errors, retries, rate limits: stavrophora/errors.md
       - Crossref quirks: stavrophora/quirks.md
       - API reference: stavrophora/reference.md

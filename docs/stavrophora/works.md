@@ -85,6 +85,27 @@ all_updates = await client.works.latest_version(
 
 `latest_version()` resolves a DOI to the newest record in its Crossmark update chain. Older records carry `updated-by` entries naming the works that updated them; by default only `("new_version", "new_edition")` entries are followed so retractions and corrections are not mistaken for newer versions. Pass `update_types=None` to follow all Crossmark update types, or pass a custom collection of update-type names. A DOI without matching update data is returned unchanged.
 
+## Retractions
+
+Crossref carries the Retraction Watch database since 2023. A retracted work lists its retraction notices in `updated-by`, once with `source="publisher"` when the publisher deposited the notice and once with `source="retraction-watch"` and the Retraction Watch `record_id`.
+
+```python
+work = await client.works.get("10.1177/1758835919874651")
+work.is_retracted  # True
+[(entry.doi, entry.source, entry.record_id) for entry in work.retractions]
+# [("10.1177/17588359211061903", "retraction-watch", "34999"),
+#  ("10.1177/17588359211061903", "publisher", None)]
+```
+
+The retraction notices themselves are works with `update-to` entries. Search them with the `update-type` filter, and find the notices of one work with `updates`:
+
+```python
+notices = await client.works.search(WorksFilters(update_type="retraction"))
+for_one_work = await client.works.search(
+    WorksFilters(updates="10.1177/1758835919874651", update_type="retraction")
+)
+```
+
 ## Facets, sample, agency
 
 ```python

@@ -11,6 +11,7 @@ from bibliofabric.auth import AuthStrategy, HeaderAuth, NoAuth, QueryParameterAu
 
 from ..config import StavrophoraSettings, get_settings
 from ..unwrapper import CrossrefUnwrapper
+from .datacitations import DATACITATIONS_PATH, SyncDataCitationsResource
 from .funders import SyncFundersResource
 from .journals import SyncJournalsResource
 from .licenses import SyncLicensesResource
@@ -26,13 +27,30 @@ CROSSREF_API_BASE_URL = "https://api.crossref.org/v1"
 #: name is no longer documented).
 PLUS_TOKEN_HEADER = "crossref-api-key"
 
-_PLUS_RATE_LIMITS: dict[str, float | None] = {"single": 50.0, "list": 50.0}
+#: The beta data citations route has its own ``datacitations`` pool at 3
+#: requests per second for every caller (``x-rate-limit: 3`` with and
+#: without ``mailto`` on 2026-11-28).
+_DATACITATIONS_RATE = 3.0
+
+_PLUS_RATE_LIMITS: dict[str, float | None] = {
+    "single": 50.0,
+    "list": 50.0,
+    "datacitations": _DATACITATIONS_RATE,
+}
 _PLUS_CONCURRENCY = 10
 
-_POLITE_RATE_LIMITS: dict[str, float | None] = {"single": 10.0, "list": 3.0}
+_POLITE_RATE_LIMITS: dict[str, float | None] = {
+    "single": 10.0,
+    "list": 3.0,
+    "datacitations": _DATACITATIONS_RATE,
+}
 _POLITE_CONCURRENCY = 3
 
-_PUBLIC_RATE_LIMITS: dict[str, float | None] = {"single": 5.0, "list": 1.0}
+_PUBLIC_RATE_LIMITS: dict[str, float | None] = {
+    "single": 5.0,
+    "list": 1.0,
+    "datacitations": _DATACITATIONS_RATE,
+}
 _PUBLIC_CONCURRENCY = 1
 
 _RATE_LIMIT_HEADERS = (
@@ -168,14 +186,23 @@ class StavrophoraSyncClient(SyncBaseApiClient):
         """The ``/licenses`` resource (list/iterate only)."""
         return SyncLicensesResource(self)
 
+    @cached_property
+    def data_citations(self) -> SyncDataCitationsResource:
+        """The beta ``/beta/datacitations`` route (search, iterate, count)."""
+        return SyncDataCitationsResource(self)
+
     #: Only the top-level ``/works`` route is array-class. Everything else —
     #: single records, scoped ``/.../works`` routes, and all other routes —
     #: reports the ``polite-single`` pool in Crossref's ``x-api-pool`` header
-    #: (2026-07-21 rate split; see the README and the phase 2 research).
+    #: (2026-07-21 rate split; see the README and the phase 2 research). The
+    #: beta data citations route reports its own ``datacitations`` pool.
     _TOP_LEVEL_WORKS = re.compile(r"^(/v1)?/works/?$")
 
     def rate_class(self, request: httpx.Request) -> str:
         """Map the request onto Crossref's polite pools (D-19)."""
-        if self._TOP_LEVEL_WORKS.search(request.url.path):
+        path = request.url.path
+        if path.rstrip("/") == DATACITATIONS_PATH:
+            return "datacitations"
+        if self._TOP_LEVEL_WORKS.search(path):
             return "list"
         return "single"

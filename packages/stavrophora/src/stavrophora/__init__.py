@@ -24,6 +24,7 @@ from bibliofabric.exceptions import (
 )
 
 from ._async.client import StavrophoraClient
+from ._async.datacitations import DataCitationsResource
 from ._async.dialect import CrossrefResourceClient
 from ._async.funders import FundersResource, FunderWorksResource
 from ._async.journals import JournalsResource
@@ -33,6 +34,7 @@ from ._async.prefixes import PrefixesResource
 from ._async.types import TypesResource
 from ._async.works import ScopedWorksResource, WorksResource
 from ._sync.client import StavrophoraSyncClient
+from ._sync.datacitations import SyncDataCitationsResource
 from ._sync.dialect import CrossrefResourceSyncClient
 from ._sync.funders import SyncFundersResource, SyncFunderWorksResource
 from ._sync.journals import SyncJournalsResource
@@ -48,6 +50,8 @@ from .models import (
     Contributor,
     CrossRefDate,
     CrossRefType,
+    DataCitation,
+    DataCitationEnd,
     Funder,
     FunderRef,
     IssnType,
@@ -72,6 +76,9 @@ __all__ = [
     "CrossRefType",
     "CrossrefResourceClient",
     "CrossrefResourceSyncClient",
+    "DataCitation",
+    "DataCitationEnd",
+    "DataCitationsResource",
     "Funder",
     "FunderFilters",
     "FunderRef",
@@ -97,6 +104,7 @@ __all__ = [
     "StavrophoraClient",
     "StavrophoraSettings",
     "StavrophoraSyncClient",
+    "SyncDataCitationsResource",
     "SyncFunderWorksResource",
     "SyncFundersResource",
     "SyncJournalsResource",

@@ -88,7 +88,11 @@ async def test_plus_token_keeps_kwarg_mailto_in_user_agent(httpx_mock):
 
 
 def test_max_requests_per_second_overrides_default_rate_limits():
-    assert StavrophoraSettings().rate_limits == {"single": 10.0, "list": 3.0}
+    assert StavrophoraSettings().rate_limits == {
+        "single": 10.0,
+        "list": 3.0,
+        "datacitations": 3.0,
+    }
     assert StavrophoraSettings(max_requests_per_second=None).rate_limits == {}
     assert StavrophoraSettings(max_requests_per_second=5.0).rate_limits == {}
     custom = StavrophoraSettings(
@@ -114,21 +118,33 @@ def test_pool_default_rate_limits(monkeypatch, tmp_path):
     _clear_stavrophora_env(monkeypatch, tmp_path)
 
     public = StavrophoraClient()
-    assert public.settings.rate_limits == {"single": 5.0, "list": 1.0}
+    assert public.settings.rate_limits == {
+        "single": 5.0,
+        "list": 1.0,
+        "datacitations": 3.0,
+    }
     assert public.settings.max_concurrency == 1
 
     polite = StavrophoraClient(mailto="polite@example.org")
-    assert polite.settings.rate_limits == {"single": 10.0, "list": 3.0}
+    assert polite.settings.rate_limits == {
+        "single": 10.0,
+        "list": 3.0,
+        "datacitations": 3.0,
+    }
     assert polite.settings.max_concurrency == 3
 
     plus = StavrophoraClient(plus_token="plus-key-1")
-    assert plus.settings.rate_limits == {"single": 50.0, "list": 50.0}
+    assert plus.settings.rate_limits == {
+        "single": 50.0,
+        "list": 50.0,
+        "datacitations": 3.0,
+    }
     assert plus.settings.max_concurrency == 10
 
     plus_with_mailto = StavrophoraClient(
         mailto="polite@example.org", plus_token="plus-key-1"
     )
-    assert plus_with_mailto.settings.rate_limits == {"single": 50.0, "list": 50.0}
+    assert plus_with_mailto.settings.rate_limits == plus.settings.rate_limits
     assert plus_with_mailto.settings.max_concurrency == 10
 
 
