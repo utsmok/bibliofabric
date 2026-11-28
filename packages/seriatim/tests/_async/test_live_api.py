@@ -13,6 +13,7 @@ from seriatim import (
     SeriatimClient,
     SeriatimRecord,
     SeriatimSettings,
+    iter_issn_to_issn_l,
 )
 
 pytestmark = pytest.mark.live_api
@@ -99,3 +100,9 @@ async def test_ltwa_iterate_limit_smoke(live_client):
     entries = [entry async for entry in live_client.ltwa.iterate(limit=5)]
     assert len(entries) == 5
     assert {entry.word for entry in entries}
+
+
+async def test_issn_l_table_smoke(live_client, tmp_path):
+    path = await live_client.issn_l.download_table(tmp_path / "issnltables.zip")
+    nature = next(link for link in iter_issn_to_issn_l(path) if link.issn == NATURE)
+    assert nature.issn_l == NATURE

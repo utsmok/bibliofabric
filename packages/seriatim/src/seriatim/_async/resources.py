@@ -7,13 +7,15 @@ routes have no listing, so the clients below expose ``get``, ``raw`` and
 """
 
 from collections.abc import Mapping
+from pathlib import Path
 from typing import Any, override
 
+import httpx
 from bibliofabric import ResourceClient
 from bibliofabric.exceptions import ConfigurationError, NotFoundError
 from pydantic import BaseModel
 
-from ..dialect import ISSN_ITEM_DIALECT
+from ..dialect import ISSN_ITEM_DIALECT, ISSN_L_TABLE_URL
 from ..filters import require_issn
 from ..models import IssnLRecord, SeriatimRecord
 from ..parser import parse_issn_l, parse_issn_record
@@ -115,6 +117,27 @@ class IssnLClient(SeriatimResourceClient[IssnLRecord]):
         self._reject_select(select)
         node = await self.raw(id, params=params)
         return parse_issn_l(node)
+
+    async def download_table(self, dest: Path | str) -> Path:
+        """Stream the public ISSN-L table zip to ``dest`` and return the path.
+
+        The table maps every assigned ISSN to its ISSN-L (about 27 MB zipped
+        on 2026-11-28). Read it with :func:`seriatim.iter_issn_to_issn_l` or
+        :func:`seriatim.iter_issn_l_clusters`. Creates parent directories and
+        overwrites an existing file.
+        """
+        target = Path(dest)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        async with self._client.stream("GET", ISSN_L_TABLE_URL) as response:
+            await _write_body(response, target)
+        return target
+
+
+async def _write_body(response: httpx.Response, target: Path) -> None:
+    """Write a streamed response body to ``target`` chunk by chunk."""
+    with target.open("wb") as handle:
+        async for chunk in response.aiter_bytes():
+            handle.write(chunk)
 
 
 __all__ = ["IssnLClient", "RecordsClient", "SeriatimResourceClient"]

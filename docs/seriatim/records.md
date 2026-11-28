@@ -70,6 +70,29 @@ for part in cluster.has_part:
     print(part.identifier, part.format)
 ```
 
+## The ISSN-L table
+
+The ISSN Centre publishes the whole ISSN to ISSN-L mapping as a zip at
+`/public/issnltables.zip` (about 27 MB zipped and 2.6 million ISSNs on
+2026-11-28). `client.issn_l.download_table()` streams it to a file, and two
+readers stream its members without unpacking the zip.
+
+```python
+from seriatim import iter_issn_l_clusters, iter_issn_to_issn_l
+
+path = await client.issn_l.download_table("issnltables.zip")
+for link in iter_issn_to_issn_l(path):
+    link.issn, link.issn_l, link.medium  # "0028-0836", "0028-0836", "ta"
+for issn_l, issns in iter_issn_l_clusters(path):
+    ...
+```
+
+`iter_issn_to_issn_l()` yields one `IssnLink` per ISSN. Its `medium` comes
+from a third column that the readme of the zip does not mention; the values
+are the medium codes of MARC 21 field 007, positions 00 and 01 (`ta` printed
+text, `cr` online resource, `co` optical disc). `iter_issn_l_clusters()`
+yields each ISSN-L with every ISSN that links to it, the ISSN-L included.
+
 ## Existence checks
 
 `client.records.exists(issn)` performs a `GET` and returns `False` on 404.

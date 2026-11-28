@@ -14,6 +14,9 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   hits, paging, `count`, and a page iterator.
 - `ltwa` resource that reads the Title Word Abbreviation table with typed
   rows, paging, and an iterator over the whole table.
+- `issn_l.download_table()` and the readers `iter_issn_to_issn_l()` and
+  `iter_issn_l_clusters()` for the public ISSN-L table zip, which maps every
+  assigned ISSN to its ISSN-L.
 - Typed models for record nodes, search hits, and LTWA rows; every model
   keeps unknown keys and record models keep the raw JSON-LD node.
 - ISSN validation and normalization helpers on top of `bibliofabric.ids`.

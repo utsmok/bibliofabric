@@ -78,8 +78,10 @@ defaults to one request per second.
   even with the JSON-LD `Accept` header.
 - `/internal/search/export` and `/internal/browse` answer 404 without a
   session.
-- The ISSN-L Table downloads as `/public/issnltables.zip` (about 25 MB) from
-  the `/issnl-table` page.
+- The ISSN-L table downloads as `/public/issnltables.zip` (about 27 MB on
+  2026-11-28) from the `/issnl-table` page. Its ISSN-to-ISSN-L file has a
+  third column with MARC 21 field 007 medium codes (`ta`, `cr`, ...), which
+  the readme in the zip does not describe.
 - The menu lists the SRU Search API and OAI-PMH access as paid services.
   `portal.issn.org/sru` and `portal.issn.org/oai` answer 404, and
   `oai.issn.org` answers a 404 page, so no public endpoint exists without a

@@ -123,7 +123,6 @@ Wave 1 needed two of the six planned core additions. `BaseApiClient.default_head
 | SRU Search API | It is a paid service. `/sru` answers 404 without an account. | A subscription and its API key. |
 | OAI-PMH access | It is a paid service. `/oai` and `oai.issn.org` answer 404 without an account. | A subscription. |
 | ISSN-H families (`/resource/ISSN-H/{issn}`) | The page says they are reserved to subscribers (verified 2026-11-28). | A subscription. |
-| Download of the ISSN-L Table (`/public/issnltables.zip`, about 25 MB) | It is a bulk file. | A decision to ship a loader for it. |
 | `/ltwa-export` CSV export | The route answers 502 with the page parameters (2026-11-27 and 2026-11-28). The HTML table is wrapped. | The portal serving the export again. |
 | Search export and browse (`/internal/search/export`, `/internal/browse`) | Both answer 404 without a session. | A full-access account. |
 | ROAD record views and `publishers.issn.org` | They answer HTML only and add no machine-readable read route. | The ISSN Centre publishing machine-readable answers for them. |

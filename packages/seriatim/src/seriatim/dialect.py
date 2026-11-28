@@ -11,6 +11,12 @@ from bibliofabric.paging import QueryDialect
 #: Base URL of the ISSN Portal.
 ISSN_PORTAL_BASE_URL = "https://portal.issn.org"
 
+#: The public ISSN-L table: a zip with a readme and two tab-separated files,
+#: ``<date>.ISSN-to-ISSN-L.txt`` and ``<date>.ISSN-L-to-ISSN.txt`` (about
+#: 27 MB zipped and 2.6 million ISSNs on 2026-11-28). The file names carry
+#: the date of the export.
+ISSN_L_TABLE_URL = f"{ISSN_PORTAL_BASE_URL}/public/issnltables.zip"
+
 #: Path prefix of the JSON-LD record routes.
 RECORD_PATH_PREFIX = "resource"
 
@@ -69,6 +75,7 @@ __all__ = [
     "DEFAULT_LTWA_PAGE_SIZE",
     "DEFAULT_SEARCH_PAGE_SIZE",
     "ISSN_ITEM_DIALECT",
+    "ISSN_L_TABLE_URL",
     "ISSN_PORTAL_BASE_URL",
     "JSON_LD_ROUTES",
     "LTWA_SORT_FIELDS",

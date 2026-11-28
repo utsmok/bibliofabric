@@ -30,6 +30,7 @@ from ._sync.resources import IssnLSyncClient, RecordsSyncClient
 from ._sync.search import SearchSyncClient
 from .config import SeriatimSettings, get_settings
 from .filters import is_valid_issn, require_issn
+from .issn_l_table import IssnLink, iter_issn_l_clusters, iter_issn_to_issn_l
 from .ltwa_parser import parse_ltwa_page
 from .models import (
     GenerationActivity,
@@ -64,6 +65,9 @@ __all__ = [
     "IssnLClient",
     "IssnLRecord",
     "IssnLSyncClient",
+    "IssnLink",
+    "iter_issn_l_clusters",
+    "iter_issn_to_issn_l",
     "is_valid_issn",
     "LangString",
     "LtwaClient",

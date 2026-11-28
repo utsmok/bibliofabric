@@ -28,6 +28,9 @@ Both share the same shape; the model differs.
 | `raw(id)` | `dict` | The untouched JSON-LD node |
 | `exists(id)` | `bool` | `GET` based; `False` on 404 |
 
+`IssnLClient.download_table(dest)` streams the public ISSN-L table zip to
+`dest` and returns the path.
+
 Identifiers normalize through `require_issn`; invalid values raise
 `ConfigurationError` without a request, unregistered values raise
 `NotFoundError`.
@@ -79,3 +82,5 @@ Identifiers normalize through `require_issn`; invalid values raise
 | `parse_search_page(html, page=, page_size=)` | Parse one search result page |
 | `parse_ltwa_page(html)` | Parse one LTWA table page |
 | `SeriatimSettings`, `get_settings()` | Settings with the `SERIATIM_` prefix |
+| `iter_issn_to_issn_l(zip_path)` | Stream `IssnLink(issn, issn_l, medium)` rows from the ISSN-L table |
+| `iter_issn_l_clusters(zip_path)` | Stream `(issn_l, issns)` pairs from the ISSN-L table |
