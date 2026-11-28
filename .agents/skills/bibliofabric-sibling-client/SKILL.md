@@ -48,7 +48,7 @@ headers hook and the identifier normalizers.
 
 ## 5. Wire-up and release
 
-- Add to the root `mkdocs.yml`: a nav section for the package (move its docs pages to `docs/<name>/`) and its src path to the mkdocstrings `paths`. Add a row to the root README table and to `docs/index.md`. Add the package to the test matrix in `.github/workflows/ci.yml`.
+- Add to the root `mkdocs.yml`: a nav section for the package (move its docs pages to `docs/<name>/`) and its src path to the mkdocstrings `paths`. Add the `tests` path to `testpaths` in the root `pyproject.toml` (without it the root `uv run pytest` silently skips the package). Add a row to the root README table and to `docs/index.md`. Add the package to the test matrix in `.github/workflows/ci.yml`.
 - Trusted publishing (once, per package): on pypi.org register a pending project with publisher = `utsmok/bibliofabric` + workflow `ci.yml` + environment `pypi`. The publish job already builds whatever package the tag names.
 - Release: bump `version` in `packages/<name>/pyproject.toml`, changelog entry, push main, then `git tag <name>-v0.1.0 && git push origin <name>-v0.1.0` — lint, test matrix, docs, and publish run automatically. Verify with `pypi.org/pypi/<name>/json`.
 - Consumers (ut-metadata) add the dependency only after the PyPI release lands; fix client-layer gaps in the package, never as local shims.

@@ -28,7 +28,7 @@ monorepo.
 | `packages/aletheca` | OpenAlex client |
 | `packages/stavrophora` | Crossref client |
 | `packages/rorifer`, `zenotheca`, `dataphora`, `opcitato`, `hodoi`, `scholiast`, `orchis`, `europaea`, `quiddita`, `diurnalia`, `seriatim` | eleven Wave 1 clients, not yet published (ROR, Zenodo, DataCite, OpenCitations, DOI, Semantic Scholar, ORCID, Europe PMC, Wikidata, DOAJ, ISSN Portal) |
-| `packages/archeion` | first Wave 2 client (arXiv), not yet published |
+| `packages/archeion`, `prodromus` | Wave 2 clients (arXiv; bioRxiv and medRxiv), not yet published |
 | `docs/roadmap/` | API landscape, Wave 1 specs, the Wave 1 roster, and the deferred list |
 | `scripts/unasync.py` | generates committed `_sync/` source and test twins from `_async/` |
 | `docs/contributing.md` | monorepo contributor guide |
@@ -110,7 +110,8 @@ modules `config.py`, `dialect.py`, `unwrapper.py`, `filters.py`, `models/`;
 `tests/_async/` with pytest-httpx + generated `tests/_sync/`; `py.typed`;
 README and CHANGELOG; run `uv run python scripts/unasync.py` to generate sync
 twins). See `docs/bibliofabric/authoring-sync.md` for the sync twin rules. The
-`packages/*` workspace glob picks it up automatically; add a docs section to
-the root `mkdocs.yml` nav, a row to the README table, a matrix entry in
+`packages/*` workspace glob picks it up automatically; add a docs section and
+the `src` path to the root `mkdocs.yml`, the `tests` path to `testpaths` in
+the root `pyproject.toml`, a row to the README table, a matrix entry in
 `ci.yml`, and a PyPI trusted publisher entry for the new package name. See
 `.agents/skills/bibliofabric-sibling-client/` for the full procedure.

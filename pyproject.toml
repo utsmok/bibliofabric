@@ -86,6 +86,8 @@ testpaths = [
     "packages/quiddita/tests",
     "packages/diurnalia/tests",
     "packages/seriatim/tests",
+    "packages/archeion/tests",
+    "packages/prodromus/tests",
 ]
 python_files = "test_*.py"
 python_functions = "test_*"
