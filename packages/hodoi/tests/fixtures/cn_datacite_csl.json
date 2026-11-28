@@ -1,0 +1,26 @@
+{
+  "type": "software",
+  "id": "https://doi.org/10.5281/zenodo.1238808",
+  "author": [
+    {
+      "family": "Cross",
+      "given": "Stephen"
+    }
+  ],
+  "issued": {
+    "date-parts": [
+      [
+        2018,
+        5,
+        1
+      ]
+    ]
+  },
+  "abstract": "Modular, object-based analysis for ImageJ/Fiji",
+  "DOI": "10.5281/ZENODO.1238808",
+  "publisher": "Zenodo",
+  "title": "SJCross/ModularImageAnalysis: Version 0.5.1",
+  "URL": "https://zenodo.org/record/1238808",
+  "copyright": "Open Access",
+  "version": "v0.5.1"
+}

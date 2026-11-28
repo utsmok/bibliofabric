@@ -1,0 +1,211 @@
+"""Async client for the DOI System proxy at doi.org; source of the sync twin."""
+
+import logging
+from collections.abc import Sequence
+
+import httpx
+from bibliofabric import BaseApiClient, validate_model
+from bibliofabric.exceptions import ConfigurationError
+
+from ..config import HodoiSettings, get_settings
+from ..dialect import DOI_BASE_URL, RA_BATCH_SIZE, normalize_doi, strip_doi_form
+from ..media_types import CSL_JSON, DATACITE_JSON, SCHEMAORG_JSONLD
+from ..models import AgencyAnswer, CslItem, DataciteRecord, HandleRecord, SchemaOrgThing
+from ..unwrapper import HodoiUnwrapper
+
+logger = logging.getLogger(__name__)
+
+
+class HodoiClient(BaseApiClient):
+    """Client for the DOI System proxy server at ``https://doi.org``.
+
+    The proxy needs no credentials. It resolves DOIs, looks up registration
+    agencies (``/ra/``), serves Handle.net records (``/api/handles/``), and
+    negotiates metadata representations on plain DOI URLs.
+
+    Redirects stay off by default so a caller can inspect the resolver's
+    302 response. :meth:`content` turns them on for the request it sends.
+    """
+
+    def __init__(
+        self,
+        settings: HodoiSettings | None = None,
+        *,
+        base_url: str | None = None,
+        http_client: httpx.AsyncClient | None = None,
+    ) -> None:
+        """Build the client.
+
+        Args:
+            settings: Settings instance; ``None`` loads from the environment.
+            base_url: Proxy base URL override (testing).
+            http_client: Optional pre-configured ``httpx.AsyncClient`` (caller
+                retains ownership and is responsible for closing it).
+        """
+        super().__init__(
+            base_url=base_url or DOI_BASE_URL,
+            settings=settings or get_settings(),
+            unwrapper=HodoiUnwrapper(),
+            http_client=http_client,
+        )
+        logger.debug("%s initialized.", type(self).__name__)
+
+    async def agencies(self, dois: str | Sequence[str]) -> list[AgencyAnswer]:
+        """Return the registration agency of one or many DOIs.
+
+        Sends ``GET /ra/{doi}`` with the DOIs joined by commas, in chunks of
+        :data:`~hodoi.dialect.RA_BATCH_SIZE` (100). Every entry arrives as
+        HTTP 200: known DOIs carry ``RA``, unknown ones a ``status`` string,
+        both modeled as :class:`~hodoi.models.AgencyAnswer`. The result
+        order follows the request order across chunks.
+        """
+        names = [dois] if isinstance(dois, str) else list(dois)
+        if not names:
+            raise ConfigurationError("agencies() needs at least one DOI.")
+        normalized = [strip_doi_form(name) for name in names]
+        answers: list[AgencyAnswer] = []
+        for start in range(0, len(normalized), RA_BATCH_SIZE):
+            chunk = normalized[start : start + RA_BATCH_SIZE]
+            response = await self.request("GET", f"ra/{','.join(chunk)}")
+            body = self.parse_json(response)
+            if not isinstance(body, list):
+                raise ConfigurationError(f"/ra/ answered a non-list body: {body!r}.")
+            answers.extend(
+                validate_model(
+                    AgencyAnswer,
+                    entry,
+                    request=getattr(response, "request", None),
+                    response=response,
+                )
+                for entry in body
+                if isinstance(entry, dict)
+            )
+        return answers
+
+    async def agency(self, doi: str) -> AgencyAnswer:
+        """Return the registration agency answer for one DOI."""
+        answers = await self.agencies(doi)
+        return answers[0]
+
+    async def handle(
+        self,
+        doi: str,
+        *,
+        index: int | None = None,
+        type: str | None = None,
+        auth: bool = False,
+    ) -> HandleRecord:
+        """Return the Handle.net record of a DOI.
+
+        Sends ``GET /api/handles/{doi}`` and validates the answer into
+        :class:`~hodoi.models.HandleRecord`. ``index`` and ``type``
+        restrict the returned values. ``auth=True`` bypasses the proxy cache
+        and asks the primary handle server. An unknown DOI answers HTTP 404,
+        which raises :class:`bibliofabric.exceptions.NotFoundError`.
+        """
+        name = normalize_doi(doi)
+        params: dict[str, str] = {}
+        if index is not None:
+            params["index"] = str(index)
+        if type is not None:
+            params["type"] = type
+        if auth:
+            params["auth"] = "true"
+        response = await self.request(
+            "GET", f"api/handles/{name}", params=params or None
+        )
+        return validate_model(
+            HandleRecord,
+            self.parse_json(response),
+            request=getattr(response, "request", None),
+            response=response,
+        )
+
+    async def landing_url(self, doi: str) -> str:
+        """Return the landing page URL stored in the DOI's handle record.
+
+        Reads the ``URL`` entry of the record without fetching the landing
+        page itself. A DOI whose record has no ``URL`` value raises
+        :class:`bibliofabric.exceptions.ConfigurationError`.
+        """
+        record = await self.handle(doi)
+        for value in record.values:
+            if value.type == "URL" and isinstance(value.data.value, str):
+                return value.data.value
+        raise ConfigurationError(f"The handle record of {doi} has no URL value.")
+
+    async def content(
+        self, doi: str, media_type: str
+    ) -> CslItem | DataciteRecord | SchemaOrgThing | str:
+        """Return the negotiated metadata representation for a DOI.
+
+        Sends ``GET https://doi.org/{doi}`` with the given ``Accept`` header
+        and follows the resolver's redirect to the registration agency's
+        data server. JSON media types parse into typed models
+        (:class:`~hodoi.models.CslItem`,
+        :class:`~hodoi.models.DataciteRecord`,
+        :class:`~hodoi.models.SchemaOrgThing`); every other media type
+        (BibTeX, RIS, the XML dialects, formatted citations) returns as
+        text. Media types an agency does not answer raise
+        :class:`bibliofabric.exceptions.APIError` with the agency's HTTP 406.
+        """
+        name = normalize_doi(doi)
+        media_type = media_type.strip()
+        if not media_type:
+            raise ConfigurationError("media_type must be a non-empty string.")
+        response = await self.request(
+            "GET",
+            name,
+            headers={"Accept": media_type},
+            follow_redirects=True,
+        )
+        if media_type == CSL_JSON:
+            return validate_model(
+                CslItem,
+                self.parse_json(response),
+                request=getattr(response, "request", None),
+                response=response,
+            )
+        if media_type == DATACITE_JSON:
+            return validate_model(
+                DataciteRecord,
+                self.parse_json(response),
+                request=getattr(response, "request", None),
+                response=response,
+            )
+        if media_type == SCHEMAORG_JSONLD:
+            return validate_model(
+                SchemaOrgThing,
+                self.parse_json(response),
+                request=getattr(response, "request", None),
+                response=response,
+            )
+        return response.text
+
+    async def raw(
+        self,
+        doi: str,
+        media_type: str,
+        *,
+        follow_redirects: bool | None = None,
+    ) -> bytes:
+        """Return the un-parsed bytes of a negotiated representation.
+
+        ``follow_redirects=None`` keeps the client setting (off), so the
+        bytes are the resolver's 302 body ("Handle Redirect"); pass
+        ``follow_redirects=True`` to receive the agency's metadata bytes.
+        """
+        name = normalize_doi(doi)
+        media_type = media_type.strip()
+        if not media_type:
+            raise ConfigurationError("media_type must be a non-empty string.")
+        response = await self.request(
+            "GET",
+            name,
+            headers={"Accept": media_type},
+            follow_redirects=follow_redirects,
+        )
+        return response.content
+
+
+__all__ = ["HodoiClient"]

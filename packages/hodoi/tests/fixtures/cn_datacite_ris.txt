@@ -1,0 +1,9 @@
+TY  - COMP
+T1  - SJCross/ModularImageAnalysis: Version 0.5.1
+AU  - Cross, Stephen
+DO  - 10.5281/ZENODO.1238808
+UR  - https://zenodo.org/record/1238808
+AB  - Modular, object-based analysis for ImageJ/Fiji
+PY  - 2018
+PB  - Zenodo
+ER  - 

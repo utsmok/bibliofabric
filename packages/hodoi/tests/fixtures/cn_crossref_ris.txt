@@ -1,0 +1,22 @@
+TY  - JOUR
+DO  - 10.1038/nature12373
+UR  - http://dx.doi.org/10.1038/nature12373
+TI  - Nanometre-scale thermometry in a living cell
+T2  - Nature
+AU  - Kucsko, G.
+AU  - Maurer, P. C.
+AU  - Yao, N. Y.
+AU  - Kubo, M.
+AU  - Noh, H. J.
+AU  - Lo, P. K.
+AU  - Park, H.
+AU  - Lukin, M. D.
+PY  - 2013
+DA  - 2013/07/31
+PB  - Springer Science and Business Media LLC
+SP  - 54-58
+IS  - 7460
+VL  - 500
+SN  - 0028-0836
+SN  - 1476-4687
+ER  - 

@@ -1,0 +1,85 @@
+{
+  "id": "https://doi.org/10.5281/zenodo.1238808",
+  "doi": "10.5281/ZENODO.1238808",
+  "url": "https://zenodo.org/record/1238808",
+  "types": {
+    "ris": "COMP",
+    "bibtex": "misc",
+    "citeproc": "article",
+    "schemaOrg": "SoftwareSourceCode",
+    "resourceTypeGeneral": "Software"
+  },
+  "creators": [
+    {
+      "name": "Cross, Stephen",
+      "nameType": "Personal",
+      "givenName": "Stephen",
+      "familyName": "Cross",
+      "affiliation": [
+        {
+          "name": "University of Bristol"
+        }
+      ],
+      "nameIdentifiers": []
+    }
+  ],
+  "titles": [
+    {
+      "title": "SJCross/ModularImageAnalysis: Version 0.5.1"
+    }
+  ],
+  "publisher": {
+    "name": "Zenodo"
+  },
+  "container": {},
+  "subjects": [],
+  "contributors": [],
+  "dates": [
+    {
+      "date": "2018-05-01",
+      "dateType": "Issued"
+    }
+  ],
+  "publicationYear": 2018,
+  "identifiers": [
+    {
+      "identifier": "https://zenodo.org/record/1238808",
+      "identifierType": "URL"
+    }
+  ],
+  "sizes": [],
+  "formats": [],
+  "version": "v0.5.1",
+  "rightsList": [
+    {
+      "rights": "Open Access",
+      "rightsUri": "info:eu-repo/semantics/openAccess"
+    }
+  ],
+  "descriptions": [
+    {
+      "description": "Modular, object-based analysis for ImageJ/Fiji",
+      "descriptionType": "Abstract"
+    }
+  ],
+  "geoLocations": [],
+  "fundingReferences": [],
+  "relatedIdentifiers": [
+    {
+      "relationType": "IsSupplementTo",
+      "relatedIdentifier": "https://github.com/SJCross/ModularImageAnalysis/tree/v0.5.1",
+      "relatedIdentifierType": "URL"
+    },
+    {
+      "relationType": "IsVersionOf",
+      "relatedIdentifier": "10.5281/zenodo.1201320",
+      "relatedIdentifierType": "DOI"
+    }
+  ],
+  "relatedItems": [],
+  "schemaVersion": "http://datacite.org/schema/kernel-4",
+  "providerId": "cern",
+  "clientId": "cern.zenodo",
+  "agency": "datacite",
+  "state": "findable"
+}

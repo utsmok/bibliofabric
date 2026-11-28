@@ -1,0 +1,45 @@
+{
+  "@context": "http://schema.org",
+  "@type": "SoftwareSourceCode",
+  "@id": "https://doi.org/10.5281/zenodo.1238808",
+  "identifier": {
+    "@type": "PropertyValue",
+    "propertyID": "URL",
+    "value": "https://zenodo.org/record/1238808"
+  },
+  "url": "https://zenodo.org/record/1238808",
+  "name": "SJCross/ModularImageAnalysis: Version 0.5.1",
+  "author": {
+    "name": "Stephen Cross",
+    "givenName": "Stephen",
+    "familyName": "Cross",
+    "affiliation": {
+      "@type": "Organization",
+      "name": "University of Bristol"
+    },
+    "@type": "Person"
+  },
+  "description": "Modular, object-based analysis for ImageJ/Fiji",
+  "license": "info:eu-repo/semantics/openAccess",
+  "version": "v0.5.1",
+  "datePublished": "2018-05-01",
+  "@reverse": {
+    "isBasedOn": {
+      "@type": "ScholarlyArticle",
+      "identifier": {
+        "@type": "PropertyValue",
+        "propertyID": "URL",
+        "value": "https://github.com/SJCross/ModularImageAnalysis/tree/v0.5.1"
+      }
+    }
+  },
+  "schemaVersion": "http://datacite.org/schema/kernel-4",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Zenodo"
+  },
+  "provider": {
+    "@type": "Organization",
+    "name": "datacite"
+  }
+}

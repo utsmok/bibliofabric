@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doi_records>
+  <doi_record owner="10.1038" timestamp="2023-05-18 14:13:47">
+    <crossref>
+      <journal>
+        <journal_metadata language="en">
+          <full_title>Nature</full_title>
+          <abbrev_title>Nature</abbrev_title>
+          <issn media_type="print">0028-0836</issn>
+          <issn media_type="electronic">1476-4687</issn>
+        </journal_metadata>
+        <journal_issue>
+          <publication_date media_type="print">
+            <month>8</month>
+            <year>2013</year>
+          </publication_date>
+          <journal_volume>
+            <volume>500</volume>
+          </journal_volume>
+          <issue>7460</issue>
+        </journal_issue>
+        <journal_article publication_type="full_text">
+          <titles>
+            <title>Nanometre-scale thermometry in a living cell</title>
+          </titles>
+          <contributors>
+            <person_name contributor_role="author" sequence="first">
+              <given_name>G.</given_name>
+              <surname>Kucsko</surname>
+            </person_name>
+            <person_name contributor_role="author" sequence="additional">
+              <given_name>P. C.</given_name>
+              <surname>Maurer</surname>
+            </person_name>
+            <person_name contributor_role="author" sequence="additional">
+              <given_name>N. Y.</given_name>
+              <surname>Yao</surname>
+            </person_name>
+            <person_name contributor_role="author" sequence="additional">
+              <given_name>M.</given_name>
+              <surname>Kubo</surname>
+            </person_name>
+            <person_name contributor_role="author" sequence="additional">
+              <given_name>H. J.</given_name>
+              <surname>Noh</surname>
+            </person_name>
+            <person_name contributor_role="author" sequence="additional">
+              <given_name>P. K.</given_name>
+              <surname>Lo</surname>
+            </person_name>
+            <person_name contributor_role="author" sequence="additional">
+              <given_name>H.</given_name>
+              <surname>Park</surname>
+            </person_name>
+            <person_name contributor_role="author" sequence="additional">
+              <given_name>M. D.</given_name>
+              <surname>Lukin</surname>
+            </person_name>
+          </contributors>
+          <publication_date media_type="online">
+            <month>7</month>
+            <day>31</day>
+            <year>2013</year>
+          </publication_date>
+          <publication_date media_type="print">
+            <month>8</month>
+            <year>2013</year>
+          </publication_date>
+          <pages>
+            <first_page>54</first_page>
+            <last_page>58</last_page>
+          </pages>
+          <publisher_item>
+            <identifier id_type="pii">BFnature12373</identifier>
+          </publisher_item>
+          <program name="AccessIndicators">
+            <license_ref applies_to="tdm">http://www.springer.com/tdm</license_ref>
+          </program>
+          <doi_data>
+            <doi>10.1038/nature12373</doi>
+            <timestamp>20191001030421807</timestamp>
+            <resource content_version="vor">https://www.nature.com/articles/nature12373</resource>
+            <collection property="crawler-based">
+              <item crawler="iParadigms">
+                <resource mime_type="application/pdf">http://www.nature.com/articles/nature12373.pdf</resource>
+              </item>
+            </collection>
+            <collection property="text-mining">
+              <item>
+                <resource mime_type="application/pdf">http://www.nature.com/articles/nature12373.pdf</resource>
+              </item>
+              <item>
+                <resource mime_type="text/html">http://www.nature.com/articles/nature12373</resource>
+              </item>
+            </collection>
+          </doi_data>
+          <citation_list>
+            <citation key="BFnature12373_CR1">
+              <doi>10.3402/nano.v3i0.11586</doi>
+              <unstructured_citation>Yue, Y. &amp; Wang, X. Nanoscale thermal probing. Nano Rev. 
+                    http://dx.doi.org/10.3402/nano.v3i0.11586
+                    
+                   (2012)</unstructured_citation>
+            </citation>
+            <citation key="BFnature12373_CR2">
+              <journal_title>Nature</journal_title>
+              <author>E Lucchetta</author>
+              <volume>434</volume>
+              <first_page>1134</first_page>
+              <cYear>2005</cYear>
+              <doi>10.1038/nature03509</doi>
+              <unstructured_citation>Lucchetta, E., Lee, J., Fu, L., Patel, N. &amp; Ismagilov, R. Dynamics of Drosophila embryonic patterning network perturbed in space and time using microfluidics. Nature 434, 1134–1138 (2005)</unstructured_citation>
+            </citation>
+            <citation key="BFnature12373_CR3">
+              <journal_title>Cell</journal_title>
+              <author>SV Kumar</author>
+              <volume>140</volume>
+              <first_page>136</first_page>
+              <cYear>2010</cYear>
+              <doi>10.1016/j.cell.2009.11.006</doi>
+              <unstructured_citation>Kumar, S. V. &amp; Wigge, P. A. H2A.Z-containing nucleosomes mediate the thermosensory response in Arabidopsis. Cell 140, 136–147 (2010)</unstructured_citation>
+            </citation>
+            <citation key="BFnature12373_CR4">
+              <journal_title>Nature</journal_title>
+              <author>VM Lauschke</author>
+              <volume>493</volume>
+              <first_page>101</first_page>
+              <cYear>2012</cYear>
+              <doi>10.1038/nature11804</doi>
+              <unstructured_citation>Lauschke, V. M., Tsiairis, C. D., François, P. &amp; Aulehla, A. Scaling of embryonic patterning based on phase-gradient encoding. Nature 493, 101–105 (2012)</unstructured_citation>
+            </citation>
+            <citation key="BFnature12373_CR5">
+              <journal_title>Nature Methods</journal_title>
+              <author>Y Kamei</author>
+              <volume>6</volume>
+              <first_page>79</first_page>
+              <cYear>2009</cYear>
+              <doi>10.1038/nmeth.1278</doi>
+              <unstructured_citation>Kamei, Y. et al. Infrared laser-mediated gene induction in targeted single cells in vivo. Nature Methods 6, 79–81 (2009)</unstructured_citation>
+            </citation>
+            <citation key="BFnature12373_CR6">
+              <journal_title>Breast Cancer Res. Treat.</journal_title>
+              <author>T Vreugdenburg</author>
+              <volume>137</volume>
+              <first_page>665</first_page>
+              <cYear>2013</cYear>
+              <doi>10.1007/s10549-012-2393-x</doi>
+              <unstructured_citation>Vreugdenburg, T., Willis, C., Mundy, L. &amp; Hiller, J. A systematic review of elastography, electrical impedance scanning, and digital infrared thermography for breast cancer screening and diagnosis. Breast Cancer Res. Treat. 137, 665–676 (2013)</unstructured_citation>
+            </citation>
+            <citation key="BFnature12373_CR7">
+              <journal_title>Nature Rev. Cancer</journal_title>
+              <author>A Schroeder</author>
+              <volume>12</volume>
+              <first_page>39</first_page>
+              <cYear>2011</cYear>
+              <doi>10.1038/nrc3180</doi>
+              <unstructured_citation>Schroeder, A. et al. Treating metastatic cancer with nanotechnology. Nature Rev. Cancer 12, 39–50 (2011)</unstructured_citation>
+            </citation>
+            <citation key="BFnature12373_CR8">
+              <journal_title>Cancer Lett.</journal_title>
+              <author>DP O’Neal</author>
+              <volume>209</volume>
+              <first_page>171</first_page>
+              <cYear>2004</cYear>
+              <doi>10.1016/j.canlet.2004.02.004</doi>
+              <unstructured_citation>O’Neal, D. P., Hirsch, L. R., Halas, N. J., Payne, J. D. &amp; West, J. L. Photo-thermal tumor ablation in mice using near infrared-absorbing nanoparticles. Cancer Lett. 209, 171–176 (2004)</unstructured_citation>
+            </citation>
+            <citation key="BFnature12373_CR9">
+              <journal_title>Annu. Rev. Mater. Sci.</journal_title>
+              <author>A Majumdar</author>
+              <volume>29</volume>
+              <first_page>505</first_page>
+              <cYear>1999</cYear>
+              <doi>10.1146/annurev.matsci.29.1.505</doi>
+              <unstructured_citation>Majumdar, A. Scanning thermal microscopy. Annu. Rev. Mater. Sci. 29, 505–585 (1999)</unstructured_citation>
+            </citation>
+            <citation key="BFnature12373_CR10">
+              <journal_title>J. Micromech. Microeng.</journal_title>
+              <author>SH Kim</author>
+              <volume>16</volume>
+              <first_page>526</first_page>
+              <cYear>2006</cYear>
+              <doi>10.1088/0960-1317/16/3/007</doi>
+              <unstructured_citation>Kim, S. H. et al. Micro-Raman thermometry for measuring the temperature distribution inside the microchannel of a polymerase chain reaction chip. J. Micromech. Microeng. 16, 526 (2006)</unstructured_citation>
+            </citation>
+            <citation key="BFnature12373_CR11">
+              <journal_title>ACS Nano</journal_title>
+              <author>J Yang</author>
+              <volume>5</volume>
+              <first_page>5067</first_page>
+              <cYear>2011</cYear>
+              <doi>10.1021/nn201142f</doi>
+              <unstructured_citation>Yang, J., Yang, H. &amp; Lin, L. Quantum dot nano thermometers reveal heterogeneous local thermogenesis in living cells. ACS Nano 5, 5067–5071 (2011)</unstructured_citation>
+            </citation>
+            <citation key="BFnature12373_CR12">
+              <journal_title>ACS Nano</journal_title>
+              <author>F Vetrone</author>
+              <volume>4</volume>
+              <first_page>3254</first_page>
+              <cYear>2010</cYear>
+              <doi>10.1021/nn100244a</doi>
+              <unstructured_citation>Vetrone, F. et al. Temperature sensing using fluorescent nanothermometers. ACS Nano 4, 3254–3258 (2010)</unstructured_citation>
+            </citation>
+            <citation key="BFnature12373_CR13">
+              <journal_title>Nature Commun.</journal_title>
+              <author>K Okabe</author>
+              <volume>3</volume>
+              <first_page>705</first_page>
+              <cYear>2012</cYear>
+              <doi>10.1038/ncomms1714</doi>
+              <unstructured_citation>Okabe, K. et al. Intracellular temperature mapping with a fluorescent polymeric thermometer and fluorescence lifetime imaging microscopy. Nature Commun. 3, 705 (2012)</unstructured_citation>
+            </citation>
+            <citation key="BFnature12373_CR14">
+              <journal_title>Nano Lett.</journal_title>
+              <author>J Donner</author>
+              <volume>12</volume>
+              <first_page>2107</first_page>
+              <cYear>2012</cYear>
+              <doi>10.1021/nl300389y</doi>
+              <unstructured_citation>Donner, J., Thompson, S., Kreuzer, M., Baffou, G. &amp; Quidant, R. Mapping intracellular temperature using green fluorescent protein. Nano Lett. 12, 2107–2111 (2012)</unstructured_citation>
+            </citation>
+            <citation key="BFnature12373_CR15">
+              <journal_title>Proc. Natl Acad. Sci. USA</journal_title>
+              <author>AK Shalek</author>
+              <volume>107</volume>
+              <first_page>1870</first_page>
+              <cYear>2010</cYear>
+              <doi>10.1073/pnas.0909350107</doi>
+              <unstructured_citation>Shalek, A. K. et al. Vertical silicon nanowires as a universal platform for delivering biomolecules into living cells. Proc. Natl Acad. Sci. USA 107, 1870–1875 (2010)</unstructured_citation>
+            </citation>
+            <citation key="BFnature12373_CR16">
+              <journal_title>Phys. Rev. Lett.</journal_title>
+              <author>V Acosta</author>
+              <volume>104</volume>
+              <first_page>070801</first_page>
+              <cYear>2010</cYear>
+              <doi>10.1103/PhysRevLett.104.070801</doi>
+              <unstructured_citation>Acosta, V. et al. Temperature dependence of the nitrogen-vacancy magnetic resonance in diamond. Phys. Rev. Lett. 104, 070801 (2010)</unstructured_citation>
+            </citation>
+            <citation key="BFnature12373_CR17">
+              <journal_title>Phys. Rev. X</journal_title>
+              <author>D Toyli</author>
+              <volume>2</volume>
+              <first_page>031001</first_page>
+              <cYear>2012</cYear>
+              <unstructured_citation>Toyli, D. et al. Measurement and control of single nitrogen-vacancy center spins above 600 K. Phys. Rev. X 2, 031001 (2012)</unstructured_citation>
+            </citation>
+            <citation key="BFnature12373_CR18">
+              <journal_title>Appl. Phys. Lett.</journal_title>
+              <author>X-D Chen</author>
+              <volume>99</volume>
+              <first_page>161903</first_page>
+              <cYear>2011</cYear>
+              <doi>10.1063/1.3652910</doi>
+              <unstructured_citation>Chen, X.-D. et al. Temperature dependent energy level shifts of nitrogen-vacancy centers in diamond. Appl. Phys. Lett. 99, 161903–161903 (2011)</unstructured_citation>
+            </citation>
+            <citation key="BFnature12373_CR19">
+              <journal_title>Nature Phys.</journal_title>
+              <author>J Taylor</author>
+              <volume>4</volume>
+              <first_page>810</first_page>
+              <cYear>2008</cYear>
+              <doi>10.1038/nphys1075</doi>
+              <unstructured_citation>Taylor, J. et al. High-sensitivity diamond magnetometer with nanoscale resolution. Nature Phys. 4, 810–816 (2008)</unstructured_citation>
+            </citation>
+            <citation key="BFnature12373_CR20">
+              <journal_title>Nano Lett.</journal_title>
+              <author>C Jin</author>
+              <volume>11</volume>
+              <first_page>4818</first_page>
+              <cYear>2011</cYear>
+              <doi>10.1021/nl2026585</doi>
+              <unstructured_citation>Jin, C., Li, Z., Williams, R., Lee, K. &amp; Park, I. Localized temperature and chemical reaction control in nanoscale space by nanowire array. Nano Lett. 11, 4818–4825 (2011)</unstructured_citation>
+            </citation>
+            <citation key="BFnature12373_CR21">
+              <journal_title>Nature</journal_title>
+              <author>J Maze</author>
+              <volume>455</volume>
+              <first_page>644</first_page>
+              <cYear>2008</cYear>
+              <doi>10.1038/nature07279</doi>
+              <unstructured_citation>Maze, J. et al. Nanoscale magnetic sensing with an individual electronic spin in diamond. Nature 455, 644–647 (2008)</unstructured_citation>
+            </citation>
+            <citation key="BFnature12373_CR22">
+              <journal_title>Nature</journal_title>
+              <author>G Balasubramanian</author>
+              <volume>455</volume>
+              <first_page>648</first_page>
+              <cYear>2008</cYear>
+              <doi>10.1038/nature07278</doi>
+              <unstructured_citation>Balasubramanian, G. et al. Nanoscale imaging magnetometry with diamond spins under ambient conditions. Nature 455, 648–651 (2008)</unstructured_citation>
+            </citation>
+            <citation key="BFnature12373_CR23">
+              <journal_title>Phys. Rev. A</journal_title>
+              <author>J Hodges</author>
+              <volume>87</volume>
+              <first_page>032118</first_page>
+              <cYear>2013</cYear>
+              <doi>10.1103/PhysRevA.87.032118</doi>
+              <unstructured_citation>Hodges, J. et al. Time keeping with electron spin states in diamond. Phys. Rev. A 87, 032118 (2013)</unstructured_citation>
+            </citation>
+            <citation key="BFnature12373_CR24">
+              <journal_title>Nature Mater.</journal_title>
+              <author>G Balasubramanian</author>
+              <volume>8</volume>
+              <first_page>383</first_page>
+              <cYear>2009</cYear>
+              <doi>10.1038/nmat2420</doi>
+              <unstructured_citation>Balasubramanian, G. et al. Ultralong spin coherence time in isotopically engineered diamond. Nature Mater. 8, 383–387 (2009)</unstructured_citation>
+            </citation>
+            <citation key="BFnature12373_CR25">
+              <journal_title>Nature Phys.</journal_title>
+              <author>F Dolde</author>
+              <volume>7</volume>
+              <first_page>459</first_page>
+              <cYear>2011</cYear>
+              <doi>10.1038/nphys1969</doi>
+              <unstructured_citation>Dolde, F. et al. Electric-field sensing using single diamond spins. Nature Phys. 7, 459–463 (2011)</unstructured_citation>
+            </citation>
+            <citation key="BFnature12373_CR26">
+              <journal_title>Nature Phys.</journal_title>
+              <author>P Maurer</author>
+              <volume>6</volume>
+              <first_page>912</first_page>
+              <cYear>2010</cYear>
+              <doi>10.1038/nphys1774</doi>
+              <unstructured_citation>Maurer, P. et al. Far-field optical imaging and manipulation of individual spins with nanoscale resolution. Nature Phys. 6, 912–918 (2010)</unstructured_citation>
+            </citation>
+            <citation key="BFnature12373_CR27">
+              <journal_title>PLoS ONE</journal_title>
+              <author>G Xu</author>
+              <volume>7</volume>
+              <first_page>e49021</first_page>
+              <cYear>2012</cYear>
+              <doi>10.1371/journal.pone.0049021</doi>
+              <unstructured_citation>Xu, G. et al. Identification of proteins sensitive to thermal stress in human neuroblastoma and glioma cell lines. PLoS ONE 7, e49021 (2012)</unstructured_citation>
+            </citation>
+            <citation key="BFnature12373_CR28">
+              <journal_title>Nature Methods</journal_title>
+              <author>F Helmchen</author>
+              <volume>2</volume>
+              <first_page>932</first_page>
+              <cYear>2005</cYear>
+              <doi>10.1038/nmeth818</doi>
+              <unstructured_citation>Helmchen, F. &amp; Denk, W. Deep tissue two-photon microscopy. Nature Methods 2, 932–940 (2005)</unstructured_citation>
+            </citation>
+            <citation key="BFnature12373_CR29">
+              <journal_title>J. Phys. Chem. A</journal_title>
+              <author>T-L Wee</author>
+              <volume>111</volume>
+              <first_page>9379</first_page>
+              <cYear>2007</cYear>
+              <doi>10.1021/jp073938o</doi>
+              <unstructured_citation>Wee, T.-L. et al. Two-photon excited fluorescence of nitrogen-vacancy centers in proton-irradiated type Ib diamond. J. Phys. Chem. A 111, 9379–9386 (2007)</unstructured_citation>
+            </citation>
+            <citation key="BFnature12373_CR30">
+              <journal_title>Cancer Res.</journal_title>
+              <author>M Tsoli</author>
+              <volume>72</volume>
+              <first_page>4372</first_page>
+              <cYear>2012</cYear>
+              <doi>10.1158/0008-5472.CAN-11-3536</doi>
+              <unstructured_citation>Tsoli, M. et al. Activation of thermogenesis in brown adipose tissue and dysregulated lipid metabolism associated with cancer cachexia in mice. Cancer Res. 72, 4372–4382 (2012)</unstructured_citation>
+            </citation>
+          </citation_list>
+        </journal_article>
+      </journal>
+    </crossref>
+  </doi_record>
+</doi_records>
