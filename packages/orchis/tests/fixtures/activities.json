@@ -1,0 +1,4634 @@
+{
+ "last-modified-date": {
+  "value": 1719349401045
+ },
+ "distinctions": {
+  "last-modified-date": null,
+  "affiliation-group": [],
+  "path": "/0000-0002-1694-233X/distinctions"
+ },
+ "educations": {
+  "last-modified-date": {
+   "value": 1405894277263
+  },
+  "affiliation-group": [
+   {
+    "last-modified-date": {
+     "value": 1405894277263
+    },
+    "external-ids": {
+     "external-id": []
+    },
+    "summaries": [
+     {
+      "education-summary": {
+       "created-date": {
+        "value": 1390324699331
+       },
+       "last-modified-date": {
+        "value": 1405894277263
+       },
+       "source": {
+        "source-orcid": {
+         "uri": "https://orcid.org/0000-0002-1694-233X",
+         "path": "0000-0002-1694-233X",
+         "host": "orcid.org"
+        },
+        "source-client-id": null,
+        "source-name": {
+         "value": "Thomas B. Hickey"
+        },
+        "assertion-origin-orcid": null,
+        "assertion-origin-client-id": null,
+        "assertion-origin-name": null
+       },
+       "put-code": 85904,
+       "department-name": "Library Information Science",
+       "role-title": "Ph.D.",
+       "start-date": null,
+       "end-date": {
+        "year": {
+         "value": "1977"
+        },
+        "month": null,
+        "day": null
+       },
+       "organization": {
+        "name": "University of Ilinois",
+        "address": {
+         "city": "Urbana",
+         "region": "IL",
+         "country": "US"
+        },
+        "disambiguated-organization": null
+       },
+       "url": null,
+       "external-ids": null,
+       "display-index": "0",
+       "visibility": "public",
+       "path": "/0000-0002-1694-233X/education/85904"
+      }
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1405894277263
+    },
+    "external-ids": {
+     "external-id": []
+    },
+    "summaries": [
+     {
+      "education-summary": {
+       "created-date": {
+        "value": 1390324589981
+       },
+       "last-modified-date": {
+        "value": 1405894277263
+       },
+       "source": {
+        "source-orcid": {
+         "uri": "https://orcid.org/0000-0002-1694-233X",
+         "path": "0000-0002-1694-233X",
+         "host": "orcid.org"
+        },
+        "source-client-id": null,
+        "source-name": {
+         "value": "Thomas B. Hickey"
+        },
+        "assertion-origin-orcid": null,
+        "assertion-origin-client-id": null,
+        "assertion-origin-name": null
+       },
+       "put-code": 85899,
+       "department-name": "Library Information Science",
+       "role-title": "M.L.S.",
+       "start-date": null,
+       "end-date": {
+        "year": {
+         "value": "1970"
+        },
+        "month": null,
+        "day": null
+       },
+       "organization": {
+        "name": "SUNY Geneseo",
+        "address": {
+         "city": "Geneseo",
+         "region": "NY",
+         "country": "US"
+        },
+        "disambiguated-organization": {
+         "disambiguated-organization-identifier": "14811",
+         "disambiguation-source": "RINGGOLD"
+        }
+       },
+       "url": null,
+       "external-ids": null,
+       "display-index": "0",
+       "visibility": "public",
+       "path": "/0000-0002-1694-233X/education/85899"
+      }
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1405894277262
+    },
+    "external-ids": {
+     "external-id": []
+    },
+    "summaries": [
+     {
+      "education-summary": {
+       "created-date": {
+        "value": 1390326669520
+       },
+       "last-modified-date": {
+        "value": 1405894277262
+       },
+       "source": {
+        "source-orcid": {
+         "uri": "https://orcid.org/0000-0002-1694-233X",
+         "path": "0000-0002-1694-233X",
+         "host": "orcid.org"
+        },
+        "source-client-id": null,
+        "source-name": {
+         "value": "Thomas B. Hickey"
+        },
+        "assertion-origin-orcid": null,
+        "assertion-origin-client-id": null,
+        "assertion-origin-name": null
+       },
+       "put-code": 85953,
+       "department-name": "Physics",
+       "role-title": "B.S.",
+       "start-date": null,
+       "end-date": {
+        "year": {
+         "value": "1969"
+        },
+        "month": null,
+        "day": null
+       },
+       "organization": {
+        "name": "Stony Brook University",
+        "address": {
+         "city": "Stony Brook",
+         "region": "NY",
+         "country": "US"
+        },
+        "disambiguated-organization": {
+         "disambiguated-organization-identifier": "12301",
+         "disambiguation-source": "RINGGOLD"
+        }
+       },
+       "url": null,
+       "external-ids": null,
+       "display-index": "0",
+       "visibility": "public",
+       "path": "/0000-0002-1694-233X/education/85953"
+      }
+     }
+    ]
+   }
+  ],
+  "path": "/0000-0002-1694-233X/educations"
+ },
+ "employments": {
+  "last-modified-date": {
+   "value": 1474464935408
+  },
+  "affiliation-group": [
+   {
+    "last-modified-date": {
+     "value": 1474464935408
+    },
+    "external-ids": {
+     "external-id": []
+    },
+    "summaries": [
+     {
+      "employment-summary": {
+       "created-date": {
+        "value": 1390324868976
+       },
+       "last-modified-date": {
+        "value": 1474464935408
+       },
+       "source": {
+        "source-orcid": {
+         "uri": "https://orcid.org/0000-0002-1694-233X",
+         "path": "0000-0002-1694-233X",
+         "host": "orcid.org"
+        },
+        "source-client-id": null,
+        "source-name": {
+         "value": "Thomas B. Hickey"
+        },
+        "assertion-origin-orcid": null,
+        "assertion-origin-client-id": null,
+        "assertion-origin-name": null
+       },
+       "put-code": 85908,
+       "department-name": "Research",
+       "role-title": "Chief Scientist",
+       "start-date": {
+        "year": {
+         "value": "1977"
+        },
+        "month": null,
+        "day": null
+       },
+       "end-date": {
+        "year": {
+         "value": "2016"
+        },
+        "month": null,
+        "day": null
+       },
+       "organization": {
+        "name": "OCLC Online Computer Library Center",
+        "address": {
+         "city": "Dublin",
+         "region": "OH",
+         "country": "US"
+        },
+        "disambiguated-organization": {
+         "disambiguated-organization-identifier": "58628",
+         "disambiguation-source": "RINGGOLD"
+        }
+       },
+       "url": null,
+       "external-ids": null,
+       "display-index": "0",
+       "visibility": "public",
+       "path": "/0000-0002-1694-233X/employment/85908"
+      }
+     }
+    ]
+   }
+  ],
+  "path": "/0000-0002-1694-233X/employments"
+ },
+ "fundings": {
+  "last-modified-date": {
+   "value": 1458838241964
+  },
+  "group": [
+   {
+    "last-modified-date": {
+     "value": 1458838241964
+    },
+    "external-ids": {
+     "external-id": [
+      {
+       "external-id-type": "grant_number",
+       "external-id-value": "IST79-18263",
+       "external-id-normalized": null,
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      }
+     ]
+    },
+    "funding-summary": [
+     {
+      "created-date": {
+       "value": 1422975654101
+      },
+      "last-modified-date": {
+       "value": 1458838241964
+      },
+      "source": {
+       "source-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "source-client-id": null,
+       "source-name": {
+        "value": "Thomas B. Hickey"
+       },
+       "assertion-origin-orcid": null,
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": null
+      },
+      "title": {
+       "title": {
+        "value": "Development of a Probabilistic Author Search and Matching Technique for Retrieval and Creation of Bibliographic Records"
+       },
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "grant_number",
+         "external-id-value": "IST79-18263",
+         "external-id-normalized": null,
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": null,
+      "type": "grant",
+      "start-date": {
+       "year": {
+        "value": "1979"
+       },
+       "month": {
+        "value": "08"
+       },
+       "day": null
+      },
+      "end-date": {
+       "year": {
+        "value": "1981"
+       },
+       "month": {
+        "value": "01"
+       },
+       "day": null
+      },
+      "organization": {
+       "name": "NSF Office of the Director",
+       "address": {
+        "city": "VA",
+        "region": "VA",
+        "country": "US"
+       },
+       "disambiguated-organization": {
+        "disambiguated-organization-identifier": "http://dx.doi.org/10.13039/100000179",
+        "disambiguation-source": "FUNDREF"
+       }
+      },
+      "visibility": "public",
+      "put-code": 63665,
+      "path": "/0000-0002-1694-233X/funding/63665",
+      "display-index": "0"
+     }
+    ]
+   }
+  ],
+  "path": "/0000-0002-1694-233X/fundings"
+ },
+ "invited-positions": {
+  "last-modified-date": null,
+  "affiliation-group": [],
+  "path": "/0000-0002-1694-233X/invited-positions"
+ },
+ "memberships": {
+  "last-modified-date": {
+   "value": 1621090553792
+  },
+  "affiliation-group": [
+   {
+    "last-modified-date": {
+     "value": 1621090553792
+    },
+    "external-ids": {
+     "external-id": []
+    },
+    "summaries": [
+     {
+      "membership-summary": {
+       "created-date": {
+        "value": 1621090553792
+       },
+       "last-modified-date": {
+        "value": 1621090553792
+       },
+       "source": {
+        "source-orcid": {
+         "uri": "https://orcid.org/0000-0002-1694-233X",
+         "path": "0000-0002-1694-233X",
+         "host": "orcid.org"
+        },
+        "source-client-id": null,
+        "source-name": {
+         "value": "Thomas B. Hickey"
+        },
+        "assertion-origin-orcid": null,
+        "assertion-origin-client-id": null,
+        "assertion-origin-name": null
+       },
+       "put-code": 14806385,
+       "department-name": null,
+       "role-title": "Board member",
+       "start-date": {
+        "year": {
+         "value": "2005"
+        },
+        "month": null,
+        "day": null
+       },
+       "end-date": {
+        "year": {
+         "value": "2009"
+        },
+        "month": null,
+        "day": null
+       },
+       "organization": {
+        "name": "NDLTD Networked Digital Library of Theses and Dissertations",
+        "address": {
+         "city": "Provo",
+         "region": "UT",
+         "country": "US"
+        },
+        "disambiguated-organization": null
+       },
+       "url": {
+        "value": "http://www.ndltd.org/"
+       },
+       "external-ids": null,
+       "display-index": "1",
+       "visibility": "public",
+       "path": "/0000-0002-1694-233X/membership/14806385"
+      }
+     }
+    ]
+   }
+  ],
+  "path": "/0000-0002-1694-233X/memberships"
+ },
+ "peer-reviews": {
+  "last-modified-date": null,
+  "group": [],
+  "path": "/0000-0002-1694-233X/peer-reviews"
+ },
+ "qualifications": {
+  "last-modified-date": null,
+  "affiliation-group": [],
+  "path": "/0000-0002-1694-233X/qualifications"
+ },
+ "research-resources": {
+  "last-modified-date": null,
+  "group": [],
+  "path": "/0000-0002-1694-233X/research-resources"
+ },
+ "services": {
+  "last-modified-date": {
+   "value": 1588601955782
+  },
+  "affiliation-group": [
+   {
+    "last-modified-date": {
+     "value": 1588601955782
+    },
+    "external-ids": {
+     "external-id": []
+    },
+    "summaries": [
+     {
+      "service-summary": {
+       "created-date": {
+        "value": 1588601955782
+       },
+       "last-modified-date": {
+        "value": 1588601955782
+       },
+       "source": {
+        "source-orcid": null,
+        "source-client-id": {
+         "uri": "https://orcid.org/client/APP-DLU9JZ5INF3KCWIR",
+         "path": "APP-DLU9JZ5INF3KCWIR",
+         "host": "orcid.org"
+        },
+        "source-name": {
+         "value": "Assert-o-matic"
+        },
+        "assertion-origin-orcid": null,
+        "assertion-origin-client-id": {
+         "uri": "https://orcid.org/client/APP-34IBF14LOTOGDJZZ",
+         "path": "APP-34IBF14LOTOGDJZZ",
+         "host": "orcid.org"
+        },
+        "assertion-origin-name": {
+         "value": "ORCID"
+        }
+       },
+       "put-code": 10777936,
+       "department-name": null,
+       "role-title": "Board Member",
+       "start-date": {
+        "year": {
+         "value": "2010"
+        },
+        "month": {
+         "value": "01"
+        },
+        "day": {
+         "value": "01"
+        }
+       },
+       "end-date": {
+        "year": {
+         "value": "2016"
+        },
+        "month": {
+         "value": "12"
+        },
+        "day": {
+         "value": "31"
+        }
+       },
+       "organization": {
+        "name": "ORCID",
+        "address": {
+         "city": "Bethesda",
+         "region": null,
+         "country": "US"
+        },
+        "disambiguated-organization": {
+         "disambiguated-organization-identifier": "875500AZPSXM0HP6VP03",
+         "disambiguation-source": "LEI"
+        }
+       },
+       "url": {
+        "value": "https://orcid.org/0000-0002-1694-233X"
+       },
+       "external-ids": null,
+       "display-index": "0",
+       "visibility": "public",
+       "path": "/0000-0002-1694-233X/service/10777936"
+      }
+     }
+    ]
+   }
+  ],
+  "path": "/0000-0002-1694-233X/services"
+ },
+ "works": {
+  "last-modified-date": {
+   "value": 1719349401045
+  },
+  "group": [
+   {
+    "last-modified-date": {
+     "value": 1698457054383
+    },
+    "external-ids": {
+     "external-id": []
+    },
+    "work-summary": [
+     {
+      "put-code": 145464015,
+      "created-date": {
+       "value": 1698457054383
+      },
+      "last-modified-date": {
+       "value": 1698457054383
+      },
+      "source": {
+       "source-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "source-client-id": null,
+       "source-name": {
+        "value": "Thomas B. Hickey"
+       },
+       "assertion-origin-orcid": null,
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": null
+      },
+      "title": {
+       "title": {
+        "value": "Parsing and Matching Dates in VIAF"
+       },
+       "subtitle": {
+        "value": "Issue 26, 2014-10-21"
+       },
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "issn",
+         "external-id-value": "1940-5758",
+         "external-id-normalized": {
+          "value": "1940-5758",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": {
+          "value": "https://portal.issn.org/resource/ISSN/1940-5758"
+         },
+         "external-id-relationship": "part-of"
+        }
+       ]
+      },
+      "url": {
+       "value": "https://journal.code4lib.org/articles/9607"
+      },
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "2014"
+       },
+       "month": {
+        "value": "10"
+       },
+       "day": {
+        "value": "21"
+       }
+      },
+      "journal-title": {
+       "value": "Code4Lib Journal"
+      },
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/145464015",
+      "display-index": "1"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1719349401045
+    },
+    "external-ids": {
+     "external-id": []
+    },
+    "work-summary": [
+     {
+      "put-code": 162338342,
+      "created-date": {
+       "value": 1719349310232
+      },
+      "last-modified-date": {
+       "value": 1719349401045
+      },
+      "source": {
+       "source-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "source-client-id": null,
+       "source-name": {
+        "value": "Thomas B. Hickey"
+       },
+       "assertion-origin-orcid": null,
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": null
+      },
+      "title": {
+       "title": {
+        "value": "Registering Researchers in Authority Files"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": []
+      },
+      "url": {
+       "value": "https://www.oclc.org/content/dam/research/publications/library/2014/oclcresearch-registering-researchers-2014.pdf"
+      },
+      "type": "report",
+      "publication-date": {
+       "year": {
+        "value": "2014"
+       },
+       "month": {
+        "value": "10"
+       },
+       "day": null
+      },
+      "journal-title": {
+       "value": "OCLC Research"
+      },
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/162338342",
+      "display-index": "0"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1653431303469
+    },
+    "external-ids": {
+     "external-id": [
+      {
+       "external-id-type": "eid",
+       "external-id-value": "2-s2.0-84905715132",
+       "external-id-normalized": {
+        "value": "2-s2.0-84905715132",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      },
+      {
+       "external-id-type": "doi",
+       "external-id-value": "10.1045/july2014-hickey",
+       "external-id-normalized": {
+        "value": "10.1045/july2014-hickey",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      }
+     ]
+    },
+    "work-summary": [
+     {
+      "put-code": 15258781,
+      "created-date": {
+       "value": 1422896137112
+      },
+      "last-modified-date": {
+       "value": 1653357257766
+      },
+      "source": {
+       "source-orcid": null,
+       "source-client-id": {
+        "uri": "https://orcid.org/client/0000-0002-3054-1567",
+        "path": "0000-0002-3054-1567",
+        "host": "orcid.org"
+       },
+       "source-name": {
+        "value": "Crossref Metadata Search"
+       },
+       "assertion-origin-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": {
+        "value": "Thomas B. Hickey"
+       }
+      },
+      "title": {
+       "title": {
+        "value": "Managing Ambiguity in VIAF"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "doi",
+         "external-id-value": "10.1045/july2014-hickey",
+         "external-id-normalized": {
+          "value": "10.1045/july2014-hickey",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": null,
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "2014"
+       },
+       "month": {
+        "value": "07"
+       },
+       "day": null
+      },
+      "journal-title": {
+       "value": "D-Lib Magazine"
+      },
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/15258781",
+      "display-index": "0"
+     },
+     {
+      "put-code": 23118682,
+      "created-date": {
+       "value": 1458838268033
+      },
+      "last-modified-date": {
+       "value": 1653431303469
+      },
+      "source": {
+       "source-orcid": null,
+       "source-client-id": {
+        "uri": "https://orcid.org/client/0000-0002-5982-8983",
+        "path": "0000-0002-5982-8983",
+        "host": "orcid.org"
+       },
+       "source-name": {
+        "value": "Scopus - Elsevier"
+       },
+       "assertion-origin-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": {
+        "value": "Thomas B. Hickey"
+       }
+      },
+      "title": {
+       "title": {
+        "value": "Managing ambiguity in VIAF"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "doi",
+         "external-id-value": "10.1045/july2014-hickey",
+         "external-id-normalized": {
+          "value": "10.1045/july2014-hickey",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        },
+        {
+         "external-id-type": "eid",
+         "external-id-value": "2-s2.0-84905715132",
+         "external-id-normalized": {
+          "value": "2-s2.0-84905715132",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": {
+       "value": "http://www.scopus.com/inward/record.url?eid=2-s2.0-84905715132&partnerID=MN8TOARS"
+      },
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "2014"
+       },
+       "month": null,
+       "day": null
+      },
+      "journal-title": {
+       "value": "D-Lib Magazine"
+      },
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/23118682",
+      "display-index": "0"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1653431303831
+    },
+    "external-ids": {
+     "external-id": [
+      {
+       "external-id-type": "doi",
+       "external-id-value": "10.5860/lrts.50n3.166",
+       "external-id-normalized": {
+        "value": "10.5860/lrts.50n3.166",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      }
+     ]
+    },
+    "work-summary": [
+     {
+      "put-code": 23118743,
+      "created-date": {
+       "value": 1458838597199
+      },
+      "last-modified-date": {
+       "value": 1653431303831
+      },
+      "source": {
+       "source-orcid": null,
+       "source-client-id": {
+        "uri": "https://orcid.org/client/0000-0002-3054-1567",
+        "path": "0000-0002-3054-1567",
+        "host": "orcid.org"
+       },
+       "source-name": {
+        "value": "Crossref Metadata Search"
+       },
+       "assertion-origin-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": {
+        "value": "Thomas B. Hickey"
+       }
+      },
+      "title": {
+       "title": {
+        "value": "NACO Normalization"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "doi",
+         "external-id-value": "10.5860/lrts.50n3.166",
+         "external-id-normalized": {
+          "value": "10.5860/lrts.50n3.166",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": null,
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "2006"
+       },
+       "month": {
+        "value": "07"
+       },
+       "day": {
+        "value": "01"
+       }
+      },
+      "journal-title": {
+       "value": "Library Resources & Technical Services"
+      },
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/23118743",
+      "display-index": "0"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1653345254282
+    },
+    "external-ids": {
+     "external-id": [
+      {
+       "external-id-type": "doi",
+       "external-id-value": "10.1045/july2006-young",
+       "external-id-normalized": {
+        "value": "10.1045/july2006-young",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      },
+      {
+       "external-id-type": "eid",
+       "external-id-value": "2-s2.0-33746651147",
+       "external-id-normalized": {
+        "value": "2-s2.0-33746651147",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      }
+     ]
+    },
+    "work-summary": [
+     {
+      "put-code": 6292113,
+      "created-date": {
+       "value": 1364320340052
+      },
+      "last-modified-date": {
+       "value": 1653327326156
+      },
+      "source": {
+       "source-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "source-client-id": null,
+       "source-name": {
+        "value": "Thomas B. Hickey"
+       },
+       "assertion-origin-orcid": null,
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": null
+      },
+      "title": {
+       "title": {
+        "value": "WikiD"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "doi",
+         "external-id-value": "10.1045/july2006-young",
+         "external-id-normalized": {
+          "value": "10.1045/july2006-young",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": null,
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "2006"
+       },
+       "month": {
+        "value": "07"
+       },
+       "day": null
+      },
+      "journal-title": {
+       "value": "D-Lib Magazine"
+      },
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/6292113",
+      "display-index": "0"
+     },
+     {
+      "put-code": 12721723,
+      "created-date": {
+       "value": 1400685647160
+      },
+      "last-modified-date": {
+       "value": 1653345254282
+      },
+      "source": {
+       "source-orcid": null,
+       "source-client-id": {
+        "uri": "https://orcid.org/client/0000-0002-5982-8983",
+        "path": "0000-0002-5982-8983",
+        "host": "orcid.org"
+       },
+       "source-name": {
+        "value": "Scopus - Elsevier"
+       },
+       "assertion-origin-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": {
+        "value": "Thomas B. Hickey"
+       }
+      },
+      "title": {
+       "title": {
+        "value": "WikiD: An OpenURL 1.0 application"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "doi",
+         "external-id-value": "10.1045/july2006-young",
+         "external-id-normalized": {
+          "value": "10.1045/july2006-young",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        },
+        {
+         "external-id-type": "eid",
+         "external-id-value": "2-s2.0-33746651147",
+         "external-id-normalized": {
+          "value": "2-s2.0-33746651147",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": {
+       "value": "http://www.scopus.com/inward/record.url?eid=2-s2.0-33746651147&partnerID=MN8TOARS"
+      },
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "2006"
+       },
+       "month": null,
+       "day": null
+      },
+      "journal-title": {
+       "value": "D-Lib Magazine"
+      },
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/12721723",
+      "display-index": "0"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1653431303845
+    },
+    "external-ids": {
+     "external-id": [
+      {
+       "external-id-type": "doi",
+       "external-id-value": "10.1300/j104v39n03_15",
+       "external-id-normalized": {
+        "value": "10.1300/j104v39n03_15",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      }
+     ]
+    },
+    "work-summary": [
+     {
+      "put-code": 23118748,
+      "created-date": {
+       "value": 1458838624416
+      },
+      "last-modified-date": {
+       "value": 1653431303845
+      },
+      "source": {
+       "source-orcid": null,
+       "source-client-id": {
+        "uri": "https://orcid.org/client/0000-0002-3054-1567",
+        "path": "0000-0002-3054-1567",
+        "host": "orcid.org"
+       },
+       "source-name": {
+        "value": "Crossref Metadata Search"
+       },
+       "assertion-origin-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": {
+        "value": "Thomas B. Hickey"
+       }
+      },
+      "title": {
+       "title": {
+        "value": "FRBRizing OCLC's WorldCat"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "doi",
+         "external-id-value": "10.1300/j104v39n03_15",
+         "external-id-normalized": {
+          "value": "10.1300/j104v39n03_15",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": null,
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "2005"
+       },
+       "month": {
+        "value": "04"
+       },
+       "day": null
+      },
+      "journal-title": {
+       "value": "Cataloging & Classification Quarterly"
+      },
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/23118748",
+      "display-index": "0"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1462210769861
+    },
+    "external-ids": {
+     "external-id": []
+    },
+    "work-summary": [
+     {
+      "put-code": 15285752,
+      "created-date": {
+       "value": 1423062472013
+      },
+      "last-modified-date": {
+       "value": 1462210769861
+      },
+      "source": {
+       "source-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "source-client-id": null,
+       "source-name": {
+        "value": "Thomas B. Hickey"
+       },
+       "assertion-origin-orcid": null,
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": null
+      },
+      "title": {
+       "title": {
+        "value": "Metadata switch : thinking about some metadata management and knowledge organization issues in the changing research and learning landscape"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": null,
+      "url": {
+       "value": "http://www.oclc.org/content/dam/research/publications/library/2004/dempsey-mslitaguide.pdf?urlm=162890"
+      },
+      "type": "book-chapter",
+      "publication-date": {
+       "year": {
+        "value": "2005"
+       },
+       "month": null,
+       "day": null
+      },
+      "journal-title": null,
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/15285752",
+      "display-index": "0"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1653345254287
+    },
+    "external-ids": {
+     "external-id": [
+      {
+       "external-id-type": "eid",
+       "external-id-value": "2-s2.0-25144498385",
+       "external-id-normalized": {
+        "value": "2-s2.0-25144498385",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      },
+      {
+       "external-id-type": "doi",
+       "external-id-value": "10.1045/september2005-levan",
+       "external-id-normalized": {
+        "value": "10.1045/september2005-levan",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      }
+     ]
+    },
+    "work-summary": [
+     {
+      "put-code": 12721725,
+      "created-date": {
+       "value": 1400685647168
+      },
+      "last-modified-date": {
+       "value": 1653345254287
+      },
+      "source": {
+       "source-orcid": null,
+       "source-client-id": {
+        "uri": "https://orcid.org/client/0000-0002-5982-8983",
+        "path": "0000-0002-5982-8983",
+        "host": "orcid.org"
+       },
+       "source-name": {
+        "value": "Scopus - Elsevier"
+       },
+       "assertion-origin-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": {
+        "value": "Thomas B. Hickey"
+       }
+      },
+      "title": {
+       "title": {
+        "value": "Parallel text searching on a Beowulf cluster using SRW"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "doi",
+         "external-id-value": "10.1045/september2005-levan",
+         "external-id-normalized": {
+          "value": "10.1045/september2005-levan",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        },
+        {
+         "external-id-type": "eid",
+         "external-id-value": "2-s2.0-25144498385",
+         "external-id-normalized": {
+          "value": "2-s2.0-25144498385",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": {
+       "value": "http://www.scopus.com/inward/record.url?eid=2-s2.0-25144498385&partnerID=MN8TOARS"
+      },
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "2005"
+       },
+       "month": null,
+       "day": null
+      },
+      "journal-title": {
+       "value": "D-Lib Magazine"
+      },
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/12721725",
+      "display-index": "0"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1471613520094
+    },
+    "external-ids": {
+     "external-id": []
+    },
+    "work-summary": [
+     {
+      "put-code": 26150487,
+      "created-date": {
+       "value": 1471613520094
+      },
+      "last-modified-date": {
+       "value": 1471613520094
+      },
+      "source": {
+       "source-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "source-client-id": null,
+       "source-name": {
+        "value": "Thomas B. Hickey"
+       },
+       "assertion-origin-orcid": null,
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": null
+      },
+      "title": {
+       "title": {
+        "value": "Web services for digital libraries"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": []
+      },
+      "url": {
+       "value": "http://www.worldcat.org/oclc/62901026"
+      },
+      "type": "conference-paper",
+      "publication-date": {
+       "year": {
+        "value": "2004"
+       },
+       "month": null,
+       "day": null
+      },
+      "journal-title": null,
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/26150487",
+      "display-index": "1"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1462210769861
+    },
+    "external-ids": {
+     "external-id": []
+    },
+    "work-summary": [
+     {
+      "put-code": 15429927,
+      "created-date": {
+       "value": 1424100054421
+      },
+      "last-modified-date": {
+       "value": 1462210769861
+      },
+      "source": {
+       "source-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "source-client-id": null,
+       "source-name": {
+        "value": "Thomas B. Hickey"
+       },
+       "assertion-origin-orcid": null,
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": null
+      },
+      "title": {
+       "title": {
+        "value": "The PURL-based Object Identifier (POI)"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": null,
+      "url": {
+       "value": "http://www.ukoln.ac.uk/distributed-systems/poi/"
+      },
+      "type": "technical-standard",
+      "publication-date": {
+       "year": {
+        "value": "2003"
+       },
+       "month": null,
+       "day": null
+      },
+      "journal-title": null,
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/15429927",
+      "display-index": "0"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1653345254294
+    },
+    "external-ids": {
+     "external-id": [
+      {
+       "external-id-type": "doi",
+       "external-id-value": "10.1045/july2003-young",
+       "external-id-normalized": {
+        "value": "10.1045/july2003-young",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      },
+      {
+       "external-id-type": "eid",
+       "external-id-value": "2-s2.0-2942751218",
+       "external-id-normalized": {
+        "value": "2-s2.0-2942751218",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      }
+     ]
+    },
+    "work-summary": [
+     {
+      "put-code": 12721726,
+      "created-date": {
+       "value": 1400685647171
+      },
+      "last-modified-date": {
+       "value": 1653345254294
+      },
+      "source": {
+       "source-orcid": null,
+       "source-client-id": {
+        "uri": "https://orcid.org/client/0000-0002-5982-8983",
+        "path": "0000-0002-5982-8983",
+        "host": "orcid.org"
+       },
+       "source-name": {
+        "value": "Scopus - Elsevier"
+       },
+       "assertion-origin-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": {
+        "value": "Thomas B. Hickey"
+       }
+      },
+      "title": {
+       "title": {
+        "value": "Using the OAI-PMH ... differently"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "doi",
+         "external-id-value": "10.1045/july2003-young",
+         "external-id-normalized": {
+          "value": "10.1045/july2003-young",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        },
+        {
+         "external-id-type": "eid",
+         "external-id-value": "2-s2.0-2942751218",
+         "external-id-normalized": {
+          "value": "2-s2.0-2942751218",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": {
+       "value": "http://www.scopus.com/inward/record.url?eid=2-s2.0-2942751218&partnerID=MN8TOARS"
+      },
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "2003"
+       },
+       "month": null,
+       "day": null
+      },
+      "journal-title": {
+       "value": "D-Lib Magazine"
+      },
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/12721726",
+      "display-index": "0"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1653345254300
+    },
+    "external-ids": {
+     "external-id": [
+      {
+       "external-id-type": "doi",
+       "external-id-value": "10.1045/september2002-hickey",
+       "external-id-normalized": {
+        "value": "10.1045/september2002-hickey",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      },
+      {
+       "external-id-type": "eid",
+       "external-id-value": "2-s2.0-0003246231",
+       "external-id-normalized": {
+        "value": "2-s2.0-0003246231",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      }
+     ]
+    },
+    "work-summary": [
+     {
+      "put-code": 6292111,
+      "created-date": {
+       "value": 1364308035419
+      },
+      "last-modified-date": {
+       "value": 1462210769861
+      },
+      "source": {
+       "source-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "source-client-id": null,
+       "source-name": {
+        "value": "Thomas B. Hickey"
+       },
+       "assertion-origin-orcid": null,
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": null
+      },
+      "title": {
+       "title": {
+        "value": "Experiments with the IFLA Functional Requirements for Bibliographic Records (FRBR)"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "doi",
+         "external-id-value": "10.1045/september2002-hickey",
+         "external-id-normalized": {
+          "value": "10.1045/september2002-hickey",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": null,
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "2002"
+       },
+       "month": {
+        "value": "09"
+       },
+       "day": null
+      },
+      "journal-title": null,
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/6292111",
+      "display-index": "0"
+     },
+     {
+      "put-code": 12721727,
+      "created-date": {
+       "value": 1400685647174
+      },
+      "last-modified-date": {
+       "value": 1653345254300
+      },
+      "source": {
+       "source-orcid": null,
+       "source-client-id": {
+        "uri": "https://orcid.org/client/0000-0002-5982-8983",
+        "path": "0000-0002-5982-8983",
+        "host": "orcid.org"
+       },
+       "source-name": {
+        "value": "Scopus - Elsevier"
+       },
+       "assertion-origin-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": {
+        "value": "Thomas B. Hickey"
+       }
+      },
+      "title": {
+       "title": {
+        "value": "Experiments with the IFLA Functional Requirements for Bibliographic Records (FRBR)"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "doi",
+         "external-id-value": "10.1045/september2002-hickey",
+         "external-id-normalized": {
+          "value": "10.1045/september2002-hickey",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        },
+        {
+         "external-id-type": "eid",
+         "external-id-value": "2-s2.0-0003246231",
+         "external-id-normalized": {
+          "value": "2-s2.0-0003246231",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": {
+       "value": "http://www.scopus.com/inward/record.url?eid=2-s2.0-0003246231&partnerID=MN8TOARS"
+      },
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "2002"
+       },
+       "month": null,
+       "day": null
+      },
+      "journal-title": {
+       "value": "D-Lib Magazine"
+      },
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/12721727",
+      "display-index": "0"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1653431303792
+    },
+    "external-ids": {
+     "external-id": [
+      {
+       "external-id-type": "doi",
+       "external-id-value": "10.1300/J141v04n01_02",
+       "external-id-normalized": {
+        "value": "10.1300/j141v04n01_02",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      },
+      {
+       "external-id-type": "eid",
+       "external-id-value": "2-s2.0-79953053015",
+       "external-id-normalized": {
+        "value": "2-s2.0-79953053015",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      }
+     ]
+    },
+    "work-summary": [
+     {
+      "put-code": 6292108,
+      "created-date": {
+       "value": 1364308035405
+      },
+      "last-modified-date": {
+       "value": 1462210769861
+      },
+      "source": {
+       "source-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "source-client-id": null,
+       "source-name": {
+        "value": "Thomas B. Hickey"
+       },
+       "assertion-origin-orcid": null,
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": null
+      },
+      "title": {
+       "title": {
+        "value": "Collaboration in CORC"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "doi",
+         "external-id-value": "10.1300/J141v04n01_02",
+         "external-id-normalized": {
+          "value": "10.1300/j141v04n01_02",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": null,
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "2001"
+       },
+       "month": {
+        "value": "01"
+       },
+       "day": {
+        "value": "01"
+       }
+      },
+      "journal-title": null,
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/6292108",
+      "display-index": "0"
+     },
+     {
+      "put-code": 12721730,
+      "created-date": {
+       "value": 1400685647184
+      },
+      "last-modified-date": {
+       "value": 1653345254311
+      },
+      "source": {
+       "source-orcid": null,
+       "source-client-id": {
+        "uri": "https://orcid.org/client/0000-0002-5982-8983",
+        "path": "0000-0002-5982-8983",
+        "host": "orcid.org"
+       },
+       "source-name": {
+        "value": "Scopus - Elsevier"
+       },
+       "assertion-origin-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": {
+        "value": "Thomas B. Hickey"
+       }
+      },
+      "title": {
+       "title": {
+        "value": "Collaboration in CORC"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "doi",
+         "external-id-value": "10.1300/J141v04n01_02",
+         "external-id-normalized": {
+          "value": "10.1300/j141v04n01_02",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        },
+        {
+         "external-id-type": "eid",
+         "external-id-value": "2-s2.0-79953053015",
+         "external-id-normalized": {
+          "value": "2-s2.0-79953053015",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": {
+       "value": "http://www.scopus.com/inward/record.url?eid=2-s2.0-79953053015&partnerID=MN8TOARS"
+      },
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "2000"
+       },
+       "month": null,
+       "day": null
+      },
+      "journal-title": {
+       "value": "Journal of Internet Cataloging"
+      },
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/12721730",
+      "display-index": "0"
+     },
+     {
+      "put-code": 23118730,
+      "created-date": {
+       "value": 1458838487896
+      },
+      "last-modified-date": {
+       "value": 1653431303792
+      },
+      "source": {
+       "source-orcid": null,
+       "source-client-id": {
+        "uri": "https://orcid.org/client/0000-0002-3054-1567",
+        "path": "0000-0002-3054-1567",
+        "host": "orcid.org"
+       },
+       "source-name": {
+        "value": "Crossref Metadata Search"
+       },
+       "assertion-origin-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": {
+        "value": "Thomas B. Hickey"
+       }
+      },
+      "title": {
+       "title": {
+        "value": "Collaboration in CORC"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "doi",
+         "external-id-value": "10.1300/j141v04n01_02",
+         "external-id-normalized": {
+          "value": "10.1300/j141v04n01_02",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": null,
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "2001"
+       },
+       "month": {
+        "value": "01"
+       },
+       "day": {
+        "value": "01"
+       }
+      },
+      "journal-title": {
+       "value": "Journal of Internet Cataloging"
+      },
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/23118730",
+      "display-index": "0"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1653431303775
+    },
+    "external-ids": {
+     "external-id": [
+      {
+       "external-id-type": "doi",
+       "external-id-value": "10.1300/j111v34n03_06",
+       "external-id-normalized": {
+        "value": "10.1300/j111v34n03_06",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      }
+     ]
+    },
+    "work-summary": [
+     {
+      "put-code": 23118726,
+      "created-date": {
+       "value": 1458838443978
+      },
+      "last-modified-date": {
+       "value": 1653431303775
+      },
+      "source": {
+       "source-orcid": null,
+       "source-client-id": {
+        "uri": "https://orcid.org/client/0000-0002-3054-1567",
+        "path": "0000-0002-3054-1567",
+        "host": "orcid.org"
+       },
+       "source-name": {
+        "value": "Crossref Metadata Search"
+       },
+       "assertion-origin-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": {
+        "value": "Thomas B. Hickey"
+       }
+      },
+      "title": {
+       "title": {
+        "value": "A Java Z39.50 Client for Browsing Large Databases"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "doi",
+         "external-id-value": "10.1300/j111v34n03_06",
+         "external-id-normalized": {
+          "value": "10.1300/j111v34n03_06",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": null,
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "2001"
+       },
+       "month": null,
+       "day": null
+      },
+      "journal-title": {
+       "value": "Journal of Library Administration"
+      },
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/23118726",
+      "display-index": "0"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1653431303816
+    },
+    "external-ids": {
+     "external-id": [
+      {
+       "external-id-type": "doi",
+       "external-id-value": "10.1300/j111v34n03_11",
+       "external-id-normalized": {
+        "value": "10.1300/j111v34n03_11",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      }
+     ]
+    },
+    "work-summary": [
+     {
+      "put-code": 23118735,
+      "created-date": {
+       "value": 1458838521702
+      },
+      "last-modified-date": {
+       "value": 1653431303816
+      },
+      "source": {
+       "source-orcid": null,
+       "source-client-id": {
+        "uri": "https://orcid.org/client/0000-0002-3054-1567",
+        "path": "0000-0002-3054-1567",
+        "host": "orcid.org"
+       },
+       "source-name": {
+        "value": "Crossref Metadata Search"
+       },
+       "assertion-origin-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": {
+        "value": "Thomas B. Hickey"
+       }
+      },
+      "title": {
+       "title": {
+        "value": "CORC- Cooperative Online Resource Catalog"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "doi",
+         "external-id-value": "10.1300/j111v34n03_11",
+         "external-id-normalized": {
+          "value": "10.1300/j111v34n03_11",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": null,
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "2001"
+       },
+       "month": null,
+       "day": null
+      },
+      "journal-title": {
+       "value": "Journal of Library Administration"
+      },
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/23118735",
+      "display-index": "0"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1653345254305
+    },
+    "external-ids": {
+     "external-id": [
+      {
+       "external-id-type": "eid",
+       "external-id-value": "2-s2.0-0442295374",
+       "external-id-normalized": {
+        "value": "2-s2.0-0442295374",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      }
+     ]
+    },
+    "work-summary": [
+     {
+      "put-code": 12721728,
+      "created-date": {
+       "value": 1400685647177
+      },
+      "last-modified-date": {
+       "value": 1653345254305
+      },
+      "source": {
+       "source-orcid": null,
+       "source-client-id": {
+        "uri": "https://orcid.org/client/0000-0002-5982-8983",
+        "path": "0000-0002-5982-8983",
+        "host": "orcid.org"
+       },
+       "source-name": {
+        "value": "Scopus - Elsevier"
+       },
+       "assertion-origin-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": {
+        "value": "Thomas B. Hickey"
+       }
+      },
+      "title": {
+       "title": {
+        "value": "Computer text shading algorithm based on perception of luminance"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "eid",
+         "external-id-value": "2-s2.0-0442295374",
+         "external-id-normalized": {
+          "value": "2-s2.0-0442295374",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": {
+       "value": "http://www.scopus.com/inward/record.url?eid=2-s2.0-0442295374&partnerID=MN8TOARS"
+      },
+      "type": "conference-paper",
+      "publication-date": {
+       "year": {
+        "value": "2001"
+       },
+       "month": null,
+       "day": null
+      },
+      "journal-title": {
+       "value": "Proceedings of the Human Factors and Ergonomics Society"
+      },
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/12721728",
+      "display-index": "0"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1653431303780
+    },
+    "external-ids": {
+     "external-id": [
+      {
+       "external-id-type": "doi",
+       "external-id-value": "10.1300/j111v34n01_18",
+       "external-id-normalized": {
+        "value": "10.1300/j111v34n01_18",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      }
+     ]
+    },
+    "work-summary": [
+     {
+      "put-code": 23118727,
+      "created-date": {
+       "value": 1458838466052
+      },
+      "last-modified-date": {
+       "value": 1653431303780
+      },
+      "source": {
+       "source-orcid": null,
+       "source-client-id": {
+        "uri": "https://orcid.org/client/0000-0002-3054-1567",
+        "path": "0000-0002-3054-1567",
+        "host": "orcid.org"
+       },
+       "source-name": {
+        "value": "Crossref Metadata Search"
+       },
+       "assertion-origin-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": {
+        "value": "Thomas B. Hickey"
+       }
+      },
+      "title": {
+       "title": {
+        "value": "Guidon Web Applying Java to Scholarly Electronic Journals"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "doi",
+         "external-id-value": "10.1300/j111v34n01_18",
+         "external-id-normalized": {
+          "value": "10.1300/j111v34n01_18",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": null,
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "2001"
+       },
+       "month": null,
+       "day": null
+      },
+      "journal-title": {
+       "value": "Journal of Library Administration"
+      },
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/23118727",
+      "display-index": "0"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1653431303811
+    },
+    "external-ids": {
+     "external-id": [
+      {
+       "external-id-type": "doi",
+       "external-id-value": "10.1300/j111v34n01_10",
+       "external-id-normalized": {
+        "value": "10.1300/j111v34n01_10",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      }
+     ]
+    },
+    "work-summary": [
+     {
+      "put-code": 23118734,
+      "created-date": {
+       "value": 1458838507895
+      },
+      "last-modified-date": {
+       "value": 1653431303811
+      },
+      "source": {
+       "source-orcid": null,
+       "source-client-id": {
+        "uri": "https://orcid.org/client/0000-0002-3054-1567",
+        "path": "0000-0002-3054-1567",
+        "host": "orcid.org"
+       },
+       "source-name": {
+        "value": "Crossref Metadata Search"
+       },
+       "assertion-origin-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": {
+        "value": "Thomas B. Hickey"
+       }
+      },
+      "title": {
+       "title": {
+        "value": "Integrating Guidon with the World Wide Web"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "doi",
+         "external-id-value": "10.1300/j111v34n01_10",
+         "external-id-normalized": {
+          "value": "10.1300/j111v34n01_10",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": null,
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "2001"
+       },
+       "month": null,
+       "day": null
+      },
+      "journal-title": {
+       "value": "Journal of Library Administration"
+      },
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/23118734",
+      "display-index": "0"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1465220332713
+    },
+    "external-ids": {
+     "external-id": [
+      {
+       "external-id-type": "oclc",
+       "external-id-value": "951105276",
+       "external-id-normalized": {
+        "value": "951105276",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": {
+        "value": "http://www.worldcat.org/oclc/951105276"
+       },
+       "external-id-relationship": "self"
+      }
+     ]
+    },
+    "work-summary": [
+     {
+      "put-code": 24538717,
+      "created-date": {
+       "value": 1465220332630
+      },
+      "last-modified-date": {
+       "value": 1465220332713
+      },
+      "source": {
+       "source-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "source-client-id": null,
+       "source-name": {
+        "value": "Thomas B. Hickey"
+       },
+       "assertion-origin-orcid": null,
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": null
+      },
+      "title": {
+       "title": {
+        "value": "Metadata Trends"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "oclc",
+         "external-id-value": "951105276",
+         "external-id-normalized": {
+          "value": "951105276",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": {
+          "value": "http://www.worldcat.org/oclc/951105276"
+         },
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": {
+       "value": "http://www.worldcat.org/oclc/48395388"
+      },
+      "type": "conference-paper",
+      "publication-date": {
+       "year": {
+        "value": "2001"
+       },
+       "month": null,
+       "day": null
+      },
+      "journal-title": null,
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/24538717",
+      "display-index": "9"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1653431303853
+    },
+    "external-ids": {
+     "external-id": [
+      {
+       "external-id-type": "doi",
+       "external-id-value": "10.1300/j111v34n01_22",
+       "external-id-normalized": {
+        "value": "10.1300/j111v34n01_22",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      }
+     ]
+    },
+    "work-summary": [
+     {
+      "put-code": 23118752,
+      "created-date": {
+       "value": 1458838649923
+      },
+      "last-modified-date": {
+       "value": 1653431303853
+      },
+      "source": {
+       "source-orcid": null,
+       "source-client-id": {
+        "uri": "https://orcid.org/client/0000-0002-3054-1567",
+        "path": "0000-0002-3054-1567",
+        "host": "orcid.org"
+       },
+       "source-name": {
+        "value": "Crossref Metadata Search"
+       },
+       "assertion-origin-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": {
+        "value": "Thomas B. Hickey"
+       }
+      },
+      "title": {
+       "title": {
+        "value": "STORD-Structured Text on Relational Databases"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "doi",
+         "external-id-value": "10.1300/j111v34n01_22",
+         "external-id-normalized": {
+          "value": "10.1300/j111v34n01_22",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": null,
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "2001"
+       },
+       "month": null,
+       "day": null
+      },
+      "journal-title": {
+       "value": "Journal of Library Administration"
+      },
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/23118752",
+      "display-index": "0"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1653431303865
+    },
+    "external-ids": {
+     "external-id": [
+      {
+       "external-id-type": "doi",
+       "external-id-value": "10.1300/j111v34n03_22",
+       "external-id-normalized": {
+        "value": "10.1300/j111v34n03_22",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      }
+     ]
+    },
+    "work-summary": [
+     {
+      "put-code": 23118754,
+      "created-date": {
+       "value": 1458838677278
+      },
+      "last-modified-date": {
+       "value": 1653431303865
+      },
+      "source": {
+       "source-orcid": null,
+       "source-client-id": {
+        "uri": "https://orcid.org/client/0000-0002-3054-1567",
+        "path": "0000-0002-3054-1567",
+        "host": "orcid.org"
+       },
+       "source-name": {
+        "value": "Crossref Metadata Search"
+       },
+       "assertion-origin-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": {
+        "value": "Thomas B. Hickey"
+       }
+      },
+      "title": {
+       "title": {
+        "value": "The Role of Classification in CORC"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "doi",
+         "external-id-value": "10.1300/j111v34n03_22",
+         "external-id-normalized": {
+          "value": "10.1300/j111v34n03_22",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": null,
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "2001"
+       },
+       "month": null,
+       "day": null
+      },
+      "journal-title": {
+       "value": "Journal of Library Administration"
+      },
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/23118754",
+      "display-index": "0"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1653431303837
+    },
+    "external-ids": {
+     "external-id": [
+      {
+       "external-id-type": "doi",
+       "external-id-value": "10.1108/14684520010371549",
+       "external-id-normalized": {
+        "value": "10.1108/14684520010371549",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      }
+     ]
+    },
+    "work-summary": [
+     {
+      "put-code": 23118744,
+      "created-date": {
+       "value": 1458838603883
+      },
+      "last-modified-date": {
+       "value": 1653431303837
+      },
+      "source": {
+       "source-orcid": null,
+       "source-client-id": {
+        "uri": "https://orcid.org/client/0000-0002-3054-1567",
+        "path": "0000-0002-3054-1567",
+        "host": "orcid.org"
+       },
+       "source-name": {
+        "value": "Crossref Metadata Search"
+       },
+       "assertion-origin-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": {
+        "value": "Thomas B. Hickey"
+       }
+      },
+      "title": {
+       "title": {
+        "value": "CORC: a system for gateway creation"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "doi",
+         "external-id-value": "10.1108/14684520010371549",
+         "external-id-normalized": {
+          "value": "10.1108/14684520010371549",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": null,
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "2000"
+       },
+       "month": {
+        "value": "02"
+       },
+       "day": null
+      },
+      "journal-title": {
+       "value": "Online Information Review"
+      },
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/23118744",
+      "display-index": "0"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1653345217069
+    },
+    "external-ids": {
+     "external-id": [
+      {
+       "external-id-type": "pat",
+       "external-id-value": "US 5910805",
+       "external-id-normalized": {
+        "value": "us 5910805",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      }
+     ]
+    },
+    "work-summary": [
+     {
+      "put-code": 12713294,
+      "created-date": {
+       "value": 1400601295079
+      },
+      "last-modified-date": {
+       "value": 1653345217069
+      },
+      "source": {
+       "source-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "source-client-id": null,
+       "source-name": {
+        "value": "Thomas B. Hickey"
+       },
+       "assertion-origin-orcid": null,
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": null
+      },
+      "title": {
+       "title": {
+        "value": "Method for displaying bitmap derived text at a display having limited pixel-to-pixel spacing resolution"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "pat",
+         "external-id-value": "US 5910805",
+         "external-id-normalized": {
+          "value": "us 5910805",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": null,
+      "type": "patent",
+      "publication-date": {
+       "year": {
+        "value": "1999"
+       },
+       "month": {
+        "value": "06"
+       },
+       "day": {
+        "value": "08"
+       }
+      },
+      "journal-title": null,
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/12713294",
+      "display-index": "0"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1462210769860
+    },
+    "external-ids": {
+     "external-id": []
+    },
+    "work-summary": [
+     {
+      "put-code": 23119168,
+      "created-date": {
+       "value": 1458840158966
+      },
+      "last-modified-date": {
+       "value": 1462210769860
+      },
+      "source": {
+       "source-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "source-client-id": null,
+       "source-name": {
+        "value": "Thomas B. Hickey"
+       },
+       "assertion-origin-orcid": null,
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": null
+      },
+      "title": {
+       "title": {
+        "value": "Lessons learned from full-text journals at OCLC"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": null,
+      "url": null,
+      "type": "conference-paper",
+      "publication-date": {
+       "year": {
+        "value": "1998"
+       },
+       "month": {
+        "value": "03"
+       },
+       "day": null
+      },
+      "journal-title": null,
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/23119168",
+      "display-index": "5"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1653436033944
+    },
+    "external-ids": {
+     "external-id": [
+      {
+       "external-id-type": "doi",
+       "external-id-value": "10.14429/dbit.16.1.3169",
+       "external-id-normalized": {
+        "value": "10.14429/dbit.16.1.3169",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      }
+     ]
+    },
+    "work-summary": [
+     {
+      "put-code": 23893737,
+      "created-date": {
+       "value": 1462211479108
+      },
+      "last-modified-date": {
+       "value": 1462211479201
+      },
+      "source": {
+       "source-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "source-client-id": null,
+       "source-name": {
+        "value": "Thomas B. Hickey"
+       },
+       "assertion-origin-orcid": null,
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": null
+      },
+      "title": {
+       "title": {
+        "value": "Impact of Electronic Publishing on Academic Libraries"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "doi",
+         "external-id-value": "10.14429/dbit.16.1.3169",
+         "external-id-normalized": {
+          "value": "10.14429/dbit.16.1.3169",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": null,
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "1996"
+       },
+       "month": {
+        "value": "01"
+       },
+       "day": {
+        "value": "01"
+       }
+      },
+      "journal-title": {
+       "value": "DESIDOC Journal of Library and Information Technology"
+      },
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/23893737",
+      "display-index": "8"
+     },
+     {
+      "put-code": 23893650,
+      "created-date": {
+       "value": 1462210958088
+      },
+      "last-modified-date": {
+       "value": 1653436033944
+      },
+      "source": {
+       "source-orcid": null,
+       "source-client-id": {
+        "uri": "https://orcid.org/client/0000-0002-3054-1567",
+        "path": "0000-0002-3054-1567",
+        "host": "orcid.org"
+       },
+       "source-name": {
+        "value": "Crossref Metadata Search"
+       },
+       "assertion-origin-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": {
+        "value": "Thomas B. Hickey"
+       }
+      },
+      "title": {
+       "title": {
+        "value": "ENGLISH"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "doi",
+         "external-id-value": "10.14429/dbit.16.1.3169",
+         "external-id-normalized": {
+          "value": "10.14429/dbit.16.1.3169",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": null,
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "1996"
+       },
+       "month": {
+        "value": "01"
+       },
+       "day": {
+        "value": "01"
+       }
+      },
+      "journal-title": {
+       "value": "DBIT"
+      },
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/23893650",
+      "display-index": "0"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1462210769861
+    },
+    "external-ids": {
+     "external-id": [
+      {
+       "external-id-type": "pat",
+       "external-id-value": "US 5459739",
+       "external-id-normalized": {
+        "value": "us 5459739",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      }
+     ]
+    },
+    "work-summary": [
+     {
+      "put-code": 15271063,
+      "created-date": {
+       "value": 1422977748624
+      },
+      "last-modified-date": {
+       "value": 1462210769861
+      },
+      "source": {
+       "source-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "source-client-id": null,
+       "source-name": {
+        "value": "Thomas B. Hickey"
+       },
+       "assertion-origin-orcid": null,
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": null
+      },
+      "title": {
+       "title": {
+        "value": "Merging three optical character recognition outputs for improved precision using a minimum edit distance function"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "pat",
+         "external-id-value": "US 5459739",
+         "external-id-normalized": {
+          "value": "us 5459739",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": {
+       "value": "http://www.google.com/patents/US5459739"
+      },
+      "type": "patent",
+      "publication-date": {
+       "year": {
+        "value": "1995"
+       },
+       "month": {
+        "value": "10"
+       },
+       "day": null
+      },
+      "journal-title": null,
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/15271063",
+      "display-index": "0"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1653431303804
+    },
+    "external-ids": {
+     "external-id": [
+      {
+       "external-id-type": "doi",
+       "external-id-value": "10.1145/226188.226224",
+       "external-id-normalized": {
+        "value": "10.1145/226188.226224",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      }
+     ]
+    },
+    "work-summary": [
+     {
+      "put-code": 23118733,
+      "created-date": {
+       "value": 1458838499712
+      },
+      "last-modified-date": {
+       "value": 1653431303804
+      },
+      "source": {
+       "source-orcid": null,
+       "source-client-id": {
+        "uri": "https://orcid.org/client/0000-0002-3054-1567",
+        "path": "0000-0002-3054-1567",
+        "host": "orcid.org"
+       },
+       "source-name": {
+        "value": "Crossref Metadata Search"
+       },
+       "assertion-origin-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": {
+        "value": "Thomas B. Hickey"
+       }
+      },
+      "title": {
+       "title": {
+        "value": "Constraints on the design of information systems"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "doi",
+         "external-id-value": "10.1145/226188.226224",
+         "external-id-normalized": {
+          "value": "10.1145/226188.226224",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": null,
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "1995"
+       },
+       "month": null,
+       "day": null
+      },
+      "journal-title": {
+       "value": "SIGOIS Bull."
+      },
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/23118733",
+      "display-index": "0"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1653345254316
+    },
+    "external-ids": {
+     "external-id": [
+      {
+       "external-id-type": "eid",
+       "external-id-value": "2-s2.0-21844505790",
+       "external-id-normalized": {
+        "value": "2-s2.0-21844505790",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      }
+     ]
+    },
+    "work-summary": [
+     {
+      "put-code": 12721731,
+      "created-date": {
+       "value": 1400685647188
+      },
+      "last-modified-date": {
+       "value": 1653345254316
+      },
+      "source": {
+       "source-orcid": null,
+       "source-client-id": {
+        "uri": "https://orcid.org/client/0000-0002-5982-8983",
+        "path": "0000-0002-5982-8983",
+        "host": "orcid.org"
+       },
+       "source-name": {
+        "value": "Scopus - Elsevier"
+       },
+       "assertion-origin-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": {
+        "value": "Thomas B. Hickey"
+       }
+      },
+      "title": {
+       "title": {
+        "value": "Present and future capabilities of the online journal"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "eid",
+         "external-id-value": "2-s2.0-21844505790",
+         "external-id-normalized": {
+          "value": "2-s2.0-21844505790",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": {
+       "value": "http://www.scopus.com/inward/record.url?eid=2-s2.0-21844505790&partnerID=MN8TOARS"
+      },
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "1995"
+       },
+       "month": null,
+       "day": null
+      },
+      "journal-title": {
+       "value": "Library Trends"
+      },
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/12721731",
+      "display-index": "0"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1462210769860
+    },
+    "external-ids": {
+     "external-id": []
+    },
+    "work-summary": [
+     {
+      "put-code": 23119294,
+      "created-date": {
+       "value": 1458840455345
+      },
+      "last-modified-date": {
+       "value": 1462210769860
+      },
+      "source": {
+       "source-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "source-client-id": null,
+       "source-name": {
+        "value": "Thomas B. Hickey"
+       },
+       "assertion-origin-orcid": null,
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": null
+      },
+      "title": {
+       "title": {
+        "value": "Online public catalogs and large retrievals"
+       },
+       "subtitle": {
+        "value": "methods for organizing, reducing, and displaying"
+       },
+       "translated-title": null
+      },
+      "external-ids": null,
+      "url": null,
+      "type": "conference-paper",
+      "publication-date": {
+       "year": {
+        "value": "1990"
+       },
+       "month": null,
+       "day": null
+      },
+      "journal-title": null,
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/23119294",
+      "display-index": "7"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1462210769861
+    },
+    "external-ids": {
+     "external-id": [
+      {
+       "external-id-type": "pat",
+       "external-id-value": "US 4803643",
+       "external-id-normalized": {
+        "value": "us 4803643",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      }
+     ]
+    },
+    "work-summary": [
+     {
+      "put-code": 15270847,
+      "created-date": {
+       "value": 1422977377707
+      },
+      "last-modified-date": {
+       "value": 1462210769861
+      },
+      "source": {
+       "source-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "source-client-id": null,
+       "source-name": {
+        "value": "Thomas B. Hickey"
+       },
+       "assertion-origin-orcid": null,
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": null
+      },
+      "title": {
+       "title": {
+        "value": "System and method for creating memory-retained, formatted pages of text, tabulation, and graphic data"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "pat",
+         "external-id-value": "US 4803643",
+         "external-id-normalized": {
+          "value": "us 4803643",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": null,
+      "type": "patent",
+      "publication-date": {
+       "year": {
+        "value": "1989"
+       },
+       "month": {
+        "value": "02"
+       },
+       "day": {
+        "value": "07"
+       }
+      },
+      "journal-title": null,
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/15270847",
+      "display-index": "0"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1462210769860
+    },
+    "external-ids": {
+     "external-id": []
+    },
+    "work-summary": [
+     {
+      "put-code": 23119284,
+      "created-date": {
+       "value": 1458840330833
+      },
+      "last-modified-date": {
+       "value": 1462210769860
+      },
+      "source": {
+       "source-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "source-client-id": null,
+       "source-name": {
+        "value": "Thomas B. Hickey"
+       },
+       "assertion-origin-orcid": null,
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": null
+      },
+      "title": {
+       "title": {
+        "value": "Using SGML and tex for an interactive chemical encyclopedia"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": null,
+      "url": null,
+      "type": "conference-paper",
+      "publication-date": {
+       "year": {
+        "value": "1989"
+       },
+       "month": null,
+       "day": null
+      },
+      "journal-title": null,
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/23119284",
+      "display-index": "6"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1471613312630
+    },
+    "external-ids": {
+     "external-id": []
+    },
+    "work-summary": [
+     {
+      "put-code": 26150382,
+      "created-date": {
+       "value": 1471613312630
+      },
+      "last-modified-date": {
+       "value": 1471613312630
+      },
+      "source": {
+       "source-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "source-client-id": null,
+       "source-name": {
+        "value": "Thomas B. Hickey"
+       },
+       "assertion-origin-orcid": null,
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": null
+      },
+      "title": {
+       "title": {
+        "value": "Union catalogs on personal supercomputers"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": []
+      },
+      "url": {
+       "value": "http://www.worldcat.org/oclc/19246647"
+      },
+      "type": "conference-paper",
+      "publication-date": {
+       "year": {
+        "value": "1988"
+       },
+       "month": {
+        "value": "08"
+       },
+       "day": null
+      },
+      "journal-title": null,
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/26150382",
+      "display-index": "1"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1504227451375
+    },
+    "external-ids": {
+     "external-id": [
+      {
+       "external-id-type": "oclc",
+       "external-id-value": "56809397",
+       "external-id-normalized": {
+        "value": "56809397",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": {
+        "value": "http://www.worldcat.org/oclc/56809397"
+       },
+       "external-id-relationship": "self"
+      }
+     ]
+    },
+    "work-summary": [
+     {
+      "put-code": 36430574,
+      "created-date": {
+       "value": 1504227451373
+      },
+      "last-modified-date": {
+       "value": 1504227451375
+      },
+      "source": {
+       "source-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "source-client-id": null,
+       "source-name": {
+        "value": "Thomas B. Hickey"
+       },
+       "assertion-origin-orcid": null,
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": null
+      },
+      "title": {
+       "title": {
+        "value": "Interactive display of text and graphics on an IBM PC"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "oclc",
+         "external-id-value": "56809397",
+         "external-id-normalized": {
+          "value": "56809397",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": {
+          "value": "http://www.worldcat.org/oclc/56809397"
+         },
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": null,
+      "type": "conference-paper",
+      "publication-date": {
+       "year": {
+        "value": "1986"
+       },
+       "month": {
+        "value": "09"
+       },
+       "day": null
+      },
+      "journal-title": null,
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/36430574",
+      "display-index": "1"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1653431303475
+    },
+    "external-ids": {
+     "external-id": [
+      {
+       "external-id-type": "doi",
+       "external-id-value": "10.1108/eb047635",
+       "external-id-normalized": {
+        "value": "10.1108/eb047635",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      },
+      {
+       "external-id-type": "eid",
+       "external-id-value": "2-s2.0-84916504255",
+       "external-id-normalized": {
+        "value": "2-s2.0-84916504255",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      }
+     ]
+    },
+    "work-summary": [
+     {
+      "put-code": 6292110,
+      "created-date": {
+       "value": 1364308035414
+      },
+      "last-modified-date": {
+       "value": 1462210769861
+      },
+      "source": {
+       "source-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "source-client-id": null,
+       "source-name": {
+        "value": "Thomas B. Hickey"
+       },
+       "assertion-origin-orcid": null,
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": null
+      },
+      "title": {
+       "title": {
+        "value": "Electronic Document Delivery: OCLC's Prototype System"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "doi",
+         "external-id-value": "10.1108/eb047635",
+         "external-id-normalized": {
+          "value": "10.1108/eb047635",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": null,
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "1986"
+       },
+       "month": null,
+       "day": null
+      },
+      "journal-title": null,
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/6292110",
+      "display-index": "0"
+     },
+     {
+      "put-code": 23118683,
+      "created-date": {
+       "value": 1458838268037
+      },
+      "last-modified-date": {
+       "value": 1653431303475
+      },
+      "source": {
+       "source-orcid": null,
+       "source-client-id": {
+        "uri": "https://orcid.org/client/0000-0002-5982-8983",
+        "path": "0000-0002-5982-8983",
+        "host": "orcid.org"
+       },
+       "source-name": {
+        "value": "Scopus - Elsevier"
+       },
+       "assertion-origin-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": {
+        "value": "Thomas B. Hickey"
+       }
+      },
+      "title": {
+       "title": {
+        "value": "Electronic Document Delivery: OCLC's Prototype System"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "doi",
+         "external-id-value": "10.1108/eb047635",
+         "external-id-normalized": {
+          "value": "10.1108/eb047635",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        },
+        {
+         "external-id-type": "eid",
+         "external-id-value": "2-s2.0-84916504255",
+         "external-id-normalized": {
+          "value": "2-s2.0-84916504255",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": {
+       "value": "http://www.scopus.com/inward/record.url?eid=2-s2.0-84916504255&partnerID=MN8TOARS"
+      },
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "1986"
+       },
+       "month": null,
+       "day": null
+      },
+      "journal-title": {
+       "value": "Library Hi Tech"
+      },
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/23118683",
+      "display-index": "0"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1462210769860
+    },
+    "external-ids": {
+     "external-id": []
+    },
+    "work-summary": [
+     {
+      "put-code": 23118945,
+      "created-date": {
+       "value": 1458839334774
+      },
+      "last-modified-date": {
+       "value": 1462210769860
+      },
+      "source": {
+       "source-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "source-client-id": null,
+       "source-name": {
+        "value": "Thomas B. Hickey"
+       },
+       "assertion-origin-orcid": null,
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": null
+      },
+      "title": {
+       "title": {
+        "value": "Document Retrieval and Printing Using CD-ROMs"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": null,
+      "url": null,
+      "type": "conference-paper",
+      "publication-date": {
+       "year": {
+        "value": "1985"
+       },
+       "month": {
+        "value": "10"
+       },
+       "day": null
+      },
+      "journal-title": null,
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/23118945",
+      "display-index": "1"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1504227338652
+    },
+    "external-ids": {
+     "external-id": [
+      {
+       "external-id-type": "oclc",
+       "external-id-value": "56578526",
+       "external-id-normalized": {
+        "value": "56578526",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": {
+        "value": "http://www.worldcat.org/oclc/56578526"
+       },
+       "external-id-relationship": "self"
+      }
+     ]
+    },
+    "work-summary": [
+     {
+      "put-code": 36430583,
+      "created-date": {
+       "value": 1504227338652
+      },
+      "last-modified-date": {
+       "value": 1504227338652
+      },
+      "source": {
+       "source-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "source-client-id": null,
+       "source-name": {
+        "value": "Thomas B. Hickey"
+       },
+       "assertion-origin-orcid": null,
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": null
+      },
+      "title": {
+       "title": {
+        "value": "The graceful integration of text and facsimile in an electronic document delivery system"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "oclc",
+         "external-id-value": "56578526",
+         "external-id-normalized": {
+          "value": "56578526",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": {
+          "value": "http://www.worldcat.org/oclc/56578526"
+         },
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": null,
+      "type": "conference-paper",
+      "publication-date": {
+       "year": {
+        "value": "1983"
+       },
+       "month": {
+        "value": "08"
+       },
+       "day": null
+      },
+      "journal-title": {
+       "value": "New trends in electronic publishing and electronic libraries : Essen Symposium, 29 August-31 August 1983"
+      },
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/36430583",
+      "display-index": "1"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1462210769860
+    },
+    "external-ids": {
+     "external-id": []
+    },
+    "work-summary": [
+     {
+      "put-code": 23118984,
+      "created-date": {
+       "value": 1458839441628
+      },
+      "last-modified-date": {
+       "value": 1462210769860
+      },
+      "source": {
+       "source-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "source-client-id": null,
+       "source-name": {
+        "value": "Thomas B. Hickey"
+       },
+       "assertion-origin-orcid": null,
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": null
+      },
+      "title": {
+       "title": {
+        "value": "New Information Technologies and Opportunities Regarding Input/output Devices"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": null,
+      "url": null,
+      "type": "conference-paper",
+      "publication-date": {
+       "year": {
+        "value": "1982"
+       },
+       "month": null,
+       "day": null
+      },
+      "journal-title": null,
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/23118984",
+      "display-index": "2"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1462210769860
+    },
+    "external-ids": {
+     "external-id": []
+    },
+    "work-summary": [
+     {
+      "put-code": 23119140,
+      "created-date": {
+       "value": 1458839875442
+      },
+      "last-modified-date": {
+       "value": 1462210769860
+      },
+      "source": {
+       "source-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "source-client-id": null,
+       "source-name": {
+        "value": "Thomas B. Hickey"
+       },
+       "assertion-origin-orcid": null,
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": null
+      },
+      "title": {
+       "title": {
+        "value": "The Journal in the Year 2000"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": null,
+      "url": null,
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "1981"
+       },
+       "month": {
+        "value": "12"
+       },
+       "day": null
+      },
+      "journal-title": {
+       "value": "Wilson Library Bulletin"
+      },
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/23119140",
+      "display-index": "4"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1469038692845
+    },
+    "external-ids": {
+     "external-id": []
+    },
+    "work-summary": [
+     {
+      "put-code": 25545844,
+      "created-date": {
+       "value": 1469038692845
+      },
+      "last-modified-date": {
+       "value": 1469038692845
+      },
+      "source": {
+       "source-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "source-client-id": null,
+       "source-name": {
+        "value": "Thomas B. Hickey"
+       },
+       "assertion-origin-orcid": null,
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": null
+      },
+      "title": {
+       "title": {
+        "value": "The status of METAFONT at OCLC"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": []
+      },
+      "url": {
+       "value": "https://www.tug.org/TUGboat/Contents/contents2-2.html"
+      },
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "1981"
+       },
+       "month": {
+        "value": "07"
+       },
+       "day": null
+      },
+      "journal-title": {
+       "value": "TUGboat"
+      },
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/25545844",
+      "display-index": "1"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1462210769860
+    },
+    "external-ids": {
+     "external-id": []
+    },
+    "work-summary": [
+     {
+      "put-code": 23119046,
+      "created-date": {
+       "value": 1458839571894
+      },
+      "last-modified-date": {
+       "value": 1462210769860
+      },
+      "source": {
+       "source-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "source-client-id": null,
+       "source-name": {
+        "value": "Thomas B. Hickey"
+       },
+       "assertion-origin-orcid": null,
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": null
+      },
+      "title": {
+       "title": {
+        "value": "Data Entry/display Devices for Interactive Information Retrieval"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": null,
+      "url": null,
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "1981"
+       },
+       "month": null,
+       "day": null
+      },
+      "journal-title": {
+       "value": "Annual Review of Information Science and Technology"
+      },
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/23119046",
+      "display-index": "3"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1462210769861
+    },
+    "external-ids": {
+     "external-id": [
+      {
+       "external-id-type": "oclc",
+       "external-id-value": "7548884",
+       "external-id-normalized": {
+        "value": "7548884",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      }
+     ]
+    },
+    "work-summary": [
+     {
+      "put-code": 10430016,
+      "created-date": {
+       "value": 1383076351242
+      },
+      "last-modified-date": {
+       "value": 1462210769861
+      },
+      "source": {
+       "source-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "source-client-id": null,
+       "source-name": {
+        "value": "Thomas B. Hickey"
+       },
+       "assertion-origin-orcid": null,
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": null
+      },
+      "title": {
+       "title": {
+        "value": "Research report on field, subfield, and indicator statistics in OCLC bibliographic records"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "oclc",
+         "external-id-value": "7548884",
+         "external-id-normalized": {
+          "value": "7548884",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": null,
+      "type": "report",
+      "publication-date": {
+       "year": {
+        "value": "1981"
+       },
+       "month": null,
+       "day": null
+      },
+      "journal-title": null,
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/10430016",
+      "display-index": "0"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1653431303481
+    },
+    "external-ids": {
+     "external-id": [
+      {
+       "external-id-type": "doi",
+       "external-id-value": "10.1016/0306-4573(79)90042-6",
+       "external-id-normalized": {
+        "value": "10.1016/0306-4573(79)90042-6",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      },
+      {
+       "external-id-type": "eid",
+       "external-id-value": "2-s2.0-49249153992",
+       "external-id-normalized": {
+        "value": "2-s2.0-49249153992",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      }
+     ]
+    },
+    "work-summary": [
+     {
+      "put-code": 6292109,
+      "created-date": {
+       "value": 1364308035410
+      },
+      "last-modified-date": {
+       "value": 1653327326145
+      },
+      "source": {
+       "source-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "source-client-id": null,
+       "source-name": {
+        "value": "Thomas B. Hickey"
+       },
+       "assertion-origin-orcid": null,
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": null
+      },
+      "title": {
+       "title": {
+        "value": "Derived search keys for government documents"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "doi",
+         "external-id-value": "10.1016/0306-4573(79)90042-6",
+         "external-id-normalized": {
+          "value": "10.1016/0306-4573(79)90042-6",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": {
+       "value": "http://www.scopus.com/inward/record.url?eid=2-s2.0-49249153992&partnerID=MN8TOARS"
+      },
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "1979"
+       },
+       "month": {
+        "value": "01"
+       },
+       "day": null
+      },
+      "journal-title": null,
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/6292109",
+      "display-index": "0"
+     },
+     {
+      "put-code": 23118684,
+      "created-date": {
+       "value": 1458838268043
+      },
+      "last-modified-date": {
+       "value": 1653431303481
+      },
+      "source": {
+       "source-orcid": null,
+       "source-client-id": {
+        "uri": "https://orcid.org/client/0000-0002-5982-8983",
+        "path": "0000-0002-5982-8983",
+        "host": "orcid.org"
+       },
+       "source-name": {
+        "value": "Scopus - Elsevier"
+       },
+       "assertion-origin-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": {
+        "value": "Thomas B. Hickey"
+       }
+      },
+      "title": {
+       "title": {
+        "value": "Derived search keys for government documents"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "doi",
+         "external-id-value": "10.1016/0306-4573(79)90042-6",
+         "external-id-normalized": {
+          "value": "10.1016/0306-4573(79)90042-6",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        },
+        {
+         "external-id-type": "eid",
+         "external-id-value": "2-s2.0-49249153992",
+         "external-id-normalized": {
+          "value": "2-s2.0-49249153992",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": {
+       "value": "http://www.scopus.com/inward/record.url?eid=2-s2.0-49249153992&partnerID=MN8TOARS"
+      },
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "1979"
+       },
+       "month": null,
+       "day": null
+      },
+      "journal-title": {
+       "value": "Information Processing and Management"
+      },
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/23118684",
+      "display-index": "0"
+     }
+    ]
+   },
+   {
+    "last-modified-date": {
+     "value": 1462210769861
+    },
+    "external-ids": {
+     "external-id": [
+      {
+       "external-id-type": "doi",
+       "external-id-value": "10.1108/eb023935",
+       "external-id-normalized": {
+        "value": "10.1108/eb023935",
+        "transient": true
+       },
+       "external-id-normalized-error": null,
+       "external-id-url": null,
+       "external-id-relationship": "self"
+      }
+     ]
+    },
+    "work-summary": [
+     {
+      "put-code": 6292112,
+      "created-date": {
+       "value": 1364308035425
+      },
+      "last-modified-date": {
+       "value": 1462210769861
+      },
+      "source": {
+       "source-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "source-client-id": null,
+       "source-name": {
+        "value": "Thomas B. Hickey"
+       },
+       "assertion-origin-orcid": null,
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": null
+      },
+      "title": {
+       "title": {
+        "value": "Searching linear files on-line"
+       },
+       "subtitle": null,
+       "translated-title": null
+      },
+      "external-ids": {
+       "external-id": [
+        {
+         "external-id-type": "doi",
+         "external-id-value": "10.1108/eb023935",
+         "external-id-normalized": {
+          "value": "10.1108/eb023935",
+          "transient": true
+         },
+         "external-id-normalized-error": null,
+         "external-id-url": null,
+         "external-id-relationship": "self"
+        }
+       ]
+      },
+      "url": null,
+      "type": "journal-article",
+      "publication-date": {
+       "year": {
+        "value": "1977"
+       },
+       "month": null,
+       "day": null
+      },
+      "journal-title": null,
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/work/6292112",
+      "display-index": "0"
+     }
+    ]
+   }
+  ],
+  "path": "/0000-0002-1694-233X/works"
+ },
+ "path": "/0000-0002-1694-233X/activities"
+}

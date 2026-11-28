@@ -1,0 +1,47 @@
+{
+ "created-date": {
+  "value": 1390324699331
+ },
+ "last-modified-date": {
+  "value": 1405894277263
+ },
+ "source": {
+  "source-orcid": {
+   "uri": "https://orcid.org/0000-0002-1694-233X",
+   "path": "0000-0002-1694-233X",
+   "host": "orcid.org"
+  },
+  "source-client-id": null,
+  "source-name": {
+   "value": "Thomas B. Hickey"
+  },
+  "assertion-origin-orcid": null,
+  "assertion-origin-client-id": null,
+  "assertion-origin-name": null
+ },
+ "put-code": 85904,
+ "path": "/0000-0002-1694-233X/education/85904",
+ "department-name": "Library Information Science",
+ "role-title": "Ph.D.",
+ "start-date": null,
+ "end-date": {
+  "year": {
+   "value": "1977"
+  },
+  "month": null,
+  "day": null
+ },
+ "organization": {
+  "name": "University of Ilinois",
+  "address": {
+   "city": "Urbana",
+   "region": "IL",
+   "country": "US"
+  },
+  "disambiguated-organization": null
+ },
+ "url": null,
+ "external-ids": null,
+ "display-index": "0",
+ "visibility": "public"
+}

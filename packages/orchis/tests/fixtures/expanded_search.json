@@ -1,0 +1,25 @@
+{
+ "expanded-result": [
+  {
+   "orcid-id": "0000-0002-4189-3154",
+   "given-names": "Georg",
+   "family-names": "Kucsko",
+   "credit-name": null,
+   "other-name": [],
+   "email": [],
+   "institution-name": [
+    "Harvard University"
+   ]
+  },
+  {
+   "orcid-id": "0000-0003-4780-3508",
+   "given-names": "Gabriele",
+   "family-names": "Kucsko-Stadlmayer",
+   "credit-name": null,
+   "other-name": [],
+   "email": [],
+   "institution-name": []
+  }
+ ],
+ "num-found": 2
+}

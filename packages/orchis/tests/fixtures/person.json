@@ -1,0 +1,251 @@
+{
+ "last-modified-date": {
+  "value": 1517873256636
+ },
+ "name": {
+  "created-date": {
+   "value": 1460757532543
+  },
+  "last-modified-date": {
+   "value": 1460757532543
+  },
+  "given-names": {
+   "value": "Thomas B."
+  },
+  "family-name": {
+   "value": "Hickey"
+  },
+  "credit-name": null,
+  "source": null,
+  "visibility": "public",
+  "path": "0000-0002-1694-233X"
+ },
+ "other-names": {
+  "last-modified-date": {
+   "value": 1464801000712
+  },
+  "other-name": [
+   {
+    "created-date": {
+     "value": 1462210769464
+    },
+    "last-modified-date": {
+     "value": 1464801000712
+    },
+    "source": {
+     "source-orcid": {
+      "uri": "https://orcid.org/0000-0002-1694-233X",
+      "path": "0000-0002-1694-233X",
+      "host": "orcid.org"
+     },
+     "source-client-id": null,
+     "source-name": {
+      "value": "Thomas B. Hickey"
+     },
+     "assertion-origin-orcid": null,
+     "assertion-origin-client-id": null,
+     "assertion-origin-name": null
+    },
+    "content": "Thom Hickey",
+    "visibility": "public",
+    "path": "/0000-0002-1694-233X/other-names/732912",
+    "put-code": 732912,
+    "display-index": 0
+   }
+  ],
+  "path": "/0000-0002-1694-233X/other-names"
+ },
+ "biography": null,
+ "researcher-urls": {
+  "last-modified-date": {
+   "value": 1463003428816
+  },
+  "researcher-url": [
+   {
+    "created-date": {
+     "value": 1462210769501
+    },
+    "last-modified-date": {
+     "value": 1463003428816
+    },
+    "source": {
+     "source-orcid": {
+      "uri": "https://orcid.org/0000-0002-1694-233X",
+      "path": "0000-0002-1694-233X",
+      "host": "orcid.org"
+     },
+     "source-client-id": null,
+     "source-name": {
+      "value": "Thomas B. Hickey"
+     },
+     "assertion-origin-orcid": null,
+     "assertion-origin-client-id": null,
+     "assertion-origin-name": null
+    },
+    "url-name": "ISNI ID 0000 0000 2368 8144",
+    "url": {
+     "value": "http://isni.org/isni/0000000023688144"
+    },
+    "visibility": "public",
+    "path": "/0000-0002-1694-233X/researcher-urls/727738",
+    "put-code": 727738,
+    "display-index": 0
+   },
+   {
+    "created-date": {
+     "value": 1462210769509
+    },
+    "last-modified-date": {
+     "value": 1463003428816
+    },
+    "source": {
+     "source-orcid": {
+      "uri": "https://orcid.org/0000-0002-1694-233X",
+      "path": "0000-0002-1694-233X",
+      "host": "orcid.org"
+     },
+     "source-client-id": null,
+     "source-name": {
+      "value": "Thomas B. Hickey"
+     },
+     "assertion-origin-orcid": null,
+     "assertion-origin-client-id": null,
+     "assertion-origin-name": null
+    },
+    "url-name": "Blog",
+    "url": {
+     "value": "http://outgoing.typepad.com"
+    },
+    "visibility": "public",
+    "path": "/0000-0002-1694-233X/researcher-urls/727739",
+    "put-code": 727739,
+    "display-index": 0
+   },
+   {
+    "created-date": {
+     "value": 1462210769511
+    },
+    "last-modified-date": {
+     "value": 1463003428816
+    },
+    "source": {
+     "source-orcid": {
+      "uri": "https://orcid.org/0000-0002-1694-233X",
+      "path": "0000-0002-1694-233X",
+      "host": "orcid.org"
+     },
+     "source-client-id": null,
+     "source-name": {
+      "value": "Thomas B. Hickey"
+     },
+     "assertion-origin-orcid": null,
+     "assertion-origin-client-id": null,
+     "assertion-origin-name": null
+    },
+    "url-name": "VIAF ID 72734757",
+    "url": {
+     "value": "http://viaf.org/viaf/72734757"
+    },
+    "visibility": "public",
+    "path": "/0000-0002-1694-233X/researcher-urls/727740",
+    "put-code": 727740,
+    "display-index": 0
+   }
+  ],
+  "path": "/0000-0002-1694-233X/researcher-urls"
+ },
+ "emails": {
+  "last-modified-date": null,
+  "email": [],
+  "path": "/0000-0002-1694-233X/email"
+ },
+ "addresses": {
+  "last-modified-date": {
+   "value": 1464801001220
+  },
+  "address": [
+   {
+    "created-date": {
+     "value": 1453660601177
+    },
+    "last-modified-date": {
+     "value": 1464801001220
+    },
+    "source": {
+     "source-orcid": {
+      "uri": "https://orcid.org/0000-0002-1694-233X",
+      "path": "0000-0002-1694-233X",
+      "host": "orcid.org"
+     },
+     "source-client-id": null,
+     "source-name": {
+      "value": "Thomas B. Hickey"
+     },
+     "assertion-origin-orcid": null,
+     "assertion-origin-client-id": null,
+     "assertion-origin-name": null
+    },
+    "country": {
+     "value": "US"
+    },
+    "visibility": "public",
+    "path": "/0000-0002-1694-233X/address/379780",
+    "put-code": 379780,
+    "display-index": 0
+   }
+  ],
+  "path": "/0000-0002-1694-233X/address"
+ },
+ "keywords": {
+  "last-modified-date": null,
+  "keyword": [],
+  "path": "/0000-0002-1694-233X/keywords"
+ },
+ "external-identifiers": {
+  "last-modified-date": {
+   "value": 1517873256636
+  },
+  "external-identifier": [
+   {
+    "created-date": {
+     "value": 1458838241689
+    },
+    "last-modified-date": {
+     "value": 1517873256636
+    },
+    "source": {
+     "source-orcid": null,
+     "source-client-id": {
+      "uri": "https://orcid.org/client/0000-0002-5982-8983",
+      "path": "0000-0002-5982-8983",
+      "host": "orcid.org"
+     },
+     "source-name": {
+      "value": "Scopus - Elsevier"
+     },
+     "assertion-origin-orcid": {
+      "uri": "https://orcid.org/0000-0002-1694-233X",
+      "path": "0000-0002-1694-233X",
+      "host": "orcid.org"
+     },
+     "assertion-origin-client-id": null,
+     "assertion-origin-name": {
+      "value": "Thomas B. Hickey"
+     }
+    },
+    "external-id-type": "Scopus Author ID",
+    "external-id-value": "7005100180",
+    "external-id-url": {
+     "value": "http://www.scopus.com/inward/authorDetails.url?authorID=7005100180&partnerID=MN8TOARS"
+    },
+    "external-id-relationship": "self",
+    "visibility": "public",
+    "path": "/0000-0002-1694-233X/external-identifiers/447495",
+    "put-code": 447495,
+    "display-index": 0
+   }
+  ],
+  "path": "/0000-0002-1694-233X/external-identifiers"
+ },
+ "path": "/0000-0002-1694-233X/person"
+}

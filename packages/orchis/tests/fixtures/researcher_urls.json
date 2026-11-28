@@ -1,0 +1,98 @@
+{
+ "last-modified-date": {
+  "value": 1463003428816
+ },
+ "researcher-url": [
+  {
+   "created-date": {
+    "value": 1462210769501
+   },
+   "last-modified-date": {
+    "value": 1463003428816
+   },
+   "source": {
+    "source-orcid": {
+     "uri": "https://orcid.org/0000-0002-1694-233X",
+     "path": "0000-0002-1694-233X",
+     "host": "orcid.org"
+    },
+    "source-client-id": null,
+    "source-name": {
+     "value": "Thomas B. Hickey"
+    },
+    "assertion-origin-orcid": null,
+    "assertion-origin-client-id": null,
+    "assertion-origin-name": null
+   },
+   "url-name": "ISNI ID 0000 0000 2368 8144",
+   "url": {
+    "value": "http://isni.org/isni/0000000023688144"
+   },
+   "visibility": "public",
+   "path": "/0000-0002-1694-233X/researcher-urls/727738",
+   "put-code": 727738,
+   "display-index": 0
+  },
+  {
+   "created-date": {
+    "value": 1462210769509
+   },
+   "last-modified-date": {
+    "value": 1463003428816
+   },
+   "source": {
+    "source-orcid": {
+     "uri": "https://orcid.org/0000-0002-1694-233X",
+     "path": "0000-0002-1694-233X",
+     "host": "orcid.org"
+    },
+    "source-client-id": null,
+    "source-name": {
+     "value": "Thomas B. Hickey"
+    },
+    "assertion-origin-orcid": null,
+    "assertion-origin-client-id": null,
+    "assertion-origin-name": null
+   },
+   "url-name": "Blog",
+   "url": {
+    "value": "http://outgoing.typepad.com"
+   },
+   "visibility": "public",
+   "path": "/0000-0002-1694-233X/researcher-urls/727739",
+   "put-code": 727739,
+   "display-index": 0
+  },
+  {
+   "created-date": {
+    "value": 1462210769511
+   },
+   "last-modified-date": {
+    "value": 1463003428816
+   },
+   "source": {
+    "source-orcid": {
+     "uri": "https://orcid.org/0000-0002-1694-233X",
+     "path": "0000-0002-1694-233X",
+     "host": "orcid.org"
+    },
+    "source-client-id": null,
+    "source-name": {
+     "value": "Thomas B. Hickey"
+    },
+    "assertion-origin-orcid": null,
+    "assertion-origin-client-id": null,
+    "assertion-origin-name": null
+   },
+   "url-name": "VIAF ID 72734757",
+   "url": {
+    "value": "http://viaf.org/viaf/72734757"
+   },
+   "visibility": "public",
+   "path": "/0000-0002-1694-233X/researcher-urls/727740",
+   "put-code": 727740,
+   "display-index": 0
+  }
+ ],
+ "path": "/0000-0002-1694-233X/researcher-urls"
+}

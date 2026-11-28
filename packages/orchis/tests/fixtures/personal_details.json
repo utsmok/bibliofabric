@@ -1,0 +1,60 @@
+{
+ "last-modified-date": {
+  "value": 1464801000712
+ },
+ "name": {
+  "created-date": {
+   "value": 1460757532543
+  },
+  "last-modified-date": {
+   "value": 1460757532543
+  },
+  "given-names": {
+   "value": "Thomas B."
+  },
+  "family-name": {
+   "value": "Hickey"
+  },
+  "credit-name": null,
+  "source": null,
+  "visibility": "public",
+  "path": "0000-0002-1694-233X"
+ },
+ "other-names": {
+  "last-modified-date": {
+   "value": 1464801000712
+  },
+  "other-name": [
+   {
+    "created-date": {
+     "value": 1462210769464
+    },
+    "last-modified-date": {
+     "value": 1464801000712
+    },
+    "source": {
+     "source-orcid": {
+      "uri": "https://orcid.org/0000-0002-1694-233X",
+      "path": "0000-0002-1694-233X",
+      "host": "orcid.org"
+     },
+     "source-client-id": null,
+     "source-name": {
+      "value": "Thomas B. Hickey"
+     },
+     "assertion-origin-orcid": null,
+     "assertion-origin-client-id": null,
+     "assertion-origin-name": null
+    },
+    "content": "Thom Hickey",
+    "visibility": "public",
+    "path": "/0000-0002-1694-233X/other-names/732912",
+    "put-code": 732912,
+    "display-index": 0
+   }
+  ],
+  "path": "/0000-0002-1694-233X/other-names"
+ },
+ "biography": null,
+ "path": "/0000-0002-1694-233X/personal-details"
+}

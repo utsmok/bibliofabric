@@ -1,0 +1,90 @@
+{
+ "created-date": {
+  "value": 1422975654101
+ },
+ "last-modified-date": {
+  "value": 1458838241964
+ },
+ "source": {
+  "source-orcid": {
+   "uri": "https://orcid.org/0000-0002-1694-233X",
+   "path": "0000-0002-1694-233X",
+   "host": "orcid.org"
+  },
+  "source-client-id": null,
+  "source-name": {
+   "value": "Thomas B. Hickey"
+  },
+  "assertion-origin-orcid": null,
+  "assertion-origin-client-id": null,
+  "assertion-origin-name": null
+ },
+ "put-code": 63665,
+ "path": "/0000-0002-1694-233X/funding/63665",
+ "type": "grant",
+ "organization-defined-type": null,
+ "title": {
+  "title": {
+   "value": "Development of a Probabilistic Author Search and Matching Technique for Retrieval and Creation of Bibliographic Records"
+  },
+  "translated-title": null
+ },
+ "short-description": "Using macro and micro-structure analysis of large files of personal author names, this study developed retrieval techniques and algorithms to automatically correct and/or flag typographical errors in names, identify names in a database that are similar to a name entered by a user during a search, and measure similarities between names. It was found that personal names have very different characteristics than English language words, and this project demonstrated that useful displays for human verification of author names can be built, although at some computational expense. Automatic correction of errors, requiring greater computation, was not demonstrated by the project; however, such correction seems feasible with extensions of the techniques developed for automatic detection. A bibliography of 39 titles is included.",
+ "amount": null,
+ "url": null,
+ "start-date": {
+  "year": {
+   "value": "1979"
+  },
+  "month": {
+   "value": "08"
+  },
+  "day": null
+ },
+ "end-date": {
+  "year": {
+   "value": "1981"
+  },
+  "month": {
+   "value": "01"
+  },
+  "day": null
+ },
+ "external-ids": {
+  "external-id": [
+   {
+    "external-id-type": "grant_number",
+    "external-id-value": "IST79-18263",
+    "external-id-normalized": null,
+    "external-id-normalized-error": null,
+    "external-id-url": null,
+    "external-id-relationship": "self"
+   }
+  ]
+ },
+ "contributors": {
+  "contributor": [
+   {
+    "contributor-orcid": null,
+    "credit-name": null,
+    "contributor-email": null,
+    "contributor-attributes": {
+     "contributor-role": "lead"
+    }
+   }
+  ]
+ },
+ "organization": {
+  "name": "NSF Office of the Director",
+  "address": {
+   "city": "VA",
+   "region": "VA",
+   "country": "US"
+  },
+  "disambiguated-organization": {
+   "disambiguated-organization-identifier": "http://dx.doi.org/10.13039/100000179",
+   "disambiguation-source": "FUNDREF"
+  }
+ },
+ "visibility": "public"
+}

@@ -1,0 +1,46 @@
+{
+ "last-modified-date": {
+  "value": 1517873256636
+ },
+ "external-identifier": [
+  {
+   "created-date": {
+    "value": 1458838241689
+   },
+   "last-modified-date": {
+    "value": 1517873256636
+   },
+   "source": {
+    "source-orcid": null,
+    "source-client-id": {
+     "uri": "https://orcid.org/client/0000-0002-5982-8983",
+     "path": "0000-0002-5982-8983",
+     "host": "orcid.org"
+    },
+    "source-name": {
+     "value": "Scopus - Elsevier"
+    },
+    "assertion-origin-orcid": {
+     "uri": "https://orcid.org/0000-0002-1694-233X",
+     "path": "0000-0002-1694-233X",
+     "host": "orcid.org"
+    },
+    "assertion-origin-client-id": null,
+    "assertion-origin-name": {
+     "value": "Thomas B. Hickey"
+    }
+   },
+   "external-id-type": "Scopus Author ID",
+   "external-id-value": "7005100180",
+   "external-id-url": {
+    "value": "http://www.scopus.com/inward/authorDetails.url?authorID=7005100180&partnerID=MN8TOARS"
+   },
+   "external-id-relationship": "self",
+   "visibility": "public",
+   "path": "/0000-0002-1694-233X/external-identifiers/447495",
+   "put-code": 447495,
+   "display-index": 0
+  }
+ ],
+ "path": "/0000-0002-1694-233X/external-identifiers"
+}

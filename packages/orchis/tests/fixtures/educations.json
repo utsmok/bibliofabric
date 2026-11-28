@@ -1,0 +1,191 @@
+{
+ "last-modified-date": {
+  "value": 1405894277263
+ },
+ "affiliation-group": [
+  {
+   "last-modified-date": {
+    "value": 1405894277263
+   },
+   "external-ids": {
+    "external-id": []
+   },
+   "summaries": [
+    {
+     "education-summary": {
+      "created-date": {
+       "value": 1390324699331
+      },
+      "last-modified-date": {
+       "value": 1405894277263
+      },
+      "source": {
+       "source-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "source-client-id": null,
+       "source-name": {
+        "value": "Thomas B. Hickey"
+       },
+       "assertion-origin-orcid": null,
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": null
+      },
+      "put-code": 85904,
+      "department-name": "Library Information Science",
+      "role-title": "Ph.D.",
+      "start-date": null,
+      "end-date": {
+       "year": {
+        "value": "1977"
+       },
+       "month": null,
+       "day": null
+      },
+      "organization": {
+       "name": "University of Ilinois",
+       "address": {
+        "city": "Urbana",
+        "region": "IL",
+        "country": "US"
+       },
+       "disambiguated-organization": null
+      },
+      "url": null,
+      "external-ids": null,
+      "display-index": "0",
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/education/85904"
+     }
+    }
+   ]
+  },
+  {
+   "last-modified-date": {
+    "value": 1405894277263
+   },
+   "external-ids": {
+    "external-id": []
+   },
+   "summaries": [
+    {
+     "education-summary": {
+      "created-date": {
+       "value": 1390324589981
+      },
+      "last-modified-date": {
+       "value": 1405894277263
+      },
+      "source": {
+       "source-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "source-client-id": null,
+       "source-name": {
+        "value": "Thomas B. Hickey"
+       },
+       "assertion-origin-orcid": null,
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": null
+      },
+      "put-code": 85899,
+      "department-name": "Library Information Science",
+      "role-title": "M.L.S.",
+      "start-date": null,
+      "end-date": {
+       "year": {
+        "value": "1970"
+       },
+       "month": null,
+       "day": null
+      },
+      "organization": {
+       "name": "SUNY Geneseo",
+       "address": {
+        "city": "Geneseo",
+        "region": "NY",
+        "country": "US"
+       },
+       "disambiguated-organization": {
+        "disambiguated-organization-identifier": "14811",
+        "disambiguation-source": "RINGGOLD"
+       }
+      },
+      "url": null,
+      "external-ids": null,
+      "display-index": "0",
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/education/85899"
+     }
+    }
+   ]
+  },
+  {
+   "last-modified-date": {
+    "value": 1405894277262
+   },
+   "external-ids": {
+    "external-id": []
+   },
+   "summaries": [
+    {
+     "education-summary": {
+      "created-date": {
+       "value": 1390326669520
+      },
+      "last-modified-date": {
+       "value": 1405894277262
+      },
+      "source": {
+       "source-orcid": {
+        "uri": "https://orcid.org/0000-0002-1694-233X",
+        "path": "0000-0002-1694-233X",
+        "host": "orcid.org"
+       },
+       "source-client-id": null,
+       "source-name": {
+        "value": "Thomas B. Hickey"
+       },
+       "assertion-origin-orcid": null,
+       "assertion-origin-client-id": null,
+       "assertion-origin-name": null
+      },
+      "put-code": 85953,
+      "department-name": "Physics",
+      "role-title": "B.S.",
+      "start-date": null,
+      "end-date": {
+       "year": {
+        "value": "1969"
+       },
+       "month": null,
+       "day": null
+      },
+      "organization": {
+       "name": "Stony Brook University",
+       "address": {
+        "city": "Stony Brook",
+        "region": "NY",
+        "country": "US"
+       },
+       "disambiguated-organization": {
+        "disambiguated-organization-identifier": "12301",
+        "disambiguation-source": "RINGGOLD"
+       }
+      },
+      "url": null,
+      "external-ids": null,
+      "display-index": "0",
+      "visibility": "public",
+      "path": "/0000-0002-1694-233X/education/85953"
+     }
+    }
+   ]
+  }
+ ],
+ "path": "/0000-0002-1694-233X/educations"
+}

@@ -1,0 +1,2397 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<record:record path="/0000-0002-1694-233X" xmlns:internal="http://www.orcid.org/ns/internal" xmlns:education="http://www.orcid.org/ns/education" xmlns:distinction="http://www.orcid.org/ns/distinction" xmlns:deprecated="http://www.orcid.org/ns/deprecated" xmlns:other-name="http://www.orcid.org/ns/other-name" xmlns:membership="http://www.orcid.org/ns/membership" xmlns:error="http://www.orcid.org/ns/error" xmlns:common="http://www.orcid.org/ns/common" xmlns:record="http://www.orcid.org/ns/record" xmlns:personal-details="http://www.orcid.org/ns/personal-details" xmlns:keyword="http://www.orcid.org/ns/keyword" xmlns:email="http://www.orcid.org/ns/email" xmlns:external-identifier="http://www.orcid.org/ns/external-identifier" xmlns:funding="http://www.orcid.org/ns/funding" xmlns:preferences="http://www.orcid.org/ns/preferences" xmlns:address="http://www.orcid.org/ns/address" xmlns:invited-position="http://www.orcid.org/ns/invited-position" xmlns:work="http://www.orcid.org/ns/work" xmlns:history="http://www.orcid.org/ns/history" xmlns:employment="http://www.orcid.org/ns/employment" xmlns:qualification="http://www.orcid.org/ns/qualification" xmlns:service="http://www.orcid.org/ns/service" xmlns:person="http://www.orcid.org/ns/person" xmlns:activities="http://www.orcid.org/ns/activities" xmlns:researcher-url="http://www.orcid.org/ns/researcher-url" xmlns:peer-review="http://www.orcid.org/ns/peer-review" xmlns:bulk="http://www.orcid.org/ns/bulk" xmlns:research-resource="http://www.orcid.org/ns/research-resource">
+    <common:orcid-identifier>
+        <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+        <common:path>0000-0002-1694-233X</common:path>
+        <common:host>orcid.org</common:host>
+    </common:orcid-identifier>
+    <preferences:preferences>
+        <preferences:locale>en</preferences:locale>
+    </preferences:preferences>
+    <history:history>
+        <history:creation-method>website</history:creation-method>
+        <history:completion-date>2012-10-17T14:37:20.516Z</history:completion-date>
+        <history:submission-date>2012-10-17T13:13:53.156Z</history:submission-date>
+        <common:last-modified-date>2025-09-25T10:43:40.758Z</common:last-modified-date>
+        <history:claimed>true</history:claimed>
+        <history:verified-email>true</history:verified-email>
+        <history:verified-primary-email>true</history:verified-primary-email>
+    </history:history>
+    <person:person path="/0000-0002-1694-233X/person">
+        <common:last-modified-date>2018-02-05T23:27:36.636Z</common:last-modified-date>
+        <person:name visibility="public" path="0000-0002-1694-233X">
+            <common:created-date>2016-04-15T21:58:52.543Z</common:created-date>
+            <common:last-modified-date>2016-04-15T21:58:52.543Z</common:last-modified-date>
+            <personal-details:given-names>Thomas B.</personal-details:given-names>
+            <personal-details:family-name>Hickey</personal-details:family-name>
+        </person:name>
+        <other-name:other-names path="/0000-0002-1694-233X/other-names">
+            <common:last-modified-date>2016-06-01T17:10:00.712Z</common:last-modified-date>
+            <other-name:other-name put-code="732912" visibility="public" path="/0000-0002-1694-233X/other-names/732912" display-index="0">
+                <common:created-date>2016-05-02T17:39:29.464Z</common:created-date>
+                <common:last-modified-date>2016-06-01T17:10:00.712Z</common:last-modified-date>
+                <common:source>
+                    <common:source-orcid>
+                        <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                        <common:path>0000-0002-1694-233X</common:path>
+                        <common:host>orcid.org</common:host>
+                    </common:source-orcid>
+                    <common:source-name>Thomas B. Hickey</common:source-name>
+                </common:source>
+                <other-name:content>Thom Hickey</other-name:content>
+            </other-name:other-name>
+        </other-name:other-names>
+        <researcher-url:researcher-urls path="/0000-0002-1694-233X/researcher-urls">
+            <common:last-modified-date>2016-05-11T21:50:28.816Z</common:last-modified-date>
+            <researcher-url:researcher-url put-code="727738" visibility="public" path="/0000-0002-1694-233X/researcher-urls/727738" display-index="0">
+                <common:created-date>2016-05-02T17:39:29.501Z</common:created-date>
+                <common:last-modified-date>2016-05-11T21:50:28.816Z</common:last-modified-date>
+                <common:source>
+                    <common:source-orcid>
+                        <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                        <common:path>0000-0002-1694-233X</common:path>
+                        <common:host>orcid.org</common:host>
+                    </common:source-orcid>
+                    <common:source-name>Thomas B. Hickey</common:source-name>
+                </common:source>
+                <researcher-url:url-name>ISNI ID 0000 0000 2368 8144</researcher-url:url-name>
+                <researcher-url:url>http://isni.org/isni/0000000023688144</researcher-url:url>
+            </researcher-url:researcher-url>
+            <researcher-url:researcher-url put-code="727739" visibility="public" path="/0000-0002-1694-233X/researcher-urls/727739" display-index="0">
+                <common:created-date>2016-05-02T17:39:29.509Z</common:created-date>
+                <common:last-modified-date>2016-05-11T21:50:28.816Z</common:last-modified-date>
+                <common:source>
+                    <common:source-orcid>
+                        <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                        <common:path>0000-0002-1694-233X</common:path>
+                        <common:host>orcid.org</common:host>
+                    </common:source-orcid>
+                    <common:source-name>Thomas B. Hickey</common:source-name>
+                </common:source>
+                <researcher-url:url-name>Blog</researcher-url:url-name>
+                <researcher-url:url>http://outgoing.typepad.com</researcher-url:url>
+            </researcher-url:researcher-url>
+            <researcher-url:researcher-url put-code="727740" visibility="public" path="/0000-0002-1694-233X/researcher-urls/727740" display-index="0">
+                <common:created-date>2016-05-02T17:39:29.511Z</common:created-date>
+                <common:last-modified-date>2016-05-11T21:50:28.816Z</common:last-modified-date>
+                <common:source>
+                    <common:source-orcid>
+                        <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                        <common:path>0000-0002-1694-233X</common:path>
+                        <common:host>orcid.org</common:host>
+                    </common:source-orcid>
+                    <common:source-name>Thomas B. Hickey</common:source-name>
+                </common:source>
+                <researcher-url:url-name>VIAF ID 72734757</researcher-url:url-name>
+                <researcher-url:url>http://viaf.org/viaf/72734757</researcher-url:url>
+            </researcher-url:researcher-url>
+        </researcher-url:researcher-urls>
+        <email:emails path="/0000-0002-1694-233X/email"/>
+        <address:addresses path="/0000-0002-1694-233X/address">
+            <common:last-modified-date>2016-06-01T17:10:01.220Z</common:last-modified-date>
+            <address:address put-code="379780" visibility="public" path="/0000-0002-1694-233X/address/379780" display-index="0">
+                <common:created-date>2016-01-24T18:36:41.177Z</common:created-date>
+                <common:last-modified-date>2016-06-01T17:10:01.220Z</common:last-modified-date>
+                <common:source>
+                    <common:source-orcid>
+                        <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                        <common:path>0000-0002-1694-233X</common:path>
+                        <common:host>orcid.org</common:host>
+                    </common:source-orcid>
+                    <common:source-name>Thomas B. Hickey</common:source-name>
+                </common:source>
+                <address:country>US</address:country>
+            </address:address>
+        </address:addresses>
+        <keyword:keywords path="/0000-0002-1694-233X/keywords"/>
+        <external-identifier:external-identifiers path="/0000-0002-1694-233X/external-identifiers">
+            <common:last-modified-date>2018-02-05T23:27:36.636Z</common:last-modified-date>
+            <external-identifier:external-identifier put-code="447495" visibility="public" path="/0000-0002-1694-233X/external-identifiers/447495" display-index="0">
+                <common:created-date>2016-03-24T16:50:41.689Z</common:created-date>
+                <common:last-modified-date>2018-02-05T23:27:36.636Z</common:last-modified-date>
+                <common:source>
+                    <common:source-client-id>
+                        <common:uri>https://orcid.org/client/0000-0002-5982-8983</common:uri>
+                        <common:path>0000-0002-5982-8983</common:path>
+                        <common:host>orcid.org</common:host>
+                    </common:source-client-id>
+                    <common:source-name>Scopus - Elsevier</common:source-name>
+                    <common:assertion-origin-orcid>
+                        <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                        <common:path>0000-0002-1694-233X</common:path>
+                        <common:host>orcid.org</common:host>
+                    </common:assertion-origin-orcid>
+                    <common:assertion-origin-name>Thomas B. Hickey</common:assertion-origin-name>
+                </common:source>
+                <common:external-id-type>Scopus Author ID</common:external-id-type>
+                <common:external-id-value>7005100180</common:external-id-value>
+                <common:external-id-url>http://www.scopus.com/inward/authorDetails.url?authorID=7005100180&amp;partnerID=MN8TOARS</common:external-id-url>
+                <common:external-id-relationship>self</common:external-id-relationship>
+            </external-identifier:external-identifier>
+        </external-identifier:external-identifiers>
+    </person:person>
+    <activities:activities-summary path="/0000-0002-1694-233X/activities">
+        <common:last-modified-date>2024-06-25T21:03:21.045Z</common:last-modified-date>
+        <activities:distinctions path="/0000-0002-1694-233X/distinctions"/>
+        <activities:educations path="/0000-0002-1694-233X/educations">
+            <common:last-modified-date>2014-07-20T22:11:17.263Z</common:last-modified-date>
+            <activities:affiliation-group>
+                <common:last-modified-date>2014-07-20T22:11:17.263Z</common:last-modified-date>
+                <common:external-ids/>
+                <education:education-summary put-code="85904" display-index="0" path="/0000-0002-1694-233X/education/85904" visibility="public">
+                    <common:created-date>2014-01-21T17:18:19.331Z</common:created-date>
+                    <common:last-modified-date>2014-07-20T22:11:17.263Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <common:department-name>Library Information Science</common:department-name>
+                    <common:role-title>Ph.D.</common:role-title>
+                    <common:end-date>
+                        <common:year>1977</common:year>
+                    </common:end-date>
+                    <common:organization>
+                        <common:name>University of Ilinois</common:name>
+                        <common:address>
+                            <common:city>Urbana</common:city>
+                            <common:region>IL</common:region>
+                            <common:country>US</common:country>
+                        </common:address>
+                    </common:organization>
+                </education:education-summary>
+            </activities:affiliation-group>
+            <activities:affiliation-group>
+                <common:last-modified-date>2014-07-20T22:11:17.263Z</common:last-modified-date>
+                <common:external-ids/>
+                <education:education-summary put-code="85899" display-index="0" path="/0000-0002-1694-233X/education/85899" visibility="public">
+                    <common:created-date>2014-01-21T17:16:29.981Z</common:created-date>
+                    <common:last-modified-date>2014-07-20T22:11:17.263Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <common:department-name>Library Information Science</common:department-name>
+                    <common:role-title>M.L.S.</common:role-title>
+                    <common:end-date>
+                        <common:year>1970</common:year>
+                    </common:end-date>
+                    <common:organization>
+                        <common:name>SUNY Geneseo</common:name>
+                        <common:address>
+                            <common:city>Geneseo</common:city>
+                            <common:region>NY</common:region>
+                            <common:country>US</common:country>
+                        </common:address>
+                        <common:disambiguated-organization>
+                            <common:disambiguated-organization-identifier>14811</common:disambiguated-organization-identifier>
+                            <common:disambiguation-source>RINGGOLD</common:disambiguation-source>
+                        </common:disambiguated-organization>
+                    </common:organization>
+                </education:education-summary>
+            </activities:affiliation-group>
+            <activities:affiliation-group>
+                <common:last-modified-date>2014-07-20T22:11:17.262Z</common:last-modified-date>
+                <common:external-ids/>
+                <education:education-summary put-code="85953" display-index="0" path="/0000-0002-1694-233X/education/85953" visibility="public">
+                    <common:created-date>2014-01-21T17:51:09.520Z</common:created-date>
+                    <common:last-modified-date>2014-07-20T22:11:17.262Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <common:department-name>Physics</common:department-name>
+                    <common:role-title>B.S.</common:role-title>
+                    <common:end-date>
+                        <common:year>1969</common:year>
+                    </common:end-date>
+                    <common:organization>
+                        <common:name>Stony Brook University</common:name>
+                        <common:address>
+                            <common:city>Stony Brook</common:city>
+                            <common:region>NY</common:region>
+                            <common:country>US</common:country>
+                        </common:address>
+                        <common:disambiguated-organization>
+                            <common:disambiguated-organization-identifier>12301</common:disambiguated-organization-identifier>
+                            <common:disambiguation-source>RINGGOLD</common:disambiguation-source>
+                        </common:disambiguated-organization>
+                    </common:organization>
+                </education:education-summary>
+            </activities:affiliation-group>
+        </activities:educations>
+        <activities:employments path="/0000-0002-1694-233X/employments">
+            <common:last-modified-date>2016-09-21T13:35:35.408Z</common:last-modified-date>
+            <activities:affiliation-group>
+                <common:last-modified-date>2016-09-21T13:35:35.408Z</common:last-modified-date>
+                <common:external-ids/>
+                <employment:employment-summary put-code="85908" display-index="0" path="/0000-0002-1694-233X/employment/85908" visibility="public">
+                    <common:created-date>2014-01-21T17:21:08.976Z</common:created-date>
+                    <common:last-modified-date>2016-09-21T13:35:35.408Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <common:department-name>Research</common:department-name>
+                    <common:role-title>Chief Scientist</common:role-title>
+                    <common:start-date>
+                        <common:year>1977</common:year>
+                    </common:start-date>
+                    <common:end-date>
+                        <common:year>2016</common:year>
+                    </common:end-date>
+                    <common:organization>
+                        <common:name>OCLC Online Computer Library Center</common:name>
+                        <common:address>
+                            <common:city>Dublin</common:city>
+                            <common:region>OH</common:region>
+                            <common:country>US</common:country>
+                        </common:address>
+                        <common:disambiguated-organization>
+                            <common:disambiguated-organization-identifier>58628</common:disambiguated-organization-identifier>
+                            <common:disambiguation-source>RINGGOLD</common:disambiguation-source>
+                        </common:disambiguated-organization>
+                    </common:organization>
+                </employment:employment-summary>
+            </activities:affiliation-group>
+        </activities:employments>
+        <activities:fundings path="/0000-0002-1694-233X/fundings">
+            <common:last-modified-date>2016-03-24T16:50:41.964Z</common:last-modified-date>
+            <activities:group>
+                <common:last-modified-date>2016-03-24T16:50:41.964Z</common:last-modified-date>
+                <common:external-ids>
+                    <common:external-id>
+                        <common:external-id-type>grant_number</common:external-id-type>
+                        <common:external-id-value>IST79-18263</common:external-id-value>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                </common:external-ids>
+                <funding:funding-summary put-code="63665" path="/0000-0002-1694-233X/funding/63665" visibility="public" display-index="0">
+                    <common:created-date>2015-02-03T15:00:54.101Z</common:created-date>
+                    <common:last-modified-date>2016-03-24T16:50:41.964Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <funding:title>
+                        <common:title>Development of a Probabilistic Author Search and Matching Technique for Retrieval and Creation of Bibliographic Records</common:title>
+                    </funding:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>grant_number</common:external-id-type>
+                            <common:external-id-value>IST79-18263</common:external-id-value>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <funding:type>grant</funding:type>
+                    <common:start-date>
+                        <common:year>1979</common:year>
+                        <common:month>08</common:month>
+                    </common:start-date>
+                    <common:end-date>
+                        <common:year>1981</common:year>
+                        <common:month>01</common:month>
+                    </common:end-date>
+                    <common:organization>
+                        <common:name>NSF Office of the Director</common:name>
+                        <common:address>
+                            <common:city>VA</common:city>
+                            <common:region>VA</common:region>
+                            <common:country>US</common:country>
+                        </common:address>
+                        <common:disambiguated-organization>
+                            <common:disambiguated-organization-identifier>http://dx.doi.org/10.13039/100000179</common:disambiguated-organization-identifier>
+                            <common:disambiguation-source>FUNDREF</common:disambiguation-source>
+                        </common:disambiguated-organization>
+                    </common:organization>
+                </funding:funding-summary>
+            </activities:group>
+        </activities:fundings>
+        <activities:invited-positions path="/0000-0002-1694-233X/invited-positions"/>
+        <activities:memberships path="/0000-0002-1694-233X/memberships">
+            <common:last-modified-date>2021-05-15T14:55:53.792Z</common:last-modified-date>
+            <activities:affiliation-group>
+                <common:last-modified-date>2021-05-15T14:55:53.792Z</common:last-modified-date>
+                <common:external-ids/>
+                <membership:membership-summary put-code="14806385" display-index="1" path="/0000-0002-1694-233X/membership/14806385" visibility="public">
+                    <common:created-date>2021-05-15T14:55:53.792Z</common:created-date>
+                    <common:last-modified-date>2021-05-15T14:55:53.792Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <common:role-title>Board member</common:role-title>
+                    <common:start-date>
+                        <common:year>2005</common:year>
+                    </common:start-date>
+                    <common:end-date>
+                        <common:year>2009</common:year>
+                    </common:end-date>
+                    <common:organization>
+                        <common:name>NDLTD Networked Digital Library of Theses and Dissertations</common:name>
+                        <common:address>
+                            <common:city>Provo</common:city>
+                            <common:region>UT</common:region>
+                            <common:country>US</common:country>
+                        </common:address>
+                    </common:organization>
+                    <common:url>http://www.ndltd.org/</common:url>
+                </membership:membership-summary>
+            </activities:affiliation-group>
+        </activities:memberships>
+        <activities:peer-reviews path="/0000-0002-1694-233X/peer-reviews"/>
+        <activities:qualifications path="/0000-0002-1694-233X/qualifications"/>
+        <activities:research-resources path="/0000-0002-1694-233X/research-resources"/>
+        <activities:services path="/0000-0002-1694-233X/services">
+            <common:last-modified-date>2020-05-04T14:19:15.782Z</common:last-modified-date>
+            <activities:affiliation-group>
+                <common:last-modified-date>2020-05-04T14:19:15.782Z</common:last-modified-date>
+                <common:external-ids/>
+                <service:service-summary put-code="10777936" display-index="0" path="/0000-0002-1694-233X/service/10777936" visibility="public">
+                    <common:created-date>2020-05-04T14:19:15.782Z</common:created-date>
+                    <common:last-modified-date>2020-05-04T14:19:15.782Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-client-id>
+                            <common:uri>https://orcid.org/client/APP-DLU9JZ5INF3KCWIR</common:uri>
+                            <common:path>APP-DLU9JZ5INF3KCWIR</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-client-id>
+                        <common:source-name>Assert-o-matic</common:source-name>
+                        <common:assertion-origin-client-id>
+                            <common:uri>https://orcid.org/client/APP-34IBF14LOTOGDJZZ</common:uri>
+                            <common:path>APP-34IBF14LOTOGDJZZ</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:assertion-origin-client-id>
+                        <common:assertion-origin-name>ORCID</common:assertion-origin-name>
+                    </common:source>
+                    <common:role-title>Board Member</common:role-title>
+                    <common:start-date>
+                        <common:year>2010</common:year>
+                        <common:month>01</common:month>
+                        <common:day>01</common:day>
+                    </common:start-date>
+                    <common:end-date>
+                        <common:year>2016</common:year>
+                        <common:month>12</common:month>
+                        <common:day>31</common:day>
+                    </common:end-date>
+                    <common:organization>
+                        <common:name>ORCID</common:name>
+                        <common:address>
+                            <common:city>Bethesda</common:city>
+                            <common:country>US</common:country>
+                        </common:address>
+                        <common:disambiguated-organization>
+                            <common:disambiguated-organization-identifier>875500AZPSXM0HP6VP03</common:disambiguated-organization-identifier>
+                            <common:disambiguation-source>LEI</common:disambiguation-source>
+                        </common:disambiguated-organization>
+                    </common:organization>
+                    <common:url>https://orcid.org/0000-0002-1694-233X</common:url>
+                </service:service-summary>
+            </activities:affiliation-group>
+        </activities:services>
+        <activities:works path="/0000-0002-1694-233X/works">
+            <common:last-modified-date>2024-06-25T21:03:21.045Z</common:last-modified-date>
+            <activities:group>
+                <common:last-modified-date>2023-10-28T01:37:34.383Z</common:last-modified-date>
+                <common:external-ids/>
+                <work:work-summary put-code="145464015" path="/0000-0002-1694-233X/work/145464015" visibility="public" display-index="1">
+                    <common:created-date>2023-10-28T01:37:34.383Z</common:created-date>
+                    <common:last-modified-date>2023-10-28T01:37:34.383Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Parsing and Matching Dates in VIAF</common:title>
+                        <common:subtitle>Issue 26, 2014-10-21</common:subtitle>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>issn</common:external-id-type>
+                            <common:external-id-value>1940-5758</common:external-id-value>
+                            <common:external-id-normalized transient="true">1940-5758</common:external-id-normalized>
+                            <common:external-id-url>https://portal.issn.org/resource/ISSN/1940-5758</common:external-id-url>
+                            <common:external-id-relationship>part-of</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <common:url>https://journal.code4lib.org/articles/9607</common:url>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>2014</common:year>
+                        <common:month>10</common:month>
+                        <common:day>21</common:day>
+                    </common:publication-date>
+                    <work:journal-title>Code4Lib Journal</work:journal-title>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2024-06-25T21:03:21.045Z</common:last-modified-date>
+                <common:external-ids/>
+                <work:work-summary put-code="162338342" path="/0000-0002-1694-233X/work/162338342" visibility="public" display-index="0">
+                    <common:created-date>2024-06-25T21:01:50.232Z</common:created-date>
+                    <common:last-modified-date>2024-06-25T21:03:21.045Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Registering Researchers in Authority Files</common:title>
+                    </work:title>
+                    <common:external-ids/>
+                    <common:url>https://www.oclc.org/content/dam/research/publications/library/2014/oclcresearch-registering-researchers-2014.pdf</common:url>
+                    <work:type>report</work:type>
+                    <common:publication-date>
+                        <common:year>2014</common:year>
+                        <common:month>10</common:month>
+                    </common:publication-date>
+                    <work:journal-title>OCLC Research</work:journal-title>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2022-05-24T22:28:23.469Z</common:last-modified-date>
+                <common:external-ids>
+                    <common:external-id>
+                        <common:external-id-type>eid</common:external-id-type>
+                        <common:external-id-value>2-s2.0-84905715132</common:external-id-value>
+                        <common:external-id-normalized transient="true">2-s2.0-84905715132</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                    <common:external-id>
+                        <common:external-id-type>doi</common:external-id-type>
+                        <common:external-id-value>10.1045/july2014-hickey</common:external-id-value>
+                        <common:external-id-normalized transient="true">10.1045/july2014-hickey</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                </common:external-ids>
+                <work:work-summary put-code="15258781" path="/0000-0002-1694-233X/work/15258781" visibility="public" display-index="0">
+                    <common:created-date>2015-02-02T16:55:37.112Z</common:created-date>
+                    <common:last-modified-date>2022-05-24T01:54:17.766Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-client-id>
+                            <common:uri>https://orcid.org/client/0000-0002-3054-1567</common:uri>
+                            <common:path>0000-0002-3054-1567</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-client-id>
+                        <common:source-name>Crossref Metadata Search</common:source-name>
+                        <common:assertion-origin-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:assertion-origin-orcid>
+                        <common:assertion-origin-name>Thomas B. Hickey</common:assertion-origin-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Managing Ambiguity in VIAF</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>doi</common:external-id-type>
+                            <common:external-id-value>10.1045/july2014-hickey</common:external-id-value>
+                            <common:external-id-normalized transient="true">10.1045/july2014-hickey</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>2014</common:year>
+                        <common:month>07</common:month>
+                    </common:publication-date>
+                    <work:journal-title>D-Lib Magazine</work:journal-title>
+                </work:work-summary>
+                <work:work-summary put-code="23118682" path="/0000-0002-1694-233X/work/23118682" visibility="public" display-index="0">
+                    <common:created-date>2016-03-24T16:51:08.033Z</common:created-date>
+                    <common:last-modified-date>2022-05-24T22:28:23.469Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-client-id>
+                            <common:uri>https://orcid.org/client/0000-0002-5982-8983</common:uri>
+                            <common:path>0000-0002-5982-8983</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-client-id>
+                        <common:source-name>Scopus - Elsevier</common:source-name>
+                        <common:assertion-origin-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:assertion-origin-orcid>
+                        <common:assertion-origin-name>Thomas B. Hickey</common:assertion-origin-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Managing ambiguity in VIAF</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>doi</common:external-id-type>
+                            <common:external-id-value>10.1045/july2014-hickey</common:external-id-value>
+                            <common:external-id-normalized transient="true">10.1045/july2014-hickey</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                        <common:external-id>
+                            <common:external-id-type>eid</common:external-id-type>
+                            <common:external-id-value>2-s2.0-84905715132</common:external-id-value>
+                            <common:external-id-normalized transient="true">2-s2.0-84905715132</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <common:url>http://www.scopus.com/inward/record.url?eid=2-s2.0-84905715132&amp;partnerID=MN8TOARS</common:url>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>2014</common:year>
+                    </common:publication-date>
+                    <work:journal-title>D-Lib Magazine</work:journal-title>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2022-05-24T22:28:23.831Z</common:last-modified-date>
+                <common:external-ids>
+                    <common:external-id>
+                        <common:external-id-type>doi</common:external-id-type>
+                        <common:external-id-value>10.5860/lrts.50n3.166</common:external-id-value>
+                        <common:external-id-normalized transient="true">10.5860/lrts.50n3.166</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                </common:external-ids>
+                <work:work-summary put-code="23118743" path="/0000-0002-1694-233X/work/23118743" visibility="public" display-index="0">
+                    <common:created-date>2016-03-24T16:56:37.199Z</common:created-date>
+                    <common:last-modified-date>2022-05-24T22:28:23.831Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-client-id>
+                            <common:uri>https://orcid.org/client/0000-0002-3054-1567</common:uri>
+                            <common:path>0000-0002-3054-1567</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-client-id>
+                        <common:source-name>Crossref Metadata Search</common:source-name>
+                        <common:assertion-origin-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:assertion-origin-orcid>
+                        <common:assertion-origin-name>Thomas B. Hickey</common:assertion-origin-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>NACO Normalization</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>doi</common:external-id-type>
+                            <common:external-id-value>10.5860/lrts.50n3.166</common:external-id-value>
+                            <common:external-id-normalized transient="true">10.5860/lrts.50n3.166</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>2006</common:year>
+                        <common:month>07</common:month>
+                        <common:day>01</common:day>
+                    </common:publication-date>
+                    <work:journal-title>Library Resources &amp; Technical Services</work:journal-title>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2022-05-23T22:34:14.282Z</common:last-modified-date>
+                <common:external-ids>
+                    <common:external-id>
+                        <common:external-id-type>doi</common:external-id-type>
+                        <common:external-id-value>10.1045/july2006-young</common:external-id-value>
+                        <common:external-id-normalized transient="true">10.1045/july2006-young</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                    <common:external-id>
+                        <common:external-id-type>eid</common:external-id-type>
+                        <common:external-id-value>2-s2.0-33746651147</common:external-id-value>
+                        <common:external-id-normalized transient="true">2-s2.0-33746651147</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                </common:external-ids>
+                <work:work-summary put-code="6292113" path="/0000-0002-1694-233X/work/6292113" visibility="public" display-index="0">
+                    <common:created-date>2013-03-26T17:52:20.052Z</common:created-date>
+                    <common:last-modified-date>2022-05-23T17:35:26.156Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>WikiD</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>doi</common:external-id-type>
+                            <common:external-id-value>10.1045/july2006-young</common:external-id-value>
+                            <common:external-id-normalized transient="true">10.1045/july2006-young</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>2006</common:year>
+                        <common:month>07</common:month>
+                    </common:publication-date>
+                    <work:journal-title>D-Lib Magazine</work:journal-title>
+                </work:work-summary>
+                <work:work-summary put-code="12721723" path="/0000-0002-1694-233X/work/12721723" visibility="public" display-index="0">
+                    <common:created-date>2014-05-21T15:20:47.160Z</common:created-date>
+                    <common:last-modified-date>2022-05-23T22:34:14.282Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-client-id>
+                            <common:uri>https://orcid.org/client/0000-0002-5982-8983</common:uri>
+                            <common:path>0000-0002-5982-8983</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-client-id>
+                        <common:source-name>Scopus - Elsevier</common:source-name>
+                        <common:assertion-origin-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:assertion-origin-orcid>
+                        <common:assertion-origin-name>Thomas B. Hickey</common:assertion-origin-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>WikiD: An OpenURL 1.0 application</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>doi</common:external-id-type>
+                            <common:external-id-value>10.1045/july2006-young</common:external-id-value>
+                            <common:external-id-normalized transient="true">10.1045/july2006-young</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                        <common:external-id>
+                            <common:external-id-type>eid</common:external-id-type>
+                            <common:external-id-value>2-s2.0-33746651147</common:external-id-value>
+                            <common:external-id-normalized transient="true">2-s2.0-33746651147</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <common:url>http://www.scopus.com/inward/record.url?eid=2-s2.0-33746651147&amp;partnerID=MN8TOARS</common:url>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>2006</common:year>
+                    </common:publication-date>
+                    <work:journal-title>D-Lib Magazine</work:journal-title>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2022-05-24T22:28:23.845Z</common:last-modified-date>
+                <common:external-ids>
+                    <common:external-id>
+                        <common:external-id-type>doi</common:external-id-type>
+                        <common:external-id-value>10.1300/j104v39n03_15</common:external-id-value>
+                        <common:external-id-normalized transient="true">10.1300/j104v39n03_15</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                </common:external-ids>
+                <work:work-summary put-code="23118748" path="/0000-0002-1694-233X/work/23118748" visibility="public" display-index="0">
+                    <common:created-date>2016-03-24T16:57:04.416Z</common:created-date>
+                    <common:last-modified-date>2022-05-24T22:28:23.845Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-client-id>
+                            <common:uri>https://orcid.org/client/0000-0002-3054-1567</common:uri>
+                            <common:path>0000-0002-3054-1567</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-client-id>
+                        <common:source-name>Crossref Metadata Search</common:source-name>
+                        <common:assertion-origin-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:assertion-origin-orcid>
+                        <common:assertion-origin-name>Thomas B. Hickey</common:assertion-origin-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>FRBRizing OCLC's WorldCat</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>doi</common:external-id-type>
+                            <common:external-id-value>10.1300/j104v39n03_15</common:external-id-value>
+                            <common:external-id-normalized transient="true">10.1300/j104v39n03_15</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>2005</common:year>
+                        <common:month>04</common:month>
+                    </common:publication-date>
+                    <work:journal-title>Cataloging &amp; Classification Quarterly</work:journal-title>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2016-05-02T17:39:29.861Z</common:last-modified-date>
+                <common:external-ids/>
+                <work:work-summary put-code="15285752" path="/0000-0002-1694-233X/work/15285752" visibility="public" display-index="0">
+                    <common:created-date>2015-02-04T15:07:52.013Z</common:created-date>
+                    <common:last-modified-date>2016-05-02T17:39:29.861Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Metadata switch : thinking about some metadata management and knowledge organization issues in the changing research and learning landscape</common:title>
+                    </work:title>
+                    <common:url>http://www.oclc.org/content/dam/research/publications/library/2004/dempsey-mslitaguide.pdf?urlm=162890</common:url>
+                    <work:type>book-chapter</work:type>
+                    <common:publication-date>
+                        <common:year>2005</common:year>
+                    </common:publication-date>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2022-05-23T22:34:14.287Z</common:last-modified-date>
+                <common:external-ids>
+                    <common:external-id>
+                        <common:external-id-type>eid</common:external-id-type>
+                        <common:external-id-value>2-s2.0-25144498385</common:external-id-value>
+                        <common:external-id-normalized transient="true">2-s2.0-25144498385</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                    <common:external-id>
+                        <common:external-id-type>doi</common:external-id-type>
+                        <common:external-id-value>10.1045/september2005-levan</common:external-id-value>
+                        <common:external-id-normalized transient="true">10.1045/september2005-levan</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                </common:external-ids>
+                <work:work-summary put-code="12721725" path="/0000-0002-1694-233X/work/12721725" visibility="public" display-index="0">
+                    <common:created-date>2014-05-21T15:20:47.168Z</common:created-date>
+                    <common:last-modified-date>2022-05-23T22:34:14.287Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-client-id>
+                            <common:uri>https://orcid.org/client/0000-0002-5982-8983</common:uri>
+                            <common:path>0000-0002-5982-8983</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-client-id>
+                        <common:source-name>Scopus - Elsevier</common:source-name>
+                        <common:assertion-origin-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:assertion-origin-orcid>
+                        <common:assertion-origin-name>Thomas B. Hickey</common:assertion-origin-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Parallel text searching on a Beowulf cluster using SRW</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>doi</common:external-id-type>
+                            <common:external-id-value>10.1045/september2005-levan</common:external-id-value>
+                            <common:external-id-normalized transient="true">10.1045/september2005-levan</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                        <common:external-id>
+                            <common:external-id-type>eid</common:external-id-type>
+                            <common:external-id-value>2-s2.0-25144498385</common:external-id-value>
+                            <common:external-id-normalized transient="true">2-s2.0-25144498385</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <common:url>http://www.scopus.com/inward/record.url?eid=2-s2.0-25144498385&amp;partnerID=MN8TOARS</common:url>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>2005</common:year>
+                    </common:publication-date>
+                    <work:journal-title>D-Lib Magazine</work:journal-title>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2016-08-19T13:32:00.094Z</common:last-modified-date>
+                <common:external-ids/>
+                <work:work-summary put-code="26150487" path="/0000-0002-1694-233X/work/26150487" visibility="public" display-index="1">
+                    <common:created-date>2016-08-19T13:32:00.094Z</common:created-date>
+                    <common:last-modified-date>2016-08-19T13:32:00.094Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Web services for digital libraries</common:title>
+                    </work:title>
+                    <common:external-ids/>
+                    <common:url>http://www.worldcat.org/oclc/62901026</common:url>
+                    <work:type>conference-paper</work:type>
+                    <common:publication-date>
+                        <common:year>2004</common:year>
+                    </common:publication-date>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2016-05-02T17:39:29.861Z</common:last-modified-date>
+                <common:external-ids/>
+                <work:work-summary put-code="15429927" path="/0000-0002-1694-233X/work/15429927" visibility="public" display-index="0">
+                    <common:created-date>2015-02-16T15:20:54.421Z</common:created-date>
+                    <common:last-modified-date>2016-05-02T17:39:29.861Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>The PURL-based Object Identifier (POI)</common:title>
+                    </work:title>
+                    <common:url>http://www.ukoln.ac.uk/distributed-systems/poi/</common:url>
+                    <work:type>technical-standard</work:type>
+                    <common:publication-date>
+                        <common:year>2003</common:year>
+                    </common:publication-date>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2022-05-23T22:34:14.294Z</common:last-modified-date>
+                <common:external-ids>
+                    <common:external-id>
+                        <common:external-id-type>doi</common:external-id-type>
+                        <common:external-id-value>10.1045/july2003-young</common:external-id-value>
+                        <common:external-id-normalized transient="true">10.1045/july2003-young</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                    <common:external-id>
+                        <common:external-id-type>eid</common:external-id-type>
+                        <common:external-id-value>2-s2.0-2942751218</common:external-id-value>
+                        <common:external-id-normalized transient="true">2-s2.0-2942751218</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                </common:external-ids>
+                <work:work-summary put-code="12721726" path="/0000-0002-1694-233X/work/12721726" visibility="public" display-index="0">
+                    <common:created-date>2014-05-21T15:20:47.171Z</common:created-date>
+                    <common:last-modified-date>2022-05-23T22:34:14.294Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-client-id>
+                            <common:uri>https://orcid.org/client/0000-0002-5982-8983</common:uri>
+                            <common:path>0000-0002-5982-8983</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-client-id>
+                        <common:source-name>Scopus - Elsevier</common:source-name>
+                        <common:assertion-origin-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:assertion-origin-orcid>
+                        <common:assertion-origin-name>Thomas B. Hickey</common:assertion-origin-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Using the OAI-PMH ... differently</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>doi</common:external-id-type>
+                            <common:external-id-value>10.1045/july2003-young</common:external-id-value>
+                            <common:external-id-normalized transient="true">10.1045/july2003-young</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                        <common:external-id>
+                            <common:external-id-type>eid</common:external-id-type>
+                            <common:external-id-value>2-s2.0-2942751218</common:external-id-value>
+                            <common:external-id-normalized transient="true">2-s2.0-2942751218</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <common:url>http://www.scopus.com/inward/record.url?eid=2-s2.0-2942751218&amp;partnerID=MN8TOARS</common:url>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>2003</common:year>
+                    </common:publication-date>
+                    <work:journal-title>D-Lib Magazine</work:journal-title>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2022-05-23T22:34:14.300Z</common:last-modified-date>
+                <common:external-ids>
+                    <common:external-id>
+                        <common:external-id-type>doi</common:external-id-type>
+                        <common:external-id-value>10.1045/september2002-hickey</common:external-id-value>
+                        <common:external-id-normalized transient="true">10.1045/september2002-hickey</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                    <common:external-id>
+                        <common:external-id-type>eid</common:external-id-type>
+                        <common:external-id-value>2-s2.0-0003246231</common:external-id-value>
+                        <common:external-id-normalized transient="true">2-s2.0-0003246231</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                </common:external-ids>
+                <work:work-summary put-code="6292111" path="/0000-0002-1694-233X/work/6292111" visibility="public" display-index="0">
+                    <common:created-date>2013-03-26T14:27:15.419Z</common:created-date>
+                    <common:last-modified-date>2016-05-02T17:39:29.861Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Experiments with the IFLA Functional Requirements for Bibliographic Records (FRBR)</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>doi</common:external-id-type>
+                            <common:external-id-value>10.1045/september2002-hickey</common:external-id-value>
+                            <common:external-id-normalized transient="true">10.1045/september2002-hickey</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>2002</common:year>
+                        <common:month>09</common:month>
+                    </common:publication-date>
+                </work:work-summary>
+                <work:work-summary put-code="12721727" path="/0000-0002-1694-233X/work/12721727" visibility="public" display-index="0">
+                    <common:created-date>2014-05-21T15:20:47.174Z</common:created-date>
+                    <common:last-modified-date>2022-05-23T22:34:14.300Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-client-id>
+                            <common:uri>https://orcid.org/client/0000-0002-5982-8983</common:uri>
+                            <common:path>0000-0002-5982-8983</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-client-id>
+                        <common:source-name>Scopus - Elsevier</common:source-name>
+                        <common:assertion-origin-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:assertion-origin-orcid>
+                        <common:assertion-origin-name>Thomas B. Hickey</common:assertion-origin-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Experiments with the IFLA Functional Requirements for Bibliographic Records (FRBR)</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>doi</common:external-id-type>
+                            <common:external-id-value>10.1045/september2002-hickey</common:external-id-value>
+                            <common:external-id-normalized transient="true">10.1045/september2002-hickey</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                        <common:external-id>
+                            <common:external-id-type>eid</common:external-id-type>
+                            <common:external-id-value>2-s2.0-0003246231</common:external-id-value>
+                            <common:external-id-normalized transient="true">2-s2.0-0003246231</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <common:url>http://www.scopus.com/inward/record.url?eid=2-s2.0-0003246231&amp;partnerID=MN8TOARS</common:url>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>2002</common:year>
+                    </common:publication-date>
+                    <work:journal-title>D-Lib Magazine</work:journal-title>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2022-05-24T22:28:23.792Z</common:last-modified-date>
+                <common:external-ids>
+                    <common:external-id>
+                        <common:external-id-type>doi</common:external-id-type>
+                        <common:external-id-value>10.1300/J141v04n01_02</common:external-id-value>
+                        <common:external-id-normalized transient="true">10.1300/j141v04n01_02</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                    <common:external-id>
+                        <common:external-id-type>eid</common:external-id-type>
+                        <common:external-id-value>2-s2.0-79953053015</common:external-id-value>
+                        <common:external-id-normalized transient="true">2-s2.0-79953053015</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                </common:external-ids>
+                <work:work-summary put-code="6292108" path="/0000-0002-1694-233X/work/6292108" visibility="public" display-index="0">
+                    <common:created-date>2013-03-26T14:27:15.405Z</common:created-date>
+                    <common:last-modified-date>2016-05-02T17:39:29.861Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Collaboration in CORC</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>doi</common:external-id-type>
+                            <common:external-id-value>10.1300/J141v04n01_02</common:external-id-value>
+                            <common:external-id-normalized transient="true">10.1300/j141v04n01_02</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>2001</common:year>
+                        <common:month>01</common:month>
+                        <common:day>01</common:day>
+                    </common:publication-date>
+                </work:work-summary>
+                <work:work-summary put-code="12721730" path="/0000-0002-1694-233X/work/12721730" visibility="public" display-index="0">
+                    <common:created-date>2014-05-21T15:20:47.184Z</common:created-date>
+                    <common:last-modified-date>2022-05-23T22:34:14.311Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-client-id>
+                            <common:uri>https://orcid.org/client/0000-0002-5982-8983</common:uri>
+                            <common:path>0000-0002-5982-8983</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-client-id>
+                        <common:source-name>Scopus - Elsevier</common:source-name>
+                        <common:assertion-origin-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:assertion-origin-orcid>
+                        <common:assertion-origin-name>Thomas B. Hickey</common:assertion-origin-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Collaboration in CORC</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>doi</common:external-id-type>
+                            <common:external-id-value>10.1300/J141v04n01_02</common:external-id-value>
+                            <common:external-id-normalized transient="true">10.1300/j141v04n01_02</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                        <common:external-id>
+                            <common:external-id-type>eid</common:external-id-type>
+                            <common:external-id-value>2-s2.0-79953053015</common:external-id-value>
+                            <common:external-id-normalized transient="true">2-s2.0-79953053015</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <common:url>http://www.scopus.com/inward/record.url?eid=2-s2.0-79953053015&amp;partnerID=MN8TOARS</common:url>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>2000</common:year>
+                    </common:publication-date>
+                    <work:journal-title>Journal of Internet Cataloging</work:journal-title>
+                </work:work-summary>
+                <work:work-summary put-code="23118730" path="/0000-0002-1694-233X/work/23118730" visibility="public" display-index="0">
+                    <common:created-date>2016-03-24T16:54:47.896Z</common:created-date>
+                    <common:last-modified-date>2022-05-24T22:28:23.792Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-client-id>
+                            <common:uri>https://orcid.org/client/0000-0002-3054-1567</common:uri>
+                            <common:path>0000-0002-3054-1567</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-client-id>
+                        <common:source-name>Crossref Metadata Search</common:source-name>
+                        <common:assertion-origin-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:assertion-origin-orcid>
+                        <common:assertion-origin-name>Thomas B. Hickey</common:assertion-origin-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Collaboration in CORC</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>doi</common:external-id-type>
+                            <common:external-id-value>10.1300/j141v04n01_02</common:external-id-value>
+                            <common:external-id-normalized transient="true">10.1300/j141v04n01_02</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>2001</common:year>
+                        <common:month>01</common:month>
+                        <common:day>01</common:day>
+                    </common:publication-date>
+                    <work:journal-title>Journal of Internet Cataloging</work:journal-title>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2022-05-24T22:28:23.775Z</common:last-modified-date>
+                <common:external-ids>
+                    <common:external-id>
+                        <common:external-id-type>doi</common:external-id-type>
+                        <common:external-id-value>10.1300/j111v34n03_06</common:external-id-value>
+                        <common:external-id-normalized transient="true">10.1300/j111v34n03_06</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                </common:external-ids>
+                <work:work-summary put-code="23118726" path="/0000-0002-1694-233X/work/23118726" visibility="public" display-index="0">
+                    <common:created-date>2016-03-24T16:54:03.978Z</common:created-date>
+                    <common:last-modified-date>2022-05-24T22:28:23.775Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-client-id>
+                            <common:uri>https://orcid.org/client/0000-0002-3054-1567</common:uri>
+                            <common:path>0000-0002-3054-1567</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-client-id>
+                        <common:source-name>Crossref Metadata Search</common:source-name>
+                        <common:assertion-origin-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:assertion-origin-orcid>
+                        <common:assertion-origin-name>Thomas B. Hickey</common:assertion-origin-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>A Java Z39.50 Client for Browsing Large Databases</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>doi</common:external-id-type>
+                            <common:external-id-value>10.1300/j111v34n03_06</common:external-id-value>
+                            <common:external-id-normalized transient="true">10.1300/j111v34n03_06</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>2001</common:year>
+                    </common:publication-date>
+                    <work:journal-title>Journal of Library Administration</work:journal-title>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2022-05-24T22:28:23.816Z</common:last-modified-date>
+                <common:external-ids>
+                    <common:external-id>
+                        <common:external-id-type>doi</common:external-id-type>
+                        <common:external-id-value>10.1300/j111v34n03_11</common:external-id-value>
+                        <common:external-id-normalized transient="true">10.1300/j111v34n03_11</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                </common:external-ids>
+                <work:work-summary put-code="23118735" path="/0000-0002-1694-233X/work/23118735" visibility="public" display-index="0">
+                    <common:created-date>2016-03-24T16:55:21.702Z</common:created-date>
+                    <common:last-modified-date>2022-05-24T22:28:23.816Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-client-id>
+                            <common:uri>https://orcid.org/client/0000-0002-3054-1567</common:uri>
+                            <common:path>0000-0002-3054-1567</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-client-id>
+                        <common:source-name>Crossref Metadata Search</common:source-name>
+                        <common:assertion-origin-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:assertion-origin-orcid>
+                        <common:assertion-origin-name>Thomas B. Hickey</common:assertion-origin-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>CORC- Cooperative Online Resource Catalog</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>doi</common:external-id-type>
+                            <common:external-id-value>10.1300/j111v34n03_11</common:external-id-value>
+                            <common:external-id-normalized transient="true">10.1300/j111v34n03_11</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>2001</common:year>
+                    </common:publication-date>
+                    <work:journal-title>Journal of Library Administration</work:journal-title>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2022-05-23T22:34:14.305Z</common:last-modified-date>
+                <common:external-ids>
+                    <common:external-id>
+                        <common:external-id-type>eid</common:external-id-type>
+                        <common:external-id-value>2-s2.0-0442295374</common:external-id-value>
+                        <common:external-id-normalized transient="true">2-s2.0-0442295374</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                </common:external-ids>
+                <work:work-summary put-code="12721728" path="/0000-0002-1694-233X/work/12721728" visibility="public" display-index="0">
+                    <common:created-date>2014-05-21T15:20:47.177Z</common:created-date>
+                    <common:last-modified-date>2022-05-23T22:34:14.305Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-client-id>
+                            <common:uri>https://orcid.org/client/0000-0002-5982-8983</common:uri>
+                            <common:path>0000-0002-5982-8983</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-client-id>
+                        <common:source-name>Scopus - Elsevier</common:source-name>
+                        <common:assertion-origin-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:assertion-origin-orcid>
+                        <common:assertion-origin-name>Thomas B. Hickey</common:assertion-origin-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Computer text shading algorithm based on perception of luminance</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>eid</common:external-id-type>
+                            <common:external-id-value>2-s2.0-0442295374</common:external-id-value>
+                            <common:external-id-normalized transient="true">2-s2.0-0442295374</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <common:url>http://www.scopus.com/inward/record.url?eid=2-s2.0-0442295374&amp;partnerID=MN8TOARS</common:url>
+                    <work:type>conference-paper</work:type>
+                    <common:publication-date>
+                        <common:year>2001</common:year>
+                    </common:publication-date>
+                    <work:journal-title>Proceedings of the Human Factors and Ergonomics Society</work:journal-title>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2022-05-24T22:28:23.780Z</common:last-modified-date>
+                <common:external-ids>
+                    <common:external-id>
+                        <common:external-id-type>doi</common:external-id-type>
+                        <common:external-id-value>10.1300/j111v34n01_18</common:external-id-value>
+                        <common:external-id-normalized transient="true">10.1300/j111v34n01_18</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                </common:external-ids>
+                <work:work-summary put-code="23118727" path="/0000-0002-1694-233X/work/23118727" visibility="public" display-index="0">
+                    <common:created-date>2016-03-24T16:54:26.052Z</common:created-date>
+                    <common:last-modified-date>2022-05-24T22:28:23.780Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-client-id>
+                            <common:uri>https://orcid.org/client/0000-0002-3054-1567</common:uri>
+                            <common:path>0000-0002-3054-1567</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-client-id>
+                        <common:source-name>Crossref Metadata Search</common:source-name>
+                        <common:assertion-origin-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:assertion-origin-orcid>
+                        <common:assertion-origin-name>Thomas B. Hickey</common:assertion-origin-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Guidon Web Applying Java to Scholarly Electronic Journals</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>doi</common:external-id-type>
+                            <common:external-id-value>10.1300/j111v34n01_18</common:external-id-value>
+                            <common:external-id-normalized transient="true">10.1300/j111v34n01_18</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>2001</common:year>
+                    </common:publication-date>
+                    <work:journal-title>Journal of Library Administration</work:journal-title>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2022-05-24T22:28:23.811Z</common:last-modified-date>
+                <common:external-ids>
+                    <common:external-id>
+                        <common:external-id-type>doi</common:external-id-type>
+                        <common:external-id-value>10.1300/j111v34n01_10</common:external-id-value>
+                        <common:external-id-normalized transient="true">10.1300/j111v34n01_10</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                </common:external-ids>
+                <work:work-summary put-code="23118734" path="/0000-0002-1694-233X/work/23118734" visibility="public" display-index="0">
+                    <common:created-date>2016-03-24T16:55:07.895Z</common:created-date>
+                    <common:last-modified-date>2022-05-24T22:28:23.811Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-client-id>
+                            <common:uri>https://orcid.org/client/0000-0002-3054-1567</common:uri>
+                            <common:path>0000-0002-3054-1567</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-client-id>
+                        <common:source-name>Crossref Metadata Search</common:source-name>
+                        <common:assertion-origin-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:assertion-origin-orcid>
+                        <common:assertion-origin-name>Thomas B. Hickey</common:assertion-origin-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Integrating Guidon with the World Wide Web</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>doi</common:external-id-type>
+                            <common:external-id-value>10.1300/j111v34n01_10</common:external-id-value>
+                            <common:external-id-normalized transient="true">10.1300/j111v34n01_10</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>2001</common:year>
+                    </common:publication-date>
+                    <work:journal-title>Journal of Library Administration</work:journal-title>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2016-06-06T13:38:52.713Z</common:last-modified-date>
+                <common:external-ids>
+                    <common:external-id>
+                        <common:external-id-type>oclc</common:external-id-type>
+                        <common:external-id-value>951105276</common:external-id-value>
+                        <common:external-id-normalized transient="true">951105276</common:external-id-normalized>
+                        <common:external-id-url>http://www.worldcat.org/oclc/951105276</common:external-id-url>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                </common:external-ids>
+                <work:work-summary put-code="24538717" path="/0000-0002-1694-233X/work/24538717" visibility="public" display-index="9">
+                    <common:created-date>2016-06-06T13:38:52.630Z</common:created-date>
+                    <common:last-modified-date>2016-06-06T13:38:52.713Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Metadata Trends</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>oclc</common:external-id-type>
+                            <common:external-id-value>951105276</common:external-id-value>
+                            <common:external-id-normalized transient="true">951105276</common:external-id-normalized>
+                            <common:external-id-url>http://www.worldcat.org/oclc/951105276</common:external-id-url>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <common:url>http://www.worldcat.org/oclc/48395388</common:url>
+                    <work:type>conference-paper</work:type>
+                    <common:publication-date>
+                        <common:year>2001</common:year>
+                    </common:publication-date>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2022-05-24T22:28:23.853Z</common:last-modified-date>
+                <common:external-ids>
+                    <common:external-id>
+                        <common:external-id-type>doi</common:external-id-type>
+                        <common:external-id-value>10.1300/j111v34n01_22</common:external-id-value>
+                        <common:external-id-normalized transient="true">10.1300/j111v34n01_22</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                </common:external-ids>
+                <work:work-summary put-code="23118752" path="/0000-0002-1694-233X/work/23118752" visibility="public" display-index="0">
+                    <common:created-date>2016-03-24T16:57:29.923Z</common:created-date>
+                    <common:last-modified-date>2022-05-24T22:28:23.853Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-client-id>
+                            <common:uri>https://orcid.org/client/0000-0002-3054-1567</common:uri>
+                            <common:path>0000-0002-3054-1567</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-client-id>
+                        <common:source-name>Crossref Metadata Search</common:source-name>
+                        <common:assertion-origin-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:assertion-origin-orcid>
+                        <common:assertion-origin-name>Thomas B. Hickey</common:assertion-origin-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>STORD-Structured Text on Relational Databases</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>doi</common:external-id-type>
+                            <common:external-id-value>10.1300/j111v34n01_22</common:external-id-value>
+                            <common:external-id-normalized transient="true">10.1300/j111v34n01_22</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>2001</common:year>
+                    </common:publication-date>
+                    <work:journal-title>Journal of Library Administration</work:journal-title>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2022-05-24T22:28:23.865Z</common:last-modified-date>
+                <common:external-ids>
+                    <common:external-id>
+                        <common:external-id-type>doi</common:external-id-type>
+                        <common:external-id-value>10.1300/j111v34n03_22</common:external-id-value>
+                        <common:external-id-normalized transient="true">10.1300/j111v34n03_22</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                </common:external-ids>
+                <work:work-summary put-code="23118754" path="/0000-0002-1694-233X/work/23118754" visibility="public" display-index="0">
+                    <common:created-date>2016-03-24T16:57:57.278Z</common:created-date>
+                    <common:last-modified-date>2022-05-24T22:28:23.865Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-client-id>
+                            <common:uri>https://orcid.org/client/0000-0002-3054-1567</common:uri>
+                            <common:path>0000-0002-3054-1567</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-client-id>
+                        <common:source-name>Crossref Metadata Search</common:source-name>
+                        <common:assertion-origin-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:assertion-origin-orcid>
+                        <common:assertion-origin-name>Thomas B. Hickey</common:assertion-origin-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>The Role of Classification in CORC</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>doi</common:external-id-type>
+                            <common:external-id-value>10.1300/j111v34n03_22</common:external-id-value>
+                            <common:external-id-normalized transient="true">10.1300/j111v34n03_22</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>2001</common:year>
+                    </common:publication-date>
+                    <work:journal-title>Journal of Library Administration</work:journal-title>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2022-05-24T22:28:23.837Z</common:last-modified-date>
+                <common:external-ids>
+                    <common:external-id>
+                        <common:external-id-type>doi</common:external-id-type>
+                        <common:external-id-value>10.1108/14684520010371549</common:external-id-value>
+                        <common:external-id-normalized transient="true">10.1108/14684520010371549</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                </common:external-ids>
+                <work:work-summary put-code="23118744" path="/0000-0002-1694-233X/work/23118744" visibility="public" display-index="0">
+                    <common:created-date>2016-03-24T16:56:43.883Z</common:created-date>
+                    <common:last-modified-date>2022-05-24T22:28:23.837Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-client-id>
+                            <common:uri>https://orcid.org/client/0000-0002-3054-1567</common:uri>
+                            <common:path>0000-0002-3054-1567</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-client-id>
+                        <common:source-name>Crossref Metadata Search</common:source-name>
+                        <common:assertion-origin-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:assertion-origin-orcid>
+                        <common:assertion-origin-name>Thomas B. Hickey</common:assertion-origin-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>CORC: a system for gateway creation</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>doi</common:external-id-type>
+                            <common:external-id-value>10.1108/14684520010371549</common:external-id-value>
+                            <common:external-id-normalized transient="true">10.1108/14684520010371549</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>2000</common:year>
+                        <common:month>02</common:month>
+                    </common:publication-date>
+                    <work:journal-title>Online Information Review</work:journal-title>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2022-05-23T22:33:37.069Z</common:last-modified-date>
+                <common:external-ids>
+                    <common:external-id>
+                        <common:external-id-type>pat</common:external-id-type>
+                        <common:external-id-value>US 5910805</common:external-id-value>
+                        <common:external-id-normalized transient="true">us 5910805</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                </common:external-ids>
+                <work:work-summary put-code="12713294" path="/0000-0002-1694-233X/work/12713294" visibility="public" display-index="0">
+                    <common:created-date>2014-05-20T15:54:55.079Z</common:created-date>
+                    <common:last-modified-date>2022-05-23T22:33:37.069Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Method for displaying bitmap derived text at a display having limited pixel-to-pixel spacing resolution</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>pat</common:external-id-type>
+                            <common:external-id-value>US 5910805</common:external-id-value>
+                            <common:external-id-normalized transient="true">us 5910805</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <work:type>patent</work:type>
+                    <common:publication-date>
+                        <common:year>1999</common:year>
+                        <common:month>06</common:month>
+                        <common:day>08</common:day>
+                    </common:publication-date>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2016-05-02T17:39:29.860Z</common:last-modified-date>
+                <common:external-ids/>
+                <work:work-summary put-code="23119168" path="/0000-0002-1694-233X/work/23119168" visibility="public" display-index="5">
+                    <common:created-date>2016-03-24T17:22:38.966Z</common:created-date>
+                    <common:last-modified-date>2016-05-02T17:39:29.860Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Lessons learned from full-text journals at OCLC</common:title>
+                    </work:title>
+                    <work:type>conference-paper</work:type>
+                    <common:publication-date>
+                        <common:year>1998</common:year>
+                        <common:month>03</common:month>
+                    </common:publication-date>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2022-05-24T23:47:13.944Z</common:last-modified-date>
+                <common:external-ids>
+                    <common:external-id>
+                        <common:external-id-type>doi</common:external-id-type>
+                        <common:external-id-value>10.14429/dbit.16.1.3169</common:external-id-value>
+                        <common:external-id-normalized transient="true">10.14429/dbit.16.1.3169</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                </common:external-ids>
+                <work:work-summary put-code="23893737" path="/0000-0002-1694-233X/work/23893737" visibility="public" display-index="8">
+                    <common:created-date>2016-05-02T17:51:19.108Z</common:created-date>
+                    <common:last-modified-date>2016-05-02T17:51:19.201Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Impact of Electronic Publishing on Academic Libraries</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>doi</common:external-id-type>
+                            <common:external-id-value>10.14429/dbit.16.1.3169</common:external-id-value>
+                            <common:external-id-normalized transient="true">10.14429/dbit.16.1.3169</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>1996</common:year>
+                        <common:month>01</common:month>
+                        <common:day>01</common:day>
+                    </common:publication-date>
+                    <work:journal-title>DESIDOC Journal of Library and Information Technology</work:journal-title>
+                </work:work-summary>
+                <work:work-summary put-code="23893650" path="/0000-0002-1694-233X/work/23893650" visibility="public" display-index="0">
+                    <common:created-date>2016-05-02T17:42:38.088Z</common:created-date>
+                    <common:last-modified-date>2022-05-24T23:47:13.944Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-client-id>
+                            <common:uri>https://orcid.org/client/0000-0002-3054-1567</common:uri>
+                            <common:path>0000-0002-3054-1567</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-client-id>
+                        <common:source-name>Crossref Metadata Search</common:source-name>
+                        <common:assertion-origin-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:assertion-origin-orcid>
+                        <common:assertion-origin-name>Thomas B. Hickey</common:assertion-origin-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>ENGLISH</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>doi</common:external-id-type>
+                            <common:external-id-value>10.14429/dbit.16.1.3169</common:external-id-value>
+                            <common:external-id-normalized transient="true">10.14429/dbit.16.1.3169</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>1996</common:year>
+                        <common:month>01</common:month>
+                        <common:day>01</common:day>
+                    </common:publication-date>
+                    <work:journal-title>DBIT</work:journal-title>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2016-05-02T17:39:29.861Z</common:last-modified-date>
+                <common:external-ids>
+                    <common:external-id>
+                        <common:external-id-type>pat</common:external-id-type>
+                        <common:external-id-value>US 5459739</common:external-id-value>
+                        <common:external-id-normalized transient="true">us 5459739</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                </common:external-ids>
+                <work:work-summary put-code="15271063" path="/0000-0002-1694-233X/work/15271063" visibility="public" display-index="0">
+                    <common:created-date>2015-02-03T15:35:48.624Z</common:created-date>
+                    <common:last-modified-date>2016-05-02T17:39:29.861Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Merging three optical character recognition outputs for improved precision using a minimum edit distance function</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>pat</common:external-id-type>
+                            <common:external-id-value>US 5459739</common:external-id-value>
+                            <common:external-id-normalized transient="true">us 5459739</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <common:url>http://www.google.com/patents/US5459739</common:url>
+                    <work:type>patent</work:type>
+                    <common:publication-date>
+                        <common:year>1995</common:year>
+                        <common:month>10</common:month>
+                    </common:publication-date>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2022-05-24T22:28:23.804Z</common:last-modified-date>
+                <common:external-ids>
+                    <common:external-id>
+                        <common:external-id-type>doi</common:external-id-type>
+                        <common:external-id-value>10.1145/226188.226224</common:external-id-value>
+                        <common:external-id-normalized transient="true">10.1145/226188.226224</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                </common:external-ids>
+                <work:work-summary put-code="23118733" path="/0000-0002-1694-233X/work/23118733" visibility="public" display-index="0">
+                    <common:created-date>2016-03-24T16:54:59.712Z</common:created-date>
+                    <common:last-modified-date>2022-05-24T22:28:23.804Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-client-id>
+                            <common:uri>https://orcid.org/client/0000-0002-3054-1567</common:uri>
+                            <common:path>0000-0002-3054-1567</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-client-id>
+                        <common:source-name>Crossref Metadata Search</common:source-name>
+                        <common:assertion-origin-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:assertion-origin-orcid>
+                        <common:assertion-origin-name>Thomas B. Hickey</common:assertion-origin-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Constraints on the design of information systems</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>doi</common:external-id-type>
+                            <common:external-id-value>10.1145/226188.226224</common:external-id-value>
+                            <common:external-id-normalized transient="true">10.1145/226188.226224</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>1995</common:year>
+                    </common:publication-date>
+                    <work:journal-title>SIGOIS Bull.</work:journal-title>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2022-05-23T22:34:14.316Z</common:last-modified-date>
+                <common:external-ids>
+                    <common:external-id>
+                        <common:external-id-type>eid</common:external-id-type>
+                        <common:external-id-value>2-s2.0-21844505790</common:external-id-value>
+                        <common:external-id-normalized transient="true">2-s2.0-21844505790</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                </common:external-ids>
+                <work:work-summary put-code="12721731" path="/0000-0002-1694-233X/work/12721731" visibility="public" display-index="0">
+                    <common:created-date>2014-05-21T15:20:47.188Z</common:created-date>
+                    <common:last-modified-date>2022-05-23T22:34:14.316Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-client-id>
+                            <common:uri>https://orcid.org/client/0000-0002-5982-8983</common:uri>
+                            <common:path>0000-0002-5982-8983</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-client-id>
+                        <common:source-name>Scopus - Elsevier</common:source-name>
+                        <common:assertion-origin-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:assertion-origin-orcid>
+                        <common:assertion-origin-name>Thomas B. Hickey</common:assertion-origin-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Present and future capabilities of the online journal</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>eid</common:external-id-type>
+                            <common:external-id-value>2-s2.0-21844505790</common:external-id-value>
+                            <common:external-id-normalized transient="true">2-s2.0-21844505790</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <common:url>http://www.scopus.com/inward/record.url?eid=2-s2.0-21844505790&amp;partnerID=MN8TOARS</common:url>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>1995</common:year>
+                    </common:publication-date>
+                    <work:journal-title>Library Trends</work:journal-title>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2016-05-02T17:39:29.860Z</common:last-modified-date>
+                <common:external-ids/>
+                <work:work-summary put-code="23119294" path="/0000-0002-1694-233X/work/23119294" visibility="public" display-index="7">
+                    <common:created-date>2016-03-24T17:27:35.345Z</common:created-date>
+                    <common:last-modified-date>2016-05-02T17:39:29.860Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Online public catalogs and large retrievals</common:title>
+                        <common:subtitle>methods for organizing, reducing, and displaying</common:subtitle>
+                    </work:title>
+                    <work:type>conference-paper</work:type>
+                    <common:publication-date>
+                        <common:year>1990</common:year>
+                    </common:publication-date>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2016-05-02T17:39:29.861Z</common:last-modified-date>
+                <common:external-ids>
+                    <common:external-id>
+                        <common:external-id-type>pat</common:external-id-type>
+                        <common:external-id-value>US 4803643</common:external-id-value>
+                        <common:external-id-normalized transient="true">us 4803643</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                </common:external-ids>
+                <work:work-summary put-code="15270847" path="/0000-0002-1694-233X/work/15270847" visibility="public" display-index="0">
+                    <common:created-date>2015-02-03T15:29:37.707Z</common:created-date>
+                    <common:last-modified-date>2016-05-02T17:39:29.861Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>System and method for creating memory-retained, formatted pages of text, tabulation, and graphic data</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>pat</common:external-id-type>
+                            <common:external-id-value>US 4803643</common:external-id-value>
+                            <common:external-id-normalized transient="true">us 4803643</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <work:type>patent</work:type>
+                    <common:publication-date>
+                        <common:year>1989</common:year>
+                        <common:month>02</common:month>
+                        <common:day>07</common:day>
+                    </common:publication-date>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2016-05-02T17:39:29.860Z</common:last-modified-date>
+                <common:external-ids/>
+                <work:work-summary put-code="23119284" path="/0000-0002-1694-233X/work/23119284" visibility="public" display-index="6">
+                    <common:created-date>2016-03-24T17:25:30.833Z</common:created-date>
+                    <common:last-modified-date>2016-05-02T17:39:29.860Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Using SGML and tex for an interactive chemical encyclopedia</common:title>
+                    </work:title>
+                    <work:type>conference-paper</work:type>
+                    <common:publication-date>
+                        <common:year>1989</common:year>
+                    </common:publication-date>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2016-08-19T13:28:32.630Z</common:last-modified-date>
+                <common:external-ids/>
+                <work:work-summary put-code="26150382" path="/0000-0002-1694-233X/work/26150382" visibility="public" display-index="1">
+                    <common:created-date>2016-08-19T13:28:32.630Z</common:created-date>
+                    <common:last-modified-date>2016-08-19T13:28:32.630Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Union catalogs on personal supercomputers</common:title>
+                    </work:title>
+                    <common:external-ids/>
+                    <common:url>http://www.worldcat.org/oclc/19246647</common:url>
+                    <work:type>conference-paper</work:type>
+                    <common:publication-date>
+                        <common:year>1988</common:year>
+                        <common:month>08</common:month>
+                    </common:publication-date>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2017-09-01T00:57:31.375Z</common:last-modified-date>
+                <common:external-ids>
+                    <common:external-id>
+                        <common:external-id-type>oclc</common:external-id-type>
+                        <common:external-id-value>56809397</common:external-id-value>
+                        <common:external-id-normalized transient="true">56809397</common:external-id-normalized>
+                        <common:external-id-url>http://www.worldcat.org/oclc/56809397</common:external-id-url>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                </common:external-ids>
+                <work:work-summary put-code="36430574" path="/0000-0002-1694-233X/work/36430574" visibility="public" display-index="1">
+                    <common:created-date>2017-09-01T00:57:31.373Z</common:created-date>
+                    <common:last-modified-date>2017-09-01T00:57:31.375Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Interactive display of text and graphics on an IBM PC</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>oclc</common:external-id-type>
+                            <common:external-id-value>56809397</common:external-id-value>
+                            <common:external-id-normalized transient="true">56809397</common:external-id-normalized>
+                            <common:external-id-url>http://www.worldcat.org/oclc/56809397</common:external-id-url>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <work:type>conference-paper</work:type>
+                    <common:publication-date>
+                        <common:year>1986</common:year>
+                        <common:month>09</common:month>
+                    </common:publication-date>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2022-05-24T22:28:23.475Z</common:last-modified-date>
+                <common:external-ids>
+                    <common:external-id>
+                        <common:external-id-type>doi</common:external-id-type>
+                        <common:external-id-value>10.1108/eb047635</common:external-id-value>
+                        <common:external-id-normalized transient="true">10.1108/eb047635</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                    <common:external-id>
+                        <common:external-id-type>eid</common:external-id-type>
+                        <common:external-id-value>2-s2.0-84916504255</common:external-id-value>
+                        <common:external-id-normalized transient="true">2-s2.0-84916504255</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                </common:external-ids>
+                <work:work-summary put-code="6292110" path="/0000-0002-1694-233X/work/6292110" visibility="public" display-index="0">
+                    <common:created-date>2013-03-26T14:27:15.414Z</common:created-date>
+                    <common:last-modified-date>2016-05-02T17:39:29.861Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Electronic Document Delivery: OCLC's Prototype System</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>doi</common:external-id-type>
+                            <common:external-id-value>10.1108/eb047635</common:external-id-value>
+                            <common:external-id-normalized transient="true">10.1108/eb047635</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>1986</common:year>
+                    </common:publication-date>
+                </work:work-summary>
+                <work:work-summary put-code="23118683" path="/0000-0002-1694-233X/work/23118683" visibility="public" display-index="0">
+                    <common:created-date>2016-03-24T16:51:08.037Z</common:created-date>
+                    <common:last-modified-date>2022-05-24T22:28:23.475Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-client-id>
+                            <common:uri>https://orcid.org/client/0000-0002-5982-8983</common:uri>
+                            <common:path>0000-0002-5982-8983</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-client-id>
+                        <common:source-name>Scopus - Elsevier</common:source-name>
+                        <common:assertion-origin-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:assertion-origin-orcid>
+                        <common:assertion-origin-name>Thomas B. Hickey</common:assertion-origin-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Electronic Document Delivery: OCLC's Prototype System</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>doi</common:external-id-type>
+                            <common:external-id-value>10.1108/eb047635</common:external-id-value>
+                            <common:external-id-normalized transient="true">10.1108/eb047635</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                        <common:external-id>
+                            <common:external-id-type>eid</common:external-id-type>
+                            <common:external-id-value>2-s2.0-84916504255</common:external-id-value>
+                            <common:external-id-normalized transient="true">2-s2.0-84916504255</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <common:url>http://www.scopus.com/inward/record.url?eid=2-s2.0-84916504255&amp;partnerID=MN8TOARS</common:url>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>1986</common:year>
+                    </common:publication-date>
+                    <work:journal-title>Library Hi Tech</work:journal-title>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2016-05-02T17:39:29.860Z</common:last-modified-date>
+                <common:external-ids/>
+                <work:work-summary put-code="23118945" path="/0000-0002-1694-233X/work/23118945" visibility="public" display-index="1">
+                    <common:created-date>2016-03-24T17:08:54.774Z</common:created-date>
+                    <common:last-modified-date>2016-05-02T17:39:29.860Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Document Retrieval and Printing Using CD-ROMs</common:title>
+                    </work:title>
+                    <work:type>conference-paper</work:type>
+                    <common:publication-date>
+                        <common:year>1985</common:year>
+                        <common:month>10</common:month>
+                    </common:publication-date>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2017-09-01T00:55:38.652Z</common:last-modified-date>
+                <common:external-ids>
+                    <common:external-id>
+                        <common:external-id-type>oclc</common:external-id-type>
+                        <common:external-id-value>56578526</common:external-id-value>
+                        <common:external-id-normalized transient="true">56578526</common:external-id-normalized>
+                        <common:external-id-url>http://www.worldcat.org/oclc/56578526</common:external-id-url>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                </common:external-ids>
+                <work:work-summary put-code="36430583" path="/0000-0002-1694-233X/work/36430583" visibility="public" display-index="1">
+                    <common:created-date>2017-09-01T00:55:38.652Z</common:created-date>
+                    <common:last-modified-date>2017-09-01T00:55:38.652Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>The graceful integration of text and facsimile in an electronic document delivery system</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>oclc</common:external-id-type>
+                            <common:external-id-value>56578526</common:external-id-value>
+                            <common:external-id-normalized transient="true">56578526</common:external-id-normalized>
+                            <common:external-id-url>http://www.worldcat.org/oclc/56578526</common:external-id-url>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <work:type>conference-paper</work:type>
+                    <common:publication-date>
+                        <common:year>1983</common:year>
+                        <common:month>08</common:month>
+                    </common:publication-date>
+                    <work:journal-title>New trends in electronic publishing and electronic libraries : Essen Symposium, 29 August-31 August 1983</work:journal-title>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2016-05-02T17:39:29.860Z</common:last-modified-date>
+                <common:external-ids/>
+                <work:work-summary put-code="23118984" path="/0000-0002-1694-233X/work/23118984" visibility="public" display-index="2">
+                    <common:created-date>2016-03-24T17:10:41.628Z</common:created-date>
+                    <common:last-modified-date>2016-05-02T17:39:29.860Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>New Information Technologies and Opportunities Regarding Input/output Devices</common:title>
+                    </work:title>
+                    <work:type>conference-paper</work:type>
+                    <common:publication-date>
+                        <common:year>1982</common:year>
+                    </common:publication-date>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2016-05-02T17:39:29.860Z</common:last-modified-date>
+                <common:external-ids/>
+                <work:work-summary put-code="23119140" path="/0000-0002-1694-233X/work/23119140" visibility="public" display-index="4">
+                    <common:created-date>2016-03-24T17:17:55.442Z</common:created-date>
+                    <common:last-modified-date>2016-05-02T17:39:29.860Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>The Journal in the Year 2000</common:title>
+                    </work:title>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>1981</common:year>
+                        <common:month>12</common:month>
+                    </common:publication-date>
+                    <work:journal-title>Wilson Library Bulletin</work:journal-title>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2016-07-20T18:18:12.845Z</common:last-modified-date>
+                <common:external-ids/>
+                <work:work-summary put-code="25545844" path="/0000-0002-1694-233X/work/25545844" visibility="public" display-index="1">
+                    <common:created-date>2016-07-20T18:18:12.845Z</common:created-date>
+                    <common:last-modified-date>2016-07-20T18:18:12.845Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>The status of METAFONT at OCLC</common:title>
+                    </work:title>
+                    <common:external-ids/>
+                    <common:url>https://www.tug.org/TUGboat/Contents/contents2-2.html</common:url>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>1981</common:year>
+                        <common:month>07</common:month>
+                    </common:publication-date>
+                    <work:journal-title>TUGboat</work:journal-title>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2016-05-02T17:39:29.860Z</common:last-modified-date>
+                <common:external-ids/>
+                <work:work-summary put-code="23119046" path="/0000-0002-1694-233X/work/23119046" visibility="public" display-index="3">
+                    <common:created-date>2016-03-24T17:12:51.894Z</common:created-date>
+                    <common:last-modified-date>2016-05-02T17:39:29.860Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Data Entry/display Devices for Interactive Information Retrieval</common:title>
+                    </work:title>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>1981</common:year>
+                    </common:publication-date>
+                    <work:journal-title>Annual Review of Information Science and Technology</work:journal-title>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2016-05-02T17:39:29.861Z</common:last-modified-date>
+                <common:external-ids>
+                    <common:external-id>
+                        <common:external-id-type>oclc</common:external-id-type>
+                        <common:external-id-value>7548884</common:external-id-value>
+                        <common:external-id-normalized transient="true">7548884</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                </common:external-ids>
+                <work:work-summary put-code="10430016" path="/0000-0002-1694-233X/work/10430016" visibility="public" display-index="0">
+                    <common:created-date>2013-10-29T19:52:31.242Z</common:created-date>
+                    <common:last-modified-date>2016-05-02T17:39:29.861Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Research report on field, subfield, and indicator statistics in OCLC bibliographic records</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>oclc</common:external-id-type>
+                            <common:external-id-value>7548884</common:external-id-value>
+                            <common:external-id-normalized transient="true">7548884</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <work:type>report</work:type>
+                    <common:publication-date>
+                        <common:year>1981</common:year>
+                    </common:publication-date>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2022-05-24T22:28:23.481Z</common:last-modified-date>
+                <common:external-ids>
+                    <common:external-id>
+                        <common:external-id-type>doi</common:external-id-type>
+                        <common:external-id-value>10.1016/0306-4573(79)90042-6</common:external-id-value>
+                        <common:external-id-normalized transient="true">10.1016/0306-4573(79)90042-6</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                    <common:external-id>
+                        <common:external-id-type>eid</common:external-id-type>
+                        <common:external-id-value>2-s2.0-49249153992</common:external-id-value>
+                        <common:external-id-normalized transient="true">2-s2.0-49249153992</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                </common:external-ids>
+                <work:work-summary put-code="6292109" path="/0000-0002-1694-233X/work/6292109" visibility="public" display-index="0">
+                    <common:created-date>2013-03-26T14:27:15.410Z</common:created-date>
+                    <common:last-modified-date>2022-05-23T17:35:26.145Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Derived search keys for government documents</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>doi</common:external-id-type>
+                            <common:external-id-value>10.1016/0306-4573(79)90042-6</common:external-id-value>
+                            <common:external-id-normalized transient="true">10.1016/0306-4573(79)90042-6</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <common:url>http://www.scopus.com/inward/record.url?eid=2-s2.0-49249153992&amp;partnerID=MN8TOARS</common:url>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>1979</common:year>
+                        <common:month>01</common:month>
+                    </common:publication-date>
+                </work:work-summary>
+                <work:work-summary put-code="23118684" path="/0000-0002-1694-233X/work/23118684" visibility="public" display-index="0">
+                    <common:created-date>2016-03-24T16:51:08.043Z</common:created-date>
+                    <common:last-modified-date>2022-05-24T22:28:23.481Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-client-id>
+                            <common:uri>https://orcid.org/client/0000-0002-5982-8983</common:uri>
+                            <common:path>0000-0002-5982-8983</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-client-id>
+                        <common:source-name>Scopus - Elsevier</common:source-name>
+                        <common:assertion-origin-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:assertion-origin-orcid>
+                        <common:assertion-origin-name>Thomas B. Hickey</common:assertion-origin-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Derived search keys for government documents</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>doi</common:external-id-type>
+                            <common:external-id-value>10.1016/0306-4573(79)90042-6</common:external-id-value>
+                            <common:external-id-normalized transient="true">10.1016/0306-4573(79)90042-6</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                        <common:external-id>
+                            <common:external-id-type>eid</common:external-id-type>
+                            <common:external-id-value>2-s2.0-49249153992</common:external-id-value>
+                            <common:external-id-normalized transient="true">2-s2.0-49249153992</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <common:url>http://www.scopus.com/inward/record.url?eid=2-s2.0-49249153992&amp;partnerID=MN8TOARS</common:url>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>1979</common:year>
+                    </common:publication-date>
+                    <work:journal-title>Information Processing and Management</work:journal-title>
+                </work:work-summary>
+            </activities:group>
+            <activities:group>
+                <common:last-modified-date>2016-05-02T17:39:29.861Z</common:last-modified-date>
+                <common:external-ids>
+                    <common:external-id>
+                        <common:external-id-type>doi</common:external-id-type>
+                        <common:external-id-value>10.1108/eb023935</common:external-id-value>
+                        <common:external-id-normalized transient="true">10.1108/eb023935</common:external-id-normalized>
+                        <common:external-id-relationship>self</common:external-id-relationship>
+                    </common:external-id>
+                </common:external-ids>
+                <work:work-summary put-code="6292112" path="/0000-0002-1694-233X/work/6292112" visibility="public" display-index="0">
+                    <common:created-date>2013-03-26T14:27:15.425Z</common:created-date>
+                    <common:last-modified-date>2016-05-02T17:39:29.861Z</common:last-modified-date>
+                    <common:source>
+                        <common:source-orcid>
+                            <common:uri>https://orcid.org/0000-0002-1694-233X</common:uri>
+                            <common:path>0000-0002-1694-233X</common:path>
+                            <common:host>orcid.org</common:host>
+                        </common:source-orcid>
+                        <common:source-name>Thomas B. Hickey</common:source-name>
+                    </common:source>
+                    <work:title>
+                        <common:title>Searching linear files on-line</common:title>
+                    </work:title>
+                    <common:external-ids>
+                        <common:external-id>
+                            <common:external-id-type>doi</common:external-id-type>
+                            <common:external-id-value>10.1108/eb023935</common:external-id-value>
+                            <common:external-id-normalized transient="true">10.1108/eb023935</common:external-id-normalized>
+                            <common:external-id-relationship>self</common:external-id-relationship>
+                        </common:external-id>
+                    </common:external-ids>
+                    <work:type>journal-article</work:type>
+                    <common:publication-date>
+                        <common:year>1977</common:year>
+                    </common:publication-date>
+                </work:work-summary>
+            </activities:group>
+        </activities:works>
+    </activities:activities-summary>
+</record:record>

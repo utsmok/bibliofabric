@@ -1,0 +1,72 @@
+{
+ "created-date": {
+  "value": 1588601955782
+ },
+ "last-modified-date": {
+  "value": 1588601955782
+ },
+ "source": {
+  "source-orcid": null,
+  "source-client-id": {
+   "uri": "https://orcid.org/client/APP-DLU9JZ5INF3KCWIR",
+   "path": "APP-DLU9JZ5INF3KCWIR",
+   "host": "orcid.org"
+  },
+  "source-name": {
+   "value": "Assert-o-matic"
+  },
+  "assertion-origin-orcid": null,
+  "assertion-origin-client-id": {
+   "uri": "https://orcid.org/client/APP-34IBF14LOTOGDJZZ",
+   "path": "APP-34IBF14LOTOGDJZZ",
+   "host": "orcid.org"
+  },
+  "assertion-origin-name": {
+   "value": "ORCID"
+  }
+ },
+ "put-code": 10777936,
+ "path": "/0000-0002-1694-233X/service/10777936",
+ "department-name": null,
+ "role-title": "Board Member",
+ "start-date": {
+  "year": {
+   "value": "2010"
+  },
+  "month": {
+   "value": "01"
+  },
+  "day": {
+   "value": "01"
+  }
+ },
+ "end-date": {
+  "year": {
+   "value": "2016"
+  },
+  "month": {
+   "value": "12"
+  },
+  "day": {
+   "value": "31"
+  }
+ },
+ "organization": {
+  "name": "ORCID",
+  "address": {
+   "city": "Bethesda",
+   "region": null,
+   "country": "US"
+  },
+  "disambiguated-organization": {
+   "disambiguated-organization-identifier": "875500AZPSXM0HP6VP03",
+   "disambiguation-source": "LEI"
+  }
+ },
+ "url": {
+  "value": "https://orcid.org/0000-0002-1694-233X"
+ },
+ "external-ids": null,
+ "display-index": "0",
+ "visibility": "public"
+}

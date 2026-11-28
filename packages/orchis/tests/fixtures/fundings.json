@@ -1,0 +1,103 @@
+{
+ "last-modified-date": {
+  "value": 1458838241964
+ },
+ "group": [
+  {
+   "last-modified-date": {
+    "value": 1458838241964
+   },
+   "external-ids": {
+    "external-id": [
+     {
+      "external-id-type": "grant_number",
+      "external-id-value": "IST79-18263",
+      "external-id-normalized": null,
+      "external-id-normalized-error": null,
+      "external-id-url": null,
+      "external-id-relationship": "self"
+     }
+    ]
+   },
+   "funding-summary": [
+    {
+     "created-date": {
+      "value": 1422975654101
+     },
+     "last-modified-date": {
+      "value": 1458838241964
+     },
+     "source": {
+      "source-orcid": {
+       "uri": "https://orcid.org/0000-0002-1694-233X",
+       "path": "0000-0002-1694-233X",
+       "host": "orcid.org"
+      },
+      "source-client-id": null,
+      "source-name": {
+       "value": "Thomas B. Hickey"
+      },
+      "assertion-origin-orcid": null,
+      "assertion-origin-client-id": null,
+      "assertion-origin-name": null
+     },
+     "title": {
+      "title": {
+       "value": "Development of a Probabilistic Author Search and Matching Technique for Retrieval and Creation of Bibliographic Records"
+      },
+      "translated-title": null
+     },
+     "external-ids": {
+      "external-id": [
+       {
+        "external-id-type": "grant_number",
+        "external-id-value": "IST79-18263",
+        "external-id-normalized": null,
+        "external-id-normalized-error": null,
+        "external-id-url": null,
+        "external-id-relationship": "self"
+       }
+      ]
+     },
+     "url": null,
+     "type": "grant",
+     "start-date": {
+      "year": {
+       "value": "1979"
+      },
+      "month": {
+       "value": "08"
+      },
+      "day": null
+     },
+     "end-date": {
+      "year": {
+       "value": "1981"
+      },
+      "month": {
+       "value": "01"
+      },
+      "day": null
+     },
+     "organization": {
+      "name": "NSF Office of the Director",
+      "address": {
+       "city": "VA",
+       "region": "VA",
+       "country": "US"
+      },
+      "disambiguated-organization": {
+       "disambiguated-organization-identifier": "http://dx.doi.org/10.13039/100000179",
+       "disambiguation-source": "FUNDREF"
+      }
+     },
+     "visibility": "public",
+     "put-code": 63665,
+     "path": "/0000-0002-1694-233X/funding/63665",
+     "display-index": "0"
+    }
+   ]
+  }
+ ],
+ "path": "/0000-0002-1694-233X/fundings"
+}

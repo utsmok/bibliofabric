@@ -1,0 +1,37 @@
+{
+ "last-modified-date": {
+  "value": 1464801001220
+ },
+ "address": [
+  {
+   "created-date": {
+    "value": 1453660601177
+   },
+   "last-modified-date": {
+    "value": 1464801001220
+   },
+   "source": {
+    "source-orcid": {
+     "uri": "https://orcid.org/0000-0002-1694-233X",
+     "path": "0000-0002-1694-233X",
+     "host": "orcid.org"
+    },
+    "source-client-id": null,
+    "source-name": {
+     "value": "Thomas B. Hickey"
+    },
+    "assertion-origin-orcid": null,
+    "assertion-origin-client-id": null,
+    "assertion-origin-name": null
+   },
+   "country": {
+    "value": "US"
+   },
+   "visibility": "public",
+   "path": "/0000-0002-1694-233X/address/379780",
+   "put-code": 379780,
+   "display-index": 0
+  }
+ ],
+ "path": "/0000-0002-1694-233X/address"
+}

@@ -1,0 +1,95 @@
+"""Async ORCID v3.0 client; the single source of truth for the sync twin."""
+
+import logging
+from functools import cached_property
+
+import httpx
+from bibliofabric import BaseApiClient
+
+from ..config import OrchisSettings, get_settings
+from ..dialect import ORCID_API_BASE_URL
+from ..unwrapper import OrchisUnwrapper
+from .resources import (
+    ActivitiesClient,
+    ExpandedSearchClient,
+    PersonClient,
+    RecordClient,
+    SolrSearchClient,
+)
+
+logger = logging.getLogger(__name__)
+
+
+class OrchisClient(BaseApiClient):
+    """Client for the ORCID Public API v3.0.
+
+    Reads need no credentials. The client sends ``Accept: application/json``
+    on every request; methods such as
+    :meth:`RecordClient.representation` ask for another representation and
+    return the body as text. When ``settings.access_token`` is set, the token
+    travels as a bearer header and lifts the public API daily read quota from
+    25,000 to 100,000 reads (registered public API clients only).
+    """
+
+    def __init__(
+        self,
+        settings: OrchisSettings | None = None,
+        *,
+        base_url: str | None = None,
+        http_client: httpx.AsyncClient | None = None,
+    ) -> None:
+        """Build the client.
+
+        Args:
+            settings: Settings instance; ``None`` loads from the environment.
+            base_url: API base URL override (testing).
+            http_client: Optional pre-configured ``httpx.AsyncClient`` (caller
+                retains ownership and is responsible for closing it).
+        """
+        resolved = settings or get_settings()
+        super().__init__(
+            base_url=base_url or ORCID_API_BASE_URL,
+            settings=resolved,
+            unwrapper=OrchisUnwrapper(),
+            http_client=http_client,
+        )
+        self._orcid_settings: OrchisSettings = resolved
+        logger.debug("%s initialized.", type(self).__name__)
+
+    @property
+    def default_headers(self) -> dict[str, str]:
+        """Headers sent with every request: the JSON representation, plus the
+        bearer token when ``settings.access_token`` is set."""
+        headers = {"Accept": "application/json"}
+        token = self._orcid_settings.access_token
+        if token:
+            headers["Authorization"] = f"Bearer {token}"
+        return headers
+
+    @cached_property
+    def record(self) -> RecordClient:
+        """The record summary resource."""
+        return RecordClient(self)
+
+    @cached_property
+    def person(self) -> PersonClient:
+        """The person section and its sub-sections."""
+        return PersonClient(self)
+
+    @cached_property
+    def activities(self) -> ActivitiesClient:
+        """The activities summary, its sections, and single items."""
+        return ActivitiesClient(self)
+
+    @cached_property
+    def expanded_search(self) -> ExpandedSearchClient:
+        """The expanded search route with profile fields per result."""
+        return ExpandedSearchClient(self)
+
+    @cached_property
+    def search(self) -> SolrSearchClient:
+        """The Solr-compatible search route."""
+        return SolrSearchClient(self)
+
+
+__all__ = ["OrchisClient"]
