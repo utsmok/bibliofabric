@@ -157,13 +157,3 @@ class AffiliationMatch(BaseModel):
     organization: Organization | None = None
 
     model_config = ConfigDict(extra="allow")
-
-
-class FacetCount(BaseModel):
-    """One bucket of the summary counts in ``Page.meta`` (``id``, ``title``, ``count``)."""
-
-    id: SafeStr | None = None
-    title: SafeStr | None = None
-    count: int | None = None
-
-    model_config = ConfigDict(extra="allow")

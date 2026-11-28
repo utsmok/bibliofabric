@@ -3,12 +3,13 @@
 
 import logging
 from functools import cached_property
+from typing import override
 
 import httpx
 from bibliofabric import SyncBaseApiClient
 
 from ..config import RoriferSettings, get_settings
-from ..dialect import ROR_API_BASE_URL
+from ..dialect import ROR_API_BASE_URL, ROR_HEARTBEAT_PATH, ROR_ZENODO_HOST
 from ..unwrapper import RoriferUnwrapper
 from .dumps import DumpsSyncClient
 from .organizations import OrganizationsSyncClient
@@ -51,6 +52,16 @@ class RoriferSyncClient(SyncBaseApiClient):
         """Headers sent with every request: the JSON representation."""
         return {"Accept": "application/json"}
 
+    @override
+    def rate_class(self, request: httpx.Request) -> str:
+        """Pace requests to Zenodo in their own class.
+
+        The anonymous Zenodo search accepts 30 requests per minute, far less
+        than the ROR API, so the data dump helper gets the ``zenodo`` rate
+        class of :attr:`RoriferSettings.rate_limits`.
+        """
+        return "zenodo" if request.url.host == ROR_ZENODO_HOST else "default"
+
     @cached_property
     def organizations(self) -> OrganizationsSyncClient:
         """The organizations resource client."""
@@ -60,6 +71,17 @@ class RoriferSyncClient(SyncBaseApiClient):
     def dumps(self) -> DumpsSyncClient:
         """The ROR data dumps hosted on Zenodo."""
         return DumpsSyncClient(self)
+
+    def heartbeat(self) -> bool:
+        """Return ``True`` when the ROR API answers its health check with ``OK``.
+
+        The check calls ``GET /heartbeat`` on the host of the base URL,
+        outside the ``v2`` prefix. An error status raises, as with every
+        request.
+        """
+        url = httpx.URL(self.base_url).copy_with(path=ROR_HEARTBEAT_PATH)
+        response = self.request("GET", str(url))
+        return response.text.strip() == "OK"
 
 
 __all__ = ["RoriferSyncClient"]

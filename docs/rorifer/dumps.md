@@ -13,7 +13,13 @@ latest = await client.dumps.latest()
 path = await client.dumps.download(latest, "ror-data.zip")
 ```
 
-`list()` returns `RorDump` records from the Zenodo search API, ordered by last update. `latest()` picks the one with the newest `publication_date`. `download()` streams the zip to disk, creates missing parent directories, and returns the path. A dump record also exposes `record_id`, `concept_id`, `doi`, `metadata`, `files`, and `links`.
+`list()` reads the Zenodo search API with `all_versions=true`, so every ROR release is one `RorDump` record. Without that parameter, Zenodo answers a release series with its newest version only. The records come ordered by last update, 25 per page, which is the largest page for callers without a Zenodo account. `limit` (default 5) caps the number of records; `list()` stops when the releases run out.
+
+`latest()` reads the Zenodo concept record of the dumps (6347574). Zenodo redirects that record to the newest release, so the answer is the newest release and not the record that was last updated.
+
+`download()` streams the zip to disk, creates missing parent directories, and returns the path. A dump record also exposes `record_id`, `concept_id`, `doi`, `metadata`, `files`, and `links`.
+
+The anonymous Zenodo search accepts 30 requests per minute. The client paces its Zenodo requests to one every 2 seconds (see `RORIFER_RATE_LIMITS`), so `list()` with a large `limit` takes a while.
 
 ## Read the records
 

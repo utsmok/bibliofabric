@@ -12,6 +12,8 @@ Generated from the source with mkdocstrings.
         - organizations
         - dumps
         - request
+        - heartbeat
+        - rate_class
 
 ## Sync client
 
@@ -23,6 +25,8 @@ Generated from the source with mkdocstrings.
         - organizations
         - dumps
         - request
+        - heartbeat
+        - rate_class
 
 ## Settings
 
@@ -42,6 +46,8 @@ Each resource client inherits the generic operations from `bibliofabric.Resource
       members:
         - search
         - iterate
+        - collect
+        - first
         - count
         - match_affiliation
         - find_by_external_id
@@ -55,6 +61,7 @@ Each resource client inherits the generic operations from `bibliofabric.Resource
         - build_filter_params
         - normalize_id
         - exists
+        - with_query_options
 
 ::: rorifer._async.dumps.DumpsClient
     options:
@@ -81,8 +88,13 @@ Each resource client inherits the generic operations from `bibliofabric.Resource
       show_source: false
       members:
         - ROR_API_BASE_URL
+        - ROR_HEARTBEAT_PATH
         - ROR_ZENODO_API_BASE_URL
+        - ROR_ZENODO_HOST
         - ROR_ZENODO_COMMUNITY
+        - ROR_ZENODO_CONCEPT_RECORD_ID
+        - ZENODO_SEARCH_PAGE_SIZE
+        - ZENODO_SEARCH_REQUESTS_PER_SECOND
         - ROR_PAGE_SIZE
         - ROR_MAX_PAGE
         - ORGANIZATION_TYPES
@@ -176,16 +188,17 @@ The models live in `rorifer.models` and are re-exported from the top-level packa
       heading_level: 3
       show_source: false
 
-::: rorifer.models.FacetCount
-    options:
-      heading_level: 3
-      show_source: false
-
 ::: rorifer.models.RorDump
     options:
       heading_level: 3
       show_source: false
       members:
+        - record_id
+        - concept_id
+        - doi
+        - title
+        - publication_date
+        - version
         - zip_file
         - zip_url
 

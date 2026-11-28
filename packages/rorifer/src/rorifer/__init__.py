@@ -30,7 +30,7 @@ from ._sync.organizations import OrganizationsSyncClient
 from .config import RoriferSettings, get_settings
 from .crosswalk import FUNDREF_DOI_PREFIX, fundref_doi_from_id, fundref_id_from_doi
 from .dump import compact_external_id, index_external_ids, iter_dump_records
-from .filters import OrganizationFilters
+from .filters import OrganizationFilters, external_id_query
 from .models import (
     Admin,
     AdminDate,
@@ -40,7 +40,6 @@ from .models import (
     DumpLinks,
     DumpMetadata,
     ExternalId,
-    FacetCount,
     GeonamesDetails,
     Link,
     Location,
@@ -68,7 +67,6 @@ __all__ = [
     "DumpMetadata",
     "external_id_query",
     "ExternalId",
-    "FacetCount",
     "FUNDREF_DOI_PREFIX",
     "fundref_doi_from_id",
     "fundref_id_from_doi",

@@ -125,9 +125,16 @@ def test_find_by_external_id_smoke(live_client):
     assert [record.id for record in nsf] == [NSF]
 
 
+def test_heartbeat_smoke(live_client):
+    assert live_client.heartbeat() is True
+
+
 def test_dumps_list_smoke(live_client):
-    dumps = live_client.dumps.list(limit=2)
-    assert dumps
+    """Every release is one Zenodo record; a search without ``all_versions`` answers three."""
+    dumps = live_client.dumps.list(limit=3)
+    assert len(dumps) == 3
+    assert len({dump.record_id for dump in dumps}) == 3
+    assert all(dump.version for dump in dumps)
     assert dumps[0].zip_url
     latest = live_client.dumps.latest()
     assert latest.publication_date is not None

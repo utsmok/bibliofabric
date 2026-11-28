@@ -1,7 +1,9 @@
 """Parsing: real payloads, model coercions, page metadata."""
 
+import pytest
 from rorifer import (
     AffiliationMatch,
+    APIError,
     Organization,
     OrganizationFilters,
     RorDump,
@@ -186,3 +188,50 @@ def test_client_exposes_resources(settings):
     assert client.organizations.path == "organizations"
     assert client.organizations is client.organizations
     assert client.dumps is client.dumps
+
+
+@pytest.mark.parametrize("operation", ["search", "count", "match_affiliation", "get"])
+async def test_body_that_is_not_an_object_raises_api_error(
+    client, httpx_mock, operation
+):
+    """A body of another shape is an error, not an empty answer."""
+    httpx_mock.add_response(json=["not", "an", "envelope"])
+    with pytest.raises(APIError, match="not a JSON object"):
+        if operation == "search":
+            await client.organizations.search(query="university")
+        elif operation == "count":
+            await client.organizations.count(query="university")
+        elif operation == "match_affiliation":
+            await client.organizations.match_affiliation("University of Twente")
+        else:
+            await client.organizations.get("006hf6230")
+
+
+@pytest.mark.parametrize(
+    ("body", "operation"),
+    [
+        ({"number_of_results": 1}, "search"),
+        ({"number_of_results": 1}, "iterate"),
+        ({"items": "none"}, "match_affiliation"),
+    ],
+)
+async def test_envelope_without_items_list_raises_api_error(
+    client, httpx_mock, body, operation
+):
+    """Every list route carries ``items``, even when it has no match."""
+    httpx_mock.add_response(json=body)
+    with pytest.raises(APIError, match="no items list"):
+        if operation == "search":
+            await client.organizations.search(query="university")
+        elif operation == "iterate":
+            [
+                record
+                async for record in client.organizations.iterate(query="university")
+            ]
+        else:
+            await client.organizations.match_affiliation("University of Twente")
+
+
+def test_total_without_number_of_results_is_none(client):
+    """``number_of_results`` absent from an object reads as an unknown total."""
+    assert client.unwrapper.total({"items": []}) is None

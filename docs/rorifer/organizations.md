@@ -1,16 +1,17 @@
 # Organizations
 
-`client.organizations` talks to `/organizations` and returns `Organization` models. Pages hold 20 records, and the API serves pages 1 to 500, so one query reaches at most 10,000 records. To read the whole registry, use a [data dump](dumps.md).
+`client.organizations` talks to `/organizations` and returns `Organization` models. Pages hold 20 records, and the API serves pages 1 to 500, so one query reaches at most 10,000 records. A query with more results raises `ConfigurationError` when page 501 would be needed. To read the whole registry, use a [data dump](dumps.md).
 
 ## Get one record
 
 ```python
 org = await client.organizations.get("006hf6230")
 org = await client.organizations.get("https://ror.org/006hf6230")  # same record
+org = await client.organizations.get("ror.org/006hf6230")  # same record
 found = await client.organizations.exists("006hf6230")
 ```
 
-Both the bare ROR id and the record URL work. `get()` returns records of every status, including inactive and withdrawn ones, and raises `NotFoundError` for an id that does not exist. `exists()` returns `False` for a missing record. It sends `GET`, because the ROR gateway answers `HEAD` with 403.
+The bare ROR id, the record URL, and the form `ror.org/006hf6230` work. `get()` returns records of every status, including inactive and withdrawn ones, and raises `NotFoundError` for an id that does not exist. `exists()` returns `False` for a missing record. It sends `GET`, because the ROR gateway answers `HEAD` with 403.
 
 ## The record model
 
@@ -85,7 +86,7 @@ async for org in client.organizations.iterate(
 total = await client.organizations.count(query="university of twente")
 ```
 
-`iterate()` fetches page after page and stops at `limit`, at an empty page, at page 500, or when `number_of_results` records were seen. `count()` returns `number_of_results`; ROR has no count-only route, so it fetches one page. `collect()` and `first()` accept the same arguments.
+`iterate()` fetches page after page and stops at `limit`, at an empty page, or when `number_of_results` records were seen. A query with more than 10,000 results raises `ConfigurationError` at page 501; it does not stop with the first 10,000 records. `count()` returns `number_of_results`; ROR has no count-only route, so it fetches one page. `collect()` and `first()` accept the same arguments as `iterate()`.
 
 ROR warns that a paged query without a filter can repeat or skip records between pages. For a complete list, narrow the query with a filter or read a [data dump](dumps.md).
 

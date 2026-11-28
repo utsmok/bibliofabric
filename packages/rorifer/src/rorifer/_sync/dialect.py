@@ -3,8 +3,8 @@
 
 ROR differs from the bibliofabric defaults in three ways: filters travel in
 one ``filter=key:value`` parameter, record ids are bare ROR ids (the API
-also answers ``https://ror.org/<id>`` URLs), and the API gateway answers
-``HEAD`` with 403, so ``exists()`` falls back to ``GET``.
+also answers ``https://ror.org/<id>`` and ``ror.org/<id>``), and the API
+gateway answers ``HEAD`` with 403, so ``exists()`` falls back to ``GET``.
 """
 
 from collections.abc import Mapping
@@ -16,6 +16,10 @@ from bibliofabric.ids import normalize_ror
 from pydantic import BaseModel
 
 from ..dialect import ROR_DIALECT
+
+#: Domain form of a record id that ROR accepts (``ror.org/006hf6230``). The
+#: core normalizer strips the URL scheme form only.
+_ROR_DOMAIN_PREFIX = "ror.org/"
 
 
 def serialize_filter_params(
@@ -64,8 +68,15 @@ class RoriferResourceSyncClient[E: BaseModel](SyncResourceClient[E]):
 
     @override
     def normalize_id(self, value: str) -> str:
-        """Return the bare lowercase ROR id (``https://ror.org/006hf6230`` to ``006hf6230``)."""
-        return normalize_ror(value)
+        """Return the bare lowercase ROR id.
+
+        ``https://ror.org/006hf6230``, ``ror.org/006hf6230``, and
+        ``006hf6230`` all become ``006hf6230``; ROR accepts the three forms.
+        """
+        normalized = normalize_ror(value)
+        if normalized.lower().startswith(_ROR_DOMAIN_PREFIX):
+            normalized = normalized[len(_ROR_DOMAIN_PREFIX) :]
+        return normalized
 
     @override
     def exists(self, id: str | int) -> bool:

@@ -1,19 +1,27 @@
-"""Zenodo data dumps: list, pick the newest, download."""
+"""Zenodo data dumps: list every release, pick the newest, download."""
 
 import pytest
-from rorifer import ConfigurationError, RorDump
+from rorifer import APIError, ConfigurationError, RorDump, ValidationError
 
 from ..conftest import load_fixture
 
 ZENODO_SEARCH = load_fixture("zenodo_search.json")
-FILE_URL = ZENODO_SEARCH["hits"]["hits"][0]["files"][0]["links"]["self"]
+NEW, OLD = ZENODO_SEARCH["hits"]["hits"]
+FILE_URL = NEW["files"][0]["links"]["self"]
+CONCEPT_URL = "https://zenodo.org/api/records/6347574"
+LATEST_URL = "https://zenodo.org/api/records/24378467"
 
 
-def hits_in_order(first: dict, second: dict) -> dict:
-    return {"hits": {"hits": [first, second]}}
+def dump_record(record_id: int) -> dict:
+    return {"id": record_id, "metadata": {"publication_date": "2026-01-01"}}
 
 
-async def test_list_sends_community_search(client, httpx_mock):
+def hits_page(records: list[object], *, total: int) -> dict:
+    return {"hits": {"hits": records, "total": total}, "links": {}}
+
+
+async def test_list_sends_search_for_every_version(client, httpx_mock):
+    """Without ``all_versions`` Zenodo collapses a release series into its newest version."""
     httpx_mock.add_response(json=ZENODO_SEARCH)
     dumps = await client.dumps.list(limit=2)
     request = httpx_mock.get_requests()[-1]
@@ -21,12 +29,51 @@ async def test_list_sends_community_search(client, httpx_mock):
     assert request.url.path == "/api/records"
     assert dict(request.url.params) == {
         "q": "communities:ror-data",
+        "all_versions": "true",
         "sort": "mostrecent",
         "size": "2",
         "type": "dataset",
+        "page": "1",
     }
     assert [dump.record_id for dump in dumps] == [24378467, 5534443]
     assert dumps[0].zip_url == FILE_URL
+
+
+async def test_list_follows_pages_of_25(client, httpx_mock):
+    """Anonymous callers get 25 records per page; a larger ``size`` is a 400."""
+    httpx_mock.add_response(
+        json=hits_page([dump_record(number) for number in range(25)], total=30)
+    )
+    httpx_mock.add_response(
+        json=hits_page([dump_record(25 + number) for number in range(5)], total=30)
+    )
+    dumps = await client.dumps.list(limit=100)
+    assert [dump.record_id for dump in dumps] == list(range(30))
+    requests = httpx_mock.get_requests()
+    assert [request.url.params["page"] for request in requests] == ["1", "2"]
+    assert [request.url.params["size"] for request in requests] == ["25", "25"]
+
+
+async def test_list_stops_at_limit_between_pages(client, httpx_mock):
+    httpx_mock.add_response(
+        json=hits_page([dump_record(number) for number in range(25)], total=99)
+    )
+    httpx_mock.add_response(
+        json=hits_page([dump_record(25), dump_record(26)], total=99)
+    )
+    dumps = await client.dumps.list(limit=27)
+    assert [dump.record_id for dump in dumps] == list(range(27))
+    assert [request.url.params["size"] for request in httpx_mock.get_requests()] == [
+        "25",
+        "2",
+    ]
+
+
+async def test_list_stops_on_a_short_last_page(client, httpx_mock):
+    httpx_mock.add_response(json=hits_page([dump_record(0)], total=1))
+    dumps = await client.dumps.list(limit=5)
+    assert [dump.record_id for dump in dumps] == [0]
+    assert len(httpx_mock.get_requests()) == 1
 
 
 async def test_list_rejects_non_positive_limit(client, httpx_mock):
@@ -35,23 +82,52 @@ async def test_list_rejects_non_positive_limit(client, httpx_mock):
     assert not httpx_mock.get_requests()
 
 
-async def test_latest_picks_newest_publication_date(client, httpx_mock):
-    new, old = ZENODO_SEARCH["hits"]["hits"]
-    httpx_mock.add_response(json=hits_in_order(old, new))
-    assert (await client.dumps.latest()).record_id == new["id"]
-    assert httpx_mock.get_requests()[-1].url.params["size"] == "25"
+@pytest.mark.parametrize(
+    "body",
+    [
+        {"status": 400, "message": "A validation error occurred."},
+        {"hits": {"total": 3}},
+        ["not", "an", "envelope"],
+    ],
+)
+async def test_list_rejects_body_without_hits(client, httpx_mock, body):
+    httpx_mock.add_response(json=body)
+    with pytest.raises(APIError, match="no hits list"):
+        await client.dumps.list()
 
 
-async def test_latest_without_records_raises(client, httpx_mock):
-    httpx_mock.add_response(json={"hits": {"hits": []}})
-    with pytest.raises(ConfigurationError, match="no records"):
+async def test_list_rejects_record_that_is_not_a_dump(client, httpx_mock):
+    httpx_mock.add_response(json=hits_page(["not a record"], total=1))
+    with pytest.raises(ValidationError) as error:
+        await client.dumps.list()
+    assert error.value.raw == "not a record"
+
+
+async def test_latest_follows_the_concept_record_redirect(client, httpx_mock):
+    httpx_mock.add_response(
+        url=CONCEPT_URL, status_code=302, headers={"Location": LATEST_URL}
+    )
+    httpx_mock.add_response(url=LATEST_URL, json=NEW)
+    latest = await client.dumps.latest()
+    assert latest.record_id == 24378467
+    assert latest.version == "v2.16"
+    assert [request.url.path for request in httpx_mock.get_requests()] == [
+        "/api/records/6347574",
+        "/api/records/24378467",
+    ]
+
+
+async def test_latest_rejects_body_that_is_not_a_record(client, httpx_mock):
+    httpx_mock.add_response(json=[])
+    with pytest.raises(ValidationError) as error:
         await client.dumps.latest()
+    assert error.value.raw == []
 
 
 async def test_download_streams_zip_to_disk(client, httpx_mock, tmp_path):
     payload = b"PK\x03\x04" + bytes(range(256)) * 64
     httpx_mock.add_response(url=FILE_URL, content=payload)
-    dump = RorDump.model_validate(ZENODO_SEARCH["hits"]["hits"][0])
+    dump = RorDump.model_validate(NEW)
 
     target = await client.dumps.download(dump, tmp_path / "nested" / "ror-data.zip")
 

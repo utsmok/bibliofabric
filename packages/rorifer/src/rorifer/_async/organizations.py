@@ -9,12 +9,22 @@ from bibliofabric.paging import Page
 from pydantic import BaseModel
 
 from ..crosswalk import fundref_id_from_doi
+from ..dialect import ROR_PAGE_SIZE
 from ..dump import compact_external_id
 from ..filters import external_id_query
 from ..models import AffiliationMatch, Organization
 from .dialect import RoriferResourceClient
 
 _FUNDREF = "fundref"
+
+
+def _check_page_size(page_size: int | None) -> None:
+    """Raise when a page size is requested; ROR fixes pages at 20 records."""
+    if page_size is not None:
+        raise ConfigurationError(
+            "OrganizationsClient does not support a page size (ROR returns "
+            f"{ROR_PAGE_SIZE} records per page); do not pass page_size."
+        )
 
 
 class OrganizationsClient(RoriferResourceClient[Organization]):
@@ -56,14 +66,20 @@ class OrganizationsClient(RoriferResourceClient[Organization]):
         only active records answer. :attr:`Page.meta` carries ROR's facet
         counts (``types``, ``countries``, ``continents``, ``statuses``) and
         ``time_taken``.
+
+        Raises:
+            ConfigurationError: ``page_size``, ``sort``, ``select``, or
+                ``cursor`` is set. ROR has no such parameter, so the client
+                sends no request.
         """
+        _check_page_size(page_size)
         return await super().search(
             filters,
             query=query,
             sort=sort,
             select=select,
             page=page,
-            page_size=page_size,
+            page_size=None,
             cursor=cursor,
             on_error=on_error,
             failures=failures,
@@ -94,14 +110,23 @@ class OrganizationsClient(RoriferResourceClient[Organization]):
 
         Accepts the same arguments as :meth:`search`. Iteration stops at
         ``limit``, on an empty page, or when ``number_of_results`` records
-        were seen.
+        were seen. A query with more than 10,000 matches raises
+        :class:`~bibliofabric.exceptions.ConfigurationError` when it asks
+        for page 501, so pass a ``limit`` of at most 10,000 for broad
+        queries.
+
+        Raises:
+            ConfigurationError: ``page_size``, ``sort``, ``select``, or
+                ``cursor`` is set. ROR has no such parameter, so the client
+                sends no request.
         """
+        _check_page_size(page_size)
         return super().iterate(
             filters,
             query=query,
             sort=sort,
             select=select,
-            page_size=page_size,
+            page_size=None,
             limit=limit,
             cursor=cursor,
             on_error=on_error,
@@ -111,6 +136,83 @@ class OrganizationsClient(RoriferResourceClient[Organization]):
                 params, advanced=advanced, all_status=all_status
             ),
         )
+
+    @override
+    async def collect(
+        self,
+        filters: BaseModel | Mapping[str, Any] | None = None,
+        *,
+        limit: int | None = None,
+        query: str | None = None,
+        sort: str | Sequence[str] | None = None,
+        select: Sequence[str] | None = None,
+        page_size: int | None = None,
+        cursor: str | None = None,
+        on_error: OnError = "raise",
+        failures: list[tuple[dict[str, Any], Exception]] | None = None,
+        on_page: Callable[[int, str | None], Any] | None = None,
+        params: Mapping[str, Any] | None = None,
+        advanced: str | None = None,
+        all_status: bool = False,
+    ) -> list[Organization]:
+        """Collect the output of :meth:`iterate` into a list, bounded by ``limit``."""
+        return [
+            organization
+            async for organization in self.iterate(
+                filters,
+                query=query,
+                sort=sort,
+                select=select,
+                page_size=page_size,
+                limit=limit,
+                cursor=cursor,
+                on_error=on_error,
+                failures=failures,
+                on_page=on_page,
+                params=params,
+                advanced=advanced,
+                all_status=all_status,
+            )
+        ]
+
+    @override
+    async def first(
+        self,
+        filters: BaseModel | Mapping[str, Any] | None = None,
+        *,
+        query: str | None = None,
+        sort: str | Sequence[str] | None = None,
+        select: Sequence[str] | None = None,
+        page_size: int | None = None,
+        cursor: str | None = None,
+        on_error: OnError = "raise",
+        failures: list[tuple[dict[str, Any], Exception]] | None = None,
+        params: Mapping[str, Any] | None = None,
+        advanced: str | None = None,
+        all_status: bool = False,
+    ) -> Organization | None:
+        """Return the first matching organization, or ``None`` when there is none.
+
+        ROR fixes pages at 20 records, so the call reads one page and returns
+        its first record. It accepts the same arguments as :meth:`iterate`
+        except ``limit`` and ``on_page``.
+        """
+        _check_page_size(page_size)
+        results = await self.collect(
+            filters,
+            limit=1,
+            query=query,
+            sort=sort,
+            select=select,
+            page_size=None,
+            cursor=cursor,
+            on_error=on_error,
+            failures=failures,
+            params=params,
+            advanced=advanced,
+            all_status=all_status,
+        )
+        return results[0] if results else None
 
     @override
     async def count(

@@ -1,16 +1,16 @@
 # rorifer
 
-rorifer is a placeholder name. The package will be renamed before its first release.
+rorifer is not yet published on PyPI. Until the first release, use it from a checkout of the `bibliofabric` workspace, where `uv sync --all-packages` installs it together with the `bibliofabric` 0.8 it needs.
 
 rorifer is a Python client for the [ROR API v2](https://ror.readme.io/docs/rest-api), built on [bibliofabric](https://github.com/utsmok/bibliofabric). It types the organizations endpoint with Pydantic models, serializes the ROR filter syntax for you, and reads the registry dumps that ROR publishes on Zenodo. It ships an async client and a generated sync twin with the same API. The API needs no credentials.
 
 ## Install
 
 ```bash
-uv add rorifer
+uv sync --all-packages
 ```
 
-Requires Python 3.12 or newer.
+The command runs in a checkout of the `bibliofabric` workspace and installs rorifer with the `bibliofabric` 0.8 it needs. `uv add rorifer` works once the package is on PyPI. Requires Python 3.12 or newer.
 
 ## Quick start
 
@@ -61,7 +61,7 @@ with RoriferSyncClient() as client:
 
 ## Settings
 
-`RoriferSettings` loads from environment variables prefixed with `RORIFER_` and from a `.env` file in the working directory. `RORIFER_MAX_REQUESTS_PER_SECOND` (default 10) and `RORIFER_MAX_CONCURRENCY` (default 5) set the request pace. The shared fields of `bibliofabric.config.BaseApiSettings` also apply, such as `RORIFER_TIMEOUT`, `RORIFER_MAX_RETRIES`, `RORIFER_MAX_RETRY_WAIT`, and `RORIFER_USER_AGENT`.
+`RoriferSettings` loads from environment variables prefixed with `RORIFER_` and from a `.env` file in the working directory. `RORIFER_MAX_REQUESTS_PER_SECOND` (default 6) and `RORIFER_MAX_CONCURRENCY` (default 5) set the request pace. Requests to Zenodo, which lists the data dumps, run in their own rate class: `RORIFER_RATE_LIMITS` is a JSON object of requests per second per class and defaults to `{"zenodo": 0.5}`, because the anonymous Zenodo search accepts 30 requests per minute. A `RORIFER_MAX_REQUESTS_PER_SECOND` that you set applies to every class, unless you also set `RORIFER_RATE_LIMITS`. The shared fields of `bibliofabric.config.BaseApiSettings` also apply, such as `RORIFER_TIMEOUT`, `RORIFER_MAX_RETRIES`, `RORIFER_MAX_RETRY_WAIT`, and `RORIFER_USER_AGENT`.
 
 ## Where to go next
 

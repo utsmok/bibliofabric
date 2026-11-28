@@ -1,7 +1,9 @@
 """Outgoing request shape: paths, params, filter syntax, paging, guards."""
 
+import httpx
 import pytest
 from rorifer import (
+    APIError,
     ConfigurationError,
     NotFoundError,
     OrganizationFilters,
@@ -32,6 +34,16 @@ async def test_get_uses_bare_ror_id_and_accepts_json(client, httpx_mock):
     request = last_request(httpx_mock)
     assert request.url.path == "/v2/organizations/006hf6230"
     assert request.headers["accept"] == "application/json"
+
+
+@pytest.mark.parametrize(
+    "id", ["006hf6230", "https://ror.org/006hf6230", "ror.org/006hf6230"]
+)
+async def test_get_accepts_the_three_id_forms_of_ror(client, httpx_mock, id):
+    """ROR documents the bare id, the record URL, and ``ror.org/<id>`` as valid."""
+    httpx_mock.add_response(json=ORGANIZATION)
+    await client.organizations.get(id)
+    assert last_request(httpx_mock).url.path == "/v2/organizations/006hf6230"
 
 
 async def test_get_raises_not_found(client, httpx_mock):
@@ -81,9 +93,9 @@ async def test_search_sends_filter_model_with_aliases(client, httpx_mock):
     }
 
 
-async def test_search_omits_empty_filters_and_unsupported_options(client, httpx_mock):
+async def test_search_omits_empty_filters(client, httpx_mock):
     httpx_mock.add_response(json=PAGE)
-    await client.organizations.search(None, page_size=50)
+    await client.organizations.search(None)
     assert last_params(httpx_mock) == {"page": "1"}
 
 
@@ -93,6 +105,7 @@ async def test_search_omits_empty_filters_and_unsupported_options(client, httpx_
         ({"sort": "name"}, "does not support sorting"),
         ({"select": ["id"]}, "does not support field selection"),
         ({"cursor": "*"}, "does not support cursor paging"),
+        ({"page_size": 50}, "does not support a page size"),
     ],
 )
 async def test_unsupported_options_raise_without_request(
@@ -153,6 +166,19 @@ async def test_count_reads_number_of_results(client, httpx_mock):
     assert last_params(httpx_mock) == {"page": "1", "query": "university of twente"}
 
 
+async def test_count_forwards_query_options(client, httpx_mock):
+    httpx_mock.add_response(json=PAGE)
+    await client.organizations.count(
+        {"status": "inactive"}, advanced="established:1961", all_status=True
+    )
+    assert last_params(httpx_mock) == {
+        "filter": "status:inactive",
+        "page": "1",
+        "query.advanced": "established:1961",
+        "all_status": "true",
+    }
+
+
 async def test_iterate_pages_until_total_without_duplicates(client, httpx_mock):
     first = [organization(f"{index:08x}") for index in range(20)]
     second = [organization(f"{index:08x}") for index in range(20, 40)]
@@ -210,6 +236,67 @@ async def test_iterate_forwards_query_options(client, httpx_mock):
     }
 
 
+async def test_iterate_raises_at_page_500_instead_of_truncating(client, httpx_mock):
+    """One query reaches at most 10,000 records; the API has no page 501."""
+    page = envelope(
+        [organization(f"{index:08x}") for index in range(20)],
+        number_of_results=600_000,
+    )
+    httpx_mock.add_response(json=page, is_reusable=True)
+    with pytest.raises(ConfigurationError, match="max_offset"):
+        [record async for record in client.organizations.iterate(query="hospital")]
+    requests = httpx_mock.get_requests()
+    assert len(requests) == 500
+    assert requests[-1].url.params["page"] == "500"
+
+
+async def test_collect_and_first_forward_query_options(client, httpx_mock):
+    httpx_mock.add_response(
+        json=envelope([organization("006hf6230"), organization("021nxhr62")])
+    )
+    httpx_mock.add_response(json=envelope([organization("021nxhr62")]))
+
+    records = await client.organizations.collect(
+        query="nsf", advanced='names.value:"NSF"', all_status=True
+    )
+    first = await client.organizations.first(query="nsf")
+
+    assert [record.id for record in records] == [
+        "https://ror.org/006hf6230",
+        "https://ror.org/021nxhr62",
+    ]
+    assert first is not None
+    assert first.id == "https://ror.org/021nxhr62"
+    collect_request, first_request = httpx_mock.get_requests()
+    assert dict(collect_request.url.params) == {
+        "page": "1",
+        "query": "nsf",
+        "query.advanced": 'names.value:"NSF"',
+        "all_status": "true",
+    }
+    assert dict(first_request.url.params) == {"page": "1", "query": "nsf"}
+
+
+async def test_first_returns_none_without_matches(client, httpx_mock):
+    httpx_mock.add_response(json=envelope([]))
+    assert await client.organizations.first(query="zzzzqqqqxyzzy") is None
+
+
+@pytest.mark.parametrize("operation", ["search", "iterate", "collect", "first"])
+async def test_page_size_raises_without_request(client, httpx_mock, operation):
+    """ROR fixes pages at 20 records, so a page size would be a silent no-op."""
+    with pytest.raises(ConfigurationError, match="does not support a page size"):
+        if operation == "search":
+            await client.organizations.search(query="nsf", page_size=50)
+        elif operation == "iterate":
+            [record async for record in client.organizations.iterate(page_size=50)]
+        elif operation == "collect":
+            await client.organizations.collect(page_size=50)
+        else:
+            await client.organizations.first(page_size=1)
+    assert not httpx_mock.get_requests()
+
+
 async def test_match_affiliation_request_and_candidates(client, httpx_mock):
     payload = load_fixture("affiliation.json")
     httpx_mock.add_response(json=payload)
@@ -225,6 +312,12 @@ async def test_match_affiliation_request_and_candidates(client, httpx_mock):
     assert chosen[0].score == 1.0
     assert chosen[0].organization.display_name == "University of Twente"
     assert matches[0].substring == "University of Twente, Enschede, Netherlands"
+
+
+async def test_match_affiliation_without_candidates(client, httpx_mock):
+    """ROR answers an empty affiliation match with ``items: []`` and no meta."""
+    httpx_mock.add_response(json={"number_of_results": 0, "items": []})
+    assert await client.organizations.match_affiliation("zzzz qqqq xyzzy") == []
 
 
 async def test_match_affiliation_rejects_blank_text(client, httpx_mock):
@@ -305,9 +398,50 @@ async def test_find_by_funder_doi_uses_fundref_id(client, httpx_mock):
         await client.organizations.find_by_funder_doi("10.1234/abc")
 
 
+async def test_heartbeat_checks_the_api_host(client, httpx_mock):
+    """The health check lives outside the ``v2`` prefix and answers ``OK`` as text."""
+    url = "https://api.ror.org/heartbeat"
+    httpx_mock.add_response(url=url, text="OK\n", headers={"content-type": "text/html"})
+    assert await client.heartbeat() is True
+    httpx_mock.add_response(
+        url=url, text="Error", headers={"content-type": "text/html"}
+    )
+    assert await client.heartbeat() is False
+    httpx_mock.add_response(url=url, status_code=503)
+    with pytest.raises(APIError, match="status 503"):
+        await client.heartbeat()
+    assert [request.url.path for request in httpx_mock.get_requests()] == [
+        "/heartbeat"
+    ] * 3
+
+
 async def test_base_url_override_points_elsewhere(httpx_mock, settings):
     httpx_mock.add_response(json=ORGANIZATION)
+    httpx_mock.add_response(
+        url="https://ror.example/heartbeat",
+        text="OK",
+        headers={"content-type": "text/html"},
+    )
     client = RoriferClient(settings=settings, base_url="https://ror.example/v2/")
     async with client:
         await client.organizations.get("006hf6230")
-    assert last_request(httpx_mock).url.path == "/v2/organizations/006hf6230"
+        assert await client.heartbeat() is True
+    assert [request.url.path for request in httpx_mock.get_requests()] == [
+        "/v2/organizations/006hf6230",
+        "/heartbeat",
+    ]
+
+
+async def test_rate_class_separates_zenodo(settings):
+    """Zenodo search allows 30 requests a minute; the ROR API far more."""
+    async with RoriferClient(settings=settings) as client:
+        assert (
+            client.rate_class(
+                httpx.Request("GET", "https://api.ror.org/v2/organizations")
+            )
+            == "default"
+        )
+        assert (
+            client.rate_class(httpx.Request("GET", "https://zenodo.org/api/records"))
+            == "zenodo"
+        )
