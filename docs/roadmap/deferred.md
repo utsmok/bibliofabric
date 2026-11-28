@@ -1,6 +1,6 @@
 # Deferred work
 
-This page lists everything that Wave 1 left out, with the reason and the condition that unblocks it. An item leaves this page only when it is done.
+This page lists everything that the Wave 1 libraries and the first Wave 2 library left out, with the reason and the condition that unblocks it. An item leaves this page only when it is done.
 
 ## Core framework
 
@@ -128,3 +128,11 @@ Wave 1 needed two of the six planned core additions. `BaseApiClient.default_head
 | `/ltwa-export` CSV export | The route answers 502 with the page parameters (2026-11-27 and 2026-11-28). The HTML table is wrapped. | The portal serving the export again. |
 | Search export and browse (`/internal/search/export`, `/internal/browse`) | Both answer 404 without a session. | A full-access account. |
 | ROAD record views and `publishers.issn.org` | They answer HTML only and add no machine-readable read route. | The ISSN Centre publishing machine-readable answers for them. |
+
+## arXiv (`archeion`)
+
+| Item | Why it is deferred | Unblocked by |
+|---|---|---|
+| OAI-PMH interface (`https://oaipmh.arxiv.org/oai`, formats `arXiv`, `arXivRaw`, and `oai_dc`) | It is the bulk harvest route and answers XML with resumption tokens. The roadmap plans one shared OAI-PMH harvester in `bibliofabric` for arXiv, EarthArXiv, and repositories; `zenotheca` has its own OAI-PMH client today. | The shared harvester, then an `oai` resource on `archeion`. |
+| RSS and Atom announcement feeds (`https://rss.arxiv.org/rss/{category}`) | They list the daily announcements, which the query API returns too with `sortBy=submittedDate`. | A caller that needs the announcement order of one day. |
+| Bulk data on Amazon S3 (PDF and source tarballs) | The buckets are requester-pays and need AWS credentials. | An AWS account and a decision to ship a loader. |

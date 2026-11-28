@@ -33,6 +33,7 @@ each one leaves out.
 | [quiddita](packages/quiddita/README.md) | Wikidata (action API, REST API, and SPARQL) | [0.1.0](packages/quiddita/CHANGELOG.md), not published | [docs](https://utsmok.github.io/bibliofabric/quiddita/) |
 | [diurnalia](packages/diurnalia/README.md) | DOAJ (open access journals and articles) | [0.1.0](packages/diurnalia/CHANGELOG.md), not published | [docs](https://utsmok.github.io/bibliofabric/diurnalia/) |
 | [seriatim](packages/seriatim/README.md) | ISSN Portal | [0.1.0](packages/seriatim/CHANGELOG.md), not published | [docs](https://utsmok.github.io/bibliofabric/seriatim/) |
+| [archeion](packages/archeion/README.md) | arXiv API (Wave 2) | [0.1.0](packages/archeion/CHANGELOG.md), not published | [docs](https://utsmok.github.io/bibliofabric/archeion/) |
 
 ```bash
 uv add aireloom    # or aletheca, stavrophora, bibliofabric

@@ -36,6 +36,7 @@ plugins:
             - packages/quiddita/src
             - packages/diurnalia/src
             - packages/seriatim/src
+            - packages/archeion/src
           options:
             show_root_heading: true
 
@@ -55,6 +56,7 @@ watch:
   - packages/quiddita/src/quiddita
   - packages/diurnalia/src/diurnalia
   - packages/seriatim/src/seriatim
+  - packages/archeion/src/archeion
 
 nav:
   - Overview: index.md
@@ -219,6 +221,12 @@ nav:
       - Upstream quirks: seriatim/upstream-quirks.md
       - API reference: seriatim/reference.md
       - Changelog: https://github.com/utsmok/bibliofabric/blob/main/packages/seriatim/CHANGELOG.md
+  - archeion:
+      - Home: archeion/index.md
+      - Query: archeion/query.md
+      - Upstream quirks: archeion/upstream-quirks.md
+      - API reference: archeion/reference.md
+      - Changelog: https://github.com/utsmok/bibliofabric/blob/main/packages/archeion/CHANGELOG.md
   - Roadmap & Architecture:
       - Overview: roadmap/index.md
       - Works, Data & OA APIs: roadmap/api-landscape-works.md

@@ -1,0 +1,48 @@
+"""Live arXiv smoke tests against the real API.
+
+Deselected by default; run with ``pytest -m live_api``. The API needs no
+credentials. The default settings pace requests at one every three seconds,
+as the arXiv terms of use ask, so this module takes about half a minute.
+"""
+
+import pytest
+from archeion import ArcheionClient, ArcheionSettings, NotFoundError
+
+pytestmark = pytest.mark.live_api
+
+
+@pytest.fixture
+async def live_client():
+    async with ArcheionClient(settings=ArcheionSettings(_env_file=None)) as client:
+        yield client
+
+
+async def test_get_smoke(live_client):
+    record = await live_client.query.get("hep-th/9711200")
+    assert record.arxiv_id == "hep-th/9711200"
+    assert record.doi == "10.1023/A:1026654312961"
+    assert record.pdf_url
+
+
+async def test_unknown_id_raises_not_found(live_client):
+    with pytest.raises(NotFoundError):
+        await live_client.query.get("9999.99999")
+
+
+async def test_search_and_count_smoke(live_client):
+    page = await live_client.query.search(
+        "ti:transformer AND cat:cs.CL", sort_by="submittedDate", page_size=5
+    )
+    assert page.total is not None and page.total > 5
+    assert len(page.results) == 5
+    assert all(record.primary_category for record in page.results)
+
+
+async def test_batch_get_and_iterate_smoke(live_client):
+    found = await live_client.query.batch_get(["1706.03762v1", "hep-th/9711200"])
+    assert found["1706.03762v1"].version == 1
+    assert found["hep-th/9711200"].arxiv_id == "hep-th/9711200"
+    records = [
+        record async for record in live_client.query.iterate("au:maldacena", limit=3)
+    ]
+    assert len(records) == 3

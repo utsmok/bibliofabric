@@ -28,6 +28,7 @@ monorepo.
 | `packages/aletheca` | OpenAlex client |
 | `packages/stavrophora` | Crossref client |
 | `packages/rorifer`, `zenotheca`, `dataphora`, `opcitato`, `hodoi`, `scholiast`, `orchis`, `europaea`, `quiddita`, `diurnalia`, `seriatim` | eleven Wave 1 clients, not yet published (ROR, Zenodo, DataCite, OpenCitations, DOI, Semantic Scholar, ORCID, Europe PMC, Wikidata, DOAJ, ISSN Portal) |
+| `packages/archeion` | first Wave 2 client (arXiv), not yet published |
 | `docs/roadmap/` | API landscape, Wave 1 specs, the Wave 1 roster, and the deferred list |
 | `scripts/unasync.py` | generates committed `_sync/` source and test twins from `_async/` |
 | `docs/contributing.md` | monorepo contributor guide |
