@@ -1,11 +1,5 @@
 # scholiast: Project Guide
 
-scholiast is a placeholder name. Rename the distribution name, the
-import name, the environment prefix (`SCHOLIAST_`), the class
-prefix (`Scholiast`), and the directories
-`packages/scholiast`, `src/scholiast`, and
-`docs/scholiast` together.
-
 scholiast is an async + generated-sync Python client for the
 Semantic Scholar Academic Graph, Recommendations, and Datasets APIs, built
 on bibliofabric 0.8. Not yet published.

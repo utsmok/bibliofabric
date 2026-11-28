@@ -34,9 +34,10 @@ is issued. All live tests run without a key.
 
 `GET /paper/{id}?fields=openAccessDoi` keyless answers HTTP 400 with
 `{"error": "Unrecognized or unsupported fields: [openAccessDoi]"}`. The
-same happens for `embedding`. The fields exist and are documented; they are
-only served to keys with the right access. scholiast models both
-fields and lets the API decide.
+same happens for `embedding`, and on the author routes for
+`normalizedAffiliations` and `aliases` (2026-11-28). The fields exist and
+are documented; they are only served to keys with the right access.
+scholiast models these fields and lets the API decide.
 
 ## Paper ids
 
@@ -73,7 +74,8 @@ client chunks automatically.
 - `/paper/search/bulk` answers `{total, token, data}` and returns up to
   1000 records per call (a `limit` above 1000 is rejected client-side).
   Continuation works: the opaque `token` was passed back and the next
-  1000-record page came back with a fresh token on 2026-11-27.
+  1000-record page came back with a fresh token on 2026-11-27. The last
+  page answers `"token": null`, which ends `bulk_iterate()`.
 - The relevance-search route stayed at 429 through the whole study window
   (10 attempts, without a key), so its envelope comes from the API
   documentation alone. No successful answer was captured for that route.
@@ -99,10 +101,12 @@ shape varies.
 - `GET /paper/search/match` answers `{"data": [record]}` where the record
   is the paper itself with `matchScore` beside it.
 - `GET /author/search` answers `{total, offset, next, data}`.
-- `GET /patent/{ucid}` answered 200 keyless (`{title, ucid}` minimal
-  record). `/patent/search` and `/patent/outbound-citations/{paper_id}`
-  are in the published spec; their keyless behavior was not observed
-  (429 window).
+- `GET /patent/{ucid}` answered 200 keyless. The detail record carries
+  `claims` as one text and the party names (`assignees`, `applicants`,
+  `inventors`) as lists of strings (2026-11-28).
+- `GET /patent/outbound-citations/{paper_id}` answers
+  `{total, offset, next, data}`. A paper that no patent cites answers
+  HTTP 404, not an empty list, which the client raises as `NotFoundError`.
 - `GET /snippet/search` is documented with a 1000 max limit; keyless it
   stayed at 429 in the study, so the client wraps it but the payload shape
   comes from the spec only.

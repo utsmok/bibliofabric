@@ -25,3 +25,8 @@ the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html
   `x-api-key` header; keyless callers use the shared anonymous pool.
 - Default pacing of 1 request per second with concurrency 1, matching the
   published per-key limit and the contended anonymous pool.
+- Every route percent-encodes the paper, author, or patent id as one path
+  segment, so all id forms (including `URL:` ids) work on the sub-list
+  routes too. A blank id raises `ConfigurationError`.
+- A rejected API key (HTTP 403) raises `AuthError` without the key in the
+  message.

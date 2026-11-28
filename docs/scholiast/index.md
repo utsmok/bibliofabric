@@ -1,6 +1,6 @@
 # scholiast
 
-scholiast is a placeholder name. The package will be renamed before its first release.
+scholiast is not yet published on PyPI; until its first release it installs from the bibliofabric workspace.
 
 scholiast is a Python client for the [Semantic Scholar Academic Graph API](https://api.semanticscholar.org/api-docs/graph), the [Recommendations API](https://api.semanticscholar.org/api-docs/recommendations), and the [Datasets API](https://api.semanticscholar.org/api-docs/datasets), built on [bibliofabric](https://github.com/utsmok/bibliofabric). It types papers, authors, citations, patents, snippets, recommendations, and dataset releases with Pydantic models, paces itself at 1 request per second by default, and works with or without an API key. It ships an async client and a generated sync twin with the same API.
 

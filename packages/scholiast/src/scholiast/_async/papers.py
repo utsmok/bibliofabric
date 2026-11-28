@@ -8,7 +8,7 @@ from bibliofabric.exceptions import ConfigurationError, NotFoundError
 from bibliofabric.paging import Page
 from pydantic import BaseModel
 
-from ..dialect import BULK_SEARCH_MAX_LIMIT, PAPER_BATCH_MAX_IDS
+from ..dialect import PAPER_BATCH_MAX_IDS
 from ..filters import PaperSearchFilters
 from ..models import (
     Author,
@@ -18,7 +18,12 @@ from ..models import (
     PaperMatch,
     Reference,
 )
-from .resources import ScholiastResourceClient, fetch_list_page
+from .resources import (
+    ScholiastResourceClient,
+    batch_records,
+    fetch_list_page,
+    id_path,
+)
 
 
 def _filter_params(filters: BaseModel | Mapping[str, Any] | None) -> dict[str, Any]:
@@ -83,23 +88,6 @@ class PapersClient(ScholiastResourceClient[Paper]):
             params=params,
         )
 
-    @override
-    async def batch_get(
-        self,
-        ids: Sequence[str],
-        *,
-        field: str = "id",
-        select: Sequence[str] | None = None,
-        batch_size: int | None = None,
-        concurrency: int = 4,
-        on_error: OnError = "raise",
-        failures: list[tuple[dict[str, Any], Exception]] | None = None,
-    ) -> dict[str, Paper]:
-        """Not supported; the API batches papers only through :meth:`batch`."""
-        raise ConfigurationError(
-            "PapersClient.batch_get is disabled; use batch(ids=...) instead."
-        )
-
     async def batch(
         self,
         ids: Sequence[str],
@@ -127,26 +115,15 @@ class PapersClient(ScholiastResourceClient[Paper]):
                 retry=True,
             )
             body = self._client.parse_json(response)
-            records = (
-                body
-                if isinstance(body, list)
-                else (body.get("data") if isinstance(body, dict) else None)
+            results.extend(
+                validate_model(
+                    Paper,
+                    record,
+                    request=getattr(response, "request", None),
+                    response=response,
+                )
+                for record in batch_records(body, "paper/batch")
             )
-            if not isinstance(records, list):
-                raise ConfigurationError(
-                    "POST /paper/batch answered without a record list."
-                )
-            for record in records:
-                if record is None:
-                    continue
-                results.append(
-                    validate_model(
-                        Paper,
-                        record,
-                        request=getattr(response, "request", None),
-                        response=response,
-                    )
-                )
         return results
 
     async def bulk_search(
@@ -155,30 +132,30 @@ class PapersClient(ScholiastResourceClient[Paper]):
         filters: PaperSearchFilters | Mapping[str, Any] | None = None,
         *,
         fields: Sequence[str] | None = None,
-        limit: int | None = None,
         token: str | None = None,
+        params: Mapping[str, Any] | None = None,
     ) -> Page[Paper]:
         """Fetch one page of up to 1000 papers from ``/paper/search/bulk``.
 
         Bulk search returns basic paper data ordered by corpus id, not by
-        relevance. When more papers match, ``page.next_cursor`` carries
-        the continuation token; pass it back as ``token``.
+        relevance, and has no ``limit`` parameter: a page holds up to
+        1000 records whatever the caller asks for. When more papers match,
+        ``page.next_cursor`` carries the continuation token; pass it back
+        as ``token``. ``params`` adds query parameters the method does not
+        name, such as ``sort`` (``citationCount:desc`` or
+        ``publicationDate:asc``).
         """
-        params = _filter_params(filters)
+        query_params = _filter_params(filters)
         if query:
-            params["query"] = query
+            query_params["query"] = query
         if fields:
-            params["fields"] = ",".join(fields)
-        if limit is not None:
-            if limit > BULK_SEARCH_MAX_LIMIT:
-                raise ConfigurationError(
-                    f"bulk search allows at most {BULK_SEARCH_MAX_LIMIT} per call, "
-                    f"got {limit}."
-                )
-            params["limit"] = limit
+            query_params["fields"] = ",".join(fields)
         if token is not None:
-            params["token"] = token
-        response = await self._client.request("GET", "paper/search/bulk", params=params)
+            query_params["token"] = token
+        query_params.update(params or {})
+        response = await self._client.request(
+            "GET", "paper/search/bulk", params=query_params
+        )
         body = self._client.parse_json(response)
         unwrapper = self._client.unwrapper
         results = self._validate_records(
@@ -203,9 +180,12 @@ class PapersClient(ScholiastResourceClient[Paper]):
         *,
         fields: Sequence[str] | None = None,
         limit: int | None = None,
+        params: Mapping[str, Any] | None = None,
     ) -> AsyncIterator[Paper]:
         """Iterate over every matching paper by following the bulk token."""
-        return self._bulk_iterate(query, filters, fields=fields, limit=limit)
+        return self._bulk_iterate(
+            query, filters, fields=fields, limit=limit, params=params
+        )
 
     async def _bulk_iterate(
         self,
@@ -214,12 +194,13 @@ class PapersClient(ScholiastResourceClient[Paper]):
         *,
         fields: Sequence[str] | None,
         limit: int | None,
+        params: Mapping[str, Any] | None,
     ) -> AsyncIterator[Paper]:
         token: str | None = None
         seen = 0
         while True:
             page = await self.bulk_search(
-                query, filters, fields=fields, limit=limit, token=token
+                query, filters, fields=fields, token=token, params=params
             )
             for paper in page.results:
                 yield paper
@@ -237,22 +218,26 @@ class PapersClient(ScholiastResourceClient[Paper]):
         fields: Sequence[str] | None = None,
         limit: int | None = None,
         offset: int | None = None,
+        params: Mapping[str, Any] | None = None,
     ) -> Page[Citation]:
         """Fetch one page of the papers citing ``id``.
 
         Each record carries the citing paper plus ``contexts``,
         ``intents``, ``contextsWithIntent``, and ``isInfluential``.
         ``page.next_cursor`` is the next offset, or ``None`` on the last
-        page. Note that the papers of an author see only their most
-        recent 10,000 citation and reference edges.
+        page. ``params`` adds query parameters the method does not name,
+        such as ``publicationDateOrYear`` (``2020:2021``). The papers of
+        an author see only their most recent 10,000 citation and
+        reference edges.
         """
         return await fetch_list_page(
             self._client,
-            f"paper/{id}/citations",
+            f"paper/{id_path(id)}/citations",
             Citation,
             fields=fields,
             limit=limit,
             offset=offset,
+            extra_params=params,
         )
 
     async def references(
@@ -266,11 +251,11 @@ class PapersClient(ScholiastResourceClient[Paper]):
         """Fetch one page of the papers ``id`` cites.
 
         Each record carries the cited paper plus the citation contexts of
-        the source paper.
+        the source paper, which ``page.meta["citingPaperInfo"]`` describes.
         """
         return await fetch_list_page(
             self._client,
-            f"paper/{id}/references",
+            f"paper/{id_path(id)}/references",
             Reference,
             fields=fields,
             limit=limit,
@@ -288,7 +273,7 @@ class PapersClient(ScholiastResourceClient[Paper]):
         """Fetch one page of the authors of ``id``."""
         return await fetch_list_page(
             self._client,
-            f"paper/{id}/authors",
+            f"paper/{id_path(id)}/authors",
             Author,
             fields=fields,
             limit=limit,
@@ -323,16 +308,19 @@ class PapersClient(ScholiastResourceClient[Paper]):
         query: str,
         *,
         fields: Sequence[str] | None = None,
+        filters: PaperSearchFilters | Mapping[str, Any] | None = None,
     ) -> PaperMatch:
         """Return the paper whose title matches ``query`` best.
 
-        Raises :class:`NotFoundError` when no candidate passes the
-        relevance threshold. ``matchScore`` sits on the returned match.
+        ``filters`` narrows the candidates with the same criteria
+        :meth:`search` accepts. Raises :class:`NotFoundError` when no
+        candidate passes the relevance threshold. ``matchScore`` sits on
+        the returned match.
         """
         text = query.strip()
         if not text:
             raise ConfigurationError("query must be a non-empty string.")
-        params: dict[str, Any] = {"query": text}
+        params: dict[str, Any] = {"query": text, **_filter_params(filters)}
         if fields:
             params["fields"] = ",".join(fields)
         response = await self._client.request(

@@ -4,24 +4,27 @@
 Deselected by default; run with ``pytest -m live_api``. The tests need no
 API key: they run on the shared anonymous pool, which is contended and
 answers HTTP 429 often, so every test skips on a rate limit instead of
-failing. Each test makes at most one or two requests.
+failing. Each test makes one or two requests, one second apart.
 """
 
-from collections.abc import Callable
+from collections.abc import Callable, Generator
+from contextlib import contextmanager
+from functools import partial
 from time import sleep
 from typing import NoReturn, cast
 
 import pytest
-from bibliofabric.exceptions import RateLimitError
-from scholiast import (
-    NotFoundError,
-    ScholiastSettings,
-    ScholiastSyncClient,
-)
+from bibliofabric.exceptions import AuthError, NotFoundError, RateLimitError
+from pydantic import SecretStr
+from scholiast import ScholiastSettings, ScholiastSyncClient
 
 pytestmark = pytest.mark.live_api
 
 DOI = "DOI:10.1038/nature12373"
+ARXIV_URL = "URL:https://arxiv.org/abs/2106.15928v1"
+AUTHOR_ID = "1741101"
+PATENT_UCID = "US10296086B2"
+TITLE = "Nanometer scale thermometry in a living cell"
 
 
 # The installed pytest type stubs disagree with the runtime signature of
@@ -30,86 +33,259 @@ DOI = "DOI:10.1038/nature12373"
 _skip = cast(Callable[..., NoReturn], pytest.skip)
 
 
-def skip_rate_limited() -> None:
-    _skip("rate limited")
-
-
-@pytest.fixture
-def live_client():
-    with ScholiastSyncClient(
-        settings=ScholiastSettings(_env_file=None, api_key=None)
-    ) as client:
-        yield client
-
-
 def pace() -> None:
     """Keep at most 1 request per second between tests."""
     sleep(1.05)
 
 
+@contextmanager
+def anonymous() -> Generator[None, None, None]:
+    """Skip the test when the anonymous pool answers a rate limit."""
+    try:
+        yield
+    except RateLimitError:
+        _skip("rate limited")
+
+
+def live_settings(api_key: SecretStr | None = None) -> ScholiastSettings:
+    """Settings for the live run; a rate limit is retried twice, then raised.
+
+    The settings read neither the environment nor ``.env``, so a key in
+    ``.env`` reaches the client only when the caller passes it.
+    """
+    return ScholiastSettings(
+        _env_file=None,
+        api_key=api_key,
+        max_retries=2,
+        max_retry_wait=4.0,
+    )
+
+
+@pytest.fixture
+def live_client():
+    with ScholiastSyncClient(settings=live_settings()) as client:
+        yield client
+
+
 def test_get_paper_smoke(live_client):
     pace()
-    try:
+    with anonymous():
         paper_record = live_client.papers.get(
             DOI, select=["title", "year", "citationCount", "externalIds"]
         )
-    except RateLimitError:
-        skip_rate_limited()
     assert paper_record.paperId
-    assert paper_record.title == "Nanometer scale thermometry in a living cell"
+    assert paper_record.title == TITLE
+    assert paper_record.year == 2013
     assert paper_record.externalIds is not None
     assert paper_record.externalIds.DOI == "10.1038/nature12373"
 
 
+def test_get_paper_by_url_smoke(live_client):
+    """The ``URL:`` form travels percent-encoded as one path segment."""
+    pace()
+    with anonymous():
+        paper_record = live_client.papers.get(ARXIV_URL, select=["externalIds"])
+    assert paper_record.externalIds is not None
+    assert paper_record.externalIds.ArXiv == "2106.15928"
+
+
 def test_paper_batch_smoke(live_client):
     pace()
-    try:
+    with anonymous():
         papers = live_client.papers.batch(
             [DOI, "DOI:10.9999/does-not-exist"], fields=["title"]
         )
-    except RateLimitError:
-        skip_rate_limited()
     assert len(papers) == 1
 
 
 def test_citations_smoke(live_client):
     pace()
-    try:
+    with anonymous():
         citations = live_client.papers.citations(
             DOI, fields=["title", "isInfluential"], limit=5
         )
-    except RateLimitError:
-        skip_rate_limited()
     assert citations.results
     assert citations.results[0].citingPaper is not None
 
 
+def test_references_smoke(live_client):
+    pace()
+    with anonymous():
+        references = live_client.papers.references(DOI, fields=["title"], limit=5)
+    assert references.results
+    assert references.results[0].citedPaper is not None
+    assert references.meta["citingPaperInfo"]["title"] == TITLE
+
+
+def test_paper_authors_smoke(live_client):
+    pace()
+    with anonymous():
+        authors = live_client.papers.authors(DOI, fields=["name"])
+    assert authors.results
+    assert authors.results[0].authorId
+    assert authors.results[0].name
+
+
+def test_paper_search_smoke(live_client):
+    pace()
+    with anonymous():
+        page = live_client.papers.search(
+            query="nanometer scale thermometry", fields=["title"], page_size=3
+        )
+    assert page.total is not None and page.total > 0
+    assert page.results[0].title
+
+
+def test_search_match_smoke(live_client):
+    pace()
+    with anonymous():
+        match = live_client.papers.search_match(
+            TITLE, fields=["title", "year", "externalIds"]
+        )
+    assert match.paper is not None
+    assert match.paper.title == TITLE
+    assert match.matchScore is not None and match.matchScore > 0
+
+
+def test_autocomplete_smoke(live_client):
+    pace()
+    with anonymous():
+        candidates = live_client.papers.autocomplete("nanometer scale thermom")
+    assert candidates
+    assert candidates[0].id
+    assert candidates[0].title
+
+
+def test_bulk_search_smoke(live_client):
+    pace()
+    with anonymous():
+        page = live_client.papers.bulk_search(
+            "nanodiamond thermometry", fields=["title", "year"]
+        )
+    assert page.total is not None and page.total > 0
+    assert page.results[0].paperId
+
+
+def test_author_get_and_papers_smoke(live_client):
+    pace()
+    with anonymous():
+        author_record = live_client.authors.get(
+            AUTHOR_ID, select=["name", "paperCount"]
+        )
+        papers = live_client.authors.papers(
+            AUTHOR_ID, fields=["title", "year"], limit=3
+        )
+    assert author_record.name == "Oren Etzioni"
+    assert author_record.paperCount is not None and author_record.paperCount > 0
+    assert papers.results
+    assert papers.results[0].paperId
+
+
+def test_author_search_smoke(live_client):
+    pace()
+    with anonymous():
+        page = live_client.authors.search(query="Oren Etzioni", page_size=3)
+    assert page.total is not None and page.total > 0
+    assert page.results[0].name == "Oren Etzioni"
+
+
+def test_author_batch_smoke(live_client):
+    pace()
+    with anonymous():
+        authors = live_client.authors.batch([AUTHOR_ID, "999999999"], fields=["name"])
+    assert len(authors) == 1
+    assert authors[0].name == "Oren Etzioni"
+
+
+def test_patent_get_smoke(live_client):
+    pace()
+    with anonymous():
+        patent_record = live_client.patents.get(
+            PATENT_UCID, fields=["ucid", "title", "inventors", "claims"]
+        )
+    assert patent_record.ucid == PATENT_UCID
+    assert patent_record.inventors
+    assert patent_record.claims and patent_record.claims.startswith("1.")
+
+
+def test_patent_search_smoke(live_client):
+    pace()
+    with anonymous():
+        patents = live_client.patents.search(
+            "haptic feedback head mounted display", fields=["ucid", "title"], limit=2
+        )
+    assert patents.results
+    assert patents.results[0].ucid
+    assert patents.total is not None and patents.total > 0
+
+
+def test_patent_outbound_citations_smoke(live_client):
+    """The route answers 404 for a paper that no patent cites."""
+    pace()
+    with anonymous():
+        try:
+            citations = live_client.patents.outbound_citations(
+                DOI, fields=["ucid", "title"], limit=5
+            )
+        except NotFoundError:
+            return
+    assert isinstance(citations.data, list)
+
+
 def test_recommendations_smoke(live_client):
     pace()
-    try:
+    with anonymous():
         papers = live_client.recommendations.for_paper(DOI, limit=5)
-    except RateLimitError:
-        skip_rate_limited()
+    assert papers
+    assert papers[0].paperId
+
+
+def test_recommendations_for_list_smoke(live_client):
+    pace()
+    with anonymous():
+        papers = live_client.recommendations.for_list([DOI], limit=3)
     assert papers
     assert papers[0].paperId
 
 
 def test_dataset_releases_smoke(live_client):
     pace()
-    try:
+    with anonymous():
         releases = live_client.datasets.releases()
-    except RateLimitError:
-        skip_rate_limited()
     assert releases
     assert releases[0].startswith("20")
 
 
+def test_dataset_release_latest_smoke(live_client):
+    pace()
+    with anonymous():
+        release = live_client.datasets.latest()
+    assert release.release_id is not None and release.release_id.startswith("20")
+    assert "papers" in [dataset.name for dataset in release.datasets]
+
+
 def test_get_not_found_smoke(live_client):
     pace()
-    try:
+    with anonymous(), pytest.raises(NotFoundError):
         live_client.papers.get("DOI:10.9999/this-does-not-exist-0000")
-    except RateLimitError:
-        skip_rate_limited()
-    except NotFoundError:
-        return
-    raise AssertionError("expected NotFoundError for an unknown DOI")
+
+
+def test_api_key_smoke():
+    """The key from the environment or ``.env`` is sent as ``x-api-key``.
+
+    Without a key the test skips. A key the API rejects (HTTP 401 or 403) is
+    a problem of the key and not of the client, so the test skips with the
+    status instead of failing.
+    """
+    configured = ScholiastSettings().api_key
+    if configured is None:
+        _skip("SCHOLIAST_API_KEY is not set")
+    pace()
+    with ScholiastSyncClient(settings=live_settings(configured)) as keyed:
+        get = partial(keyed.papers.get, DOI, select=["title", "externalIds"])
+        with anonymous():
+            try:
+                record = get()
+            except AuthError as error:
+                _skip(f"the API rejects the configured key (HTTP {error.status_code})")
+    assert record.paperId

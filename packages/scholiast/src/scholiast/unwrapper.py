@@ -33,10 +33,16 @@ class ScholiastUnwrapper:
         return body if isinstance(body, dict) else {}
 
     def total(self, body: Any) -> int | None:
-        """Return ``total`` of a search envelope, or ``None`` when absent."""
+        """Return ``total`` of a search envelope, or ``None`` when absent.
+
+        The published schema types ``total`` as a string, so a numeric
+        string is read as the number it holds.
+        """
         total = body.get("total") if isinstance(body, dict) else None
         if isinstance(total, int) and not isinstance(total, bool):
             return total
+        if isinstance(total, str) and total.strip().isdigit():
+            return int(total)
         return None
 
     def next_cursor(self, body: Any) -> str | None:
@@ -44,7 +50,7 @@ class ScholiastUnwrapper:
 
         Offset-paged envelopes carry ``next`` (the next offset value);
         bulk search carries ``token``. Both are returned as strings. On
-        the last page neither key exists.
+        the last page the key is absent or ``null``.
         """
         if not isinstance(body, dict):
             return None

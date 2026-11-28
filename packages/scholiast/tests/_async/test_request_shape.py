@@ -1,9 +1,11 @@
 """Outgoing request shape: paths, params, headers, batching, guards."""
 
 import json
+from functools import partial
 
 import pytest
 from scholiast import (
+    AuthError,
     ConfigurationError,
     NotFoundError,
     PaperSearchFilters,
@@ -11,7 +13,13 @@ from scholiast import (
     ScholiastSettings,
 )
 
-from ..conftest import author, list_envelope, load_fixture
+from ..conftest import (
+    author,
+    list_envelope,
+    load_fixture,
+    paper,
+    search_envelope,
+)
 
 PAPER = load_fixture("paper.json")
 PAGE = load_fixture("search.json")
@@ -113,21 +121,17 @@ async def test_search_rejects_offset_past_cap(client):
 async def test_bulk_search_first_and_continuation(client, httpx_mock):
     httpx_mock.add_response(json=BULK)
     page = await client.papers.bulk_search(
-        "crispr", fields=["title", "year"], limit=1000
+        "crispr", fields=["title", "year"], params={"sort": "publicationDate:asc"}
     )
     assert page.total == BULK["total"]
     assert page.next_cursor == BULK["token"]
-    assert last_params(httpx_mock)["limit"] == "1000"
+    assert "limit" not in last_request(httpx_mock).url.params
+    assert last_params(httpx_mock)["sort"] == "publicationDate:asc"
 
     httpx_mock.add_response(json=load_fixture("bulk_next.json"))
     second = await client.papers.bulk_search("crispr", token=page.next_cursor)
     assert second.results
     assert last_params(httpx_mock)["token"] == BULK["token"]
-
-
-async def test_bulk_search_rejects_limit_above_1000(client):
-    with pytest.raises(ConfigurationError, match="1000"):
-        await client.papers.bulk_search("x", limit=1001)
 
 
 async def test_bulk_iterate_follows_token(client, httpx_mock):
@@ -171,8 +175,8 @@ async def test_citations_and_references(client, httpx_mock):
         limit=2,
         offset=5,
     )
-    assert last_request(httpx_mock).url.path == (
-        "/graph/v1/paper/DOI:10.1038/nature12373/citations"
+    assert last_request(httpx_mock).url.raw_path.split(b"?")[0] == (
+        b"/graph/v1/paper/DOI%3A10.1038%2Fnature12373/citations"
     )
     assert last_params(httpx_mock) == {
         "fields": "title,contexts,isInfluential",
@@ -321,14 +325,22 @@ async def test_snippets_and_patents(client, httpx_mock):
     assert last_request(httpx_mock).url.path == "/graph/v1/patent/search"
     assert patents.results[0].ucid == "US1"
 
-    httpx_mock.add_response(
-        json={"data": [{"ucid": "US1"}], "citingPaperInfo": {"paperId": "p"}}
+    httpx_mock.add_response(json=load_fixture("patent_citations.json"))
+    citations = await client.patents.outbound_citations(
+        "CorpusId:4314121", fields=["title"], limit=5, offset=0
     )
-    citations = await client.patents.outbound_citations("CorpusId:4314121")
-    assert last_request(httpx_mock).url.path == (
-        "/graph/v1/patent/outbound-citations/CorpusId:4314121"
+    request = last_request(httpx_mock)
+    assert request.url.raw_path.split(b"?")[0] == (
+        b"/graph/v1/patent/outbound-citations/CorpusId%3A4314121"
     )
-    assert citations.citingPaperInfo == {"paperId": "p"}
+    assert dict(request.url.params) == {
+        "fields": "title",
+        "limit": "5",
+        "offset": "0",
+    }
+    assert citations.total == 1
+    assert citations.next is None
+    assert citations.data[0].ucid == "US11532318B2"
 
 
 async def test_base_url_override_points_elsewhere(httpx_mock, settings):
@@ -339,3 +351,181 @@ async def test_base_url_override_points_elsewhere(httpx_mock, settings):
     assert (
         last_request(httpx_mock).url.path == "/graph/v1/paper/DOI:10.1038/nature12373"
     )
+
+
+async def test_sub_list_routes_encode_the_id(client, httpx_mock):
+    """Every route encodes the id as one path segment, as ``get()`` does."""
+    httpx_mock.add_response(json=list_envelope([{"citingPaper": PAPER}]))
+    await client.papers.citations("URL:https://example.org/a b?x=1")
+    assert last_request(httpx_mock).url.raw_path == (
+        b"/graph/v1/paper/URL%3Ahttps%3A%2F%2Fexample.org%2Fa%20b%3Fx%3D1/citations"
+    )
+
+
+async def test_blank_ids_are_rejected_before_a_request(client, httpx_mock):
+    calls = [
+        lambda: client.papers.citations(" "),
+        lambda: client.papers.references(""),
+        lambda: client.papers.authors("  "),
+        lambda: client.authors.papers(" "),
+        lambda: client.patents.get(""),
+        lambda: client.patents.outbound_citations("  "),
+        lambda: client.datasets.release(" "),
+        lambda: client.datasets.dataset("papers", release_id=""),
+        lambda: client.recommendations.for_paper(" "),
+    ]
+    for call in calls:
+        with pytest.raises(ConfigurationError, match="non-empty"):
+            await call()
+    assert not httpx_mock.get_requests()
+
+
+async def test_inactive_api_key_raises_auth_error(httpx_mock):
+    """A rejected key is an error and never a silent fall back to no key."""
+    settings = ScholiastSettings(
+        _env_file=None,
+        api_key="inactive-key",
+        max_requests_per_second=1_000_000.0,
+        max_retries=0,
+        timeout=5.0,
+    )
+    httpx_mock.add_response(json={"message": "Forbidden"}, status_code=403)
+    async with ScholiastClient(settings=settings) as keyed:
+        get = partial(keyed.papers.get, "DOI:10.1038/nature12373")
+        with pytest.raises(AuthError, match="403"):
+            await get()
+    requests = httpx_mock.get_requests()
+    assert len(requests) == 1
+    assert requests[0].headers["x-api-key"] == "inactive-key"
+
+
+async def test_references_keep_the_source_paper_in_meta(client, httpx_mock):
+    """The references envelope carries the source paper beside the list."""
+    httpx_mock.add_response(
+        json={
+            "offset": 0,
+            "next": 2,
+            "citingPaperInfo": {"title": "Nanometer scale thermometry"},
+            "data": [{"citedPaper": PAPER}],
+        }
+    )
+    page = await client.papers.references("DOI:10.1038/nature12373")
+    assert page.next_cursor == "2"
+    assert page.meta["citingPaperInfo"]["title"] == "Nanometer scale thermometry"
+    assert page.results[0].citedPaper is not None
+
+
+async def test_bulk_search_last_page_has_no_token(client, httpx_mock):
+    """The last page carries ``token`` as ``null``, not as a string."""
+    httpx_mock.add_response(json={"total": 1, "token": None, "data": [PAPER]})
+    page = await client.papers.bulk_search("crispr")
+    assert page.total == 1
+    assert page.next_cursor is None
+
+
+async def test_patent_without_citing_patents_raises_not_found(client, httpx_mock):
+    """The route answers 404 when no patent cites the paper."""
+    httpx_mock.add_response(json={"error": "Not found"}, status_code=404)
+    with pytest.raises(NotFoundError):
+        await client.patents.outbound_citations("DOI:10.1038/nature12373")
+
+
+async def test_batch_get_is_disabled(client, httpx_mock):
+    """The API batches through POST only, so ``batch_get`` refuses early."""
+    for resource in (client.papers, client.authors):
+        with pytest.raises(ConfigurationError, match="batch_get is disabled"):
+            await resource.batch_get(["DOI:10.1038/nature12373"])
+    assert not httpx_mock.get_requests()
+
+
+async def test_citations_pass_extra_params(client, httpx_mock):
+    httpx_mock.add_response(json=CITATIONS)
+    await client.papers.citations(
+        "DOI:10.1038/nature12373",
+        fields=["title"],
+        params={"publicationDateOrYear": "2020:2021"},
+    )
+    assert last_params(httpx_mock)["publicationDateOrYear"] == "2020:2021"
+
+
+async def test_search_match_passes_filters(client, httpx_mock):
+    httpx_mock.add_response(json=load_fixture("paper_match.json"))
+    match = await client.papers.search_match(
+        "nanometer scale thermometry", filters=PaperSearchFilters(year="2013")
+    )
+    assert match.paper is not None
+    assert last_request(httpx_mock).url.path == "/graph/v1/paper/search/match"
+    assert last_params(httpx_mock)["year"] == "2013"
+
+
+async def test_author_papers_pass_extra_params(client, httpx_mock):
+    httpx_mock.add_response(
+        json=list_envelope([paper("a5de30adc5c22bc86e8cfabe7fbd07c052d196a8")])
+    )
+    await client.authors.papers(
+        "1741101",
+        fields=["title"],
+        params={"publicationDateOrYear": "2013"},
+    )
+    assert last_params(httpx_mock)["publicationDateOrYear"] == "2013"
+
+
+async def test_recommendations_for_paper_passes_params(client, httpx_mock):
+    httpx_mock.add_response(json=REC)
+    await client.recommendations.for_paper(
+        "DOI:10.1038/nature12373", params={"from": "all-cs"}, limit=3
+    )
+    assert last_params(httpx_mock) == {"from": "all-cs", "limit": "3"}
+
+
+async def test_snippet_search_passes_params(client, httpx_mock):
+    httpx_mock.add_response(json=load_fixture("snippets.json"))
+    await client.snippets.search(
+        "protein folding", limit=2, params={"year": "2020-2021"}
+    )
+    assert last_request(httpx_mock).url.path == "/graph/v1/snippet/search"
+    assert last_params(httpx_mock) == {
+        "query": "protein folding",
+        "limit": "2",
+        "year": "2020-2021",
+    }
+
+
+async def test_search_routes_reject_blank_queries(client, httpx_mock):
+    with pytest.raises(ConfigurationError, match="non-empty"):
+        await client.snippets.search("  ")
+    with pytest.raises(ConfigurationError, match="non-empty"):
+        await client.patents.search(" ")
+    assert not httpx_mock.get_requests()
+
+
+async def test_author_search_page_size_is_capped_at_1000(client, httpx_mock):
+    """Author search takes 1000 records a page where paper search takes 100."""
+    httpx_mock.add_response(json=AUTHOR_SEARCH)
+    await client.authors.search(query="adam smith", page=2, page_size=1000)
+    assert last_params(httpx_mock)["limit"] == "1000"
+    assert last_params(httpx_mock)["offset"] == "1000"
+
+    httpx_mock.add_response(json=PAGE)
+    await client.papers.search(query="x", page_size=1000)
+    assert last_params(httpx_mock)["limit"] == "100"
+
+
+async def test_author_search_rejects_offset_past_cap(client):
+    with pytest.raises(ConfigurationError, match="max_offset"):
+        await client.authors.search(query="x", page=10_000)
+
+
+async def test_patent_search_sends_query_limit_and_offset(client, httpx_mock):
+    httpx_mock.add_response(json=search_envelope([{"ucid": "US1"}]))
+    page = await client.patents.search(
+        "neural network", fields=["title"], limit=5, offset=10
+    )
+    assert last_params(httpx_mock) == {
+        "query": "neural network",
+        "fields": "title",
+        "limit": "5",
+        "offset": "10",
+    }
+    assert page.total == 1
+    assert page.next_cursor == "1"

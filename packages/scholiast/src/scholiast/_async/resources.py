@@ -3,17 +3,20 @@
 The Academic Graph names its query parameters close to the bibliofabric
 defaults: ``query`` for free text, ``limit`` for page size, ``offset`` for
 paging, and ``fields`` for field selection, so the shared
-:class:`SEMANTICSCHOLAR_DIALECT` needs no per-resource overrides. The two
-adjustments live here: record ids travel verbatim (``DOI:10.1/x``,
-``ARXIV:2106.15928`` contain characters other APIs strip), and ``exists()``
-uses ``GET`` because the gateway answers ``HEAD`` with 405.
+:class:`SEMANTICSCHOLAR_DIALECT` needs few overrides. The other
+adjustments live here: record ids keep their prefix and case
+(``DOI:10.1/x``, ``ARXIV:2106.15928``) and travel percent-encoded as one
+path segment on every route, ``batch_get`` is disabled because the API
+batches through POST, and ``exists()`` uses ``GET`` because the gateway
+answers ``HEAD`` with 405.
 """
 
 from collections.abc import Mapping, Sequence
 from typing import Any, override
+from urllib.parse import quote
 
-from bibliofabric import ResourceClient, validate_model
-from bibliofabric.exceptions import NotFoundError
+from bibliofabric import OnError, ResourceClient, validate_model
+from bibliofabric.exceptions import ConfigurationError, NotFoundError
 from bibliofabric.paging import Page
 from pydantic import BaseModel
 
@@ -25,6 +28,31 @@ def _response_request(response: Any) -> Any:
         return response.request
     except RuntimeError:
         return None
+
+
+def id_path(id: str) -> str:
+    """Return ``id`` percent-encoded as one segment of a URL path.
+
+    The resource base encodes the id of ``get()`` the same way, so every
+    route accepts the same id forms. An id with characters that would
+    otherwise change the path, such as ``URL:https://example.org/paper``,
+    stays one segment.
+    """
+    text = str(id).strip()
+    if not text:
+        raise ConfigurationError("The id must be a non-empty string.")
+    return quote(text, safe="")
+
+
+def batch_records(body: Any, route: str) -> list[dict[str, Any]]:
+    """Return the records of a batch POST body.
+
+    The batch routes answer a bare array that keeps the position of an
+    unknown id with ``null``; those entries are dropped.
+    """
+    if not isinstance(body, list):
+        raise ConfigurationError(f"POST /{route} answered without a record list.")
+    return [record for record in body if record is not None]
 
 
 async def fetch_list_page[E: BaseModel](
@@ -40,7 +68,7 @@ async def fetch_list_page[E: BaseModel](
 ) -> Page[E]:
     """Fetch one ``{data, next, offset}`` page from a sub-list route.
 
-    The citations, references, author-papers, and author-search routes
+    The citations, references, author-papers, and patent-search routes
     share this envelope. ``total`` exists only on search routes; this
     helper reports ``None`` when the envelope lacks it.
     """
@@ -79,8 +107,25 @@ class ScholiastResourceClient[E: BaseModel](ResourceClient[E]):
 
     @override
     def normalize_id(self, value: str) -> str:
-        """Return the id unchanged; Semantic Scholar ids are exact strings."""
-        return value
+        """Return the id without surrounding whitespace; ids are exact strings."""
+        return value.strip()
+
+    @override
+    async def batch_get(
+        self,
+        ids: Sequence[str],
+        *,
+        field: str = "id",
+        select: Sequence[str] | None = None,
+        batch_size: int | None = None,
+        concurrency: int = 4,
+        on_error: OnError = "raise",
+        failures: list[tuple[dict[str, Any], Exception]] | None = None,
+    ) -> dict[str, E]:
+        """Not supported; the API batches records only through ``batch()``."""
+        raise ConfigurationError(
+            f"{type(self).__name__}.batch_get is disabled; use batch(ids=...) instead."
+        )
 
     @override
     async def exists(self, id: str | int) -> bool:
@@ -97,5 +142,7 @@ class ScholiastResourceClient[E: BaseModel](ResourceClient[E]):
 
 __all__ = [
     "ScholiastResourceClient",
+    "batch_records",
     "fetch_list_page",
+    "id_path",
 ]

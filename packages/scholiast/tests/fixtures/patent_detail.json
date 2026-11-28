@@ -1,0 +1,29 @@
+{
+  "ucid": "US10296086B2",
+  "applicationUcids": [
+    "US20160274662A1"
+  ],
+  "title": "Dynamic gloves to convey sense of touch and movement for virtual objects in HMD rendered environments",
+  "claims": "1. A system for processing content for a head mounted display (HMD), comprising, a user interface device having a haptic device for imparting a haptic feedback to a user, the user  [...]",
+  "claimCount": 23,
+  "inventors": [
+    "Noam Rimon",
+    "Xiaodong (Crusoe) Mao",
+    "Xiaoyong Ye"
+  ],
+  "assignees": [
+    "Sony Interactive Entertainment Inc."
+  ],
+  "applicants": [
+    "Sony Interactive Entertainment Inc."
+  ],
+  "cpcCodes": [
+    "G06F3/014",
+    "A63F13/285",
+    "A63F13/355",
+    "G02B27/0172",
+    "G06F3/011"
+  ],
+  "source": "patent_ontology",
+  "indexedAt": "2026-10-22"
+}

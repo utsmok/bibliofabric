@@ -8,8 +8,10 @@ from scholiast import (
     Paper,
     PaperMatch,
     Patent,
+    PatentCitations,
     Reference,
     ScholiastUnwrapper,
+    SnippetPaper,
     SnippetSearchResult,
 )
 
@@ -111,6 +113,62 @@ def test_snippet_result_parses():
     assert ref_mention.matchedPaperCorpusId == 215416146
     assert match.paper is not None
     assert match.paper.corpusId == 215416146
+
+
+def test_patent_parses_the_detail_record():
+    """``claims`` is one text; the party names are lists of strings."""
+    patent = Patent.model_validate(load_fixture("patent_detail.json"))
+    assert patent.ucid == "US10296086B2"
+    assert patent.claims and patent.claims.startswith("1. A system for processing")
+    assert patent.claimCount == 23
+    assert patent.inventors == ["Noam Rimon", "Xiaodong (Crusoe) Mao", "Xiaoyong Ye"]
+    assert patent.assignees == ["Sony Interactive Entertainment Inc."]
+    assert patent.cpcCodes[0] == "G06F3/014"
+    assert patent.source == "patent_ontology"
+    assert patent.office is None
+
+
+def test_patent_citations_envelope_parses():
+    """``data`` holds the citing patents; the last page has no ``next``."""
+    body = load_fixture("patent_citations.json")
+    envelope = PatentCitations.model_validate({**body, "data": [*body["data"], None]})
+    assert envelope.total == 1
+    assert envelope.offset == 0
+    assert envelope.next is None
+    assert envelope.data[0].ucid == "US11532318B2"
+    assert envelope.data[0].publicationYear == 2022
+
+
+def test_author_parses_aliases_and_normalized_affiliations():
+    """``normalizedAffiliations`` holds ``{rorId, rorDisplayName}`` objects."""
+    affiliation = {"rorId": "https://ror.org/01qr0p675", "rorDisplayName": "A lab"}
+    author_record = Author.model_validate(
+        {
+            "authorId": "1741101",
+            "aliases": ["O. Etzioni"],
+            "normalizedAffiliations": [affiliation],
+        }
+    )
+    assert author_record.aliases == ["O. Etzioni"]
+    parsed = author_record.normalizedAffiliations[0]
+    assert parsed.rorId == affiliation["rorId"]
+    assert parsed.rorDisplayName == "A lab"
+
+
+def test_unwrapper_total_accepts_a_numeric_string():
+    assert ScholiastUnwrapper().total({"total": "102687"}) == 102687
+    assert ScholiastUnwrapper().total({"total": None}) is None
+
+
+@pytest.mark.parametrize("authors", [[{"authorId": "1", "name": "A"}], ["A"]])
+def test_snippet_paper_authors_accept_objects_and_strings(authors):
+    paper = SnippetPaper.model_validate({"corpusId": 1, "authors": authors})
+    assert paper.authors == authors
+
+
+def test_snippet_retrieval_version_accepts_a_string():
+    result = SnippetSearchResult.model_validate({"data": [], "retrievalVersion": "1"})
+    assert result.retrievalVersion == "1"
 
 
 def test_paper_match_from_record_splits_match_score():

@@ -1,15 +1,19 @@
 """Client for the Semantic Scholar author endpoints."""
 
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from typing import Any, override
 
 from bibliofabric import validate_model
-from bibliofabric.exceptions import ConfigurationError
 from bibliofabric.paging import Page
 
-from ..dialect import AUTHOR_BATCH_MAX_IDS
+from ..dialect import AUTHOR_BATCH_MAX_IDS, SEMANTICSCHOLAR_AUTHOR_DIALECT
 from ..models import Author, Paper
-from .resources import ScholiastResourceClient, fetch_list_page
+from .resources import (
+    ScholiastResourceClient,
+    batch_records,
+    fetch_list_page,
+    id_path,
+)
 
 
 class AuthorsClient(ScholiastResourceClient[Author]):
@@ -17,12 +21,14 @@ class AuthorsClient(ScholiastResourceClient[Author]):
 
     ``get``, ``search``, ``iterate``, ``collect``, ``first``, ``count``,
     and ``exists`` come from the resource base; ``fields`` is the
-    ``select`` argument everywhere.
+    ``select`` argument everywhere. A search page holds up to 1000
+    authors.
     """
 
     path = "author"
     model = Author
     batch_size = AUTHOR_BATCH_MAX_IDS
+    dialect = SEMANTICSCHOLAR_AUTHOR_DIALECT
 
     @override
     def search_path(self, query: str | None) -> str:
@@ -36,20 +42,23 @@ class AuthorsClient(ScholiastResourceClient[Author]):
         fields: Sequence[str] | None = None,
         limit: int | None = None,
         offset: int | None = None,
+        params: Mapping[str, Any] | None = None,
     ) -> Page[Paper]:
         """Fetch one page of the papers written by author ``id``.
 
         The route serves at most the most recent 10,000 papers.
         ``page.next_cursor`` is the next offset, or ``None`` on the last
-        page.
+        page. ``params`` adds query parameters the method does not name,
+        such as ``publicationDateOrYear`` (``2020:2021``).
         """
         return await fetch_list_page(
             self._client,
-            f"author/{id}/papers",
+            f"author/{id_path(id)}/papers",
             Paper,
             fields=fields,
             limit=limit,
             offset=offset,
+            extra_params=params,
         )
 
     async def batch(
@@ -81,24 +90,13 @@ class AuthorsClient(ScholiastResourceClient[Author]):
                 retry=True,
             )
             body = self._client.parse_json(response)
-            records = (
-                body
-                if isinstance(body, list)
-                else (body.get("data") if isinstance(body, dict) else None)
+            results.extend(
+                validate_model(
+                    Author,
+                    record,
+                    request=getattr(response, "request", None),
+                    response=response,
+                )
+                for record in batch_records(body, "author/batch")
             )
-            if not isinstance(records, list):
-                raise ConfigurationError(
-                    "POST /author/batch answered without a record list."
-                )
-            for record in records:
-                if record is None:
-                    continue
-                results.append(
-                    validate_model(
-                        Author,
-                        record,
-                        request=getattr(response, "request", None),
-                        response=response,
-                    )
-                )
         return results

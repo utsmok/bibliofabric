@@ -11,10 +11,14 @@ from pydantic import BaseModel, ConfigDict
 
 
 class PaperSearchFilters(BaseModel):
-    """Filters accepted by ``/paper/search`` and ``/paper/search/bulk``.
+    """Filters accepted by ``/paper/search``, ``/paper/search/bulk``, and
+    ``/paper/search/match``.
 
     String criteria take the API's own comma-joined syntax (for example
-    ``year="2020-2023"``, ``venue="Nature,Science"``).
+    ``year="2020-2023"``, ``venue="Nature,Science"``,
+    ``publicationDateOrYear="2020-06:2021"``). ``openAccessPdf`` is a flag
+    the API documents without a value; pass ``""`` to restrict the results
+    to papers with a public PDF.
     """
 
     year: str | None = None
@@ -23,6 +27,7 @@ class PaperSearchFilters(BaseModel):
     publicationTypes: str | None = None
     openAccessPdf: str | None = None
     minCitationCount: int | None = None
+    publicationDateOrYear: str | None = None
 
     model_config = ConfigDict(extra="allow")
 

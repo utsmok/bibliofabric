@@ -5,6 +5,8 @@ abstract, and body text. A match carries the snippet text, its location
 annotations, a relevance score, and a minimal paper record.
 """
 
+from typing import Any
+
 from bibliofabric import SafeList, SafeStr
 from pydantic import BaseModel, ConfigDict
 
@@ -54,7 +56,7 @@ class SnippetPaper(BaseModel):
 
     corpusId: int | None = None
     title: SafeStr | None = None
-    authors: SafeList[dict] = []
+    authors: SafeList[Any] = []
     openAccessInfo: dict | None = None
 
     model_config = ConfigDict(extra="allow")
@@ -74,7 +76,7 @@ class SnippetSearchResult(BaseModel):
     """The envelope of ``/snippet/search``."""
 
     data: SafeList[SnippetMatch] = []
-    retrievalVersion: int | None = None
+    retrievalVersion: int | str | None = None
 
     model_config = ConfigDict(extra="allow")
 

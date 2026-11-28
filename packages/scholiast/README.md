@@ -2,8 +2,8 @@
 
 Samuel Mok -- 2026
 
-`scholiast` is a placeholder name. The package will be renamed
-before its first release.
+`scholiast` is not yet published on PyPI; until its first release it
+installs from the bibliofabric workspace.
 
 scholiast is a Python client for the Semantic Scholar Academic
 Graph API (papers, authors, citations, patents, snippets), the

@@ -1,7 +1,5 @@
 """Pydantic models for Semantic Scholar patents."""
 
-from typing import Any
-
 from bibliofabric import SafeList, SafeStr
 from pydantic import BaseModel, ConfigDict
 
@@ -12,8 +10,8 @@ class Patent(BaseModel):
     Like papers, patents answer ``ucid`` (plus ``title`` on some routes)
     even without ``fields``; the other fields appear only when asked for
     in ``fields``. Party names (``inventors``, ``assignees``,
-    ``applicants``) are free-form entries the API returns as strings or
-    objects depending on the record.
+    ``applicants``) are lists of strings. ``claims`` is the text of the
+    claims, which only the detail route answers.
     """
 
     ucid: SafeStr | None = None
@@ -29,12 +27,12 @@ class Patent(BaseModel):
     applicationKey: SafeStr | None = None
     applicationNumber: SafeStr | None = None
     applicationUcids: SafeList[str] = []
-    assignees: SafeList[Any] = []
-    applicants: SafeList[Any] = []
-    inventors: SafeList[Any] = []
+    assignees: SafeList[str] = []
+    applicants: SafeList[str] = []
+    inventors: SafeList[str] = []
     inventorCountries: SafeList[str] = []
     cpcCodes: SafeList[str] = []
-    claims: SafeList[Any] = []
+    claims: SafeStr | None = None
     claimCount: int | None = None
     citedUcids: SafeList[str] = []
     citedApplicationCount: int | None = None
@@ -58,12 +56,12 @@ class Patent(BaseModel):
 class PatentCitations(BaseModel):
     """The envelope of ``/patent/outbound-citations/{paper_id}``.
 
-    ``data`` holds the citing patents; ``citingPaperInfo`` holds the
-    source paper.
+    ``data`` holds the citing patents, ``total`` their number, and
+    ``next`` the offset of the next page (``None`` on the last page).
     """
 
     data: SafeList[Patent] = []
-    citingPaperInfo: dict | None = None
+    total: int | None = None
     next: int | None = None
     offset: int | None = None
 

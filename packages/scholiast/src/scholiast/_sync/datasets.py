@@ -6,6 +6,7 @@ from bibliofabric.exceptions import ConfigurationError
 
 from ..dialect import SEMANTICSCHOLAR_DATASETS_BASE_URL
 from ..models import DatasetDiffList, DatasetMetadata, Release
+from .resources import id_path
 
 
 class DatasetsSyncClient:
@@ -14,8 +15,7 @@ class DatasetsSyncClient:
     A release is a dated snapshot of the whole Academic Graph. Listing
     releases and reading a release's dataset summaries works without a
     key. Reading a dataset's file URLs and fetching diffs need an API
-    key and answer HTTP 401 without one; the client still sends the
-    requests and lets the API decide.
+    key and answer HTTP 401 without one.
     """
 
     def __init__(self, client: SyncBaseApiClient) -> None:
@@ -42,10 +42,16 @@ class DatasetsSyncClient:
         ``release_id`` is a date string or ``latest``.
         """
         response = self._client.request(
-            "GET", f"{SEMANTICSCHOLAR_DATASETS_BASE_URL}/release/{release_id}"
+            "GET",
+            f"{SEMANTICSCHOLAR_DATASETS_BASE_URL}/release/{id_path(release_id)}",
         )
         body = self._client.parse_json(response)
-        release = self._release_from_body(body)
+        release = validate_model(
+            Release,
+            body,
+            request=getattr(response, "request", None),
+            response=response,
+        )
         if release.release_id is None:
             release.release_id = release_id
         return release
@@ -67,12 +73,13 @@ class DatasetsSyncClient:
         """
         response = self._client.request(
             "GET",
-            f"{SEMANTICSCHOLAR_DATASETS_BASE_URL}/release/{release_id}/dataset/{name}",
+            f"{SEMANTICSCHOLAR_DATASETS_BASE_URL}/release/{id_path(release_id)}"
+            f"/dataset/{id_path(name)}",
         )
         body = self._client.parse_json(response)
         return validate_model(
             DatasetMetadata,
-            self._item(body),
+            body,
             request=getattr(response, "request", None),
             response=response,
         )
@@ -91,27 +98,15 @@ class DatasetsSyncClient:
         """
         response = self._client.request(
             "GET",
-            f"{SEMANTICSCHOLAR_DATASETS_BASE_URL}/diffs/{start_release}"
-            f"/to/{end_release}/{dataset_name}",
+            f"{SEMANTICSCHOLAR_DATASETS_BASE_URL}/diffs/{id_path(start_release)}"
+            f"/to/{id_path(end_release)}/{id_path(dataset_name)}",
         )
         body = self._client.parse_json(response)
         return validate_model(
             DatasetDiffList,
-            self._item(body),
+            body,
             request=getattr(response, "request", None),
             response=response,
-        )
-
-    @staticmethod
-    def _item(body: object) -> dict:
-        return body if isinstance(body, dict) else {}
-
-    def _release_from_body(self, body: object) -> Release:
-        return validate_model(
-            Release,
-            self._item(body),
-            request=None,
-            response=None,
         )
 
 

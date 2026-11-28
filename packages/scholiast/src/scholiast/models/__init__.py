@@ -1,6 +1,6 @@
 """Pydantic models for Semantic Scholar papers, authors, and datasets."""
 
-from .author import Author
+from .author import Author, NormalizedAffiliation
 from .dataset import (
     DatasetDiff,
     DatasetDiffList,
@@ -46,6 +46,7 @@ __all__ = [
     "Embedding",
     "ExternalIds",
     "Journal",
+    "NormalizedAffiliation",
     "OpenAccessPdf",
     "Paper",
     "PaperMatch",
