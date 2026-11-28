@@ -8,6 +8,17 @@ members = [
     "aletheca",
     "bibliofabric",
     "stavrophora",
+    "dataphora",
+    "diurnalia",
+    "hodoi",
+    "europaea",
+    "seriatim",
+    "opcitato",
+    "orchis",
+    "rorifer",
+    "scholiast",
+    "quiddita",
+    "zenotheca",
 ]
 default-groups = ["dev", "docs"]
 
@@ -82,7 +93,7 @@ wheels = [
 
 [[package]]
 name = "bibliofabric"
-version = "0.7.0"
+version = "0.8.0"
 source = { editable = "packages/bibliofabric" }
 dependencies = [
     { name = "httpx" },
@@ -1119,6 +1130,127 @@ wheels = [
 name = "stavrophora"
 version = "0.4.0"
 source = { editable = "packages/stavrophora" }
+dependencies = [
+    { name = "bibliofabric" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
+
+[[package]]
+name = "dataphora"
+version = "0.1.0"
+source = { editable = "packages/dataphora" }
+dependencies = [
+    { name = "bibliofabric" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
+
+[[package]]
+name = "diurnalia"
+version = "0.1.0"
+source = { editable = "packages/diurnalia" }
+dependencies = [
+    { name = "bibliofabric" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
+
+[[package]]
+name = "hodoi"
+version = "0.1.0"
+source = { editable = "packages/hodoi" }
+dependencies = [
+    { name = "bibliofabric" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
+
+[[package]]
+name = "europaea"
+version = "0.1.0"
+source = { editable = "packages/europaea" }
+dependencies = [
+    { name = "bibliofabric" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
+
+[[package]]
+name = "seriatim"
+version = "0.1.0"
+source = { editable = "packages/seriatim" }
+dependencies = [
+    { name = "bibliofabric" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
+
+[[package]]
+name = "opcitato"
+version = "0.1.0"
+source = { editable = "packages/opcitato" }
+dependencies = [
+    { name = "bibliofabric" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
+
+[[package]]
+name = "orchis"
+version = "0.1.0"
+source = { editable = "packages/orchis" }
+dependencies = [
+    { name = "bibliofabric" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
+
+[[package]]
+name = "rorifer"
+version = "0.1.0"
+source = { editable = "packages/rorifer" }
+dependencies = [
+    { name = "bibliofabric" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
+
+[[package]]
+name = "scholiast"
+version = "0.1.0"
+source = { editable = "packages/scholiast" }
+dependencies = [
+    { name = "bibliofabric" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
+
+[[package]]
+name = "quiddita"
+version = "0.1.0"
+source = { editable = "packages/quiddita" }
+dependencies = [
+    { name = "bibliofabric" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
+
+[[package]]
+name = "zenotheca"
+version = "0.1.0"
+source = { editable = "packages/zenotheca" }
 dependencies = [
     { name = "bibliofabric" },
 ]

@@ -9,9 +9,10 @@ Layer 3: Canonical Entity Fusion (working name: bibliocanon)
          license governance, SQLite/DuckDB cache, lossy exporters
                               ▲
 Layer 2: Modular Single-Source Client Libraries
-         Current: aireloom (OpenAIRE), aletheca (OpenAlex), stavrophora (Crossref)
-         Wave 1:  ROR v2, ORCID v3, DataCite, Semantic Scholar, DOAJ v4,
-                  OpenCitations v2/Meta, Europe PMC, Zenodo, DOI/ISSN ConNeg, Wikidata
+         Original: aireloom (OpenAIRE), aletheca (OpenAlex), stavrophora (Crossref)
+         Wave 1 (built under placeholder names): ROR v2, Zenodo, DataCite,
+                  OpenCitations, DOI RA/ConNeg, Semantic Scholar, ORCID v3,
+                  Europe PMC, Wikidata, DOAJ v4, ISSN Portal
          Wave 2:  Domain indexes, repositories, funder APIs, protocol adapters
                               ▲
 Layer 1: bibliofabric Core Framework
@@ -67,10 +68,13 @@ scholarly metadata ecosystem in 2025–2026:
   and spun out as an independent nonprofit; Atom 1.0 XML and OAI-PMH remain the
   primary machine interfaces.
 
-## Gaps in the Current Three-Client Stack
+## Gaps in the Original Three Clients
 
 `aireloom` (OpenAIRE), `aletheca` (OpenAlex), and `stavrophora` (Crossref)
-already provide broad scholarly literature coverage, but leave five clear gaps:
+already provide broad scholarly literature coverage, but leave five gaps. The
+[Wave 1 libraries](wave-1-libraries.md) cover most of the first four gaps
+with public read clients. The other sources named below stay Wave 2
+candidates.
 
 1. **Authority registries & PID crosswalks:** Canonical organization/funder
    hierarchies (**ROR v2**, **GLEIF LEI**), researcher-asserted profiles
@@ -103,12 +107,18 @@ already provide broad scholarly literature coverage, but leave five clear gaps:
    RFC 5988 `Link` pagination, POST-body search dialect, sliding/fixed-window
    rate limiter + daily quota hooks, pluggable non-JSON (XML/SRU/Atom) decoder
    hook, and expanded `bibliofabric.ids` normalizers.
+   Status on 2026-11-27: per-client headers and the JSON:API unwrapper are in
+   `bibliofabric` 0.8, together with identifier normalizers for ISBN, ISNI,
+   Wikidata, GND, and VIAF. The rest is listed in [Deferred work](deferred.md).
 2. **Existing client enhancements:**
    - **`stavrophora` (Crossref):** Add the **Crossref Data Citation API**
      (`/beta/datacitations/`) and **Retraction Watch** (`updated-by` /
      `update-type:retraction`) helpers.
    - **`aletheca` (OpenAlex):** Expose OpenAlex credit/budget telemetry headers
      (`X-RateLimit-Credits-Used`, `cost_usd`) cleanly via `on_response()`.
+
+   Status on 2026-11-27: both enhancements are still open; see
+   [Deferred work](deferred.md#existing-clients).
 
 ### Phase 1 — Wave 1: Authorities & Open Scholarly Graphs
 
@@ -121,6 +131,11 @@ CC0 / ODC-By / Public Domain):
 - **Works, Citations, Data & Software:** DataCite REST (+ optional GraphQL),
   Semantic Scholar (Graph + Bulk + POST batch), OpenCitations (Index v2 + Meta
   v1), Europe PMC, Zenodo (reusable InvenioRDM pattern).
+
+Status on 2026-11-27: all eleven libraries are built under placeholder names
+and cover the public read endpoints of their APIs. See
+[Wave 1 libraries](wave-1-libraries.md) for the roster and
+[Deferred work](deferred.md) for what was left out.
 
 ### Phase 2 — Canonical Entity Fusion MVP
 
@@ -179,9 +194,13 @@ Keep the open core free of legal/licensing blockers and deprecated endpoints:
 - [Authority Registries, Organizations, Venues, Funders & Taxonomies](api-landscape-registries.md) —
   Structured catalog of researcher, organization, venue, funder, PID, and
   controlled-vocabulary APIs.
-- [Wave 1 Client Specs & Core Enablers](wave-1-clients.md) — Actionable
-  implementation specs for the 10 Wave 1 clients and the 6 `bibliofabric` core
+- [Wave 1 Client Specs & Core Enablers](wave-1-clients.md) — Starter
+  implementation specs for the 11 Wave 1 clients and the 6 `bibliofabric` core
   additions.
+- [Wave 1 Libraries](wave-1-libraries.md) — The roster with the placeholder
+  names, a blank field for each real name, and the rename steps.
+- [Deferred Work](deferred.md) — Everything Wave 1 left out, with the reason
+  and the condition that unblocks it.
 - [Canonical Entity Fusion Architecture](canonical-fusion.md) — End-to-end
   architecture blueprint for the canonical entity fusion library.
 - [Building a client on `bibliofabric`](../bibliofabric/writing-a-client.md) —

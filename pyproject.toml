@@ -75,6 +75,17 @@ testpaths = [
     "packages/aireloom/tests",
     "packages/aletheca/tests",
     "packages/stavrophora/tests",
+    "packages/rorifer/tests",
+    "packages/zenotheca/tests",
+    "packages/dataphora/tests",
+    "packages/opcitato/tests",
+    "packages/hodoi/tests",
+    "packages/scholiast/tests",
+    "packages/orchis/tests",
+    "packages/europaea/tests",
+    "packages/quiddita/tests",
+    "packages/diurnalia/tests",
+    "packages/seriatim/tests",
 ]
 python_files = "test_*.py"
 python_functions = "test_*"

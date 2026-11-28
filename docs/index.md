@@ -1,13 +1,15 @@
 # The bibliofabric family
 
-Four Python client libraries for scholarly metadata APIs, sharing one core:
+Python client libraries for scholarly metadata APIs, built on one core:
 [`bibliofabric`](bibliofabric/index.md) owns HTTP, authentication, retries,
 rate limiting, paging, batch retrieval, identifier normalization, and typed
-resource clients. Each library adds only what is specific to its API. All four
+resource clients. Each client library adds only what is specific to its API. All
 ship async clients alongside generated sync twins (`<Name>SyncClient`) and
 `py.typed`. They live in one uv workspace at
 [github.com/utsmok/bibliofabric](https://github.com/utsmok/bibliofabric)
-(`packages/<name>`); this site documents all of them.
+(`packages/<name>`); this site documents all of them. Three client libraries
+are published on PyPI. Eleven more are built in the workspace under
+placeholder names and are listed in the second table.
 
 | Package | API | PyPI | Install |
 |---|---|---|---|
@@ -15,6 +17,27 @@ ship async clients alongside generated sync twins (`<Name>SyncClient`) and
 | [aireloom](aireloom/index.md) | OpenAIRE Graph API (V4), Scholexplorer | [pypi.org/project/aireloom](https://pypi.org/project/aireloom/) | `uv add aireloom` |
 | [aletheca](aletheca/index.md) | OpenAlex | [pypi.org/project/aletheca](https://pypi.org/project/aletheca/) | `uv add aletheca` |
 | [stavrophora](stavrophora/index.md) | Crossref REST API | [pypi.org/project/stavrophora](https://pypi.org/project/stavrophora/) | `uv add stavrophora` |
+
+## Wave 1 libraries
+
+These packages are complete and tested but not published. They install from
+the workspace only, and their names change before the first release. The
+[Wave 1 roster](roadmap/wave-1-libraries.md) has the rename steps and the
+[deferred list](roadmap/deferred.md) records what each one leaves out.
+
+| Package | API | PyPI |
+|---|---|---|
+| [rorifer](rorifer/index.md) | ROR (research organizations and funders) | not published |
+| [zenotheca](zenotheca/index.md) | Zenodo REST API and OAI-PMH | not published |
+| [dataphora](dataphora/index.md) | DataCite REST API and public GraphQL | not published |
+| [opcitato](opcitato/index.md) | OpenCitations Index and Meta APIs | not published |
+| [hodoi](hodoi/index.md) | DOI registration agency lookup, content negotiation, and Handle records | not published |
+| [scholiast](scholiast/index.md) | Semantic Scholar Graph, Recommendations, and Datasets APIs | not published |
+| [orchis](orchis/index.md) | ORCID Public API v3.0 | not published |
+| [europaea](europaea/index.md) | Europe PMC REST web services and annotations API | not published |
+| [quiddita](quiddita/index.md) | Wikidata (action API, REST API, and SPARQL) | not published |
+| [diurnalia](diurnalia/index.md) | DOAJ (open access journals and articles) | not published |
+| [seriatim](seriatim/index.md) | ISSN Portal | not published |
 
 ## Which package do I need?
 
@@ -24,6 +47,18 @@ ship async clients alongside generated sync twins (`<Name>SyncClient`) and
   funders, sources): use **aletheca**.
 - You want records from **Crossref** (works, journals, funders, members):
   use **stavrophora**.
+- You want records from **ROR**: use **rorifer**.
+- You want records from **Zenodo**: use **zenotheca**.
+- You want records from **DataCite**: use **dataphora**.
+- You want citation links from **OpenCitations**: use **opcitato**.
+- You want to resolve a **DOI** (registration agency, metadata, or Handle
+  record): use **hodoi**.
+- You want records from **Semantic Scholar**: use **scholiast**.
+- You want records from **ORCID**: use **orchis**.
+- You want records from **Europe PMC**: use **europaea**.
+- You want records from **Wikidata**: use **quiddita**.
+- You want records from **DOAJ**: use **diurnalia**.
+- You want records from the **ISSN Portal**: use **seriatim**.
 - You are building a client for **another scholarly API** in this style:
   build on **bibliofabric**. Start with the
   [Building a client guide](bibliofabric/writing-a-client.md) (and the

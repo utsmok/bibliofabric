@@ -9,25 +9,33 @@ description: "Procedure for adding a new bibliofabric-family API client package 
 The family lives in one monorepo (`utsmok/bibliofabric`, uv workspace). A new
 client is a new directory `packages/<name>/`, NOT a new repo. Proven
 end-to-end 2026-09-04 with stavrophora (Crossref), alongside aletheca
-(OpenAlex) and AIREloom (OpenAIRE). Use when adding a new source client
-(e.g. DataCite, Semantic Scholar, Europe PMC).
+(OpenAlex) and AIREloom (OpenAIRE). Use when adding a new source client.
+The Wave 1 clients built on 2026-11-27 are listed in
+`docs/roadmap/wave-1-libraries.md`. `packages/rorifer/` is the closest
+template for a client built on the current framework, with the default
+headers hook and the identifier normalizers.
 
 ## 1. Study, then scaffold
 
 - Read the root `AGENTS.md`, `docs/bibliofabric/authoring-sync.md`, and the closest sibling package completely (`packages/aletheca/` is the canonical shape).
 - Create `packages/<name>/` with the family shape: `src/<pkg>/` with `_async/client.py` (`<Name>Client(BaseApiClient)`, resources as `functools.cached_property`), `_async/resources/` (one small module per entity subclassing the dialect-aware base), generated `_sync/` twins (from `uv run python scripts/unasync.py`), pure modules `config.py` (pydantic-settings, `<PKG>_` env prefix, one `@lru_cache get_settings()`), `dialect.py` (`QueryDialect` instances + the resource base subclass with hook overrides), `unwrapper.py`, `filters.py` (pydantic filter models), `models/` (pydantic `extra="allow"`, all fields optional, SafeStr/SafeList coercion), `tests/_async/` (pytest-httpx per-entity + unwrapper tests) + generated `tests/_sync/`, `py.typed`, `LICENSE`, `README.md` (PyPI long description), `CHANGELOG.md` (Keep a Changelog).
-- The `packages/*` workspace glob picks the package up automatically. Declare the dependency `bibliofabric>=0.6,<0.7`; uv resolves it to the sibling via the root `[tool.uv.sources]`. No per-package dev groups, ruff/pytest config, `uv.lock`, `.python-version`, `.pre-commit-config.yaml`, or CI workflow — all of that is root-level now.
+- The `packages/*` workspace glob picks the package up automatically. Declare the dependency `bibliofabric>=0.8,<0.9`; uv resolves it to the sibling via the root `[tool.uv.sources]`. No per-package dev groups, ruff/pytest config, `uv.lock`, `.python-version`, `.pre-commit-config.yaml`, or CI workflow — all of that is root-level now.
 - Conventional commits, no AI attribution. `LICENSE` (MIT, Samuel Mok) exists once at the repo root if needed.
+- Placeholder names: a package can be built before its PyPI name is registered. Use three spellings with no variation (`tbd_<x>`, `TBD_<X>_`, `Tbd<X>`), never publish under the placeholder, and rename with one find-and-replace per spelling (`docs/roadmap/wave-1-libraries.md`).
+- Tests: build settings in a test with every credential field explicit (for example `_env_file=None, api_key=None`). `_env_file=None` does not hide variables exported in the shell.
+- Packages written in parallel: `uv run` fails while a `packages/*` directory has no `pyproject.toml` yet. Write `pyproject.toml` last. Until then, run the tools from `.venv/bin/` with `PYTHONPATH=packages/<name>/src`, which `ty` needs to resolve the package.
 
 ## 2. Extract API semantics LIVE before finalizing models
 
 - 400 validation-failure bodies enumerate the full valid filter list for a route — build filter models from them, not from docs alone.
 - Verify with real requests: paging params (some APIs hard-reject unknown params; some ignore rows), cursor/exhaustion semantics, auth/polite-pool mechanism AND its observable proof (e.g. `x-rate-limit-*` header values differ per pool), batch-OR syntax (Crossref: pipe returns 0 results; repeated keys are OR), 404 body shapes (may be text/plain), single-item vs list route schema drift.
 - Run one real smoke call per resource before declaring the model set done.
+- A fixture from one record is not evidence for a model. Validate the models against a few hundred real records from broad queries (iterate with `on_error="skip"` and count the `failures`) before declaring them done. On 2026-11-28 the Europe PMC client rejected every real record that carried keywords, because its keyword model came from one record without them.
+- Wrap every public read route, also when another route returns overlapping data (the POST variant of a search, a record-by-id route, an HTML page the client can parse). Walk the route list of the upstream documentation or OpenAPI document and name next to each route what covers it, before writing the deferred list.
 
 ## 3. Gates
 
-- From the repo root: `uv sync --all-packages --all-groups`, `uv run python scripts/unasync.py --check`, `uv run pytest packages/<name>/tests`, `uv run ruff check`, `uv run ruff format --check`, `uv run ty check packages/*/src scripts/unasync.py` (ty is the family's type checker, no mypy), and `uv run mkdocs build --strict`.
+- From the repo root: `uv sync --all-packages --all-groups`, `uv run python scripts/unasync.py --check`, `uv run pytest packages/<name>/tests`, `uv run ruff check`, `uv run ruff format --check`, `uv run ty check packages/*/src packages/*/tests scripts/unasync.py` (ty is the family's type checker, no mypy), and `uv run mkdocs build --strict`.
 - Known family gotcha: runtime-valid but spec-invalid annotations (e.g. `TTLCache[str, Any]` with non-generic cachetools classes) pass pytest but fail newer ty — fix the annotation, not the pin.
 
 ## 4. Dedicated live sweep (owner-required standard, same bar for every client)

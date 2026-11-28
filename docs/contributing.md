@@ -1,8 +1,8 @@
 # Contributing
 
-The `bibliofabric` monorepo hosts all four family packages (`bibliofabric`,
-`aireloom`, `aletheca`, and `stavrophora`) in a single `uv` workspace under
-`packages/<name>/`. Requires Python 3.12+ and
+The `bibliofabric` monorepo hosts the `bibliofabric` core and one client
+library per API (`aireloom`, `aletheca`, `stavrophora`, and more) in a single
+`uv` workspace under `packages/<name>/`. Requires Python 3.12+ and
 [uv](https://docs.astral.sh/uv/).
 
 ## Set up your environment
@@ -15,7 +15,7 @@ cd bibliofabric
 uv sync --all-packages --all-groups
 ```
 
-This installs all four workspace packages in editable mode along with the
+This installs every workspace package in editable mode along with the
 `dev` (`pytest`, `pytest-asyncio`, `pytest-httpx`, `ruff`, `ty`, `unasync`)
 and `docs` (`mkdocs`, `mkdocs-material`, `mkdocstrings`) dependency groups.
 
@@ -69,6 +69,20 @@ The `dev` group pins `ty` and `ruff` versions so local checks match CI.
   `packages/<name>/CHANGELOG.md`.
 - Write small, focused, conventional commits (`feat:`, `fix:`, `docs:`,
   `chore:`, ...), short and imperative, with no AI attribution.
+
+## Placeholder packages
+
+The `tbd_*` packages are finished client libraries that wait for their real
+PyPI names. Each name has three spellings (`rorifer`, `RORIFER_`, `Rorifer`),
+and the rename is one find-and-replace per spelling, so keep the spellings
+exact when you edit these packages. Do not publish a `tbd_*` package. The
+[Wave 1 roster](roadmap/wave-1-libraries.md) lists the packages and the
+rename steps.
+
+In a test, build settings with every credential field explicit, for example
+`OrchisSettings(_env_file=None, access_token=None)`. The `_env_file=None`
+argument stops the `.env` file from loading, but it does not hide variables
+that the shell exports, so the suite must pass in both situations.
 
 ## Submit a pull request
 

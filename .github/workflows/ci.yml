@@ -55,7 +55,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package: [bibliofabric, aireloom, aletheca, stavrophora]
+        package:
+          - bibliofabric
+          - aireloom
+          - aletheca
+          - stavrophora
+          - rorifer
+          - zenotheca
+          - dataphora
+          - opcitato
+          - hodoi
+          - scholiast
+          - orchis
+          - europaea
+          - quiddita
+          - diurnalia
+          - seriatim
         python-version: ["3.12", "3.13", "3.14"]
     env:
       UV_PYTHON: ${{ matrix.python-version }}

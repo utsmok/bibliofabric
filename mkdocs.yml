@@ -20,7 +20,22 @@ plugins:
   - mkdocstrings:
       handlers:
         python:
-          paths: ["packages/bibliofabric/src", "packages/aireloom/src", "packages/aletheca/src", "packages/stavrophora/src"]
+          paths:
+            - packages/bibliofabric/src
+            - packages/aireloom/src
+            - packages/aletheca/src
+            - packages/stavrophora/src
+            - packages/rorifer/src
+            - packages/zenotheca/src
+            - packages/dataphora/src
+            - packages/opcitato/src
+            - packages/hodoi/src
+            - packages/scholiast/src
+            - packages/orchis/src
+            - packages/europaea/src
+            - packages/quiddita/src
+            - packages/diurnalia/src
+            - packages/seriatim/src
           options:
             show_root_heading: true
 
@@ -29,6 +44,17 @@ watch:
   - packages/aireloom/src/aireloom
   - packages/aletheca/src/aletheca
   - packages/stavrophora/src/stavrophora
+  - packages/rorifer/src/rorifer
+  - packages/zenotheca/src/zenotheca
+  - packages/dataphora/src/dataphora
+  - packages/opcitato/src/opcitato
+  - packages/hodoi/src/hodoi
+  - packages/scholiast/src/scholiast
+  - packages/orchis/src/orchis
+  - packages/europaea/src/europaea
+  - packages/quiddita/src/quiddita
+  - packages/diurnalia/src/diurnalia
+  - packages/seriatim/src/seriatim
 
 nav:
   - Overview: index.md
@@ -93,9 +119,110 @@ nav:
       - Crossref quirks: stavrophora/quirks.md
       - API reference: stavrophora/reference.md
       - Changelog: https://github.com/utsmok/bibliofabric/blob/main/packages/stavrophora/CHANGELOG.md
+  - rorifer:
+      - Home: rorifer/index.md
+      - Organizations: rorifer/organizations.md
+      - Data dumps: rorifer/dumps.md
+      - Upstream quirks: rorifer/upstream-quirks.md
+      - API reference: rorifer/reference.md
+      - Changelog: https://github.com/utsmok/bibliofabric/blob/main/packages/rorifer/CHANGELOG.md
+  - zenotheca:
+      - Home: zenotheca/index.md
+      - Records: zenotheca/usage/records.md
+      - Communities: zenotheca/usage/communities.md
+      - Vocabularies: zenotheca/usage/vocabularies.md
+      - OAI-PMH: zenotheca/usage/oai.md
+      - Upstream quirks: zenotheca/upstream-quirks.md
+      - API reference: zenotheca/reference.md
+      - Changelog: https://github.com/utsmok/bibliofabric/blob/main/packages/zenotheca/CHANGELOG.md
+  - dataphora:
+      - Home: dataphora/index.md
+      - DOIs: dataphora/usage/dois.md
+      - Clients: dataphora/usage/clients.md
+      - Providers: dataphora/usage/providers.md
+      - Repositories: dataphora/usage/repositories.md
+      - Prefixes: dataphora/usage/prefixes.md
+      - Events: dataphora/usage/events.md
+      - Media and other account routes: dataphora/usage/media.md
+      - GraphQL: dataphora/usage/graphql.md
+      - Upstream quirks: dataphora/upstream-quirks.md
+      - API reference: dataphora/reference.md
+      - Changelog: https://github.com/utsmok/bibliofabric/blob/main/packages/dataphora/CHANGELOG.md
+  - opcitato:
+      - Home: opcitato/index.md
+      - Index API: opcitato/index-api.md
+      - Meta API: opcitato/meta-api.md
+      - Upstream quirks: opcitato/upstream-quirks.md
+      - API reference: opcitato/reference.md
+      - Changelog: https://github.com/utsmok/bibliofabric/blob/main/packages/opcitato/CHANGELOG.md
+  - hodoi:
+      - Home: hodoi/index.md
+      - Registration agencies: hodoi/agencies.md
+      - Handles: hodoi/handles.md
+      - Metadata: hodoi/metadata.md
+      - Upstream quirks: hodoi/upstream-quirks.md
+      - API reference: hodoi/reference.md
+      - Changelog: https://github.com/utsmok/bibliofabric/blob/main/packages/hodoi/CHANGELOG.md
+  - scholiast:
+      - Home: scholiast/index.md
+      - Papers: scholiast/papers.md
+      - Authors: scholiast/authors.md
+      - Recommendations: scholiast/recommendations.md
+      - Datasets: scholiast/datasets.md
+      - Snippets and patents: scholiast/other-routes.md
+      - Upstream quirks: scholiast/upstream-quirks.md
+      - API reference: scholiast/reference.md
+      - Changelog: https://github.com/utsmok/bibliofabric/blob/main/packages/scholiast/CHANGELOG.md
+  - orchis:
+      - Home: orchis/index.md
+      - Records: orchis/records.md
+      - Person sections: orchis/person.md
+      - Activities: orchis/activities.md
+      - Search: orchis/search.md
+      - Upstream quirks: orchis/upstream-quirks.md
+      - API reference: orchis/reference.md
+      - Changelog: https://github.com/utsmok/bibliofabric/blob/main/packages/orchis/CHANGELOG.md
+  - europaea:
+      - Home: europaea/index.md
+      - Search: europaea/search.md
+      - Articles: europaea/articles.md
+      - Annotations: europaea/annotations.md
+      - Grants, profiles, and preprints: europaea/grants-profiles-preprints.md
+      - Upstream quirks: europaea/upstream-quirks.md
+      - API reference: europaea/reference.md
+      - Changelog: https://github.com/utsmok/bibliofabric/blob/main/packages/europaea/CHANGELOG.md
+  - quiddita:
+      - Home: quiddita/index.md
+      - Entities: quiddita/entities.md
+      - Search: quiddita/search.md
+      - Claims and statements: quiddita/claims.md
+      - Site links: quiddita/sitelinks.md
+      - Lexemes: quiddita/lexemes.md
+      - SPARQL: quiddita/sparql.md
+      - Utility modules: quiddita/utilities.md
+      - Upstream quirks: quiddita/upstream-quirks.md
+      - API reference: quiddita/reference.md
+      - Changelog: https://github.com/utsmok/bibliofabric/blob/main/packages/quiddita/CHANGELOG.md
+  - diurnalia:
+      - Home: diurnalia/index.md
+      - Journals: diurnalia/journals.md
+      - Articles: diurnalia/articles.md
+      - Upstream quirks: diurnalia/upstream-quirks.md
+      - API reference: diurnalia/reference.md
+      - Changelog: https://github.com/utsmok/bibliofabric/blob/main/packages/diurnalia/CHANGELOG.md
+  - seriatim:
+      - Home: seriatim/index.md
+      - Records: seriatim/records.md
+      - Search: seriatim/search.md
+      - Title Word Abbreviations: seriatim/ltwa.md
+      - Upstream quirks: seriatim/upstream-quirks.md
+      - API reference: seriatim/reference.md
+      - Changelog: https://github.com/utsmok/bibliofabric/blob/main/packages/seriatim/CHANGELOG.md
   - Roadmap & Architecture:
       - Overview: roadmap/index.md
       - Works, Data & OA APIs: roadmap/api-landscape-works.md
       - Authority Registries & PIDs: roadmap/api-landscape-registries.md
       - Wave 1 Client Specs & Core Enablers: roadmap/wave-1-clients.md
+      - Wave 1 Libraries: roadmap/wave-1-libraries.md
+      - Deferred Work: roadmap/deferred.md
       - Canonical Entity Fusion: roadmap/canonical-fusion.md
