@@ -1,6 +1,6 @@
 [project]
 name = "aireloom"
-version = "0.9.0"
+version = "0.9.1"
 description = "Python interface for the OpenAIRE Graph API, built on top of the bibliofabric framework."
 authors = [
     {name = "Samuel Mok",email = "s.mok@utwente.nl"}

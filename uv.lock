@@ -7,17 +7,17 @@ members = [
     "aireloom",
     "aletheca",
     "bibliofabric",
-    "stavrophora",
     "dataphora",
     "diurnalia",
-    "hodoi",
     "europaea",
-    "seriatim",
+    "hodoi",
     "opcitato",
     "orchis",
+    "quiddita",
     "rorifer",
     "scholiast",
-    "quiddita",
+    "seriatim",
+    "stavrophora",
     "zenotheca",
 ]
 default-groups = ["dev", "docs"]
@@ -39,7 +39,7 @@ docs = [
 
 [[package]]
 name = "aireloom"
-version = "0.9.0"
+version = "0.9.1"
 source = { editable = "packages/aireloom" }
 dependencies = [
     { name = "bibliofabric" },
@@ -50,7 +50,7 @@ requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
 
 [[package]]
 name = "aletheca"
-version = "0.5.0"
+version = "0.5.1"
 source = { editable = "packages/aletheca" }
 dependencies = [
     { name = "bibliofabric" },
@@ -272,6 +272,39 @@ wheels = [
 ]
 
 [[package]]
+name = "dataphora"
+version = "0.1.0"
+source = { editable = "packages/dataphora" }
+dependencies = [
+    { name = "bibliofabric" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
+
+[[package]]
+name = "diurnalia"
+version = "0.1.0"
+source = { editable = "packages/diurnalia" }
+dependencies = [
+    { name = "bibliofabric" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
+
+[[package]]
+name = "europaea"
+version = "0.1.0"
+source = { editable = "packages/europaea" }
+dependencies = [
+    { name = "bibliofabric" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
+
+[[package]]
 name = "ghp-import"
 version = "2.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -303,6 +336,17 @@ sdist = { url = "https://files.pythonhosted.org/packages/01/ee/02a2c011bdab74c6f
 wheels = [
     { url = "https://files.pythonhosted.org/packages/04/4b/29cac41a4d98d144bf5f6d33995617b185d14b22401f75ca86f384e87ff1/h11-0.16.0-py3-none-any.whl", hash = "sha256:63cf8bbe7522de3bf65932fda1d9c2772064ffb3dae62d55932da54b31cb6c86", size = 37515, upload-time = "2025-04-24T03:35:24.344Z" },
 ]
+
+[[package]]
+name = "hodoi"
+version = "0.1.0"
+source = { editable = "packages/hodoi" }
+dependencies = [
+    { name = "bibliofabric" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
 
 [[package]]
 name = "httpcore"
@@ -611,6 +655,28 @@ sdist = { url = "https://files.pythonhosted.org/packages/bf/ed/b886f8c714fd7cccc
 wheels = [
     { url = "https://files.pythonhosted.org/packages/3b/dd/a24ee3de56954bfafb6ede7cd63c2413bb842cc48eb45e41c43a05a33074/mkdocstrings_python-1.16.12-py3-none-any.whl", hash = "sha256:22ded3a63b3d823d57457a70ff9860d5a4de9e8b1e482876fc9baabaf6f5f374", size = 124287, upload-time = "2025-06-03T12:52:47.819Z" },
 ]
+
+[[package]]
+name = "opcitato"
+version = "0.1.0"
+source = { editable = "packages/opcitato" }
+dependencies = [
+    { name = "bibliofabric" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
+
+[[package]]
+name = "orchis"
+version = "0.1.0"
+source = { editable = "packages/orchis" }
+dependencies = [
+    { name = "bibliofabric" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
 
 [[package]]
 name = "packaging"
@@ -956,6 +1022,17 @@ wheels = [
 ]
 
 [[package]]
+name = "quiddita"
+version = "0.1.0"
+source = { editable = "packages/quiddita" }
+dependencies = [
+    { name = "bibliofabric" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
+
+[[package]]
 name = "regex"
 version = "2026.11.25"
 source = { registry = "https://pypi.org/simple" }
@@ -1075,6 +1152,17 @@ wheels = [
 ]
 
 [[package]]
+name = "rorifer"
+version = "0.1.0"
+source = { editable = "packages/rorifer" }
+dependencies = [
+    { name = "bibliofabric" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
+
+[[package]]
 name = "ruff"
 version = "0.17.6"
 source = { registry = "https://pypi.org/simple" }
@@ -1098,6 +1186,28 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/4b/9d/18ba9730addfc7554c70d6f171fb8dc2c08e774d9fb2b98e7946ef845c59/ruff-0.17.6-py3-none-win_amd64.whl", hash = "sha256:9cd2fd9923e9806b8b6b67a3469e2258e84bd4d21e45d5a1a690afdfb9c8e57d", size = 10365847, upload-time = "2026-11-19T15:56:23.582Z" },
     { url = "https://files.pythonhosted.org/packages/70/8a/59c33e2a64a4f9672f7f842a0dc522915cfbbaffd13d37d0cec57d1c5c5d/ruff-0.17.6-py3-none-win_arm64.whl", hash = "sha256:d8b14e1473dc86ab9069cf7a2ba5041dc012f59110201844ed04cfddf07055a0", size = 9926224, upload-time = "2026-11-19T15:56:25.269Z" },
 ]
+
+[[package]]
+name = "scholiast"
+version = "0.1.0"
+source = { editable = "packages/scholiast" }
+dependencies = [
+    { name = "bibliofabric" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
+
+[[package]]
+name = "seriatim"
+version = "0.1.0"
+source = { editable = "packages/seriatim" }
+dependencies = [
+    { name = "bibliofabric" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
 
 [[package]]
 name = "setuptools"
@@ -1128,129 +1238,8 @@ wheels = [
 
 [[package]]
 name = "stavrophora"
-version = "0.4.0"
+version = "0.5.0"
 source = { editable = "packages/stavrophora" }
-dependencies = [
-    { name = "bibliofabric" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
-
-[[package]]
-name = "dataphora"
-version = "0.1.0"
-source = { editable = "packages/dataphora" }
-dependencies = [
-    { name = "bibliofabric" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
-
-[[package]]
-name = "diurnalia"
-version = "0.1.0"
-source = { editable = "packages/diurnalia" }
-dependencies = [
-    { name = "bibliofabric" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
-
-[[package]]
-name = "hodoi"
-version = "0.1.0"
-source = { editable = "packages/hodoi" }
-dependencies = [
-    { name = "bibliofabric" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
-
-[[package]]
-name = "europaea"
-version = "0.1.0"
-source = { editable = "packages/europaea" }
-dependencies = [
-    { name = "bibliofabric" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
-
-[[package]]
-name = "seriatim"
-version = "0.1.0"
-source = { editable = "packages/seriatim" }
-dependencies = [
-    { name = "bibliofabric" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
-
-[[package]]
-name = "opcitato"
-version = "0.1.0"
-source = { editable = "packages/opcitato" }
-dependencies = [
-    { name = "bibliofabric" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
-
-[[package]]
-name = "orchis"
-version = "0.1.0"
-source = { editable = "packages/orchis" }
-dependencies = [
-    { name = "bibliofabric" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
-
-[[package]]
-name = "rorifer"
-version = "0.1.0"
-source = { editable = "packages/rorifer" }
-dependencies = [
-    { name = "bibliofabric" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
-
-[[package]]
-name = "scholiast"
-version = "0.1.0"
-source = { editable = "packages/scholiast" }
-dependencies = [
-    { name = "bibliofabric" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
-
-[[package]]
-name = "quiddita"
-version = "0.1.0"
-source = { editable = "packages/quiddita" }
-dependencies = [
-    { name = "bibliofabric" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]
-
-[[package]]
-name = "zenotheca"
-version = "0.1.0"
-source = { editable = "packages/zenotheca" }
 dependencies = [
     { name = "bibliofabric" },
 ]
@@ -1389,3 +1378,14 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/07/af/1022a429f58cd84302a5b9aca7c78e22078867f30eab862eccdcbfd601c5/watchdog-7.1.1-py3-none-win_arm64.whl", hash = "sha256:7bc7f4389b1634e874ffd0d6c84c9680c6adbb48c3aece8e087bb25ee9b93f0e", size = 116062, upload-time = "2026-11-21T13:21:08.204Z" },
     { url = "https://files.pythonhosted.org/packages/4d/ff/bd007a0bded2f68bf2f23c28eae1e0567cbd8a2e80ea4f217ebc359ce4d0/watchdog-7.1.1-py3-none-win_ia64.whl", hash = "sha256:31a0e81dca2cbe5f1f2d46906277ae3aeb64cf9506d60cf10fa9ad00cbdaa6c8", size = 116060, upload-time = "2026-11-21T13:21:09.168Z" },
 ]
+
+[[package]]
+name = "zenotheca"
+version = "0.1.0"
+source = { editable = "packages/zenotheca" }
+dependencies = [
+    { name = "bibliofabric" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "bibliofabric", editable = "packages/bibliofabric" }]

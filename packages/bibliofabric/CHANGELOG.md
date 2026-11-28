@@ -5,7 +5,11 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.8.0] - 2026-11-28
+
+Companion client versions built on this release: aireloom 0.9.1, aletheca 0.5.1,
+and stavrophora 0.5.0 (all pinning `bibliofabric>=0.8,<0.9`), and the eleven
+Wave 1 libraries.
 
 ### Added
 
