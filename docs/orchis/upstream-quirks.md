@@ -30,7 +30,7 @@ Findings from about 48 paced requests against the live ORCID Public API v3.0 on 
 ## Rate limits and credentials
 
 - ORCID documents 12 requests per second for anonymous and public API callers and 24 for the member API, with a burst of 40 and a 503 above the burst. Daily quotas are 25,000 reads per IP address anonymously and 100,000 per client id for the public API. orchis defaults to 4 requests per second.
-- The token and the client credentials on hand are public API credentials. The member API answered 403 (`"error": "forbidden"`) for both on a read of `https://api.orcid.org/v3.0/{orcid}/record` on 2026-11-27 and 2026-11-28, so the member API is not wrapped. The client-credentials grant at `https://orcid.org/oauth/token` with scope `/read-public` minted a token (HTTP 200), and that token worked on the public API through `ORCHIS_ACCESS_TOKEN` on 2026-11-28. Minting stays an OAuth call outside this client, so the client id and secret are not settings.
+- The token and the client credentials on hand are public API credentials. The member API answered 403 (`"error": "forbidden"`) for both on a read of `https://api.orcid.org/v3.0/{orcid}/record` on 2026-11-27 and 2026-11-28, so the member API is not wrapped. The client-credentials grant at `https://orcid.org/oauth/token` with scope `/read-public` and the client id and secret in the form body mints a token (HTTP 200), which orchis does when `ORCHIS_CLIENT_ID` and `ORCHIS_CLIENT_SECRET` are set (verified live on 2026-11-28).
 
 ## Bulk data
 

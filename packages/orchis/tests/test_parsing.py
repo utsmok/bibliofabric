@@ -1,7 +1,9 @@
 """Parsing: real payloads, model coercions, the value wrapper accessor."""
 
+import pytest
 from orchis import (
     ActivitiesSummary,
+    ConfigurationError,
     Funding,
     FuzzyDate,
     OrchisClient,
@@ -135,7 +137,11 @@ def test_nulls_coerce_and_extras_are_kept():
 
 
 def test_client_exposes_resources():
-    client = OrchisClient(settings=OrchisSettings(_env_file=None, access_token=None))
+    client = OrchisClient(
+        settings=OrchisSettings(
+            _env_file=None, access_token=None, client_id=None, client_secret=None
+        )
+    )
     assert client.base_url == "https://pub.orcid.org/v3.0"
     assert client.default_headers == {"Accept": "application/json"}
     assert client.record.suffix == "record"
@@ -145,10 +151,9 @@ def test_client_exposes_resources():
     assert client.search is client.search
 
 
-def test_client_sends_bearer_token_when_set():
-    settings = OrchisSettings(_env_file=None, access_token="secret-token")
-    client = OrchisClient(settings=settings)
-    assert client.default_headers == {
-        "Accept": "application/json",
-        "Authorization": "Bearer secret-token",
-    }
+def test_one_half_of_the_client_credentials_raises():
+    settings = OrchisSettings(
+        _env_file=None, access_token=None, client_id="APP-1", client_secret=None
+    )
+    with pytest.raises(ConfigurationError, match="client_secret"):
+        OrchisClient(settings=settings)

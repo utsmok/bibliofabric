@@ -26,11 +26,11 @@ class OrchisSettings(BaseApiSettings):
     ``max_requests_per_second``, ``max_concurrency``, ``user_agent`` and
     ``mailto`` from :class:`bibliofabric.config.BaseApiSettings` and sets ORCID
     defaults (4 req/s, concurrency 4). The public API answers reads without
-    credentials. ``access_token`` is optional: when set, the token travels as
-    a bearer header and lifts the daily read quota from 25,000 to 100,000
-    reads per day for a registered public API client. ``client_id`` and
-    ``client_secret`` are not stored here, because minting a token is an
-    OAuth call outside the scope of this client.
+    credentials. A token lifts the daily read quota from 25,000 to 100,000
+    reads per day for a registered public API client. Set ``access_token``
+    to send a token you already hold, or set ``client_id`` and
+    ``client_secret`` and the client mints a ``/read-public`` token itself
+    on the first request. ``access_token`` wins when both are set.
     """
 
     model_config = SettingsConfigDict(
@@ -45,6 +45,8 @@ class OrchisSettings(BaseApiSettings):
     )
     max_concurrency: int = Field(default=DEFAULT_MAX_CONCURRENCY, gt=0)
     access_token: str | None = None
+    client_id: str | None = None
+    client_secret: str | None = None
 
 
 @lru_cache

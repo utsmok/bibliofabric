@@ -28,6 +28,8 @@ def settings():
     return OrchisSettings(
         _env_file=None,
         access_token=None,
+        client_id=None,
+        client_secret=None,
         max_requests_per_second=1_000_000.0,
         max_concurrency=5,
         max_retries=0,

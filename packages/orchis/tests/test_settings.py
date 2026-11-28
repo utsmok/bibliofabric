@@ -7,6 +7,8 @@ PREFIX_VARS = [
     "ORCHIS_MAX_CONCURRENCY",
     "ORCHIS_TIMEOUT",
     "ORCHIS_ACCESS_TOKEN",
+    "ORCHIS_CLIENT_ID",
+    "ORCHIS_CLIENT_SECRET",
 ]
 
 
@@ -19,6 +21,8 @@ def test_defaults(monkeypatch, tmp_path):
     assert settings.max_concurrency == 4
     assert settings.max_retries == 3
     assert settings.access_token is None
+    assert settings.client_id is None
+    assert settings.client_secret is None
 
 
 def test_environment_prefix(monkeypatch, tmp_path):

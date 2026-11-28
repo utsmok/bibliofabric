@@ -35,9 +35,12 @@ record-bound routes; `ORCID_SEARCH_DIALECT` maps `rows` to page size and
   callers and 24 for the member API, with a burst of 40 and a 503 above the
   burst. Daily quotas are 25,000 reads per IP anonymously and 100,000 per
   client id for the public API. The client defaults to 4 requests per second.
-- The member API token in the repo `.env` is rejected with 403 on
-  `https://api.orcid.org/v3.0/{orcid}/record`, so the member API is not
-  wrapped and client credentials are not stored in settings.
+- The credentials in the repo `.env` are public API credentials: the member
+  API answers 403 on `https://api.orcid.org/v3.0/{orcid}/record`, so it is
+  not wrapped. `ORCHIS_CLIENT_ID` and `ORCHIS_CLIENT_SECRET` mint a
+  `/read-public` token through `ClientCredentialsAuth` (form-post client
+  authentication); `ORCHIS_ACCESS_TOKEN` takes precedence. Test settings
+  pass `access_token=None, client_id=None, client_secret=None`.
 - The public data file is documented at
   `https://info.orcid.org/documentation/integration-guide/working-with-bulk-data`
   and hosted on `orcid.figshare.com`; the 2025 file is a 17.4 GB tar.gz of

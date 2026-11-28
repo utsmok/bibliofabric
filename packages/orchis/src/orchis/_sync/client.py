@@ -6,9 +6,16 @@ from functools import cached_property
 
 import httpx
 from bibliofabric import SyncBaseApiClient
+from bibliofabric.auth import (
+    AuthStrategy,
+    ClientCredentialsAuth,
+    NoAuth,
+    StaticTokenAuth,
+)
+from bibliofabric.exceptions import ConfigurationError
 
 from ..config import OrchisSettings, get_settings
-from ..dialect import ORCID_API_BASE_URL
+from ..dialect import ORCID_API_BASE_URL, ORCID_READ_PUBLIC_SCOPE, ORCID_TOKEN_URL
 from ..unwrapper import OrchisUnwrapper
 from .resources import (
     ActivitiesSyncClient,
@@ -21,15 +28,39 @@ from .resources import (
 logger = logging.getLogger(__name__)
 
 
+def _resolve_auth(settings: OrchisSettings) -> AuthStrategy:
+    """Pick the auth strategy: a held token, minted credentials, or none."""
+    if settings.access_token:
+        return StaticTokenAuth(settings.access_token)
+    if settings.client_id and settings.client_secret:
+        return ClientCredentialsAuth(
+            settings.client_id,
+            settings.client_secret,
+            ORCID_TOKEN_URL,
+            scope=ORCID_READ_PUBLIC_SCOPE,
+            token_auth_method="post",
+            user_agent=settings.effective_user_agent(),
+        )
+    if settings.client_id or settings.client_secret:
+        raise ConfigurationError(
+            "Both 'client_id' and 'client_secret' must be set to mint an ORCID token."
+        )
+    return NoAuth()
+
+
 class OrchisSyncClient(SyncBaseApiClient):
     """Client for the ORCID Public API v3.0.
 
     Reads need no credentials. The client sends ``Accept: application/json``
     on every request; methods such as
     :meth:`RecordClient.representation` ask for another representation and
-    return the body as text. When ``settings.access_token`` is set, the token
-    travels as a bearer header and lifts the public API daily read quota from
-    25,000 to 100,000 reads (registered public API clients only).
+    return the body as text. A token lifts the public API daily read quota
+    from 25,000 to 100,000 reads (registered public API clients only).
+    ``settings.access_token`` travels as a bearer header. Without it, a
+    ``settings.client_id`` and ``settings.client_secret`` pair mints a
+    ``/read-public`` token at ``https://orcid.org/oauth/token`` on the first
+    request and reuses it; a 401 mints a new one. Setting only one of the
+    pair raises :class:`ConfigurationError`.
     """
 
     def __init__(
@@ -52,20 +83,15 @@ class OrchisSyncClient(SyncBaseApiClient):
             base_url=base_url or ORCID_API_BASE_URL,
             settings=resolved,
             unwrapper=OrchisUnwrapper(),
+            auth=_resolve_auth(resolved),
             http_client=http_client,
         )
-        self._orcid_settings: OrchisSettings = resolved
         logger.debug("%s initialized.", type(self).__name__)
 
     @property
     def default_headers(self) -> dict[str, str]:
-        """Headers sent with every request: the JSON representation, plus the
-        bearer token when ``settings.access_token`` is set."""
-        headers = {"Accept": "application/json"}
-        token = self._orcid_settings.access_token
-        if token:
-            headers["Authorization"] = f"Bearer {token}"
-        return headers
+        """Headers sent with every request: the JSON representation."""
+        return {"Accept": "application/json"}
 
     @cached_property
     def record(self) -> RecordSyncClient:

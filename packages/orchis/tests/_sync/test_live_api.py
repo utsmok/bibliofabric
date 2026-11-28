@@ -3,7 +3,9 @@
 
 Deselected by default; run with ``pytest -m live_api``. The API needs no
 credentials. Each test fetches the same real record its fixture in
-``tests/fixtures`` was trimmed from.
+``tests/fixtures`` was trimmed from. The token minting test runs only when
+``ORCHIS_CLIENT_ID`` and ``ORCHIS_CLIENT_SECRET`` are set (environment or
+``.env``).
 """
 
 import pytest
@@ -13,13 +15,29 @@ from ..conftest import ORCID_ID, load_fixture
 
 pytestmark = pytest.mark.live_api
 
+CREDENTIALS = OrchisSettings()
+
 
 @pytest.fixture
 def live_client():
     with OrchisSyncClient(
-        settings=OrchisSettings(_env_file=None, access_token=None)
+        settings=OrchisSettings(
+            _env_file=None, access_token=None, client_id=None, client_secret=None
+        )
     ) as client:
         yield client
+
+
+@pytest.mark.skipif(
+    not (CREDENTIALS.client_id and CREDENTIALS.client_secret),
+    reason="set ORCHIS_CLIENT_ID and ORCHIS_CLIENT_SECRET to mint a token",
+)
+def test_minted_token_reads_a_record():
+    settings = CREDENTIALS.model_copy(update={"access_token": None})
+    with OrchisSyncClient(settings=settings) as client:
+        record = client.record.get(ORCID_ID)
+    assert record.orcid_identifier is not None
+    assert record.orcid_identifier.path == ORCID_ID
 
 
 def test_record_smoke(live_client):

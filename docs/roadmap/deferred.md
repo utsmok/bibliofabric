@@ -87,7 +87,6 @@ Wave 1 needed two of the six planned core additions. `BaseApiClient.default_head
 | Item | Why it is deferred | Unblocked by |
 |---|---|---|
 | Member API on `api.orcid.org` | The token and the client credentials on hand are public API credentials: the member API answered 403 for both on 2026-11-28. The member read routes have the same paths as the public ones. | ORCID member credentials, then a base URL setting and a live run. |
-| Token minting (`POST https://orcid.org/oauth/token` with `ORCHIS_CLIENT_ID` and `ORCHIS_CLIENT_SECRET`) | The client sends a token from `ORCHIS_ACCESS_TOKEN`, and that path passed a live check on 2026-11-28 with a token minted from the client credentials (scope `/read-public`). The token lifts the daily read quota from 25,000 to 100,000. Minting is an OAuth call that stays outside the client. | A decision on whether the client should mint and cache tokens itself. |
 | Write routes (`POST`, `PUT`, and `DELETE` on record sections) | They need a member token and are out of scope for this wave. | A member token. |
 | `application/ld+json` representations | The API answers 406 for that media type. | The API serving JSON-LD. |
 | The `/{orcid}/invited-to-peer-review` route | The activities summary lists peer reviews under `peer-reviews`, which the client wraps. | A decision on whether the standalone route adds anything. |

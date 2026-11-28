@@ -1,6 +1,6 @@
 # orchis
 
-orchis is a placeholder name. The package will be renamed before its first release.
+orchis is not yet published on PyPI; until its first release it installs from the bibliofabric workspace.
 
 orchis is a Python client for the [ORCID Public API v3.0](https://info.orcid.org/documentation/integration-guide/public-api/), built on [bibliofabric](https://github.com/utsmok/bibliofabric). It types the record, person, activities, and search endpoints with Pydantic models and ships an async client with a generated sync twin. The public API answers reads without credentials.
 
@@ -61,4 +61,19 @@ with OrchisSyncClient() as client:
 
 ## Rate limits
 
-ORCID documents 12 requests per second for anonymous and public API callers and 24 for the member API, with a burst of 40. The client defaults to 4 requests per second; raise it with `ORCHIS_MAX_REQUESTS_PER_SECOND`. Setting `ORCHIS_ACCESS_TOKEN` sends a bearer header that lifts the daily read quota from 25,000 to 100,000 reads for a registered public API client.
+ORCID documents 12 requests per second for anonymous and public API callers and 24 for the member API, with a burst of 40. The client defaults to 4 requests per second; raise it with `ORCHIS_MAX_REQUESTS_PER_SECOND`.
+
+## Credentials
+
+A token lifts the daily read quota from 25,000 to 100,000 reads for a registered public API client. Give the client one of two things:
+
+- `ORCHIS_ACCESS_TOKEN`: a token you already hold. The client sends it as a bearer header.
+- `ORCHIS_CLIENT_ID` and `ORCHIS_CLIENT_SECRET`: the credentials of your public API client. The client mints a `/read-public` token at `https://orcid.org/oauth/token` on the first request, reuses it, and mints a new one after a 401.
+
+`ORCHIS_ACCESS_TOKEN` wins when both are set. Setting only one of the client id and secret raises `ConfigurationError`.
+
+```python
+settings = OrchisSettings(client_id="APP-XXXXXXXXXXXXXXXX", client_secret="...")
+async with OrchisClient(settings=settings) as client:
+    record = await client.record.get("0000-0002-1694-233X")
+```

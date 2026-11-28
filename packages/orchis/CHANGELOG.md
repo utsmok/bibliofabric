@@ -19,5 +19,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `{"value": ...}` wrappers.
 - `representation()` methods that return the XML body of record and activity
   routes as text.
-- Optional `ORCHIS_ACCESS_TOKEN` setting, sent as a bearer header to lift
-  the public API daily read quota.
+- Optional credentials that lift the public API daily read quota:
+  `ORCHIS_ACCESS_TOKEN` is sent as a bearer header, and without it
+  `ORCHIS_CLIENT_ID` with `ORCHIS_CLIENT_SECRET` mint a `/read-public` token
+  on the first request (client-credentials grant). Setting only one of the
+  pair raises `ConfigurationError`.

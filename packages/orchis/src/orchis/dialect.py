@@ -11,6 +11,13 @@ from bibliofabric.paging import QueryDialect
 #: Base URL of the ORCID Public API v3.0.
 ORCID_API_BASE_URL = "https://pub.orcid.org/v3.0"
 
+#: OAuth token endpoint. A public API client exchanges its client id and
+#: secret here for a ``/read-public`` token (client-credentials grant).
+ORCID_TOKEN_URL = "https://orcid.org/oauth/token"
+
+#: Scope of the token that the client mints from client credentials.
+ORCID_READ_PUBLIC_SCOPE = "/read-public"
+
 #: Expanded search answers at most this many results per page; a larger
 #: ``rows`` value makes Solr fail with HTTP 500 (verified 2026-11-27 with
 #: ``rows=1000``).

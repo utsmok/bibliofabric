@@ -1,5 +1,7 @@
 """Outgoing request shape: paths, Accept headers, paging, guards."""
 
+from urllib.parse import parse_qsl
+
 import pytest
 from orchis import ConfigurationError, NotFoundError, OrchisClient
 
@@ -215,3 +217,40 @@ async def test_base_url_override_points_elsewhere(httpx_mock, settings):
     async with client:
         await client.record.get(ORCID_ID)
     assert last_request(httpx_mock).url.path == f"/v3.0/{ORCID_ID}/record"
+
+
+async def test_access_token_travels_as_bearer_header(httpx_mock, settings):
+    httpx_mock.add_response(json=RECORD)
+    held = settings.model_copy(update={"access_token": "held-token"})
+    async with OrchisClient(settings=held) as client:
+        await client.record.get(ORCID_ID)
+    assert last_request(httpx_mock).headers["authorization"] == "Bearer held-token"
+
+
+async def test_client_credentials_mint_one_read_public_token(httpx_mock, settings):
+    httpx_mock.add_response(
+        url="https://orcid.org/oauth/token",
+        method="POST",
+        json={
+            "access_token": "minted-token",
+            "token_type": "bearer",
+            "expires_in": 631138518,
+            "scope": "/read-public",
+        },
+    )
+    httpx_mock.add_response(json=RECORD, is_reusable=True)
+    minting = settings.model_copy(
+        update={"client_id": "APP-1", "client_secret": "app-secret"}
+    )
+    async with OrchisClient(settings=minting) as client:
+        await client.record.get(ORCID_ID)
+        await client.record.get(ORCID_ID)
+    token_request, *api_requests = httpx_mock.get_requests()
+    form = dict(parse_qsl(token_request.content.decode()))
+    assert form["grant_type"] == "client_credentials"
+    assert form["client_id"] == "APP-1"
+    assert form["scope"] == "/read-public"
+    assert len(api_requests) == 2
+    assert all(
+        r.headers["authorization"] == "Bearer minted-token" for r in api_requests
+    )

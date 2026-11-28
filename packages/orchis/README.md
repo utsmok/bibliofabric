@@ -1,6 +1,6 @@
 # orchis
 
-orchis is a placeholder name. The package will be renamed before its first release.
+orchis is not yet published on PyPI; until its first release it installs from the bibliofabric workspace.
 
 orchis is a Python client for the [ORCID Public API v3.0](https://info.orcid.org/documentation/integration-guide/public-api/), built on [bibliofabric](https://github.com/utsmok/bibliofabric). It types the record, person, activities, and search endpoints with Pydantic models, unwraps the `{"value": ...}` wrappers for you, and ships an async client with a generated sync twin. The public API answers reads without credentials.
 
@@ -52,7 +52,7 @@ with OrchisSyncClient() as client:
 
 ## Settings
 
-Settings load from the environment with the `ORCHIS_` prefix. The client defaults to 4 requests per second (ORCID allows 12 for anonymous and public API callers and 24 for the member API). Set `ORCHIS_ACCESS_TOKEN` to a public API token to send it as a bearer header, which lifts the daily read quota from 25,000 to 100,000 reads for a registered public API client.
+Settings load from the environment with the `ORCHIS_` prefix. The client defaults to 4 requests per second (ORCID allows 12 for anonymous and public API callers and 24 for the member API). A token lifts the daily read quota from 25,000 to 100,000 reads for a registered public API client: set `ORCHIS_ACCESS_TOKEN` to a token you hold, or set `ORCHIS_CLIENT_ID` and `ORCHIS_CLIENT_SECRET` and the client mints a `/read-public` token on the first request.
 
 ## License
 
