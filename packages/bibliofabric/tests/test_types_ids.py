@@ -5,10 +5,18 @@ from bibliofabric.config import BaseApiSettings
 from bibliofabric.exceptions import ConfigurationError
 from bibliofabric.ids import (
     is_doi,
+    normalize_arxiv,
     normalize_doi,
+    normalize_gnd,
+    normalize_isbn,
+    normalize_isni,
     normalize_issn,
     normalize_orcid,
+    normalize_pmcid,
+    normalize_pmid,
     normalize_ror,
+    normalize_viaf,
+    normalize_wikidata_qid,
     strip_url_prefix,
 )
 from bibliofabric.paging import QueryDialect
@@ -89,6 +97,52 @@ def test_strip_url_prefix():
         strip_url_prefix("https://openalex.org/W1", ["https://openalex.org/"]) == "W1"
     )
     assert strip_url_prefix("W1", ["https://openalex.org/"]) == "W1"
+
+
+@pytest.mark.parametrize(
+    ("function", "value", "expected"),
+    [
+        # Resolver URL, scheme prefix, and bare forms, one identifier per group.
+        (
+            normalize_isbn,
+            "https://www.worldcat.org/isbn/0-306-40615-2",
+            "9780306406157",
+        ),
+        (normalize_isbn, "978-0-306-40615-7", "9780306406157"),
+        (normalize_isbn, "isbn:0306406152", "9780306406157"),
+        # A broken ISBN-10 check digit is not converted.
+        (normalize_isbn, "0-306-40615-9", "0306406159"),
+        (
+            normalize_isni,
+            "https://isni.org/isni/0000000121097254",
+            "0000 0001 2109 7254",
+        ),
+        (normalize_isni, "ISNI:0000 0001 2109 725x", "0000 0001 2109 725X"),
+        (normalize_isni, "0000000121", "0000000121"),
+        (normalize_arxiv, "https://arxiv.org/abs/1706.03762v7", "1706.03762v7"),
+        (normalize_arxiv, "arXiv:HEP-TH/9901001", "hep-th/9901001"),
+        (normalize_pmid, "https://pubmed.ncbi.nlm.nih.gov/12345678/", "12345678"),
+        (normalize_pmid, "PMID:12345678", "12345678"),
+        (
+            normalize_pmcid,
+            "https://pmc.ncbi.nlm.nih.gov/articles/PMC1234567/",
+            "PMC1234567",
+        ),
+        (normalize_pmcid, "pmc:1234567", "PMC1234567"),
+        (normalize_pmcid, "pmcid:pmc1234567", "PMC1234567"),
+        (normalize_wikidata_qid, "https://www.wikidata.org/wiki/Q42#P3153", "Q42"),
+        (normalize_wikidata_qid, "http://www.wikidata.org/entity/Q42", "Q42"),
+        (normalize_wikidata_qid, "wd:p3153", "P3153"),
+        (normalize_gnd, "https://d-nb.info/gnd/4003233-9", "4003233-9"),
+        (normalize_gnd, "gnd:118540258", "118540258"),
+        (normalize_gnd, "118723860-x", "118723860-X"),
+        (normalize_viaf, "https://viaf.org/viaf/54153165/", "54153165"),
+        (normalize_viaf, "viaf:0054153165", "54153165"),
+        (normalize_viaf, "VIAF/unknown", "VIAF/unknown"),
+    ],
+)
+def test_normalize_identifiers(function, value, expected):
+    assert function(value) == expected
 
 
 def test_sanitize_url_and_headers():

@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `BaseApiClient.default_headers` property: headers sent with every
+  `request()` and `stream()` call, overridden per call by `headers=`.
+- `follow_redirects: bool | None = None` on `BaseApiClient.request()` and
+  `BaseApiClient.stream()`, overriding `BaseApiSettings.follow_redirects` for
+  one call (for example to read the `Location` header of a DOI resolver's 3xx
+  response, or to follow content-negotiation redirects).
+- `ResourceClient.default_params()` hook: query parameters sent with every
+  list, `count()`, and batch request.
+- `ResourceClient.search_path(query)` hook: the list route for search,
+  `count()`, and batch requests, for APIs that carry the query in the path.
+  `query=` is accepted when the dialect has no `query_param` as long as the
+  search path uses the query.
+- `JsonApiUnwrapper` in `bibliofabric.unwrap`: reads JSON:API envelopes
+  (`data`, `meta.total`, and the cursor query parameter in `links.next`).
+- Identifier normalizers `normalize_isbn` (ISBN-10 to ISBN-13),
+  `normalize_isni`, `normalize_arxiv`, `normalize_pmid`, `normalize_pmcid`,
+  `normalize_wikidata_qid`, `normalize_gnd`, and `normalize_viaf`.
+
 ## [0.7.0] - 2026-11-27
 
 Companion client versions built on this release: aireloom 0.9.0, aletheca 0.5.0,
@@ -22,9 +42,9 @@ and stavrophora 0.4.0 (all pinning `bibliofabric>=0.7,<0.8`).
 - `validate_model()` helper exported from `bibliofabric` (wrapping
   `pydantic.ValidationError` into `bibliofabric.ValidationError` with the
   offending payload attached) and `parse_json()` guarding 2xx JSON decoding.
-- `select=` and `params=` passthrough on `ResourceClient.get()`,
-  `ResourceClient.exists()`, and `id: str | int` identifier widening across
-  resource lookups and `normalize_id()`.
+- `select=` and `params=` passthrough on `ResourceClient.get()` and
+  `id: str | int` identifier widening on resource lookups (`get()`,
+  `exists()`, `item_path()`).
 - `QueryDialect.count_page_size` to control the page size used by `count()`.
 - Idempotent-by-default retry policy (`GET`, `HEAD`, `OPTIONS`, `PUT`, `DELETE`)
   with per-call `retry: bool | None = None` override on `BaseApiClient.request()`
@@ -81,7 +101,8 @@ and stavrophora 0.4.0 (all pinning `bibliofabric>=0.7,<0.8`).
   block sibling classes or workers.
 - `ResourceClient.first()` now requests `page_size=1` instead of fetching a full
   default page.
-- `ResourceClient.count()` omits the cursor parameter when counting and honors
+- `ResourceClient.count()` omits the cursor parameter for page/offset and
+  hybrid dialects (cursor-only dialects still send `cursor_start`) and honors
   `QueryDialect.count_page_size`.
 - Injected `http_client` instances now resolve `base_url` properly and receive
   the configured `User-Agent` header when not already set.

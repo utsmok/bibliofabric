@@ -393,6 +393,84 @@ def test_count_cursor_only_vs_hybrid_and_count_page_size(httpx_mock, make_client
     assert HybridWidgets(client).count() == 99
 
 
+_PATH_QUERY_DIALECT = QueryDialect(
+    page_size_param="pageSize",
+    max_page_size=100,
+    default_page_size=25,
+    page_param="page",
+    page_start=1,
+    sort_param="sort",
+)
+
+
+class _PathQueryWidgets(SyncWidgets):
+    """Carries the query in the path and a constant parameter, like DOAJ."""
+
+    dialect = _PATH_QUERY_DIALECT
+
+    def default_params(self) -> dict[str, str]:
+        return {"format": "json"}
+
+    def search_path(self, query: str | None) -> str:
+        return f"works/search/{query or '*'}"
+
+
+def test_default_params_and_search_path_hooks(httpx_mock, make_client):
+    httpx_mock.add_response(
+        url=f"{BASE_URL}/works/search/foo?format=json&pageSize=5&page=1",
+        json=_json_page([{"id": "w1"}], total=1),
+    )
+    httpx_mock.add_response(
+        url=f"{BASE_URL}/works/search/foo?format=json&pageSize=1&page=1",
+        json=_json_page([], total=42),
+    )
+    httpx_mock.add_response(
+        url=f"{BASE_URL}/works/search/*?format=json&pageSize=1&page=1",
+        json=_json_page([], total=99),
+    )
+    httpx_mock.add_response(
+        url=f"{BASE_URL}/works/search/foo?format=xml&pageSize=25&page=1",
+        json=_json_page([{"id": "w1"}], total=1),
+    )
+    httpx_mock.add_response(
+        url=f"{BASE_URL}/works/search/*?format=json&id=w1&id=w2&pageSize=2",
+        json=_json_page([{"id": "w1"}, {"id": "w2"}], total=2),
+    )
+    httpx_mock.add_response(
+        url=f"{BASE_URL}/works/search/bar?format=json&pageSize=25&page=1",
+        json=_json_page([{"id": "w1"}], total=2),
+    )
+    httpx_mock.add_response(
+        url=f"{BASE_URL}/works/search/bar?format=json&pageSize=25&page=2",
+        json=_json_page([{"id": "w2"}], total=2),
+    )
+    client = make_client()
+    widgets = _PathQueryWidgets(client)
+
+    page = widgets.search(query="foo", page_size=5)
+    assert [widget.id for widget in page.results] == ["w1"]
+    assert widgets.count(query="foo") == 42
+    assert widgets.count() == 99
+    # Caller parameters win over the defaults.
+    widgets.search(query="foo", params={"format": "xml"})
+    assert set(widgets.batch_get(["w1", "w2"])) == {"w1", "w2"}
+    assert [widget.id for widget in widgets.iterate(query="bar")] == [
+        "w1",
+        "w2",
+    ]
+
+    # The defaults are no-ops, and a query is still rejected when nothing sends it.
+    plain = SyncPageWidgets(client)
+    assert plain.search_path("foo") == "works"
+    assert dict(plain.default_params()) == {}
+
+    class _NoQueryWidgets(SyncWidgets):
+        dialect = _PATH_QUERY_DIALECT
+
+    with pytest.raises(ConfigurationError, match="free-text query"):
+        _NoQueryWidgets(client).search(query="foo")
+
+
 def test_batch_get_chunking_and_concurrency(httpx_mock, make_client):
     httpx_mock.add_response(
         url=f"{BASE_URL}/works?id=w1&id=w2&pageSize=2&select=id",

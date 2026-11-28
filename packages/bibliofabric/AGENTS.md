@@ -14,11 +14,13 @@ root `AGENTS.md`.
 BaseApiClient            # async HTTP: retries, throttling, error mapping (_async/client.py)
 SyncBaseApiClient        # generated sync twin (_sync/client.py via scripts/unasync.py)
 ├── auth strategy        # NoAuth, StaticTokenAuth, QueryParameterAuth,
-│                        # HeaderAuth, ClientCredentialsAuth (auth.py)
+│                        # HeaderAuth, ClientCredentialsAuth, BasicAuth,
+│                        # RefreshTokenAuth (auth.py)
 ├── limiter              # per-class rate_limits + shared max_concurrency (_concurrency.py)
 └── retry policy         # is_retryable() veto, Retry-After-aware wait
 
-QueryDialect             # frozen paging/sort/search/select declaration (paging.py)
+QueryDialect             # frozen paging/sort/search/select declaration (paging.py);
+                         # per-instance override via ResourceClient(..., dialect=...)
 ResourceClient[E]        # generic typed endpoint client (_async/resources.py; sync twin in _sync/)
 Page[E]                  # uniform search envelope (paging.py)
 ResponseUnwrapper        # protocol for API envelopes (unwrap.py)
@@ -29,15 +31,15 @@ BaseApiSettings          # pydantic-settings config (config.py)
 
 | Module | Contents |
 |---|---|
-| `_async/client.py` / `_sync/client.py` | `BaseApiClient` / `SyncBaseApiClient`: `request()` returns `httpx.Response`, raises typed errors; `parse_json()`; `is_retryable()` veto; `Retry-After`-aware retries; limiter |
-| `_async/resources.py` / `_sync/resources.py` | `ResourceClient[E]` / `SyncResourceClient[E]`: `get`/`exists`/`search`/`iterate`/`collect`/`first`/`count`/`batch_get` + hooks (`build_filter_params`, `format_sort`, `build_batch_params`, `normalize_id`, `record_keys`, `item_path`) |
+| `_async/client.py` / `_sync/client.py` | `BaseApiClient` / `SyncBaseApiClient`: `request()` returns `httpx.Response`, raises typed errors; `default_headers` property merged into every call (per-call `headers=` wins, case-insensitive); per-call `follow_redirects=` and `retry=` overrides; `stream()` context manager; `on_response()` hook; `parse_json()`; `is_retryable()` veto; `Retry-After`-aware retries; limiter |
+| `_async/resources.py` / `_sync/resources.py` | `ResourceClient[E]` / `SyncResourceClient[E]`: `get`/`exists`/`search`/`iterate`/`collect`/`first`/`count`/`batch_get` + hooks (`build_filter_params`, `format_sort`, `build_batch_params`, `_fetch_batch_chunk`, `normalize_id`, `record_keys`, `item_path`, `default_params`, `search_path`) |
 | `_async/_concurrency.py` / `_sync/_concurrency.py` | Hand-written async and sync primitives: `Limiter`, `run_bounded`, `maybe_await`, `sleep`, `Lock` |
-| `auth.py` | `AuthStrategy` protocol + `NoAuth`, `StaticTokenAuth`, `QueryParameterAuth`, `HeaderAuth`, `ClientCredentialsAuth` |
+| `auth.py` | `AuthStrategy` protocol + `NoAuth`, `StaticTokenAuth`, `QueryParameterAuth`, `HeaderAuth`, `ClientCredentialsAuth`, `BasicAuth`, `RefreshTokenAuth` |
 | `config.py` | `BaseApiSettings` (timeout, retries, retry wait, limiter knobs, `rate_limits`, UA, mailto) |
 | `exceptions.py` | `BibliofabricError` hierarchy (`status_code`, `APIError.body`, `AuthError.body`, `RateLimitError.retry_after`, `ValidationError` carrying `raw`/`error`/`model_name`) + `validate_model()` |
 | `paging.py` | `QueryDialect` (frozen, validated), `Page[E]` |
-| `unwrap.py` | `ResponseUnwrapper` protocol: `results`/`item`/`total`/`next_cursor`/`meta` |
-| `ids.py` | `normalize_doi`, `is_doi`, `normalize_orcid`, `normalize_ror`, `normalize_issn`, `strip_url_prefix` |
+| `unwrap.py` | `ResponseUnwrapper` protocol: `results`/`item`/`total`/`next_cursor`/`meta`; `JsonApiUnwrapper` (JSON:API envelopes, e.g. DataCite) |
+| `ids.py` | `normalize_doi`, `is_doi`, `normalize_orcid`, `normalize_ror`, `normalize_issn`, `normalize_isbn`, `normalize_isni`, `normalize_arxiv`, `normalize_pmid`, `normalize_pmcid`, `normalize_wikidata_qid`, `normalize_gnd`, `normalize_viaf`, `strip_url_prefix` |
 | `types.py` | `SafeStr`, `SafeList` annotated pydantic types |
 | `utils.py` | Internal log redaction: `sanitize_url`, `sanitize_headers` |
 

@@ -18,6 +18,8 @@ DIALECT = QueryDialect(
     sort_param="sort",
     query_param=None,  # free-text search parameter
     select_param=None,  # field selection parameter
+    iterate_page_size=100,  # page size iterate() uses when the caller passes none; falls back to default_page_size
+    count_page_size=0,  # page size count() requests; 0 for APIs that return totals with zero rows
 )
 ```
 

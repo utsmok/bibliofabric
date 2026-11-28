@@ -35,7 +35,7 @@ import ...` inside the package); the generator maps them to their sync twins:
 | `Lock` | `asyncio.Lock` | `threading.Lock` |
 | `Limiter(rate_limits, max_concurrency)` | per-class gates + shared semaphore | same, thread-safe |
 | `run_bounded(fn, items, concurrency)` | semaphore + `gather` | `ThreadPoolExecutor`, order preserved, first error re-raised |
-| `maybe_await(value)` | awaits awaitables | returns the value |
+| `maybe_await(value)` | awaits awaitables | returns non-awaitable values unchanged, raises `TypeError` for awaitables |
 
 Other rewrites the generator applies automatically: `async`/`await` removed,
 `AsyncIterator` -> `Iterator`, `__aenter__` -> `__enter__`, `aclose` ->

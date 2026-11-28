@@ -2,8 +2,8 @@
 
 The framework owns HTTP, auth, retries, throttling, error mapping, paging,
 batch retrieval, identifier normalization, and typed resource clients. Concrete
-client libraries (aireloom, aletheca, stavrophora) supply the API-specific
-settings, dialect, unwrapper, models, and resource subclasses.
+client libraries supply the API-specific settings, dialect, unwrapper, models,
+and resource subclasses.
 """
 
 from importlib.metadata import PackageNotFoundError, version as _package_version
@@ -44,15 +44,23 @@ from .exceptions import (
 )
 from .ids import (
     is_doi,
+    normalize_arxiv,
     normalize_doi,
+    normalize_gnd,
+    normalize_isbn,
+    normalize_isni,
     normalize_issn,
     normalize_orcid,
+    normalize_pmcid,
+    normalize_pmid,
     normalize_ror,
+    normalize_viaf,
+    normalize_wikidata_qid,
     strip_url_prefix,
 )
 from .paging import Page, QueryDialect
 from .types import SafeList, SafeStr
-from .unwrap import ResponseUnwrapper
+from .unwrap import JsonApiUnwrapper, ResponseUnwrapper
 
 __all__ = [
     "__author__",
@@ -68,6 +76,7 @@ __all__ = [
     "ClientCredentialsAuth",
     "ConfigurationError",
     "HeaderAuth",
+    "JsonApiUnwrapper",
     "NetworkError",
     "NoAuth",
     "NotFoundError",
@@ -87,10 +96,18 @@ __all__ = [
     "TimeoutError",
     "ValidationError",
     "is_doi",
+    "normalize_arxiv",
     "normalize_doi",
+    "normalize_gnd",
+    "normalize_isbn",
+    "normalize_isni",
     "normalize_issn",
     "normalize_orcid",
+    "normalize_pmcid",
+    "normalize_pmid",
     "normalize_ror",
+    "normalize_viaf",
+    "normalize_wikidata_qid",
     "strip_url_prefix",
     "validate_model",
 ]

@@ -1,9 +1,9 @@
 """Generic API client for bibliofabric-family libraries.
 
-``BaseApiClient`` owns the HTTP lifecycle: retries honoring ``Retry-After``,
-per-request-class pacing, auth strategy application, status-to-exception
-mapping, streaming responses, and credential redaction in debug logs. It
-never parses models.
+``BaseApiClient`` owns the HTTP lifecycle: default headers, redirects,
+retries honoring ``Retry-After``, per-request-class pacing, auth strategy
+application, status-to-exception mapping, streaming responses, and credential
+redaction in debug logs. It never parses models.
 """
 
 import logging
@@ -171,6 +171,16 @@ class BaseApiClient:
         return self._settings
 
     @property
+    def default_headers(self) -> Mapping[str, str]:
+        """Headers sent with every request; per-call ``headers`` entries win.
+
+        Override to pin one representation for a whole API, for example
+        ``{"Accept": "application/vnd.orcid+json"}`` for ORCID, whose default
+        is XML.
+        """
+        return {}
+
+    @property
     def _redacted_query_params(self) -> frozenset[str]:
         return frozenset(getattr(self._auth, "redacted_query_params", ()))
 
@@ -286,8 +296,17 @@ class BaseApiClient:
             extensions=dict(request.extensions),
         )
 
-    async def _send_once(self, template: httpx.Request) -> httpx.Response:
-        """Authenticate, throttle, send once, refresh token once on 401, and map errors."""
+    async def _send_once(
+        self, template: httpx.Request, *, follow_redirects: bool | None = None
+    ) -> httpx.Response:
+        """Authenticate, throttle, send once, refresh token once on 401, and map errors.
+
+        ``follow_redirects`` overrides the client's redirect setting for this
+        send; ``None`` keeps the client default.
+        """
+        follow = (
+            httpx.USE_CLIENT_DEFAULT if follow_redirects is None else follow_redirects
+        )
         for attempt in range(2):
             request = self._clone_request(template)
             await self._auth.async_authenticate(request)
@@ -299,7 +318,9 @@ class BaseApiClient:
             logger.debug("Request headers: %s", self._sanitize_headers(request.headers))
             await self._limiter.acquire(self.rate_class(request))
             try:
-                response = await self._http_client.send(request)
+                response = await self._http_client.send(
+                    request, follow_redirects=follow
+                )
             except httpx.TimeoutException as error:
                 raise TimeoutError(
                     f"Request timed out: {self._sanitize_url(request.url)}",
@@ -352,6 +373,7 @@ class BaseApiClient:
     def _effective_headers(
         self, headers: Mapping[str, str] | None
     ) -> dict[str, str] | None:
+        """Return ``headers`` with the caller-owned client UA rule and ``default_headers`` applied."""
         request_headers = dict(headers) if headers is not None else None
         if not self._should_close_client:
             has_explicit_ua = request_headers is not None and any(
@@ -365,6 +387,17 @@ class BaseApiClient:
                     "User-Agent": self._settings.effective_user_agent(),
                     **(request_headers or {}),
                 }
+        defaults = self.default_headers
+        if defaults:
+            overrides = {key.lower() for key in request_headers or {}}
+            request_headers = {
+                **{
+                    key: value
+                    for key, value in defaults.items()
+                    if key.lower() not in overrides
+                },
+                **(request_headers or {}),
+            }
         return request_headers
 
     async def request(
@@ -379,6 +412,7 @@ class BaseApiClient:
         headers: Mapping[str, str] | None = None,
         timeout: float | httpx.Timeout | None = None,
         retry: bool | None = None,
+        follow_redirects: bool | None = None,
     ) -> httpx.Response:
         """Send a request with retries and return the response.
 
@@ -387,6 +421,11 @@ class BaseApiClient:
         ``retry=True`` to allow retries on non-idempotent methods (such as
         read-only ``POST`` batch APIs), or ``retry=False`` to disable retries
         for this call.
+
+        ``follow_redirects=None`` leaves the decision to
+        ``settings.follow_redirects``. Pass ``False`` to receive the 3xx
+        response itself (for example to read its ``Location`` header), or
+        ``True`` to follow a resolver that redirects to another host.
 
         Raises on status >= 400: 404 is :class:`NotFoundError`, 429 is
         :class:`RateLimitError`, 401/403 is :class:`AuthError`, other statuses
@@ -404,14 +443,16 @@ class BaseApiClient:
             timeout=httpx.USE_CLIENT_DEFAULT if timeout is None else timeout,
         )
         if retry is False:
-            return await self._send_once(request)
+            return await self._send_once(request, follow_redirects=follow_redirects)
         retrying = AsyncRetrying(
             stop=stop_after_attempt(self._settings.max_retries + 1),
             wait=_RetryAfterWait(max_retry_wait=self._settings.max_retry_wait),
             retry=lambda state: self._should_retry(state, retry=retry),
             reraise=True,
         )
-        return await retrying(self._send_once, request)
+        return await retrying(
+            self._send_once, request, follow_redirects=follow_redirects
+        )
 
     @asynccontextmanager
     async def stream(
@@ -422,15 +463,21 @@ class BaseApiClient:
         params: Mapping[str, Any] | None = None,
         headers: Mapping[str, str] | None = None,
         timeout: float | httpx.Timeout | None = None,
+        follow_redirects: bool | None = None,
     ) -> AsyncGenerator[httpx.Response]:
         """Open a streaming HTTP response with auth, rate limiting, and error mapping.
 
         Yields the open :class:`httpx.Response` for incremental consumption (for
         example downloading Zenodo files or large dumps). Calls
         :meth:`on_response` before raising typed errors on status >= 400, and
-        refreshes cached OAuth tokens once on HTTP 401.
+        refreshes cached OAuth tokens once on HTTP 401. ``follow_redirects``
+        overrides ``settings.follow_redirects`` for this call, as in
+        :meth:`request`.
         """
         effective_timeout = httpx.USE_CLIENT_DEFAULT if timeout is None else timeout
+        follow = (
+            httpx.USE_CLIENT_DEFAULT if follow_redirects is None else follow_redirects
+        )
         for attempt in range(2):
             request = self._http_client.build_request(
                 method,
@@ -455,6 +502,7 @@ class BaseApiClient:
                         request.url,
                         headers=request.headers,
                         timeout=effective_timeout,
+                        follow_redirects=follow,
                     ) as response:
                         logger.debug(
                             "Received response: %s for %s",

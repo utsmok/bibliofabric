@@ -28,6 +28,16 @@ never parses response models; resource clients do that through a
   with `reason: "daily_budget"` in the error body (exposed as `err.body`).
 - Override `on_response(response)` to observe every response (for example
   rate-limit headers or telemetry) before status errors are raised.
+- The `default_headers` property (a `Mapping[str, str]`, default `{}`) adds
+  headers to every `request()` and `stream()` call. Subclasses override the
+  property to pin one representation for a whole API, for example
+  `{"Accept": "application/vnd.orcid+json"}` for ORCID or
+  `{"Accept": "application/ld+json"}` for the ISSN Portal. Per-call
+  `headers=` entries win, matched case-insensitively.
+- Pass `follow_redirects=True | False | None` on `request()` and `stream()`.
+  The default `None` keeps `settings.follow_redirects`. `False` returns the 3xx
+  response itself so the caller can read its `Location` header. `True` follows
+  redirects, including to another host (content negotiation through doi.org).
 - Throttling is configured with `settings.max_requests_per_second`,
   `settings.rate_limits`, and `settings.max_concurrency`. Owned `httpx` clients
   also auto-size `httpx.Limits` from `max_concurrency` and honor

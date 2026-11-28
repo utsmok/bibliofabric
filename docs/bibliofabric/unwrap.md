@@ -26,6 +26,25 @@ class FooUnwrapper:
 No inheritance is required; any object with these five methods satisfies the
 protocol.
 
+## JSON:API unwrapping
+
+`JsonApiUnwrapper` in `bibliofabric.unwrap` is a ready-made `ResponseUnwrapper`
+for JSON:API envelopes, as served by DataCite:
+
+```python
+from bibliofabric import JsonApiUnwrapper
+
+unwrapper = JsonApiUnwrapper(cursor_param="page[cursor]")
+```
+
+- `results()` returns the `data` list members that are objects: raw JSON:API
+  resource objects with `id`, `type`, `attributes`, and `relationships`.
+- `item()` returns the single `data` object, or `{}` when there is none.
+- `total()` returns `meta.total` when it is an integer.
+- `next_cursor()` reads the `cursor_param` query parameter from the
+  `links.next` URL.
+- `meta()` returns the envelope minus `data`.
+
 ## API reference
 
 ::: bibliofabric.unwrap

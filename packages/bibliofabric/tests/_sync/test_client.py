@@ -4,6 +4,7 @@
 import base64
 import logging
 import time
+from collections.abc import Mapping
 from datetime import UTC, datetime, timedelta
 from email.utils import format_datetime
 from typing import Any, cast
@@ -843,3 +844,75 @@ def test_stream_refreshes_token_once_on_401(httpx_mock, make_client):
         chunks = [chunk for chunk in resp.iter_bytes()]
     assert b"".join(chunks) == b"payload"
     client.close()
+
+
+class _AcceptPinnedClient(SyncBaseApiClient):
+    @property
+    def default_headers(self) -> Mapping[str, str]:
+        return {"Accept": "application/vnd.orcid+json"}
+
+
+def test_default_headers_sent_and_overridden_per_call(httpx_mock, make_client):
+    httpx_mock.add_response(url=f"{BASE_URL}/record", json={"ok": True})
+    httpx_mock.add_response(url=f"{BASE_URL}/xml", json={"ok": True})
+    httpx_mock.add_response(url=f"{BASE_URL}/file", content=b"<record/>")
+
+    client = _AcceptPinnedClient(
+        base_url=BASE_URL,
+        settings=SyncFakeSettings(max_retries=0),
+        unwrapper=SyncFakeUnwrapper(),
+    )
+    try:
+        client.request("GET", "record")
+        client.request("GET", "xml", headers={"accept": "application/xml"})
+        with client.stream("GET", "file") as response:
+            response.read()
+    finally:
+        client.close()
+
+    record, xml, streamed = httpx_mock.get_requests()
+    assert record.headers["Accept"] == "application/vnd.orcid+json"
+    # A per-call header replaces the default instead of duplicating it.
+    assert xml.headers.get_list("accept") == ["application/xml"]
+    assert streamed.headers["Accept"] == "application/vnd.orcid+json"
+    assert dict(make_client().default_headers) == {}
+
+
+def test_follow_redirects_overrides_the_setting_per_call(httpx_mock, make_client):
+    redirect = {"Location": f"{BASE_URL}/landing"}
+    for _ in range(3):
+        httpx_mock.add_response(
+            url=f"{BASE_URL}/resolve", status_code=302, headers=redirect
+        )
+    httpx_mock.add_response(url=f"{BASE_URL}/landing", json={"landed": True})
+    httpx_mock.add_response(url=f"{BASE_URL}/landing", content=b"file")
+
+    # With the default setting (False) a call opts in to following.
+    client = make_client(settings=SyncFakeSettings(max_retries=0))
+    response = client.request("GET", "resolve")
+    assert response.status_code == 302
+    assert response.headers["Location"] == f"{BASE_URL}/landing"
+    response = client.request("GET", "resolve", follow_redirects=True)
+    assert response.json() == {"landed": True}
+    with client.stream("GET", "resolve", follow_redirects=True) as response:
+        assert response.read() == b"file"
+    assert len(httpx_mock.get_requests()) == 5
+
+    # With the setting on, a call opts out to read the 3xx itself.
+    for _ in range(2):
+        httpx_mock.add_response(
+            url=f"{BASE_URL}/resolve", status_code=302, headers=redirect
+        )
+    httpx_mock.add_response(url=f"{BASE_URL}/landing", json={"landed": True})
+    following = SyncBaseApiClient(
+        base_url=BASE_URL,
+        settings=SyncFakeSettings(max_retries=0, follow_redirects=True),
+        unwrapper=SyncFakeUnwrapper(),
+    )
+    try:
+        response = following.request("GET", "resolve")
+        assert response.json() == {"landed": True}
+        response = following.request("GET", "resolve", follow_redirects=False)
+        assert response.status_code == 302
+    finally:
+        following.close()

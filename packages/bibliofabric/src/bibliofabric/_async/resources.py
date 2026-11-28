@@ -2,7 +2,8 @@
 
 Subclass :class:`ResourceClient` per endpoint: declare ``path``, ``model``, and
 ``dialect``, then override the hook methods where the API deviates from the
-defaults (filter syntax, sort format, batch parameter shape, id handling).
+defaults (filter syntax, sort format, batch parameter shape, constant query
+parameters, list route, id handling).
 """
 
 import logging
@@ -134,6 +135,26 @@ class ResourceClient[E: BaseModel]:
         """
         return {field: list(values)}
 
+    def default_params(self) -> Mapping[str, Any]:
+        """Query parameters sent with every list, ``count()``, and batch request.
+
+        Override for APIs that need a constant parameter on list routes (for
+        example Europe PMC's ``format=json``, whose default is XML). Filter
+        parameters and caller-supplied ``params`` take precedence.
+        """
+        return {}
+
+    def search_path(self, query: str | None) -> str:
+        """Return the list route for a search, ``count()``, or batch request.
+
+        The default is :attr:`path`. Override for APIs that carry the query in
+        the path instead of a query parameter (for example DOAJ's
+        ``/search/journals/{query}``). Such an override makes ``query=``
+        valid on a dialect whose ``query_param`` is ``None``. ``query`` is
+        ``None`` for ``count()`` without one and for batch chunks.
+        """
+        return self.path
+
     async def _fetch_batch_chunk(
         self,
         field: str,
@@ -149,7 +170,10 @@ class ResourceClient[E: BaseModel]:
         batch endpoints while inheriting chunking, deduplication, concurrency,
         validation, ``on_error`` handling, and keying from :meth:`batch_get`.
         """
-        query_params = self.build_batch_params(field, chunk)
+        query_params: dict[str, Any] = {
+            **self.default_params(),
+            **self.build_batch_params(field, chunk),
+        }
         if self.dialect.page_size_param is not None:
             query_params[self.dialect.page_size_param] = len(chunk)
         if select is not None:
@@ -160,7 +184,9 @@ class ResourceClient[E: BaseModel]:
                 )
             if select:
                 query_params[self.dialect.select_param] = ",".join(select)
-        response = await self._client.request("GET", self.path, params=query_params)
+        response = await self._client.request(
+            "GET", self.search_path(None), params=query_params
+        )
         records = self._client.unwrapper.results(self._client.parse_json(response))
         return records, response
 
@@ -263,7 +289,9 @@ class ResourceClient[E: BaseModel]:
             cursor=cursor,
             params=params,
         )
-        response = await self._client.request("GET", self.path, params=query_params)
+        response = await self._client.request(
+            "GET", self.search_path(query), params=query_params
+        )
         body = self._client.parse_json(response)
         unwrapper = self._client.unwrapper
         results = self._validate_records(
@@ -436,7 +464,9 @@ class ResourceClient[E: BaseModel]:
             cursor=cursor,
             params=params,
         )
-        response = await self._client.request("GET", self.path, params=query_params)
+        response = await self._client.request(
+            "GET", self.search_path(query), params=query_params
+        )
         return self._client.unwrapper.total(self._client.parse_json(response)) or 0
 
     async def batch_get(
@@ -550,10 +580,14 @@ class ResourceClient[E: BaseModel]:
                 f"{type(self).__name__} does not support page/offset paging "
                 "(dialect.page_param and dialect.offset_param are both None)."
             )
-        if query is not None and dialect.query_param is None:
+        if (
+            query is not None
+            and dialect.query_param is None
+            and self.search_path(query) == self.search_path(None)
+        ):
             raise ConfigurationError(
                 f"{type(self).__name__} does not support free-text query "
-                "(dialect.query_param is None)."
+                "(dialect.query_param is None and search_path ignores it)."
             )
         if select is not None and dialect.select_param is None:
             raise ConfigurationError(
@@ -565,7 +599,10 @@ class ResourceClient[E: BaseModel]:
                 f"{type(self).__name__} does not support sorting "
                 "(dialect.sort_param is None)."
             )
-        query_params: dict[str, Any] = dict(self.build_filter_params(filters))
+        query_params: dict[str, Any] = {
+            **self.default_params(),
+            **self.build_filter_params(filters),
+        }
         size = (
             dialect.default_page_size
             if page_size is None
@@ -720,7 +757,9 @@ class ResourceClient[E: BaseModel]:
                 cursor=current,
                 params=params,
             )
-            response = await self._client.request("GET", self.path, params=query_params)
+            response = await self._client.request(
+                "GET", self.search_path(query), params=query_params
+            )
             body = self._client.parse_json(response)
             unwrapper = self._client.unwrapper
             results = unwrapper.results(body)
@@ -800,7 +839,9 @@ class ResourceClient[E: BaseModel]:
                 page_size=page_size,
                 params=params,
             )
-            response = await self._client.request("GET", self.path, params=query_params)
+            response = await self._client.request(
+                "GET", self.search_path(query), params=query_params
+            )
             body = self._client.parse_json(response)
             unwrapper = self._client.unwrapper
             results = unwrapper.results(body)

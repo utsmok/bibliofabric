@@ -61,6 +61,17 @@ Override these methods on subclasses:
   `bibliofabric.ids.normalize_doi`).
 - `record_keys(entity, field)` — normalized keys an entity matches in `batch_get`.
 - `item_path(id)` — single-entity path; the default URL-encodes the id.
+- `default_params()` — query parameters sent with every list request
+  (`search()`, `iterate()`, `count()`, and each `batch_get` chunk). Returns
+  `{}` by default. Filter parameters and caller-supplied `params=` take
+  precedence, so the hook is for API-wide requirements such as Europe PMC's
+  `format=json`.
+- `search_path(query)` — route for search, `iterate()`, `count()`, and batch
+  requests. The default returns `self.path`. Override it for APIs that carry
+  the query in the path (DOAJ's `/search/journals/{query}`). With such an
+  override, `query=` is accepted even when `dialect.query_param` is `None`;
+  otherwise that combination raises `ConfigurationError`. `query` is `None`
+  for `count()` without a query and for batch chunks.
 
 `params=` is the escape hatch for API extras (facets, `sample`, `seed`); typed
 wrappers for those belong on resource subclasses.

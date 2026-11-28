@@ -1,13 +1,13 @@
 # Building a client on `bibliofabric`
 
 This guide walks through creating a new scholarly API client package on
-`bibliofabric` 0.7 — from workspace layout and settings to authentication,
+`bibliofabric` 0.8 — from workspace layout and settings to authentication,
 paging, unwrapping, resource hooks, sync-twin generation, testing, and release
 registration.
 
 For the rules governing generated synchronous twins (`_sync/`), see
 [Writing a client with sync support](authoring-sync.md); this page focuses on
-the full client architecture and `bibliofabric` 0.7 API surface.
+the full client architecture and `bibliofabric` 0.8 API surface.
 
 ## 1. Package Layout
 
@@ -25,7 +25,7 @@ packages/<pkg>/
     __init__.py          # re-exports async + generated sync names
     config.py            # BaseApiSettings subclass + get_settings()
     dialect.py           # QueryDialect instance(s)
-    unwrap.py            # ResponseUnwrapper implementation
+    unwrapper.py         # ResponseUnwrapper implementation
     models/              # Pydantic models (pure)
     _async/
       __init__.py
@@ -144,7 +144,7 @@ DIALECT = QueryDialect(
 )
 ```
 
-Key `bibliofabric` 0.7 dialect details:
+Key `bibliofabric` 0.8 dialect details:
 
 - **`page_size_param=None`** omits the page-size parameter altogether (useful for
   unpaged endpoints like OpenCitations or fixed-page-size APIs like ROR v2).
@@ -186,6 +186,10 @@ class ExampleUnwrapper:
     def meta(self, body: Any) -> dict[str, Any]:
         return {k: v for k, v in body.items() if k != "results"}
 ```
+
+For JSON:API envelopes (DataCite's shape), you do not need a custom unwrapper.
+`JsonApiUnwrapper` from `bibliofabric.unwrap` implements the protocol with
+`cursor_param="page[cursor]"`; see [Unwrapping responses](unwrap.md).
 
 ## 6. API Client (`_async/client.py`)
 
@@ -248,6 +252,20 @@ class ExampleClient(BaseApiClient):
 
 Useful `BaseApiClient` capabilities for custom endpoints:
 
+- **`default_headers`:** Override this property (a `Mapping[str, str]`, default
+  `{}`) to pin one representation for a whole API. These headers go out with
+  every `request()` and `stream()` call, and per-call `headers=` entries win,
+  matched case-insensitively:
+
+  ```python
+  @property
+  def default_headers(self) -> dict[str, str]:
+      return {"Accept": "application/vnd.orcid+json"}
+  ```
+- **`request(..., follow_redirects=True | False | None)`:** Default `None` keeps
+  `settings.follow_redirects`. Pass `False` to get the 3xx response itself so
+  you can read its `Location` header. Pass `True` to follow redirects, including
+  to another host (needed for content negotiation through doi.org).
 - **`request(..., retry=True | False | None)`:** Default `retry=None` retries
   only idempotent methods (`GET`, `HEAD`, `OPTIONS`, `PUT`, `DELETE`). Pass
   `retry=True` for read-only `POST` batch/search endpoints, or `retry=False` to
@@ -311,7 +329,24 @@ Key `ResourceClient[E]` details:
 
 - **Hook checklist:** `build_filter_params()`, `format_sort()`,
   `build_batch_params()`, `_fetch_batch_chunk()`, `normalize_id()`,
-  `record_keys()`, and `item_path()`.
+  `record_keys()`, `item_path()`, `default_params()`, and `search_path()`.
+- **`default_params()`:** Returns a `Mapping[str, Any]` (default `{}`) sent as
+  query parameters with every list request (`search()`, `iterate()`, `count()`,
+  and each `batch_get` chunk). Filter parameters and caller-supplied `params=`
+  take precedence, so the hook is for API-wide requirements such as Europe
+  PMC's `format=json`:
+
+  ```python
+  def default_params(self) -> dict[str, str]:
+      return {"format": "json"}
+  ```
+- **`search_path(query)`:** Returns the route for search, `iterate()`,
+  `count()`, and batch requests. The default returns `self.path`. Override it
+  when the API carries the query in the path, as DOAJ does with
+  `/search/journals/{query}`. With such an override, `query=` is accepted even
+  when `dialect.query_param` is `None`; without one, that combination raises
+  `ConfigurationError`. The hook receives `None` for `count()` without a query
+  and for batch chunks.
 - **Validation & `on_error`:** On the default `on_error="raise"` path,
   `search()`, `iterate()`, and `batch_get()` bulk-validate each page/chunk using
   a lazily cached `TypeAdapter(list[E])` per subclass, falling back to
@@ -346,6 +381,14 @@ async tests into `tests/_sync/` automatically.
 Mark any live-network smoke tests with `@pytest.mark.live_api` (deselected by
 default in `pytest`).
 
+Offline fixtures come from trimmed live payloads. One payload per model is
+not enough to trust its field types. Before you call the models done, pull a
+few hundred real records through the client with
+`iterate(..., on_error="skip", failures=failures)` and check that the
+`failures` list stays empty. A model typed from a single record can reject
+most real records, for example a keyword field typed as a list of objects
+where the API serves plain strings.
+
 Before opening a pull request, run every gate from the monorepo root:
 
 ```bash
@@ -366,20 +409,23 @@ uv run mkdocs build --strict
 When adding a new client package to `utsmok/bibliofabric`:
 
 1. **Workspace & packaging:** Create `packages/<pkg>/pyproject.toml` depending
-   on `bibliofabric` (with `py.typed`, Python `>=3.12`, and optional
-   `[tool.unasync]`), then run `uv sync --all-packages --all-groups` so the
-   root `uv.lock` includes the new workspace member.
-2. **Sync generation:** Run `uv run python scripts/unasync.py --package <pkg>`
+   on `bibliofabric>=0.8,<0.9` (with `py.typed`, Python `>=3.12`, and optional
+   `[tool.unasync]`), then run `uv lock` and
+   `uv sync --all-packages --all-groups` so the root `uv.lock` includes the new
+   workspace member.
+2. **Root pytest config:** List `packages/<pkg>/tests` in the root
+   `pyproject.toml` `[tool.pytest.ini_options]` `testpaths`.
+3. **Sync generation:** Run `uv run python scripts/unasync.py --package <pkg>`
    and commit the generated `_sync/` and `tests/_sync/` modules.
-3. **Documentation (`mkdocs.yml`):**
+4. **Documentation (`mkdocs.yml`):**
    - Add `"packages/<pkg>/src"` to `plugins.mkdocstrings.handlers.python.paths`.
    - Add `packages/<pkg>/src/<pkg>` to `watch:`.
    - Add the package's docs under `docs/<pkg>/` and register it under `nav:`
      plus `docs/index.md`.
-4. **CI matrix (`.github/workflows/ci.yml`):** Add `<pkg>` to the
+5. **CI matrix (`.github/workflows/ci.yml`):** Add `<pkg>` to the
    `test.strategy.matrix.package` list so every PR tests Python 3.12, 3.13, and
    3.14.
-5. **Changelog & PyPI publishing:**
+6. **Changelog & PyPI publishing:**
    - Maintain Keep a Changelog entries in `packages/<pkg>/CHANGELOG.md`.
    - Configure a PyPI **Trusted Publisher** (OIDC) for `<pkg>` pointing to
      `utsmok/bibliofabric`, workflow `ci.yml`, environment `pypi`.
