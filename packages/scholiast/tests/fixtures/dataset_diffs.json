@@ -1,0 +1,13 @@
+{
+  "dataset": "abstracts",
+  "start_release": "2026-11-17",
+  "end_release": "2026-11-24",
+  "diffs": [
+    {
+      "from_release": "2026-11-17",
+      "to_release": "2026-11-24",
+      "update_files": ["https://s3-us-west-2.amazonaws.com/ai2-s2-research-public/s2ag/diffs/abstracts/2026-11-17/to/2026-11-24/updated.jsonl.gz"],
+      "delete_files": ["https://s3-us-west-2.amazonaws.com/ai2-s2-research-public/s2ag/diffs/abstracts/2026-11-17/to/2026-11-24/deleted.jsonl.gz"]
+    }
+  ]
+}

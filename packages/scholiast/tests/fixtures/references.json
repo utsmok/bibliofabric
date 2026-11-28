@@ -1,0 +1,65 @@
+{
+  "data": [
+    {
+      "isInfluential": false,
+      "contexts": [],
+      "citedPaper": {
+        "paperId": "3353c30596771f83cc0beb0ef3a6fba5380aacda",
+        "title": "Timekeeping with electron spin states in diamond"
+      }
+    },
+    {
+      "isInfluential": false,
+      "contexts": [],
+      "citedPaper": {
+        "paperId": "f552d036ae408ab2acac3960f3ffee3ecb18ea0d",
+        "title": "A systematic review of elastography, electrical impedance scanning, and digital infrared thermography for breast cancer screening and diagnosis"
+      }
+    }
+  ],
+  "next": 5,
+  "offset": 0,
+  "citingPaperInfo": {
+    "openAccessPdf": {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4221854/",
+      "status": "GREEN",
+      "license": null,
+      "disclaimer": "Notice: Paper or abstract available at https://arxiv.org/abs/1304.1068, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+    },
+    "title": "Nanometer scale thermometry in a living cell",
+    "authors": [
+      {
+        "authorId": "4301543",
+        "name": "G. Kucsko"
+      },
+      {
+        "authorId": "47762783",
+        "name": "P. Maurer"
+      },
+      {
+        "authorId": "4138853",
+        "name": "N. Yao"
+      },
+      {
+        "authorId": "2068210745",
+        "name": "Michael Kubo"
+      },
+      {
+        "authorId": "2250179130",
+        "name": "H. Noh"
+      },
+      {
+        "authorId": "47472726",
+        "name": "Peggy Lo"
+      },
+      {
+        "authorId": "9236657",
+        "name": "Hongkun Park"
+      },
+      {
+        "authorId": "145572474",
+        "name": "M. Lukin"
+      }
+    ]
+  }
+}

@@ -1,0 +1,341 @@
+"""Outgoing request shape: paths, params, headers, batching, guards."""
+
+import json
+
+import pytest
+from scholiast import (
+    ConfigurationError,
+    NotFoundError,
+    PaperSearchFilters,
+    ScholiastClient,
+    ScholiastSettings,
+)
+
+from ..conftest import author, list_envelope, load_fixture
+
+PAPER = load_fixture("paper.json")
+PAGE = load_fixture("search.json")
+CITATIONS = load_fixture("citations.json")
+PAPER_BATCH = load_fixture("paper_batch.json")
+AUTHOR = load_fixture("author.json")
+AUTHOR_SEARCH = load_fixture("author_search.json")
+AUTHOR_BATCH = load_fixture("author_batch.json")
+REC = load_fixture("rec_forpaper.json")
+RELEASES = load_fixture("release_list.json")
+RELEASE = load_fixture("release_latest.json")
+BULK = load_fixture("bulk_search.json")
+
+
+def last_request(httpx_mock):
+    return httpx_mock.get_requests()[-1]
+
+
+def last_params(httpx_mock) -> dict[str, str]:
+    return dict(last_request(httpx_mock).url.params)
+
+
+def fix_null(records, **fields):
+    """Fixture lists with trailing nulls confuse model parsing; strip them."""
+    return [record for record in records if record is not None]
+
+
+async def test_get_paper_by_doi_id_form(client, httpx_mock):
+    httpx_mock.add_response(json=PAPER)
+    record = await client.papers.get("DOI:10.1038/nature12373")
+    assert record.paperId == PAPER["paperId"]
+    request = last_request(httpx_mock)
+    assert request.url.path == "/graph/v1/paper/DOI:10.1038/nature12373"
+
+
+async def test_get_sends_fields_param(client, httpx_mock):
+    httpx_mock.add_response(json=PAPER)
+    await client.papers.get("DOI:10.1038/nature12373", select=["title", "year"])
+    assert last_params(httpx_mock) == {"fields": "title,year"}
+
+
+async def test_get_raises_not_found(client, httpx_mock):
+    httpx_mock.add_response(
+        json={"error": "Paper with id DOI:10.x not found"}, status_code=404
+    )
+    with pytest.raises(NotFoundError):
+        await client.papers.get("DOI:10.1038/does-not-exist")
+
+
+async def test_api_key_header_present_when_set(httpx_mock):
+    settings = ScholiastSettings(
+        _env_file=None,
+        api_key="test-key-value",
+        max_requests_per_second=1_000_000.0,
+        max_retries=0,
+        timeout=5.0,
+    )
+    httpx_mock.add_response(json=PAPER)
+    client = ScholiastClient(settings=settings)
+    async with client:
+        await client.papers.get("DOI:10.1038/nature12373")
+    request = httpx_mock.get_requests()[0]
+    assert request.headers["x-api-key"] == "test-key-value"
+
+
+async def test_no_api_key_header_without_key(client, httpx_mock):
+    httpx_mock.add_response(json=PAPER)
+    await client.papers.get("DOI:10.1038/nature12373")
+    assert "x-api-key" not in last_request(httpx_mock).headers
+
+
+async def test_search_maps_query_filters_offset_limit(client, httpx_mock):
+    httpx_mock.add_response(json=PAGE)
+    page = await client.papers.search(
+        PaperSearchFilters(year="2020-2023", minCitationCount=50),
+        query="photosynthesis",
+        fields=["title", "year", "citationCount"],
+        page=2,
+        page_size=5,
+    )
+    assert page.total == PAGE["total"]
+    assert page.next_cursor == str(PAGE["next"])
+    assert last_request(httpx_mock).url.path == "/graph/v1/paper/search"
+    assert last_params(httpx_mock) == {
+        "limit": "5",
+        "offset": "5",
+        "query": "photosynthesis",
+        "fields": "title,year,citationCount",
+        "year": "2020-2023",
+        "minCitationCount": "50",
+    }
+
+
+async def test_search_rejects_offset_past_cap(client):
+    with pytest.raises(ConfigurationError, match="max_offset"):
+        await client.papers.search(query="x", page=2000)
+
+
+async def test_bulk_search_first_and_continuation(client, httpx_mock):
+    httpx_mock.add_response(json=BULK)
+    page = await client.papers.bulk_search(
+        "crispr", fields=["title", "year"], limit=1000
+    )
+    assert page.total == BULK["total"]
+    assert page.next_cursor == BULK["token"]
+    assert last_params(httpx_mock)["limit"] == "1000"
+
+    httpx_mock.add_response(json=load_fixture("bulk_next.json"))
+    second = await client.papers.bulk_search("crispr", token=page.next_cursor)
+    assert second.results
+    assert last_params(httpx_mock)["token"] == BULK["token"]
+
+
+async def test_bulk_search_rejects_limit_above_1000(client):
+    with pytest.raises(ConfigurationError, match="1000"):
+        await client.papers.bulk_search("x", limit=1001)
+
+
+async def test_bulk_iterate_follows_token(client, httpx_mock):
+    httpx_mock.add_response(json=BULK)
+    httpx_mock.add_response(json=load_fixture("bulk_next.json"))
+    records = [record async for record in client.papers.bulk_iterate("crispr", limit=3)]
+    assert len(records) == 3
+    assert [r.url.params.get("token") for r in httpx_mock.get_requests()] == [
+        None,
+        BULK["token"],
+    ]
+
+
+async def test_batch_posts_ids_and_drops_nulls(client, httpx_mock):
+    httpx_mock.add_response(json=PAPER_BATCH)
+    papers = await client.papers.batch(
+        ["ARXIV:2106.15928", "DOI:10.9999/nope", "DOI:10.9999/also-nope"],
+        fields=["title", "year"],
+    )
+    request = last_request(httpx_mock)
+    assert request.method == "POST"
+    assert request.url.path == "/graph/v1/paper/batch"
+    assert request.url.params["fields"] == "title,year"
+    assert json.loads(request.read()) == {
+        "ids": ["ARXIV:2106.15928", "DOI:10.9999/nope", "DOI:10.9999/also-nope"]
+    }
+    assert len(papers) == 1
+    assert papers[0].paperId == fix_null(PAPER_BATCH)[0]["paperId"]
+
+
+async def test_batch_empty_ids_sends_nothing(client, httpx_mock):
+    assert await client.papers.batch([]) == []
+    assert not httpx_mock.get_requests()
+
+
+async def test_citations_and_references(client, httpx_mock):
+    httpx_mock.add_response(json=CITATIONS)
+    citations = await client.papers.citations(
+        "DOI:10.1038/nature12373",
+        fields=["title", "contexts", "isInfluential"],
+        limit=2,
+        offset=5,
+    )
+    assert last_request(httpx_mock).url.path == (
+        "/graph/v1/paper/DOI:10.1038/nature12373/citations"
+    )
+    assert last_params(httpx_mock) == {
+        "fields": "title,contexts,isInfluential",
+        "limit": "2",
+        "offset": "5",
+    }
+    assert citations.results[0].citingPaper is not None
+    assert citations.next_cursor == str(CITATIONS["next"])
+
+    httpx_mock.add_response(json=load_fixture("references.json"))
+    references = await client.papers.references("DOI:10.1038/nature12373")
+    assert last_request(httpx_mock).url.path.endswith("/references")
+    assert references.results[0].citedPaper is not None
+
+
+async def test_paper_authors_page(client, httpx_mock):
+    httpx_mock.add_response(json=load_fixture("paper_authors.json"))
+    authors = await client.papers.authors("DOI:10.1038/nature12373", limit=3)
+    assert authors.results[0].name
+    assert authors.next_cursor == "5"
+
+
+async def test_autocomplete_reads_matches(client, httpx_mock):
+    httpx_mock.add_response(json=load_fixture("autocomplete.json"))
+    candidates = await client.papers.autocomplete("semanti")
+    assert last_request(httpx_mock).url.path == "/graph/v1/paper/autocomplete"
+    assert candidates
+    assert candidates[0].title
+
+
+async def test_autocomplete_rejects_blank(client):
+    with pytest.raises(ConfigurationError, match="non-empty"):
+        await client.papers.autocomplete("  ")
+
+
+async def test_search_match_returns_first_candidate(client, httpx_mock):
+    httpx_mock.add_response(json=load_fixture("paper_match.json"))
+    match = await client.papers.search_match("nanometer scale thermometry")
+    assert last_request(httpx_mock).url.path == "/graph/v1/paper/search/match"
+    assert match.paper is not None
+    assert match.paper.paperId == "a5de30adc5c22bc86e8cfabe7fbd07c052d196a8"
+    assert match.matchScore == 260.92
+
+
+async def test_search_match_raises_when_no_candidate(client, httpx_mock):
+    httpx_mock.add_response(json={"data": []})
+    with pytest.raises(NotFoundError):
+        await client.papers.search_match("zzz no such title zzz")
+
+
+async def test_author_get_search_papers_and_batch(client, httpx_mock):
+    httpx_mock.add_response(json=AUTHOR)
+    record = await client.authors.get("1741101")
+    assert record.name == "Oren Etzioni"
+
+    httpx_mock.add_response(json=AUTHOR_SEARCH)
+    page = await client.authors.search(query="adam smith", page_size=5)
+    assert page.total == AUTHOR_SEARCH["total"]
+    assert last_request(httpx_mock).url.path == "/graph/v1/author/search"
+
+    httpx_mock.add_response(json=list_envelope([author("1")]))
+    papers = await client.authors.papers("1741101", fields=["title"])
+    assert last_request(httpx_mock).url.path == "/graph/v1/author/1741101/papers"
+    assert papers.results[0].authorId == "1"
+
+    httpx_mock.add_response(json=AUTHOR_BATCH)
+    authors = await client.authors.batch(["1741101", "99999999"])
+    assert len(authors) == 1
+    assert authors[0].authorId == "1741101"
+    request = last_request(httpx_mock)
+    assert request.url.path == "/graph/v1/author/batch"
+    assert "fields" not in request.url.params
+
+
+async def test_recommendations_for_paper_and_for_list(client, httpx_mock):
+    httpx_mock.add_response(json=REC)
+    papers = await client.recommendations.for_paper(
+        "DOI:10.1038/nature12373", fields=["title"], limit=5
+    )
+    request = last_request(httpx_mock)
+    assert request.url.host == "api.semanticscholar.org"
+    assert request.url.path == (
+        "/recommendations/v1/papers/forpaper/DOI:10.1038/nature12373"
+    )
+    assert papers
+
+    httpx_mock.add_response(json=load_fixture("rec_forlist.json"))
+    listed = await client.recommendations.for_list(
+        ["ARXIV:2106.15928"], ["DOI:10.1038/nature12373"], fields=["title"]
+    )
+    request = last_request(httpx_mock)
+    assert request.method == "POST"
+    assert request.url.path == "/recommendations/v1/papers/"
+    assert json.loads(request.read()) == {
+        "positivePaperIds": ["ARXIV:2106.15928"],
+        "negativePaperIds": ["DOI:10.1038/nature12373"],
+    }
+    assert listed
+
+
+async def test_recommendations_for_list_rejects_empty_lists(client):
+    with pytest.raises(ConfigurationError, match="positive or negative"):
+        await client.recommendations.for_list([])
+
+
+async def test_datasets_releases_release_and_latest(client, httpx_mock):
+    httpx_mock.add_response(json=RELEASES)
+    releases = await client.datasets.releases()
+    assert releases[0] == "2022-05-10"
+
+    httpx_mock.add_response(json=RELEASE)
+    release = await client.datasets.latest()
+    assert release.release_id == "2026-11-24"
+    assert release.datasets
+    assert release.datasets[0].name == "abstracts"
+
+
+async def test_datasets_dataset_and_diffs(client, httpx_mock):
+    httpx_mock.add_response(json=load_fixture("dataset_metadata.json"))
+    dataset = await client.datasets.dataset("abstracts")
+    assert last_request(httpx_mock).url.path == (
+        "/datasets/v1/release/latest/dataset/abstracts"
+    )
+    assert dataset.files
+
+    httpx_mock.add_response(json=load_fixture("dataset_diffs.json"))
+    diffs = await client.datasets.diffs("abstracts", "2026-11-17", "2026-11-24")
+    assert last_request(httpx_mock).url.path == (
+        "/datasets/v1/diffs/2026-11-17/to/2026-11-24/abstracts"
+    )
+    assert diffs.diffs[0].update_files
+
+
+async def test_snippets_and_patents(client, httpx_mock):
+    httpx_mock.add_response(json=load_fixture("snippets.json"))
+    result = await client.snippets.search("protein folding", limit=1)
+    assert result.data[0].score is not None
+
+    httpx_mock.add_response(json=load_fixture("patent.json"))
+    patent_record = await client.patents.get("US10296086B2")
+    assert last_request(httpx_mock).url.path == "/graph/v1/patent/US10296086B2"
+    assert patent_record.title
+
+    httpx_mock.add_response(json=list_envelope([{"ucid": "US1"}], total=1))
+    patents = await client.patents.search("neural network", limit=5)
+    assert last_request(httpx_mock).url.path == "/graph/v1/patent/search"
+    assert patents.results[0].ucid == "US1"
+
+    httpx_mock.add_response(
+        json={"data": [{"ucid": "US1"}], "citingPaperInfo": {"paperId": "p"}}
+    )
+    citations = await client.patents.outbound_citations("CorpusId:4314121")
+    assert last_request(httpx_mock).url.path == (
+        "/graph/v1/patent/outbound-citations/CorpusId:4314121"
+    )
+    assert citations.citingPaperInfo == {"paperId": "p"}
+
+
+async def test_base_url_override_points_elsewhere(httpx_mock, settings):
+    httpx_mock.add_response(json=PAPER)
+    client = ScholiastClient(settings=settings, base_url="https://s2.example/graph/v1/")
+    async with client:
+        await client.papers.get("DOI:10.1038/nature12373")
+    assert (
+        last_request(httpx_mock).url.path == "/graph/v1/paper/DOI:10.1038/nature12373"
+    )

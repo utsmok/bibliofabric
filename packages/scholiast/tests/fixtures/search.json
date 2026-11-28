@@ -1,0 +1,21 @@
+{
+  "total": 1847312,
+  "offset": 5,
+  "next": 10,
+  "data": [
+    {
+      "paperId": "a5de30adc5c22bc86e8cfabe7fbd07c052d196a8",
+      "externalIds": {"DOI": "10.1038/nature12373", "CorpusId": 4314121},
+      "title": "Nanometer scale thermometry in a living cell",
+      "year": 2013,
+      "citationCount": 1847
+    },
+    {
+      "paperId": "f712fab0d58ae6492e3cdfc1933dae103ec12d5d",
+      "externalIds": {"CorpusId": 2184534235},
+      "title": "Reinfection and low cross-immunity as drivers of epidemic resurgence",
+      "year": 2021,
+      "citationCount": 37
+    }
+  ]
+}

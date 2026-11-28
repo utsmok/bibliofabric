@@ -1,0 +1,21 @@
+{
+  "data": [
+    {
+      "authorId": "4301543",
+      "name": "G. Kucsko",
+      "affiliations": []
+    },
+    {
+      "authorId": "47762783",
+      "name": "P. Maurer",
+      "affiliations": []
+    },
+    {
+      "authorId": "4138853",
+      "name": "N. Yao",
+      "affiliations": []
+    }
+  ],
+  "next": 5,
+  "offset": 0
+}

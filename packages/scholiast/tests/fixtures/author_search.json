@@ -1,0 +1,22 @@
+{
+  "data": [
+    {
+      "authorId": "2218400362",
+      "name": "Adam C. Smith",
+      "affiliations": []
+    },
+    {
+      "authorId": "2158127985",
+      "name": "Adam F. Smith",
+      "affiliations": []
+    },
+    {
+      "authorId": "2109352801",
+      "name": "Adam J. Smith",
+      "affiliations": []
+    }
+  ],
+  "offset": 0,
+  "next": 5,
+  "total": 512
+}

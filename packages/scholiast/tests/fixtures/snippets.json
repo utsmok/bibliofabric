@@ -1,0 +1,24 @@
+{
+  "data": [
+    {
+      "snippet": {
+        "text": "The literature graph is a property graph with directed edges.",
+        "snippetKind": "bodyText",
+        "section": "Introduction",
+        "snippetOffset": [0, 61],
+        "annotations": {
+          "sentences": [{"start": 0, "end": 61}],
+          "refMentions": [{"start": 4, "end": 28, "matchedPaperCorpusId": 215416146}]
+        }
+      },
+      "score": 0.87,
+      "paper": {
+        "corpusId": 215416146,
+        "title": "Construction of the Literature Graph in Semantic Scholar",
+        "authors": [{"authorId": "1741101", "name": "Oren Etzioni"}],
+        "openAccessInfo": {"status": "GREEN", "license": null, "disclaimer": null}
+      }
+    }
+  ],
+  "retrievalVersion": 1
+}

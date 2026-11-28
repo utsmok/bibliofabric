@@ -1,0 +1,28 @@
+{
+  "data": [
+    {
+      "isInfluential": false,
+      "contexts": [],
+      "intents": [],
+      "citingPaper": {
+        "paperId": "3159b19a91f2db1c6cf14af4a19610fa581de147",
+        "title": "Nanodiamonds in Biomedical Advances: From Bioactive Materials to Quantum Sensors"
+      }
+    },
+    {
+      "isInfluential": false,
+      "contexts": [
+        "In life sciences, subtle temperature variations accompany intracellular metabolism, gene expression and protein interactions, and real-time monitoring of such changes is essential for understanding life processes 2 .",
+        "In addition, diamond features excellent chemical stability and biocompatibility, allowing long-term and stable measurements in complex environments ranging from extreme conditions to living cells 2 ."
+      ],
+      "intents": [],
+      "citingPaper": {
+        "paperId": "9743a23bc7c8053dd4dafcafd1ca8e03ba40091a",
+        "title": "Diamond nitrogen-vacancy center temperature sensing technology"
+      }
+    }
+  ],
+  "next": 10,
+  "offset": 5,
+  "total": null
+}

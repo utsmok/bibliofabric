@@ -1,0 +1,9 @@
+{
+  "name": "abstracts",
+  "description": "Paper abstract text, where available.",
+  "README": "SCHEMA\n - openAccessInfo\n - paperId\n",
+  "files": [
+    "https://s3-us-west-2.amazonaws.com/ai2-s2-research-public/s2ag/abstracts/2026-11-24/00000.jsonl.gz?X-Amz-Algorithm=AWS4-HMAC-SHA256",
+    "https://s3-us-west-2.amazonaws.com/ai2-s2-research-public/s2ag/abstracts/2026-11-24/00001.jsonl.gz?X-Amz-Algorithm=AWS4-HMAC-SHA256"
+  ]
+}

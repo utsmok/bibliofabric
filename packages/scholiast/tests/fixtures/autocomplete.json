@@ -1,0 +1,19 @@
+{
+  "matches": [
+    {
+      "id": "39ad6c911f3351a3b390130a6e4265355b4d593b",
+      "authorsYear": "Chen et al., 2015",
+      "title": "Semantic Image Segmentation with Deep Convolutional Nets and Fully Connected CRFs"
+    },
+    {
+      "id": "6b64e068a8face2540fc436af40dbcd2b0912bbf",
+      "authorsYear": "Jiang et al., 1997",
+      "title": "Semantic Similarity Based on Corpus Statistics and Lexical Taxonomy"
+    },
+    {
+      "id": "5966d7c7f60898d610812e24c64d4d57855ad86a",
+      "authorsYear": "Caliskan et al., 2017",
+      "title": "Semantics derived automatically from language corpora contain human-like biases"
+    }
+  ]
+}
