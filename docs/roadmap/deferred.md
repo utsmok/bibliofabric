@@ -27,7 +27,6 @@ Wave 1 needed two of the six planned core additions. `BaseApiClient.default_head
 |---|---|---|
 | `stavrophora`: Crossref Data Citation API (`/beta/datacitations/`) | The route is live but still in beta upstream. | Crossref declaring the route stable, or a decision to ship a beta client. |
 | `stavrophora`: Retraction Watch helpers | The data is in the Crossref `updated-by` fields, which `stavrophora` already returns as fields on a work. | Typed helpers once the fusion layer defines what it needs. |
-| `aletheca`: docs for credit and budget headers | The client already exposes the rate-limit headers. | A docs page for `X-RateLimit-Credits-Used` and `cost_usd`. |
 
 ## ROR (`rorifer`)
 

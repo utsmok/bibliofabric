@@ -67,6 +67,34 @@ print(status.rate_limit.daily_remaining_usd)
 
 `rate_limit()` reads the key from settings and never stores the echoed key value. Every HTTP response also updates `client.last_rate_limit_headers` with any `x-ratelimit-*` headers returned by OpenAlex.
 
+### Credit and cost headers
+
+Every response tells you what the request cost and what is left of the daily budget. `client.last_rate_limit_headers` holds these headers from the most recent response, with lower-case names and string values. OpenAlex sent the following headers on 2026-11-28:
+
+| Header | Meaning | Example |
+|---|---|---|
+| `x-ratelimit-credits-used` | Credits the request used. A single-record lookup by id uses 0, and a list request uses 1. | `1` |
+| `x-ratelimit-cost-usd` | Cost of the request in US dollars. | `0.0001` |
+| `x-ratelimit-limit` | Daily budget in credits. | `10000` |
+| `x-ratelimit-remaining` | Credits left today. | `9999` |
+| `x-ratelimit-limit-usd` | Daily budget in US dollars. | `1` |
+| `x-ratelimit-remaining-usd` | Dollars left today. | `0.9999` |
+| `x-ratelimit-prepaid-remaining-usd` | Prepaid balance in US dollars. | `0` |
+| `x-ratelimit-onetime-remaining` | Remaining one-time credits. | `0` |
+| `x-ratelimit-reset` | Seconds until the budget resets at UTC midnight. | `77578` |
+
+OpenAlex also lists `X-RateLimit-Credits-Required` and `X-RateLimit-Cost-Required-USD` in `Access-Control-Expose-Headers`. They were absent from successful responses; the names suggest that they report the price of a request that the budget cannot cover.
+
+Read the cost of each request after it returns:
+
+```python
+page = await client.works.search({"publication_year": 2024})
+headers = client.last_rate_limit_headers
+print(headers.get("x-ratelimit-cost-usd"), headers.get("x-ratelimit-remaining-usd"))
+```
+
+The headers describe the last response only. Under concurrent requests, read them right after the call you want to measure, or call `rate_limit()` for the authoritative daily totals.
+
 ## Client-side pacing
 
 Aletheca spaces requests to a default of 10 per second with at most 5 concurrent requests, and caps `search.semantic` requests to 1 per second via its `"semantic"` rate class. Change these with `ALETHECA_MAX_REQUESTS_PER_SECOND`, `ALETHECA_MAX_CONCURRENCY`, and `ALETHECA_RATE_LIMITS`.
