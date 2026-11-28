@@ -32,7 +32,7 @@ Wave 1 needed two of the six planned core additions. `BaseApiClient.default_head
 
 | Item | Why it is deferred | Unblocked by |
 |---|---|---|
-| Client identification | ROR paused registration, and the API is free and unlimited for now. | ROR reopening registration. The token then goes into `default_headers`. |
+| Client identification | ROR paused registration for client ids. The API needs no credentials and documents a limit of 2,000 requests per 5 minutes per IP address; the client paces itself to 6 requests per second. | ROR reopening registration. The client id then goes into `default_headers`. |
 | Complete lists through the API | The API reaches at most 10,000 records per query and cannot OR two different filter keys. This is an upstream limit. | Nothing on our side. Use the data dumps, which the client reads. |
 | Searching external ids that contain a quote, a backslash, or a colon | The query parser of ROR rejects such values. | An upstream change. Pass bare ids. |
 
@@ -52,24 +52,26 @@ Wave 1 needed two of the six planned core additions. `BaseApiClient.default_head
 | DOI writes (create, update, delete, publish) and media mutations | Wave 1 covers reads only. The write routes belong to the MDS API and need repository credentials. | A DataCite repository account and a decision to support writes. |
 | Read routes `media`, `url`, `views`, and `downloads` under `/dois/{id}` | They answer 404 without a login (verified 2026-11-27). | A DataCite account. The client then sends its credentials. |
 | Usage Reports API and API-key management | Both need a login, and no account exists. | A DataCite account. |
-| `GET /prefixes/totals` with credentials | The route answers 204 without a login. The client's `prefixes.totals()` returns `None` for that answer. | A DataCite account, to see the authenticated answer and model it. |
 | GraphQL mutations | Queries are public and wrapped. Mutations need a bearer token, and none exists. | A DataCite account and a decision to support writes. |
 
 ## OpenCitations (`opcitato`)
 
 | Item | Why it is deferred | Unblocked by |
 |---|---|---|
-| Access Token in the `Authorization` header | No token exists to test, and both APIs answer without one. | A token from OpenCitations, then an optional setting and a live check. |
+| Access Token in the `authorization` header | No token exists to test, and both APIs answer without one. The token is free, counts unique users, and does not change the limit. A caller can send one through a prepared `httpx.AsyncClient`, which an offline test covers. | A token from OpenCitations, then an optional setting and a live check. |
 | `json=array(...)` and `json=dict(...)` row transformations | The plain rows carry every field. These parameters only reshape a row. | A caller that needs the reshaped rows. |
 | Database dumps at `download.opencitations.net` | The dumps are many gigabytes and serve bulk harvest, not lookups. | A decision to ship a dump loader, as the ROR client has. |
+| Legacy Index API v1 (`/index/v1/...`) | It is the predecessor of v2. Its rows carry bare DOIs and a subset of the v2 fields, and it still answers 200 (verified 2026-11-28). | A caller that needs a field only v1 returns. |
+| OCI Resolver (`oci.opencitations.net`) | It is a web page that returns information about one citation for any OCI. `index.citation()` covers the citations of the Index. | A caller that must resolve the OCIs of other datasets. |
 
 ## DOI (`hodoi`)
 
 | Item | Why it is deferred | Unblocked by |
 |---|---|---|
-| Resolver parameters `noredirect`, `urlappend`, `locatt`, and `action=showurls` | They reshape the redirect for multi-resolution links. The handle record that `handle()` returns already holds the target URL. | A caller that needs multi-resolution links. |
-| Handle API parameters `cert` and `callback` | `callback` asks for a JSONP body, which no Python client needs. `cert` was not verified. | A decision to expose them. |
-| Content negotiation for EIDR, JaLC, and OP | These agencies answer `/ra/`, but no sample DOI was exercised, so the catalog lists them as unverified. | A sample DOI from each agency and a few live requests. |
+| Resolver parameters `noredirect`, `urlappend`, `locatt`, `ignore_aliases`, and `nols` | `noredirect` answers an HTML page, not an API (verified 2026-11-28). The other four reshape the redirect for multiple-resolution links. `locations()` lists the redirect targets, and `handle()` returns the record that holds them. | A caller that needs the reshaped redirect. |
+| Handle API parameters `callback` and `recursive` | `callback` asks for a JSONP body, which no Python client needs. `recursive` is not in the factsheet, and the proxy accepted it without changing the answer (verified 2026-11-27). | A decision to expose them. |
+| `?pretty=true` on `/ra/` and on the Handle API | It only indents the JSON (verified 2026-11-28). | A caller that reads the raw JSON text. |
+| Content negotiation for EIDR, JaLC, and OP | These agencies answer `/ra/`, but no sample DOI was exercised, so `AGENCY_SUPPORT` does not list them. | A sample DOI from each agency and a few live requests. |
 
 ## Semantic Scholar (`scholiast`)
 
@@ -78,7 +80,7 @@ Wave 1 needed two of the six planned core additions. `BaseApiClient.default_head
 | Live check of the keyed paths | The API key on hand answers HTTP 403. | A new key, then one live run with `SCHOLIAST_API_KEY` set. |
 | Live check of `/paper/search`, `/snippet/search`, and the `URL:` id form | The anonymous pool answered 429 for these three on 2026-11-27 and 2026-11-28. The client wraps them from the published specification. `/paper/search/match`, `/paper/autocomplete`, `/patent/search`, the recommendations, and the release listing passed a live check without a key on 2026-11-28. | A key, or a quiet hour on the anonymous pool. |
 | Dataset file downloads and diffs | The file listing answers 401 without a key. A download is a plain HTTP GET of a pre-signed URL. | A key, then a decision to wrap the download. |
-| Live check of the fields `openAccessDoi` and `embedding` | Both answer 400 without a key. The models carry the fields. | A key with access to those fields. |
+| Live check of the paper fields `openAccessDoi` and `embedding` and the author fields `normalizedAffiliations` and `aliases` | They answer 400 without a key. The models carry the fields. | A key with access to those fields. |
 
 ## ORCID (`orchis`)
 
