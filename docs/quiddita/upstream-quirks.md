@@ -13,7 +13,7 @@ All Action API errors, soft and hard, answer with HTTP 200 and an `{"error": {co
 ## Parameter facts
 
 - `wbgetentities` accepts at most 50 ids per request (`toomanyvalues`, lowlimit 50). `batch_get()` and `iterate_ids()` chunk at 50.
-- An unknown item, form, or sense id fails the whole `wbgetentities` request with `no-such-entity`, and the error body names the id as `id` (verified 2026-11-28). An unknown lexeme or property id answers with success and a `{"id": ..., "missing": ""}` stub instead. Both raise `NotFoundError` in the client. `iterate_ids()` drops and records such ids with `on_error="skip"`.
+- Unknown ids answer in two ways (verified 2026-11-28). An item id above the highest item number, and an unknown form or sense id, fail the whole `wbgetentities` request with `no-such-entity`, and the error body names the id as `id`. A deleted or never-used item id below that number (`Q54446106`), and an unknown lexeme or property id, answer with success and a `{"id": ..., "missing": ""}` stub. `get()` raises `NotFoundError` for both. `batch_get()` leaves stub ids out of its result and raises for a rejected request; `iterate_ids()` with `on_error="skip"` drops and records both kinds.
 - `redirects` accepts `yes` and `no` (default `yes`); the values `0`, `1`, and the empty string answer `badvalue`. With `redirects=no` a redirect id answers as a stub entity (`info` only).
 - `wbgetclaims`'s `rank` accepts `deprecated`, `normal`, and `preferred`. The value `valid` answers `badvalue`, so `ClaimsClient` rejects it before sending.
 - `wbsearchentities` reports no total: `searchinfo` carries `search` and `offset` only. `count()` is therefore not supported, and `iterate()` walks `continue` offsets until an empty page.

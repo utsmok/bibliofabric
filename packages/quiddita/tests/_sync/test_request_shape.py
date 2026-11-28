@@ -91,15 +91,18 @@ def test_get_missing_lexeme_stub_raises_not_found(client, httpx_mock):
         client.entities.get("L999999999")
 
 
-def test_batch_get_unknown_id_raises_not_found(client, httpx_mock):
+def test_batch_get_rejected_id_raises_not_found(client, httpx_mock):
     httpx_mock.add_response(json=UNKNOWN_ID_ERROR)
     with pytest.raises(NotFoundError, match="Q999999999999"):
         client.entities.batch_get(["Q42", "Q999999999999"])
+
+
+def test_batch_get_drops_missing_stubs(client, httpx_mock):
     httpx_mock.add_response(
         json=entities_envelope(entity(), {"id": "L9", "missing": ""})
     )
-    with pytest.raises(NotFoundError, match="L9"):
-        client.entities.batch_get(["Q42", "L9"])
+    result = client.entities.batch_get(["Q42", "L9"])
+    assert list(result) == ["Q42"]
 
 
 def test_iterate_ids_unknown_id_raises_by_default(client, httpx_mock):

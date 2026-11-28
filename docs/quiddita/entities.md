@@ -25,7 +25,7 @@ entity = await client.entities.get(
 
 ## Batches
 
-`batch_get()` chunks ids at the API's limit of 50 ids per request and returns a dict keyed by the normalized id. An unknown id raises `NotFoundError` for the whole batch.
+`batch_get()` chunks ids at the API's limit of 50 ids per request and returns a dict keyed by the normalized id. An id that the API answers with a `missing` stub, such as a deleted item, is absent from the dict. An id that makes the API reject the whole request (`no-such-entity`, for example an item number above the highest one) raises `NotFoundError`; use `iterate_ids(on_error="skip")` to drop such ids and keep the rest.
 
 ```python
 batch = await client.entities.batch_get(["Q42", "P31", "L1"], select=["labels"])

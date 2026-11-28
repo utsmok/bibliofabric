@@ -95,15 +95,19 @@ class EntitiesClient(WikidataResourceClient[Entity]):
         *,
         select: Sequence[str] | None = None,
     ) -> tuple[list[dict[str, Any]], httpx.Response]:
-        """Fetch one id chunk; an id the API does not know raises ``NotFoundError``."""
+        """Fetch one id chunk.
+
+        An id that the API answers with a ``missing`` stub (a deleted item,
+        an unknown lexeme or property) is absent from the result, as the
+        :meth:`batch_get` contract says. An id that makes the API reject the
+        whole request (``no-such-entity``) raises ``NotFoundError``.
+        """
         extra_params: dict[str, Any] = {}
         if select:
             extra_params["props"] = join_values(select)
         body, response = await self._request_ids(chunk, extra_params)
         self._client.unwrapper.results(body)  # raises on soft errors
-        records, missing = split_entities(body, chunk)
-        if missing:
-            raise not_found_error(str(missing[0]["id"]))
+        records, _missing = split_entities(body, chunk)
         return records, response
 
     async def _request_ids(
