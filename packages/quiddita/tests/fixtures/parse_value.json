@@ -1,0 +1,13 @@
+{
+  "results": [
+    {
+      "raw": "Q42",
+      "value": {
+        "entity-type": "item",
+        "numeric-id": 42,
+        "id": "Q42"
+      },
+      "type": "wikibase-entityid"
+    }
+  ]
+}

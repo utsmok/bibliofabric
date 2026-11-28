@@ -1,0 +1,24 @@
+{
+  "head": {
+    "vars": [
+      "item",
+      "l"
+    ]
+  },
+  "results": {
+    "bindings": [
+      {
+        "item": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/L1742768"
+        }
+      },
+      {
+        "item": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/L1749418"
+        }
+      }
+    ]
+  }
+}

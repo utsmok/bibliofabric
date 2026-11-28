@@ -1,0 +1,31 @@
+{
+  "wbcheckconstraints": {
+    "Q42": {
+      "claims": {
+        "P3192": [
+          {
+            "id": "Q42$a2b8283b-4a77-9663-4af7-569f90ffd378",
+            "mainsnak": {
+              "hash": "624e143bc081dac42d3862582b717518b85b6532",
+              "results": [
+                {
+                  "status": "bad-parameters",
+                  "property": "P3192",
+                  "constraint": {
+                    "id": "P3192$dd6debc7-4d79-3434-652f-751fbc0be1a4",
+                    "type": "Q21502404",
+                    "typeLabel": "format constraint",
+                    "link": "//www.wikidata.org/wiki/Property:P3192#P3192$dd6debc7-4d79-3434-652f-751fbc0be1a4",
+                    "discussLink": "//www.wikidata.org/wiki/Property_talk:P3192"
+                  },
+                  "message-html": "<span class=\"wbqc-role wbqc-role-constraint-parameter-value\"><code>(?!.*?+%[0-9A-F]{2}).*</code></span> is not a valid regular expression.",
+                  "claim": "Q42$a2b8283b-4a77-9663-4af7-569f90ffd378"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

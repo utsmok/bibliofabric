@@ -1,0 +1,23 @@
+{
+  "entities": {
+    "Q42": {
+      "type": "item",
+      "id": "Q42",
+      "sitelinks": {
+        "dewiki": {
+          "site": "dewiki",
+          "title": "Douglas Adams",
+          "badges": []
+        },
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Douglas Adams",
+          "badges": [
+            "Q17437798"
+          ]
+        }
+      }
+    }
+  },
+  "success": 1
+}

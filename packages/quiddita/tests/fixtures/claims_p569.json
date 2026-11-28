@@ -1,0 +1,869 @@
+{
+  "claims": {
+    "P569": [
+      {
+        "mainsnak": {
+          "snaktype": "value",
+          "property": "P569",
+          "hash": "27f538a50ad110d1e6716c972f5f0ac24ca17430",
+          "datavalue": {
+            "value": {
+              "time": "+1952-03-11T00:00:00Z",
+              "timezone": 0,
+              "before": 0,
+              "after": 0,
+              "precision": 11,
+              "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+            },
+            "type": "time"
+          },
+          "datatype": "time"
+        },
+        "type": "statement",
+        "id": "q42$D8404CDA-25E4-4334-AF13-A3290BCD9C0F",
+        "rank": "normal",
+        "references": [
+          {
+            "hash": "355b56329b78db22be549dec34f2570ca61ca056",
+            "snaks": {
+              "P248": [
+                {
+                  "snaktype": "value",
+                  "property": "P248",
+                  "hash": "d1d1b10a05a8f3fc5d26bb4aeb6849617ad81fc7",
+                  "datavalue": {
+                    "value": {
+                      "entity-type": "item",
+                      "numeric-id": 5375741,
+                      "id": "Q5375741"
+                    },
+                    "type": "wikibase-entityid"
+                  },
+                  "datatype": "wikibase-item"
+                }
+              ]
+            },
+            "snaks-order": [
+              "P248"
+            ]
+          },
+          {
+            "hash": "a02f3a77ddd343e6b88be25696b055f5131c3d64",
+            "snaks": {
+              "P248": [
+                {
+                  "snaktype": "value",
+                  "property": "P248",
+                  "hash": "019a50b7de741e0068bde41c9d9955b22a5de47b",
+                  "datavalue": {
+                    "value": {
+                      "entity-type": "item",
+                      "numeric-id": 36578,
+                      "id": "Q36578"
+                    },
+                    "type": "wikibase-entityid"
+                  },
+                  "datatype": "wikibase-item"
+                }
+              ],
+              "P227": [
+                {
+                  "snaktype": "value",
+                  "property": "P227",
+                  "hash": "2a20755d12051fc95152d6107bd8a34e7fbc63c4",
+                  "datavalue": {
+                    "value": "119033364",
+                    "type": "string"
+                  },
+                  "datatype": "external-id"
+                }
+              ],
+              "P813": [
+                {
+                  "snaktype": "value",
+                  "property": "P813",
+                  "hash": "c1b3a8484d531e0eac6b9835b63e74b1412ccdb0",
+                  "datavalue": {
+                    "value": {
+                      "time": "+2015-07-07T00:00:00Z",
+                      "timezone": 0,
+                      "before": 0,
+                      "after": 0,
+                      "precision": 11,
+                      "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+                    },
+                    "type": "time"
+                  },
+                  "datatype": "time"
+                }
+              ]
+            },
+            "snaks-order": [
+              "P248",
+              "P227",
+              "P813"
+            ]
+          },
+          {
+            "hash": "87dfb64c99ab2c706c135e0110f57d1ba58d67eb",
+            "snaks": {
+              "P248": [
+                {
+                  "snaktype": "value",
+                  "property": "P248",
+                  "hash": "def9f19d84b65167a2a17ce38364d264c16127fc",
+                  "datavalue": {
+                    "value": {
+                      "entity-type": "item",
+                      "numeric-id": 19938912,
+                      "id": "Q19938912"
+                    },
+                    "type": "wikibase-entityid"
+                  },
+                  "datatype": "wikibase-item"
+                }
+              ],
+              "P268": [
+                {
+                  "snaktype": "value",
+                  "property": "P268",
+                  "hash": "8721e8944f95e9ce185c270dd1e12b81d13f7e9b",
+                  "datavalue": {
+                    "value": "11888092r",
+                    "type": "string"
+                  },
+                  "datatype": "external-id"
+                }
+              ],
+              "P813": [
+                {
+                  "snaktype": "value",
+                  "property": "P813",
+                  "hash": "e8d57e647c5bed000c86c300ee914ccd5d948b3f",
+                  "datavalue": {
+                    "value": {
+                      "time": "+2020-06-26T00:00:00Z",
+                      "timezone": 0,
+                      "before": 0,
+                      "after": 0,
+                      "precision": 11,
+                      "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+                    },
+                    "type": "time"
+                  },
+                  "datatype": "time"
+                }
+              ]
+            },
+            "snaks-order": [
+              "P248",
+              "P268",
+              "P813"
+            ]
+          },
+          {
+            "hash": "3bc90af5225a0b1248b3362e911577073e904e20",
+            "snaks": {
+              "P248": [
+                {
+                  "snaktype": "value",
+                  "property": "P248",
+                  "hash": "dbd2f3b8b11eb0da5209a6ea4a74ce0df88c749b",
+                  "datavalue": {
+                    "value": {
+                      "entity-type": "item",
+                      "numeric-id": 1139587,
+                      "id": "Q1139587"
+                    },
+                    "type": "wikibase-entityid"
+                  },
+                  "datatype": "wikibase-item"
+                }
+              ],
+              "P2168": [
+                {
+                  "snaktype": "value",
+                  "property": "P2168",
+                  "hash": "5b535a453c0f88c11cb592ae35510abe93d2eec5",
+                  "datavalue": {
+                    "value": "271209",
+                    "type": "string"
+                  },
+                  "datatype": "external-id"
+                }
+              ],
+              "P813": [
+                {
+                  "snaktype": "value",
+                  "property": "P813",
+                  "hash": "b468ee5535c44e76e52a8ad71217a0f5c5077d19",
+                  "datavalue": {
+                    "value": {
+                      "time": "+2016-01-11T00:00:00Z",
+                      "timezone": 0,
+                      "before": 0,
+                      "after": 0,
+                      "precision": 11,
+                      "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+                    },
+                    "type": "time"
+                  },
+                  "datatype": "time"
+                }
+              ]
+            },
+            "snaks-order": [
+              "P248",
+              "P2168",
+              "P813"
+            ]
+          },
+          {
+            "hash": "b460d7e5cae668698a5dfe74198df6632fe7231d",
+            "snaks": {
+              "P248": [
+                {
+                  "snaktype": "value",
+                  "property": "P248",
+                  "hash": "f98ec89708e8eab9511c049702ef59df0721d652",
+                  "datavalue": {
+                    "value": {
+                      "entity-type": "item",
+                      "numeric-id": 29861311,
+                      "id": "Q29861311"
+                    },
+                    "type": "wikibase-entityid"
+                  },
+                  "datatype": "wikibase-item"
+                }
+              ],
+              "P3430": [
+                {
+                  "snaktype": "value",
+                  "property": "P3430",
+                  "hash": "1e9a0d6461bed3d3b3f7ed1956b151058982cd6e",
+                  "datavalue": {
+                    "value": "w65h7md1",
+                    "type": "string"
+                  },
+                  "datatype": "external-id"
+                }
+              ],
+              "P1810": [
+                {
+                  "snaktype": "value",
+                  "property": "P1810",
+                  "hash": "03773f9c659ee8c03a232bce2522c8bb1b66402c",
+                  "datavalue": {
+                    "value": "Douglas Adams",
+                    "type": "string"
+                  },
+                  "datatype": "string"
+                }
+              ],
+              "P813": [
+                {
+                  "snaktype": "value",
+                  "property": "P813",
+                  "hash": "e5f60ab0b03700bb883efce38f8022d023bc49fb",
+                  "datavalue": {
+                    "value": {
+                      "time": "+2017-10-09T00:00:00Z",
+                      "timezone": 0,
+                      "before": 0,
+                      "after": 0,
+                      "precision": 11,
+                      "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+                    },
+                    "type": "time"
+                  },
+                  "datatype": "time"
+                }
+              ]
+            },
+            "snaks-order": [
+              "P248",
+              "P3430",
+              "P1810",
+              "P813"
+            ]
+          },
+          {
+            "hash": "28af4e1131157dbbb2a5bbae189519a22e7d2b79",
+            "snaks": {
+              "P854": [
+                {
+                  "snaktype": "value",
+                  "property": "P854",
+                  "hash": "21e8e2c39cd74b26201557fb152f6a894b180241",
+                  "datavalue": {
+                    "value": "https://www.wired.com/2012/03/i-miss-douglas-adams/",
+                    "type": "string"
+                  },
+                  "datatype": "url"
+                }
+              ]
+            },
+            "snaks-order": [
+              "P854"
+            ]
+          },
+          {
+            "hash": "fcdddce2cc4540a613b0b8c0e5d2bbd2cc5704a9",
+            "snaks": {
+              "P854": [
+                {
+                  "snaktype": "value",
+                  "property": "P854",
+                  "hash": "7278d120725f30a1e40e337049583011d3578bd3",
+                  "datavalue": {
+                    "value": "http://www.independent.co.uk/arts-entertainment/books/news/google-doodle-celebrates-life-of-hitchhikers-guide-to-the-galaxy-author-douglas-adams-8528856.html",
+                    "type": "string"
+                  },
+                  "datatype": "url"
+                }
+              ]
+            },
+            "snaks-order": [
+              "P854"
+            ]
+          },
+          {
+            "hash": "162d5556b3c48733c6c27b4cddcb99bc86f4bf70",
+            "snaks": {
+              "P248": [
+                {
+                  "snaktype": "value",
+                  "property": "P248",
+                  "hash": "871891c242389d06b23bf809fdc0301df1ed9c77",
+                  "datavalue": {
+                    "value": {
+                      "entity-type": "item",
+                      "numeric-id": 2629164,
+                      "id": "Q2629164"
+                    },
+                    "type": "wikibase-entityid"
+                  },
+                  "datatype": "wikibase-item"
+                }
+              ],
+              "P1233": [
+                {
+                  "snaktype": "value",
+                  "property": "P1233",
+                  "hash": "b601606b4bce3131ed7b591bb3acbcaeaa8f7a6e",
+                  "datavalue": {
+                    "value": "122",
+                    "type": "string"
+                  },
+                  "datatype": "external-id"
+                }
+              ],
+              "P1810": [
+                {
+                  "snaktype": "value",
+                  "property": "P1810",
+                  "hash": "03773f9c659ee8c03a232bce2522c8bb1b66402c",
+                  "datavalue": {
+                    "value": "Douglas Adams",
+                    "type": "string"
+                  },
+                  "datatype": "string"
+                }
+              ],
+              "P813": [
+                {
+                  "snaktype": "value",
+                  "property": "P813",
+                  "hash": "e5f60ab0b03700bb883efce38f8022d023bc49fb",
+                  "datavalue": {
+                    "value": {
+                      "time": "+2017-10-09T00:00:00Z",
+                      "timezone": 0,
+                      "before": 0,
+                      "after": 0,
+                      "precision": 11,
+                      "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+                    },
+                    "type": "time"
+                  },
+                  "datatype": "time"
+                }
+              ]
+            },
+            "snaks-order": [
+              "P248",
+              "P1233",
+              "P1810",
+              "P813"
+            ]
+          },
+          {
+            "hash": "bab32d323b6c92d91ff7d0c4707346012900761b",
+            "snaks": {
+              "P854": [
+                {
+                  "snaktype": "value",
+                  "property": "P854",
+                  "hash": "d74ce84c9bceb1f94564bc8d53ad074739e46eb3",
+                  "datavalue": {
+                    "value": "http://www.screenonline.org.uk/people/id/1233876/index.html",
+                    "type": "string"
+                  },
+                  "datatype": "url"
+                }
+              ]
+            },
+            "snaks-order": [
+              "P854"
+            ]
+          },
+          {
+            "hash": "0d9f07c561f61776c61a026473508c535af28267",
+            "snaks": {
+              "P248": [
+                {
+                  "snaktype": "value",
+                  "property": "P248",
+                  "hash": "b62f3fa8bab7eb5e1bfe16d03cda082d25315c85",
+                  "datavalue": {
+                    "value": {
+                      "entity-type": "item",
+                      "numeric-id": 63056,
+                      "id": "Q63056"
+                    },
+                    "type": "wikibase-entityid"
+                  },
+                  "datatype": "wikibase-item"
+                }
+              ],
+              "P535": [
+                {
+                  "snaktype": "value",
+                  "property": "P535",
+                  "hash": "ce3fb403e96b3b004b1b480734c941819c442c01",
+                  "datavalue": {
+                    "value": "22814",
+                    "type": "string"
+                  },
+                  "datatype": "external-id"
+                }
+              ],
+              "P1810": [
+                {
+                  "snaktype": "value",
+                  "property": "P1810",
+                  "hash": "d34dcfad6c25d9dfabf330ae1c0c8159e36f1fa6",
+                  "datavalue": {
+                    "value": "Douglas Noel Adams",
+                    "type": "string"
+                  },
+                  "datatype": "string"
+                }
+              ],
+              "P813": [
+                {
+                  "snaktype": "value",
+                  "property": "P813",
+                  "hash": "e5f60ab0b03700bb883efce38f8022d023bc49fb",
+                  "datavalue": {
+                    "value": {
+                      "time": "+2017-10-09T00:00:00Z",
+                      "timezone": 0,
+                      "before": 0,
+                      "after": 0,
+                      "precision": 11,
+                      "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+                    },
+                    "type": "time"
+                  },
+                  "datatype": "time"
+                }
+              ]
+            },
+            "snaks-order": [
+              "P248",
+              "P535",
+              "P1810",
+              "P813"
+            ]
+          },
+          {
+            "hash": "dc42b8fb4c89807fe07a74ee933d45e4ba6353a1",
+            "snaks": {
+              "P248": [
+                {
+                  "snaktype": "value",
+                  "property": "P248",
+                  "hash": "9d66409d3d04632fc69413ea86abf094f92fae88",
+                  "datavalue": {
+                    "value": {
+                      "entity-type": "item",
+                      "numeric-id": 3343389,
+                      "id": "Q3343389"
+                    },
+                    "type": "wikibase-entityid"
+                  },
+                  "datatype": "wikibase-item"
+                }
+              ],
+              "P5570": [
+                {
+                  "snaktype": "value",
+                  "property": "P5570",
+                  "hash": "0a407feec4ece2cd71d650ad10574fb91b9f5b18",
+                  "datavalue": {
+                    "value": "143",
+                    "type": "string"
+                  },
+                  "datatype": "external-id"
+                }
+              ],
+              "P1810": [
+                {
+                  "snaktype": "value",
+                  "property": "P1810",
+                  "hash": "2956a68705d15418b9490fb5feb13d1c1c2801fc",
+                  "datavalue": {
+                    "value": "Douglas ADAMS",
+                    "type": "string"
+                  },
+                  "datatype": "string"
+                }
+              ],
+              "P813": [
+                {
+                  "snaktype": "value",
+                  "property": "P813",
+                  "hash": "e5f60ab0b03700bb883efce38f8022d023bc49fb",
+                  "datavalue": {
+                    "value": {
+                      "time": "+2017-10-09T00:00:00Z",
+                      "timezone": 0,
+                      "before": 0,
+                      "after": 0,
+                      "precision": 11,
+                      "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+                    },
+                    "type": "time"
+                  },
+                  "datatype": "time"
+                }
+              ]
+            },
+            "snaks-order": [
+              "P248",
+              "P5570",
+              "P1810",
+              "P813"
+            ]
+          },
+          {
+            "hash": "7571c014841534580d357bfbc652e23c8dfe6f76",
+            "snaks": {
+              "P248": [
+                {
+                  "snaktype": "value",
+                  "property": "P248",
+                  "hash": "e2a81dbf2f7dd02b332d6358ef65f622f82e8cc3",
+                  "datavalue": {
+                    "value": {
+                      "entity-type": "item",
+                      "numeric-id": 237227,
+                      "id": "Q237227"
+                    },
+                    "type": "wikibase-entityid"
+                  },
+                  "datatype": "wikibase-item"
+                }
+              ],
+              "P5019": [
+                {
+                  "snaktype": "value",
+                  "property": "P5019",
+                  "hash": "43ed67a7e85525f6e09d5b1c7d8cf48a13b0249d",
+                  "datavalue": {
+                    "value": "adams-douglas-noel",
+                    "type": "string"
+                  },
+                  "datatype": "external-id"
+                }
+              ],
+              "P1810": [
+                {
+                  "snaktype": "value",
+                  "property": "P1810",
+                  "hash": "c4476ecceaffe79708600de5842ba5b400aa7065",
+                  "datavalue": {
+                    "value": "Douglas Noël Adams",
+                    "type": "string"
+                  },
+                  "datatype": "string"
+                }
+              ],
+              "P813": [
+                {
+                  "snaktype": "value",
+                  "property": "P813",
+                  "hash": "e5f60ab0b03700bb883efce38f8022d023bc49fb",
+                  "datavalue": {
+                    "value": {
+                      "time": "+2017-10-09T00:00:00Z",
+                      "timezone": 0,
+                      "before": 0,
+                      "after": 0,
+                      "precision": 11,
+                      "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+                    },
+                    "type": "time"
+                  },
+                  "datatype": "time"
+                }
+              ]
+            },
+            "snaks-order": [
+              "P248",
+              "P5019",
+              "P1810",
+              "P813"
+            ]
+          },
+          {
+            "hash": "a3feaf25fa95c4893bc1dc74ca6d884bc37c2723",
+            "snaks": {
+              "P248": [
+                {
+                  "snaktype": "value",
+                  "property": "P248",
+                  "hash": "155e1a7322c5a7febad55feba5ba4c3a2656b1c4",
+                  "datavalue": {
+                    "value": {
+                      "entity-type": "item",
+                      "numeric-id": 2877812,
+                      "id": "Q2877812"
+                    },
+                    "type": "wikibase-entityid"
+                  },
+                  "datatype": "wikibase-item"
+                }
+              ],
+              "P3630": [
+                {
+                  "snaktype": "value",
+                  "property": "P3630",
+                  "hash": "c943a67cefbf6c5f52cd624308b923cddb344024",
+                  "datavalue": {
+                    "value": "2627",
+                    "type": "string"
+                  },
+                  "datatype": "external-id"
+                }
+              ],
+              "P1810": [
+                {
+                  "snaktype": "value",
+                  "property": "P1810",
+                  "hash": "03773f9c659ee8c03a232bce2522c8bb1b66402c",
+                  "datavalue": {
+                    "value": "Douglas Adams",
+                    "type": "string"
+                  },
+                  "datatype": "string"
+                }
+              ]
+            },
+            "snaks-order": [
+              "P248",
+              "P3630",
+              "P1810"
+            ]
+          },
+          {
+            "hash": "3780b8d878be9297899f30beb767bf408acbbd4a",
+            "snaks": {
+              "P248": [
+                {
+                  "snaktype": "value",
+                  "property": "P248",
+                  "hash": "055f82ef73ce123450780d681359ac6e9077e315",
+                  "datavalue": {
+                    "value": {
+                      "entity-type": "item",
+                      "numeric-id": 107343683,
+                      "id": "Q107343683"
+                    },
+                    "type": "wikibase-entityid"
+                  },
+                  "datatype": "wikibase-item"
+                }
+              ],
+              "P1284": [
+                {
+                  "snaktype": "value",
+                  "property": "P1284",
+                  "hash": "2f5c2e65a1d9fca309615b885bf62f3e5260874e",
+                  "datavalue": {
+                    "value": "00000020676",
+                    "type": "string"
+                  },
+                  "datatype": "external-id"
+                }
+              ],
+              "P813": [
+                {
+                  "snaktype": "value",
+                  "property": "P813",
+                  "hash": "e5f60ab0b03700bb883efce38f8022d023bc49fb",
+                  "datavalue": {
+                    "value": {
+                      "time": "+2017-10-09T00:00:00Z",
+                      "timezone": 0,
+                      "before": 0,
+                      "after": 0,
+                      "precision": 11,
+                      "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+                    },
+                    "type": "time"
+                  },
+                  "datatype": "time"
+                }
+              ],
+              "P1810": [
+                {
+                  "snaktype": "value",
+                  "property": "P1810",
+                  "hash": "03773f9c659ee8c03a232bce2522c8bb1b66402c",
+                  "datavalue": {
+                    "value": "Douglas Adams",
+                    "type": "string"
+                  },
+                  "datatype": "string"
+                }
+              ]
+            },
+            "snaks-order": [
+              "P248",
+              "P1284",
+              "P813",
+              "P1810"
+            ]
+          },
+          {
+            "hash": "57471bf05b6477f687966f798aa159081e1c34e0",
+            "snaks": {
+              "P248": [
+                {
+                  "snaktype": "value",
+                  "property": "P248",
+                  "hash": "65bf94067e6255ff8d61c9c9535d98794a309a4c",
+                  "datavalue": {
+                    "value": {
+                      "entity-type": "item",
+                      "numeric-id": 746368,
+                      "id": "Q746368"
+                    },
+                    "type": "wikibase-entityid"
+                  },
+                  "datatype": "wikibase-item"
+                }
+              ],
+              "P4342": [
+                {
+                  "snaktype": "value",
+                  "property": "P4342",
+                  "hash": "8819177242878681cc99a517ada480a6fd2d03dc",
+                  "datavalue": {
+                    "value": "Douglas_Adams",
+                    "type": "string"
+                  },
+                  "datatype": "external-id"
+                }
+              ],
+              "P813": [
+                {
+                  "snaktype": "value",
+                  "property": "P813",
+                  "hash": "fd038ea588037d2156b347f496aefbe36a200452",
+                  "datavalue": {
+                    "value": {
+                      "time": "+2026-10-17T00:00:00Z",
+                      "timezone": 0,
+                      "before": 0,
+                      "after": 0,
+                      "precision": 11,
+                      "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+                    },
+                    "type": "time"
+                  },
+                  "datatype": "time"
+                }
+              ]
+            },
+            "snaks-order": [
+              "P248",
+              "P4342",
+              "P813"
+            ]
+          },
+          {
+            "hash": "998e45a9894d1dcf565a60e998503e02f225782b",
+            "snaks": {
+              "P248": [
+                {
+                  "snaktype": "value",
+                  "property": "P248",
+                  "hash": "69299389a9d996309dfd0fc9baab81dcff51212f",
+                  "datavalue": {
+                    "value": {
+                      "entity-type": "item",
+                      "numeric-id": 136450325,
+                      "id": "Q136450325"
+                    },
+                    "type": "wikibase-entityid"
+                  },
+                  "datatype": "wikibase-item"
+                }
+              ],
+              "P8313": [
+                {
+                  "snaktype": "value",
+                  "property": "P8313",
+                  "hash": "fec85d39f14fdc78594c2601366f6d0c24a5e18a",
+                  "datavalue": {
+                    "value": "Douglas_Adams",
+                    "type": "string"
+                  },
+                  "datatype": "external-id"
+                }
+              ],
+              "P813": [
+                {
+                  "snaktype": "value",
+                  "property": "P813",
+                  "hash": "57edaf877015918bd95a248802cd934149840b69",
+                  "datavalue": {
+                    "value": {
+                      "time": "+2026-11-26T00:00:00Z",
+                      "timezone": 0,
+                      "before": 0,
+                      "after": 0,
+                      "precision": 11,
+                      "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+                    },
+                    "type": "time"
+                  },
+                  "datatype": "time"
+                }
+              ]
+            },
+            "snaks-order": [
+              "P248",
+              "P8313",
+              "P813"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

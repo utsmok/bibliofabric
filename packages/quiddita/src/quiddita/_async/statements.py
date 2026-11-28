@@ -1,0 +1,79 @@
+"""Client for the Wikibase REST statement routes."""
+
+from urllib.parse import quote
+
+from bibliofabric import BaseApiClient
+
+from ..dialect import REST_PREFIX
+from ..ids import normalize_wikidata_id
+from ..models import RestStatement, StatementsByProperty
+
+
+class StatementsClient:
+    """Client for the REST statement routes.
+
+    Statements exist in two shapes. This client serves the REST shape
+    (``{"type": ..., "content": ...}`` values, list qualifiers); the Action
+    API shape lives in :attr:`QuidditaClient.entities` and
+    :attr:`QuidditaClient.claims`.
+    """
+
+    def __init__(self, client: BaseApiClient) -> None:
+        """Build the resource client on a ``QuidditaClient``."""
+        self._client = client
+
+    async def for_entity(
+        self,
+        id: str,
+        *,
+        property: str | None = None,
+    ) -> StatementsByProperty:
+        """Return the statements of an item or property, keyed by property id.
+
+        Args:
+            id: Item id (``Q42``) or property id (``P31``).
+            property: Restrict to one property id through the ``property``
+                query parameter of the ``/statements`` route.
+        """
+        normalized = normalize_wikidata_id(id)
+        segment = "properties" if normalized[0] == "P" else "items"
+        request_params = (
+            {"property": normalize_wikidata_id(property)}
+            if property is not None
+            else None
+        )
+        response = await self._client.request(
+            "GET",
+            f"{REST_PREFIX}/entities/{segment}/{normalized}/statements",
+            params=request_params,
+        )
+        body = self._client.parse_json(response)
+        if not isinstance(body, dict):
+            return {}
+        result: StatementsByProperty = {}
+        for property_id, records in body.items():
+            if not isinstance(records, list):
+                continue
+            result[property_id] = [
+                RestStatement.model_validate(record)
+                for record in records
+                if isinstance(record, dict)
+            ]
+        return result
+
+    async def get(self, statement_id: str) -> RestStatement:
+        """Return one statement by its id (``Q42$F078E5B3-...``).
+
+        Statement ids carry ``$``, which the route URL-encodes.
+        """
+        if "$" not in statement_id:
+            raise ValueError(
+                f"Expected a statement id such as 'Q42$<uuid>', got {statement_id!r}."
+            )
+        response = await self._client.request(
+            "GET", f"{REST_PREFIX}/statements/{quote(statement_id, safe='')}"
+        )
+        return RestStatement.model_validate(self._client.parse_json(response))
+
+
+__all__ = ["StatementsClient"]

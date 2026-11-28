@@ -1,0 +1,23 @@
+{
+  "search": [
+    {
+      "id": "P17",
+      "url": "//www.wikidata.org/wiki/Property:P17",
+      "rating": "57189.36211972404",
+      "label": "country",
+      "description": "sovereign state that this subject item is in (not to be used for human beings)"
+    },
+    {
+      "id": "P18",
+      "url": "//www.wikidata.org/wiki/Property:P18",
+      "rating": "31084.98981408216",
+      "label": "image",
+      "description": "image of relevant illustration of the subject; if available, also use more specific properties (sample: coat of arms image, locator map, flag image, signature image, logo image, collage image)"
+    }
+  ],
+  "success": 1,
+  "search-continue": 7,
+  "searchinfo": {
+    "search": ""
+  }
+}

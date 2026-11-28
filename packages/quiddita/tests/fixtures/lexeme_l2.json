@@ -1,0 +1,92 @@
+{
+  "id": "L2",
+  "lemmas": {
+    "en": "first"
+  },
+  "lexical_category": "Q1084",
+  "language": "Q1860",
+  "statements": {
+    "P5402": [
+      {
+        "id": "L2$93837555-4e58-e5d4-5076-aff7bf110105",
+        "rank": "normal",
+        "qualifiers": [],
+        "references": [],
+        "property": {
+          "id": "P5402",
+          "data_type": "wikibase-lexeme"
+        },
+        "value": {
+          "type": "value",
+          "content": "L46028"
+        }
+      }
+    ]
+  },
+  "forms": [
+    {
+      "id": "L2-F1",
+      "representations": {
+        "en": "firsts"
+      },
+      "grammatical_features": [
+        "Q146786"
+      ],
+      "statements": {
+        "P898": [
+          {
+            "id": "L2-F1$dc3a1cae-46a8-bcc9-94d6-5fda81c87be9",
+            "rank": "normal",
+            "qualifiers": [
+              {
+                "property": {
+                  "id": "P5237",
+                  "data_type": "wikibase-item"
+                },
+                "value": {
+                  "type": "value",
+                  "content": "Q7976"
+                }
+              }
+            ],
+            "references": [
+              {
+                "hash": "a980f0820f608da6f2bd60cfb14c6840ce3e67ab",
+                "parts": [
+                  {
+                    "property": {
+                      "id": "P248",
+                      "data_type": "wikibase-item"
+                    },
+                    "value": {
+                      "type": "value",
+                      "content": "Q22001375"
+                    }
+                  }
+                ]
+              }
+            ],
+            "property": {
+              "id": "P898",
+              "data_type": "string"
+            },
+            "value": {
+              "type": "value",
+              "content": "fɝsts"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "senses": [
+    {
+      "id": "L2-S1",
+      "glosses": {
+        "en": "Element in an ordered list which comes before all others according to the ordering",
+        "de": "einer Ordnung folgend das Element vor allen anderen"
+      },
+      "statements": {}
+    }
+  ]
+}

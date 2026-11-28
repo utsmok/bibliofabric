@@ -1,0 +1,181 @@
+"""Client for ``wbgetentities``: one entity, a batch of ids, or many ids."""
+
+from collections.abc import AsyncIterator, Mapping, Sequence
+from typing import Any, override
+
+import httpx
+from bibliofabric import OnError
+
+from ..dialect import ACTION_PATH, MAX_IDS_PER_REQUEST
+from ..ids import normalize_wikidata_id
+from ..models import Entity
+from ..unwrapper import is_missing, not_found_error, rejected_id
+from .base import WikidataResourceClient, join_values
+
+
+def split_entities(
+    body: Any, ids: Sequence[str]
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Split the ``entities`` of a response into records and ``missing`` stubs.
+
+    Both lists follow the order of ``ids``. Ids absent from the body land in
+    neither list.
+    """
+    entities = body.get("entities") if isinstance(body, dict) else None
+    records: list[dict[str, Any]] = []
+    missing: list[dict[str, Any]] = []
+    for id in ids:
+        record = entities.get(id) if isinstance(entities, dict) else None
+        if isinstance(record, dict):
+            (missing if is_missing(record) else records).append(record)
+    return records, missing
+
+
+class EntitiesClient(WikidataResourceClient[Entity]):
+    """Client for the ``wbgetentities`` module.
+
+    The API answers at most 50 ids per request (``toomanyvalues`` above 50,
+    verified on 2026-11-27). :meth:`batch_get` chunks through
+    :class:`~bibliofabric.ResourceClient`; :meth:`iterate_ids` walks an
+    unbounded id list one chunk at a time, in order.
+    """
+
+    path = ACTION_PATH
+    model = Entity
+    batch_size = MAX_IDS_PER_REQUEST
+
+    @override
+    def default_params(self) -> Mapping[str, Any]:
+        return {"action": "wbgetentities", "format": "json"}
+
+    @override
+    def build_batch_params(self, field: str, values: Sequence[str]) -> dict[str, Any]:
+        return {"ids": "|".join(values)}
+
+    @override
+    async def get(
+        self,
+        id: str | int,
+        *,
+        select: Sequence[str] | None = None,
+        params: Mapping[str, Any] | None = None,
+    ) -> Entity:
+        """Fetch one entity; 404 (``no-such-entity``) raises ``NotFoundError``.
+
+        Args:
+            id: Entity id (``Q42``), a URL form, or a ``wbformatentities``
+                formatted link.
+            select: Pass entity parts as ``select=`` (``labels``,
+                ``descriptions``, ``aliases``, ``claims``, ``sitelinks``,
+                ``info``, ``datatype``); they map to ``wbgetentities``'s
+                ``props``.
+            params: Raw ``wbgetentities`` extras: ``languages`` (iterable of
+                language codes or a string), ``sitefilter``, ``redirects``
+                (``"yes"``/``"no"``, default ``yes``), ``uselang``.
+        """
+        query_params: dict[str, Any] = {
+            **self.default_params(),
+            "ids": normalize_wikidata_id(str(id)),
+        }
+        if select is not None:
+            query_params["props"] = join_values(select)
+        if params is not None:
+            for key, value in params.items():
+                query_params[key] = join_values(value) if value is not None else value
+        response = await self._client.request("GET", ACTION_PATH, params=query_params)
+        body = self._client.parse_json(response)
+        data = self._client.unwrapper.item(body)
+        return self._validate(data, request=response.request, response=response)
+
+    @override
+    async def _fetch_batch_chunk(
+        self,
+        field: str,
+        chunk: list[str],
+        *,
+        select: Sequence[str] | None = None,
+    ) -> tuple[list[dict[str, Any]], httpx.Response]:
+        """Fetch one id chunk; an id the API does not know raises ``NotFoundError``."""
+        extra_params: dict[str, Any] = {}
+        if select:
+            extra_params["props"] = join_values(select)
+        body, response = await self._request_ids(chunk, extra_params)
+        self._client.unwrapper.results(body)  # raises on soft errors
+        records, missing = split_entities(body, chunk)
+        if missing:
+            raise not_found_error(str(missing[0]["id"]))
+        return records, response
+
+    async def _request_ids(
+        self, ids: Sequence[str], extra_params: Mapping[str, Any]
+    ) -> tuple[Any, httpx.Response]:
+        """GET ``wbgetentities`` for ``ids``; soft errors are not raised here."""
+        response = await self._client.request(
+            "GET",
+            ACTION_PATH,
+            params={**self.default_params(), **extra_params, "ids": "|".join(ids)},
+        )
+        return self._client.parse_json(response), response
+
+    async def iterate_ids(
+        self,
+        ids: Sequence[str],
+        *,
+        props: Sequence[str] | None = None,
+        languages: Sequence[str] | str | None = None,
+        sitefilter: Sequence[str] | str | None = None,
+        on_error: OnError = "raise",
+        failures: list[tuple[dict[str, Any], Exception]] | None = None,
+    ) -> AsyncIterator[Entity]:
+        """Iterate over many ids, fetching up to 50 per request, in order.
+
+        Ids are normalized and deduplicated first. An id the API does not
+        know raises ``NotFoundError``; with ``on_error="skip"`` it is dropped
+        and recorded in ``failures`` instead. ``props``, ``languages``, and
+        ``sitefilter`` pass through to ``wbgetentities``.
+        """
+        unique = list(dict.fromkeys(normalize_wikidata_id(id) for id in ids))
+        extra_params: dict[str, Any] = {}
+        if props:
+            extra_params["props"] = join_values(props)
+        if languages is not None:
+            extra_params["languages"] = join_values(languages)
+        if sitefilter is not None:
+            extra_params["sitefilter"] = join_values(sitefilter)
+        for start in range(0, len(unique), MAX_IDS_PER_REQUEST):
+            unknown: list[dict[str, Any]] = []
+            remaining = unique[start : start + MAX_IDS_PER_REQUEST]
+            while True:
+                body, response = await self._request_ids(remaining, extra_params)
+                rejected = rejected_id(body) if on_error == "skip" else None
+                if rejected is None or rejected not in remaining:
+                    break
+                # The API rejects the whole request over one unknown id.
+                unknown.append({"id": rejected})
+                remaining = [id for id in remaining if id != rejected]
+                if not remaining:
+                    break
+            if remaining:
+                self._client.unwrapper.results(body)  # raises on soft errors
+                records, stubs = split_entities(body, remaining)
+                unknown.extend(stubs)
+            else:
+                records = []
+            if unknown and on_error != "skip":
+                raise not_found_error(str(unknown[0]["id"]))
+            if unknown and failures is not None:
+                failures.extend(
+                    (stub, not_found_error(str(stub["id"]))) for stub in unknown
+                )
+            validated = self._validate_records(
+                records,
+                on_error=on_error,
+                failures=failures,
+                request=response.request,
+                response=response,
+            )
+            for index in range(len(validated)):
+                yield validated[index]
+
+
+__all__ = ["EntitiesClient"]

@@ -1,0 +1,20 @@
+{
+  "commonsMedia": "string",
+  "geo-shape": "string",
+  "tabular-data": "string",
+  "url": "string",
+  "external-id": "string",
+  "wikibase-item": "wikibase-entityid",
+  "wikibase-property": "wikibase-entityid",
+  "globe-coordinate": "globecoordinate",
+  "monolingualtext": "monolingualtext",
+  "quantity": "quantity",
+  "string": "string",
+  "time": "time",
+  "math": "string",
+  "musical-notation": "string",
+  "entity-schema": "wikibase-entityid",
+  "wikibase-lexeme": "wikibase-entityid",
+  "wikibase-form": "wikibase-entityid",
+  "wikibase-sense": "wikibase-entityid"
+}

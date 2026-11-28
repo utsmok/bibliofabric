@@ -1,0 +1,36 @@
+{
+  "results": [
+    {
+      "id": "P31",
+      "display-label": {
+        "language": "en",
+        "value": "instance of"
+      },
+      "description": {
+        "language": "en",
+        "value": "type to which this subject corresponds/belongs. Different from P279 (subclass of); for example: K2 is an instance of mountain; volcano is a subclass of mountain"
+      },
+      "match": {
+        "type": "label",
+        "language": "en",
+        "text": "instance of"
+      }
+    },
+    {
+      "id": "P3450",
+      "display-label": {
+        "language": "en",
+        "value": "sports season of league or competition"
+      },
+      "description": {
+        "language": "en",
+        "value": "property that shows the competition of which the item is a season. Use P5138 for \"season of club or team\"."
+      },
+      "match": {
+        "type": "alias",
+        "language": "en",
+        "text": "athletics meeting item belonging to this instance"
+      }
+    }
+  ]
+}

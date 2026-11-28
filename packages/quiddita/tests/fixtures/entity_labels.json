@@ -1,0 +1,21 @@
+{
+  "entities": {
+    "Q42": {
+      "type": "item",
+      "id": "Q42",
+      "labels": {},
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "British science fiction writer and humorist (1952–2001)"
+        },
+        "nl": {
+          "language": "nl",
+          "value": "Engels schrijver (1952–2001)"
+        }
+      },
+      "aliases": {}
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,52 @@
+{
+  "results": [
+    {
+      "id": "Q42",
+      "display-label": {
+        "language": "mul",
+        "value": "Douglas Adams"
+      },
+      "description": {
+        "language": "en",
+        "value": "British science fiction writer and humorist (1952–2001)"
+      },
+      "match": {
+        "type": "label",
+        "language": "mul",
+        "text": "Douglas Adams"
+      }
+    },
+    {
+      "id": "Q28421831",
+      "display-label": {
+        "language": "en",
+        "value": "Douglas Adams"
+      },
+      "description": {
+        "language": "en",
+        "value": "American environmental engineer"
+      },
+      "match": {
+        "type": "label",
+        "language": "en",
+        "text": "Douglas Adams"
+      }
+    },
+    {
+      "id": "Q61853920",
+      "display-label": {
+        "language": "en",
+        "value": "Douglas H Adams"
+      },
+      "description": {
+        "language": "en",
+        "value": "researcher ORCID ID = 0000-0002-3539-6629"
+      },
+      "match": {
+        "type": "label",
+        "language": "en",
+        "text": "Douglas H Adams"
+      }
+    }
+  ]
+}

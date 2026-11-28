@@ -1,0 +1,130 @@
+"""Client for the SPARQL query service on ``query.wikidata.org``."""
+
+from typing import TYPE_CHECKING, Any
+
+from bibliofabric.exceptions import ConfigurationError
+
+from ..dialect import SPARQL_BASE_URL, SPARQL_PATH
+from ..models import SparqlResult
+
+if TYPE_CHECKING:
+    from .client import QuidditaQueryClient
+
+_ACCEPT_FORMATS = {
+    "json": "application/sparql-results+json",
+    "xml": "application/sparql-results+xml",
+    "csv": "text/csv",
+    "tsv": "text/tab-separated-values",
+    "turtle": "text/turtle",
+}
+
+
+class SparqlClient:
+    """Client for SPARQL SELECT, ASK, and CONSTRUCT queries.
+
+    The query service is a second host, so the
+    :class:`QuidditaQueryClient` behind this resource is a second API
+    client instance. It shares the settings object and the rate limiter with
+    the main client: SPARQL requests run in the ``sparql`` rate class, Action
+    API and REST requests in the ``default`` class, and one limiter inside
+    the main client paces both classes. See ``docs/quiddita/sparql.md``.
+
+    The service answers malformed or overlong queries with HTTP 400 and a
+    plain-text Java stack trace; those raise
+    :class:`~bibliofabric.exceptions.APIError` with the text as the body.
+    """
+
+    def __init__(self, query_client: "QuidditaQueryClient") -> None:
+        """Build the resource client on the second-host query client."""
+        self._client = query_client
+
+    async def query(
+        self,
+        query: str,
+        *,
+        timeout: float | None = None,
+    ) -> SparqlResult:
+        """Run a query with ``GET`` and return the typed SPARQL 1.1 JSON result."""
+        body = await self._send(query, method="GET", timeout=timeout)
+        return SparqlResult.model_validate(self._client.parse_json(body))
+
+    async def query_post(
+        self,
+        query: str,
+        *,
+        timeout: float | None = None,
+    ) -> SparqlResult:
+        """Run a query with ``POST`` and return the typed SPARQL 1.1 JSON result.
+
+        Long queries belong in a ``POST`` body: URL length limits do not
+        apply. The POST is read-only, so the request carries ``retry=True``
+        for the framework's transient-failure retries.
+        """
+        response = await self._send(query, method="POST", timeout=timeout)
+        return SparqlResult.model_validate(self._client.parse_json(response))
+
+    async def query_text(
+        self,
+        query: str,
+        *,
+        format: str = "json",
+        timeout: float | None = None,
+    ) -> str:
+        """Run a query with ``GET`` and return the raw body as text.
+
+        ``format`` selects the representation through the ``Accept`` header:
+        the service ignores a non-JSON ``format`` query parameter and answers
+        SPARQL-result XML unless asked otherwise (verified 2026-11-27).
+        Supported values: ``json``, ``xml``, ``csv``, ``tsv``, ``turtle``.
+        The body passes through as text; only :meth:`query` and
+        :meth:`query_post` parse the typed SPARQL 1.1 JSON shape.
+        """
+        accept = _ACCEPT_FORMATS.get(format)
+        if accept is None:
+            raise ConfigurationError(
+                f"format must be one of {sorted(_ACCEPT_FORMATS)}, got {format!r}."
+            )
+        response = await self._send(
+            query,
+            method="GET",
+            timeout=timeout,
+            accept=accept,
+            format_param=None,
+        )
+        return response.text
+
+    async def _send(
+        self,
+        query: str,
+        *,
+        method: str,
+        timeout: float | None,
+        accept: str | None = None,
+        format_param: str | None = "json",
+    ) -> Any:
+        if not query.strip():
+            raise ConfigurationError("The SPARQL query must be non-empty.")
+        endpoint = f"{SPARQL_BASE_URL}/{SPARQL_PATH}"
+        headers = {"Accept": accept} if accept is not None else None
+        params = {"query": query}
+        if format_param is not None:
+            params["format"] = format_param
+        if method == "POST":
+            return await self._client.request(
+                "POST",
+                endpoint,
+                data={"query": query, "format": "json"},
+                headers=headers,
+                timeout=timeout,
+                retry=True,
+            )
+        return await self._client.request(
+            "GET",
+            endpoint,
+            params=params,
+            headers=headers,
+            timeout=timeout,
+        )
+
+
+__all__ = ["SparqlClient"]

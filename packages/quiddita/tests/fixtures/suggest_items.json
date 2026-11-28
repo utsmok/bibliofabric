@@ -1,0 +1,36 @@
+{
+  "results": [
+    {
+      "id": "Q16834800",
+      "display-label": {
+        "language": "en",
+        "value": "Einstein"
+      },
+      "description": {
+        "language": "en",
+        "value": "family name"
+      },
+      "match": {
+        "type": "label",
+        "language": "en",
+        "text": "Einstein"
+      }
+    },
+    {
+      "id": "Q937",
+      "display-label": {
+        "language": "en",
+        "value": "Albert Einstein"
+      },
+      "description": {
+        "language": "en",
+        "value": "German-born theoretical physicist (1879–1955)"
+      },
+      "match": {
+        "type": "alias",
+        "language": "mul",
+        "text": "Einstein"
+      }
+    }
+  ]
+}
