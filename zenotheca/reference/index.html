@@ -1,0 +1,9035 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="S. Mok">
+      
+      
+        <link rel="canonical" href="https://utsmok.github.io/bibliofabric/zenotheca/reference/">
+      
+      
+        <link rel="prev" href="../upstream-quirks/">
+      
+      
+        <link rel="next" href="../../dataphora/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.50">
+    
+    
+      
+        <title>API reference - bibliofabric family docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.a40c8224.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#api-reference" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="bibliofabric family docs" class="md-header__button md-logo" aria-label="bibliofabric family docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            bibliofabric family docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              API reference
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/utsmok/bibliofabric/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="bibliofabric family docs" class="md-nav__button md-logo" aria-label="bibliofabric family docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    bibliofabric family docs
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/utsmok/bibliofabric/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Contributing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    bibliofabric
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            bibliofabric
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bibliofabric/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bibliofabric/client/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Quick start
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bibliofabric/sync/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Sync usage
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bibliofabric/errors/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Errors and limits
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            API reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bibliofabric/resources/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Resources
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bibliofabric/paging/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Paging
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bibliofabric/unwrap/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Unwrapping
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bibliofabric/config/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Configuration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bibliofabric/auth/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Authentication
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bibliofabric/ids/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Identifiers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bibliofabric/types/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Types
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bibliofabric/exceptions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Exceptions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bibliofabric/writing-a-client/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Building a client
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bibliofabric/authoring-sync/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Writing a client with sync support
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/bibliofabric/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    aireloom
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            aireloom
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aireloom/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Usage
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            Usage
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aireloom/usage/research_products/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Research products
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aireloom/usage/projects/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Projects, organizations, data sources, persons
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aireloom/usage/links/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Links
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aireloom/usage/scholix/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Scholix
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aireloom/errors/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Errors, retries, and rate limits
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aireloom/quirks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Upstream quirks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aireloom/api/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/aireloom/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    aletheca
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            aletheca
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aletheca/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_2" id="__nav_5_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Usage
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_2">
+            <span class="md-nav__icon md-icon"></span>
+            Usage
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aletheca/usage/works/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Works
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aletheca/usage/authors/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Authors
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aletheca/usage/sources/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Sources
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aletheca/usage/institutions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Institutions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aletheca/usage/topics/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Topics
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aletheca/usage/keywords/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Keywords
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aletheca/usage/publishers/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Publishers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aletheca/usage/funders/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Funders
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aletheca/usage/awards/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Awards
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aletheca/usage/locations/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Locations
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aletheca/usage/links/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Links
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aletheca/errors/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Errors, retries, and rate limits
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aletheca/upstream-quirks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Upstream quirks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aletheca/reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/aletheca/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    stavrophora
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            stavrophora
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../stavrophora/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_2" id="__nav_6_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Usage
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_2">
+            <span class="md-nav__icon md-icon"></span>
+            Usage
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../stavrophora/works/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Works
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../stavrophora/journals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Journals
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../stavrophora/funders/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Funders
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../stavrophora/members/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Members
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../stavrophora/types/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Types
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../stavrophora/prefixes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Prefixes
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../stavrophora/licenses/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Licenses
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../stavrophora/data-citations/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data citations (beta)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../stavrophora/errors/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Errors, retries, rate limits
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../stavrophora/quirks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Crossref quirks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../stavrophora/reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/stavrophora/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    rorifer
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            rorifer
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rorifer/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rorifer/organizations/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Organizations
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rorifer/dumps/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data dumps
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rorifer/upstream-quirks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Upstream quirks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rorifer/reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/rorifer/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    zenotheca
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            zenotheca
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../usage/records/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Records
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../usage/communities/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Communities
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../usage/vocabularies/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Vocabularies
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../usage/oai/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OAI-PMH
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../upstream-quirks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Upstream quirks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#client" class="md-nav__link">
+    <span class="md-ellipsis">
+      Client
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Client">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.ZenothecaClient" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZenothecaClient
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ZenothecaClient">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.ZenothecaClient.records" class="md-nav__link">
+    <span class="md-ellipsis">
+      records
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.ZenothecaClient.communities" class="md-nav__link">
+    <span class="md-ellipsis">
+      communities
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.ZenothecaClient.vocabularies" class="md-nav__link">
+    <span class="md-ellipsis">
+      vocabularies
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.ZenothecaClient.oai" class="md-nav__link">
+    <span class="md-ellipsis">
+      oai
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.ZenothecaClient.rate_class" class="md-nav__link">
+    <span class="md-ellipsis">
+      rate_class
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sync-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sync client
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Sync client">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.ZenothecaSyncClient" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZenothecaSyncClient
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ZenothecaSyncClient">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.ZenothecaSyncClient.records" class="md-nav__link">
+    <span class="md-ellipsis">
+      records
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.ZenothecaSyncClient.communities" class="md-nav__link">
+    <span class="md-ellipsis">
+      communities
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.ZenothecaSyncClient.vocabularies" class="md-nav__link">
+    <span class="md-ellipsis">
+      vocabularies
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.ZenothecaSyncClient.oai" class="md-nav__link">
+    <span class="md-ellipsis">
+      oai
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Settings
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.ZenothecaSettings" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZenothecaSettings
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ZenothecaSettings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.ZenothecaSettings.api_token" class="md-nav__link">
+    <span class="md-ellipsis">
+      api_token
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resource-clients" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resource clients
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Resource clients">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.records.ZenothecaRecordsClient" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZenothecaRecordsClient
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ZenothecaRecordsClient">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.records.ZenothecaRecordsClient.get" class="md-nav__link">
+    <span class="md-ellipsis">
+      get
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.records.ZenothecaRecordsClient.search" class="md-nav__link">
+    <span class="md-ellipsis">
+      search
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.records.ZenothecaRecordsClient.iterate" class="md-nav__link">
+    <span class="md-ellipsis">
+      iterate
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.records.ZenothecaRecordsClient.count" class="md-nav__link">
+    <span class="md-ellipsis">
+      count
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.records.ZenothecaRecordsClient.versions" class="md-nav__link">
+    <span class="md-ellipsis">
+      versions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.records.ZenothecaRecordsClient.latest" class="md-nav__link">
+    <span class="md-ellipsis">
+      latest
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.records.ZenothecaRecordsClient.files" class="md-nav__link">
+    <span class="md-ellipsis">
+      files
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.records.ZenothecaRecordsClient.download_file" class="md-nav__link">
+    <span class="md-ellipsis">
+      download_file
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.records.ZenothecaRecordsClient.communities" class="md-nav__link">
+    <span class="md-ellipsis">
+      communities
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.records.ZenothecaRecordsClient.export" class="md-nav__link">
+    <span class="md-ellipsis">
+      export
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.communities.ZenothecaCommunitiesClient" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZenothecaCommunitiesClient
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ZenothecaCommunitiesClient">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.communities.ZenothecaCommunitiesClient.records" class="md-nav__link">
+    <span class="md-ellipsis">
+      records
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.communities.ZenothecaCommunitiesClient.subcommunities" class="md-nav__link">
+    <span class="md-ellipsis">
+      subcommunities
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.vocabularies.VocabulariesClient" class="md-nav__link">
+    <span class="md-ellipsis">
+      VocabulariesClient
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="VocabulariesClient">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.vocabularies.VocabulariesClient.get" class="md-nav__link">
+    <span class="md-ellipsis">
+      get
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.vocabularies.VocabulariesClient.iterate" class="md-nav__link">
+    <span class="md-ellipsis">
+      iterate
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.vocabularies.VocabulariesClient.search" class="md-nav__link">
+    <span class="md-ellipsis">
+      search
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.oai.OaiClient" class="md-nav__link">
+    <span class="md-ellipsis">
+      OaiClient
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="OaiClient">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.oai.OaiClient.get_record" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_record
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.oai.OaiClient.identify" class="md-nav__link">
+    <span class="md-ellipsis">
+      identify
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.oai.OaiClient.iterate_identifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      iterate_identifiers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.oai.OaiClient.iterate_records" class="md-nav__link">
+    <span class="md-ellipsis">
+      iterate_records
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.oai.OaiClient.list_identifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      list_identifiers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.oai.OaiClient.list_metadata_formats" class="md-nav__link">
+    <span class="md-ellipsis">
+      list_metadata_formats
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.oai.OaiClient.list_records" class="md-nav__link">
+    <span class="md-ellipsis">
+      list_records
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.oai.OaiClient.list_sets" class="md-nav__link">
+    <span class="md-ellipsis">
+      list_sets
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.dialect.ZenothecaResourceClient" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZenothecaResourceClient
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ZenothecaResourceClient">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.dialect.ZenothecaResourceClient.with_params" class="md-nav__link">
+    <span class="md-ellipsis">
+      with_params
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#query-helpers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Query helpers
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Query helpers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.filters.term" class="md-nav__link">
+    <span class="md-ellipsis">
+      term
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.filters.phrase" class="md-nav__link">
+    <span class="md-ellipsis">
+      phrase
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.filters.community" class="md-nav__link">
+    <span class="md-ellipsis">
+      community
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.filters.resource_type" class="md-nav__link">
+    <span class="md-ellipsis">
+      resource_type
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.filters.any_of" class="md-nav__link">
+    <span class="md-ellipsis">
+      any_of
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.filters.all_of" class="md-nav__link">
+    <span class="md-ellipsis">
+      all_of
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#identifier-helpers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Identifier helpers
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Identifier helpers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.ids.normalize_record_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      normalize_record_id
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.ids.normalize_community_slug" class="md-nav__link">
+    <span class="md-ellipsis">
+      normalize_community_slug
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dialect" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dialect
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dialect">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.dialect" class="md-nav__link">
+    <span class="md-ellipsis">
+      dialect
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="dialect">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.dialect.ZENODO_API_BASE_URL" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZENODO_API_BASE_URL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.dialect.ZENODO_OAI_BASE_URL" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZENODO_OAI_BASE_URL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.dialect.ZENODO_MAX_PAGE_SIZE" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZENODO_MAX_PAGE_SIZE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.dialect.ZENODO_DEFAULT_PAGE_SIZE" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZENODO_DEFAULT_PAGE_SIZE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.dialect.ZENODO_MAX_RESULT_WINDOW" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZENODO_MAX_RESULT_WINDOW
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.dialect.RECORD_SORT_OPTIONS" class="md-nav__link">
+    <span class="md-ellipsis">
+      RECORD_SORT_OPTIONS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.dialect.RECORD_EXPORT_FORMATS" class="md-nav__link">
+    <span class="md-ellipsis">
+      RECORD_EXPORT_FORMATS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.dialect.TOP_LEVEL_VOCABULARIES" class="md-nav__link">
+    <span class="md-ellipsis">
+      TOP_LEVEL_VOCABULARIES
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.dialect.ZENODO_SEARCH_RATE_CLASS" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZENODO_SEARCH_RATE_CLASS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.dialect.ZENODO_SEARCH_REQUESTS_PER_SECOND" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZENODO_SEARCH_REQUESTS_PER_SECOND
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.dialect.is_search_route" class="md-nav__link">
+    <span class="md-ellipsis">
+      is_search_route
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#models" class="md-nav__link">
+    <span class="md-ellipsis">
+      Models
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Models">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.ZenothecaRecord" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZenothecaRecord
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ZenothecaRecord">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.ZenothecaRecord.concept_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      concept_id
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.ZenothecaRecordMetadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZenothecaRecordMetadata
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ZenothecaRecordMetadata">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.ZenothecaRecordMetadata.concept_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      concept_id
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.ZenothecaFiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZenothecaFiles
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ZenothecaFiles">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.ZenothecaFiles.keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      keys
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.ZenothecaFileEntry" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZenothecaFileEntry
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.ZenothecaCommunity" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZenothecaCommunity
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.ZenothecaCommunityMetadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZenothecaCommunityMetadata
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.ZenothecaVocabulary" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZenothecaVocabulary
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ZenothecaVocabulary">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.ZenothecaVocabulary.english_title" class="md-nav__link">
+    <span class="md-ellipsis">
+      english_title
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.OaiIdentifyResponse" class="md-nav__link">
+    <span class="md-ellipsis">
+      OaiIdentifyResponse
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.OaiFormats" class="md-nav__link">
+    <span class="md-ellipsis">
+      OaiFormats
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.OaiSets" class="md-nav__link">
+    <span class="md-ellipsis">
+      OaiSets
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.OaiIdentifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      OaiIdentifiers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.OaiRecords" class="md-nav__link">
+    <span class="md-ellipsis">
+      OaiRecords
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.OaiRecordResponse" class="md-nav__link">
+    <span class="md-ellipsis">
+      OaiRecordResponse
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.OaiRecord" class="md-nav__link">
+    <span class="md-ellipsis">
+      OaiRecord
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.OaiHeader" class="md-nav__link">
+    <span class="md-ellipsis">
+      OaiHeader
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="OaiHeader">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.OaiHeader.deleted" class="md-nav__link">
+    <span class="md-ellipsis">
+      deleted
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.OaiResumptionToken" class="md-nav__link">
+    <span class="md-ellipsis">
+      OaiResumptionToken
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/zenotheca/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    dataphora
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            dataphora
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dataphora/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dataphora/usage/dois/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DOIs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dataphora/usage/clients/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Clients
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dataphora/usage/providers/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Providers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dataphora/usage/repositories/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Repositories
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dataphora/usage/prefixes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Prefixes
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dataphora/usage/events/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Events
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dataphora/usage/media/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Media and other account routes
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dataphora/usage/graphql/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    GraphQL
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dataphora/upstream-quirks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Upstream quirks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dataphora/reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/dataphora/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    opcitato
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            opcitato
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../opcitato/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../opcitato/index-api/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Index API
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../opcitato/meta-api/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Meta API
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../opcitato/upstream-quirks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Upstream quirks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../opcitato/reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/opcitato/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    hodoi
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            hodoi
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hodoi/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hodoi/agencies/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Registration agencies
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hodoi/handles/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Handles
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hodoi/metadata/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Metadata
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hodoi/upstream-quirks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Upstream quirks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hodoi/reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/hodoi/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    scholiast
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            scholiast
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../scholiast/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../scholiast/papers/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Papers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../scholiast/authors/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Authors
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../scholiast/recommendations/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Recommendations
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../scholiast/datasets/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Datasets
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../scholiast/other-routes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Snippets and patents
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../scholiast/upstream-quirks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Upstream quirks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../scholiast/reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/scholiast/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    orchis
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13">
+            <span class="md-nav__icon md-icon"></span>
+            orchis
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../orchis/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../orchis/records/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Records
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../orchis/person/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Person sections
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../orchis/activities/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Activities
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../orchis/search/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Search
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../orchis/upstream-quirks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Upstream quirks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../orchis/reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/orchis/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_14" >
+        
+          
+          <label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    europaea
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_14_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_14">
+            <span class="md-nav__icon md-icon"></span>
+            europaea
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../europaea/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../europaea/search/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Search
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../europaea/articles/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Articles
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../europaea/annotations/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Annotations
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../europaea/grants-profiles-preprints/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Grants, profiles, and preprints
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../europaea/upstream-quirks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Upstream quirks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../europaea/reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/europaea/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_15" >
+        
+          
+          <label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    quiddita
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_15_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_15">
+            <span class="md-nav__icon md-icon"></span>
+            quiddita
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quiddita/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quiddita/entities/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Entities
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quiddita/search/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Search
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quiddita/claims/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Claims and statements
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quiddita/sitelinks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Site links
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quiddita/lexemes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Lexemes
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quiddita/sparql/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SPARQL
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quiddita/utilities/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Utility modules
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quiddita/upstream-quirks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Upstream quirks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quiddita/reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/quiddita/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_16" >
+        
+          
+          <label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    diurnalia
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_16_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_16">
+            <span class="md-nav__icon md-icon"></span>
+            diurnalia
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diurnalia/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diurnalia/journals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Journals
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diurnalia/articles/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Articles
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diurnalia/upstream-quirks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Upstream quirks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diurnalia/reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/diurnalia/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_17" >
+        
+          
+          <label class="md-nav__link" for="__nav_17" id="__nav_17_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    seriatim
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_17_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_17">
+            <span class="md-nav__icon md-icon"></span>
+            seriatim
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../seriatim/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../seriatim/records/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Records
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../seriatim/search/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Search
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../seriatim/ltwa/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Title Word Abbreviations
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../seriatim/upstream-quirks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Upstream quirks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../seriatim/reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/seriatim/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_18" >
+        
+          
+          <label class="md-nav__link" for="__nav_18" id="__nav_18_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    archeion
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_18_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_18">
+            <span class="md-nav__icon md-icon"></span>
+            archeion
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../archeion/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../archeion/query/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Query
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../archeion/upstream-quirks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Upstream quirks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../archeion/reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/archeion/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_19" >
+        
+          
+          <label class="md-nav__link" for="__nav_19" id="__nav_19_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    prodromus
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_19_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_19">
+            <span class="md-nav__icon md-icon"></span>
+            prodromus
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prodromus/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home and reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/prodromus/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_20" >
+        
+          
+          <label class="md-nav__link" for="__nav_20" id="__nav_20_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Roadmap & Architecture
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_20_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_20">
+            <span class="md-nav__icon md-icon"></span>
+            Roadmap & Architecture
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../roadmap/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../roadmap/api-landscape-works/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Works, Data & OA APIs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../roadmap/api-landscape-registries/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Authority Registries & PIDs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../roadmap/wave-1-clients/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Wave 1 Client Specs & Core Enablers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../roadmap/wave-1-libraries/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Wave 1 Libraries
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../roadmap/deferred/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Deferred Work
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../roadmap/canonical-fusion/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Canonical Entity Fusion
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#client" class="md-nav__link">
+    <span class="md-ellipsis">
+      Client
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Client">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.ZenothecaClient" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZenothecaClient
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ZenothecaClient">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.ZenothecaClient.records" class="md-nav__link">
+    <span class="md-ellipsis">
+      records
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.ZenothecaClient.communities" class="md-nav__link">
+    <span class="md-ellipsis">
+      communities
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.ZenothecaClient.vocabularies" class="md-nav__link">
+    <span class="md-ellipsis">
+      vocabularies
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.ZenothecaClient.oai" class="md-nav__link">
+    <span class="md-ellipsis">
+      oai
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.ZenothecaClient.rate_class" class="md-nav__link">
+    <span class="md-ellipsis">
+      rate_class
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sync-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sync client
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Sync client">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.ZenothecaSyncClient" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZenothecaSyncClient
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ZenothecaSyncClient">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.ZenothecaSyncClient.records" class="md-nav__link">
+    <span class="md-ellipsis">
+      records
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.ZenothecaSyncClient.communities" class="md-nav__link">
+    <span class="md-ellipsis">
+      communities
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.ZenothecaSyncClient.vocabularies" class="md-nav__link">
+    <span class="md-ellipsis">
+      vocabularies
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.ZenothecaSyncClient.oai" class="md-nav__link">
+    <span class="md-ellipsis">
+      oai
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Settings
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.ZenothecaSettings" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZenothecaSettings
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ZenothecaSettings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.ZenothecaSettings.api_token" class="md-nav__link">
+    <span class="md-ellipsis">
+      api_token
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resource-clients" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resource clients
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Resource clients">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.records.ZenothecaRecordsClient" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZenothecaRecordsClient
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ZenothecaRecordsClient">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.records.ZenothecaRecordsClient.get" class="md-nav__link">
+    <span class="md-ellipsis">
+      get
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.records.ZenothecaRecordsClient.search" class="md-nav__link">
+    <span class="md-ellipsis">
+      search
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.records.ZenothecaRecordsClient.iterate" class="md-nav__link">
+    <span class="md-ellipsis">
+      iterate
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.records.ZenothecaRecordsClient.count" class="md-nav__link">
+    <span class="md-ellipsis">
+      count
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.records.ZenothecaRecordsClient.versions" class="md-nav__link">
+    <span class="md-ellipsis">
+      versions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.records.ZenothecaRecordsClient.latest" class="md-nav__link">
+    <span class="md-ellipsis">
+      latest
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.records.ZenothecaRecordsClient.files" class="md-nav__link">
+    <span class="md-ellipsis">
+      files
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.records.ZenothecaRecordsClient.download_file" class="md-nav__link">
+    <span class="md-ellipsis">
+      download_file
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.records.ZenothecaRecordsClient.communities" class="md-nav__link">
+    <span class="md-ellipsis">
+      communities
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.records.ZenothecaRecordsClient.export" class="md-nav__link">
+    <span class="md-ellipsis">
+      export
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.communities.ZenothecaCommunitiesClient" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZenothecaCommunitiesClient
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ZenothecaCommunitiesClient">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.communities.ZenothecaCommunitiesClient.records" class="md-nav__link">
+    <span class="md-ellipsis">
+      records
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.communities.ZenothecaCommunitiesClient.subcommunities" class="md-nav__link">
+    <span class="md-ellipsis">
+      subcommunities
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.vocabularies.VocabulariesClient" class="md-nav__link">
+    <span class="md-ellipsis">
+      VocabulariesClient
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="VocabulariesClient">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.vocabularies.VocabulariesClient.get" class="md-nav__link">
+    <span class="md-ellipsis">
+      get
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.vocabularies.VocabulariesClient.iterate" class="md-nav__link">
+    <span class="md-ellipsis">
+      iterate
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.vocabularies.VocabulariesClient.search" class="md-nav__link">
+    <span class="md-ellipsis">
+      search
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.oai.OaiClient" class="md-nav__link">
+    <span class="md-ellipsis">
+      OaiClient
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="OaiClient">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.oai.OaiClient.get_record" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_record
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.oai.OaiClient.identify" class="md-nav__link">
+    <span class="md-ellipsis">
+      identify
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.oai.OaiClient.iterate_identifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      iterate_identifiers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.oai.OaiClient.iterate_records" class="md-nav__link">
+    <span class="md-ellipsis">
+      iterate_records
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.oai.OaiClient.list_identifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      list_identifiers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.oai.OaiClient.list_metadata_formats" class="md-nav__link">
+    <span class="md-ellipsis">
+      list_metadata_formats
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.oai.OaiClient.list_records" class="md-nav__link">
+    <span class="md-ellipsis">
+      list_records
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.oai.OaiClient.list_sets" class="md-nav__link">
+    <span class="md-ellipsis">
+      list_sets
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.dialect.ZenothecaResourceClient" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZenothecaResourceClient
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ZenothecaResourceClient">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca._async.dialect.ZenothecaResourceClient.with_params" class="md-nav__link">
+    <span class="md-ellipsis">
+      with_params
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#query-helpers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Query helpers
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Query helpers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.filters.term" class="md-nav__link">
+    <span class="md-ellipsis">
+      term
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.filters.phrase" class="md-nav__link">
+    <span class="md-ellipsis">
+      phrase
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.filters.community" class="md-nav__link">
+    <span class="md-ellipsis">
+      community
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.filters.resource_type" class="md-nav__link">
+    <span class="md-ellipsis">
+      resource_type
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.filters.any_of" class="md-nav__link">
+    <span class="md-ellipsis">
+      any_of
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.filters.all_of" class="md-nav__link">
+    <span class="md-ellipsis">
+      all_of
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#identifier-helpers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Identifier helpers
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Identifier helpers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.ids.normalize_record_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      normalize_record_id
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.ids.normalize_community_slug" class="md-nav__link">
+    <span class="md-ellipsis">
+      normalize_community_slug
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dialect" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dialect
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dialect">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.dialect" class="md-nav__link">
+    <span class="md-ellipsis">
+      dialect
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="dialect">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.dialect.ZENODO_API_BASE_URL" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZENODO_API_BASE_URL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.dialect.ZENODO_OAI_BASE_URL" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZENODO_OAI_BASE_URL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.dialect.ZENODO_MAX_PAGE_SIZE" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZENODO_MAX_PAGE_SIZE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.dialect.ZENODO_DEFAULT_PAGE_SIZE" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZENODO_DEFAULT_PAGE_SIZE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.dialect.ZENODO_MAX_RESULT_WINDOW" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZENODO_MAX_RESULT_WINDOW
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.dialect.RECORD_SORT_OPTIONS" class="md-nav__link">
+    <span class="md-ellipsis">
+      RECORD_SORT_OPTIONS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.dialect.RECORD_EXPORT_FORMATS" class="md-nav__link">
+    <span class="md-ellipsis">
+      RECORD_EXPORT_FORMATS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.dialect.TOP_LEVEL_VOCABULARIES" class="md-nav__link">
+    <span class="md-ellipsis">
+      TOP_LEVEL_VOCABULARIES
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.dialect.ZENODO_SEARCH_RATE_CLASS" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZENODO_SEARCH_RATE_CLASS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.dialect.ZENODO_SEARCH_REQUESTS_PER_SECOND" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZENODO_SEARCH_REQUESTS_PER_SECOND
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.dialect.is_search_route" class="md-nav__link">
+    <span class="md-ellipsis">
+      is_search_route
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#models" class="md-nav__link">
+    <span class="md-ellipsis">
+      Models
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Models">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.ZenothecaRecord" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZenothecaRecord
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ZenothecaRecord">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.ZenothecaRecord.concept_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      concept_id
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.ZenothecaRecordMetadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZenothecaRecordMetadata
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ZenothecaRecordMetadata">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.ZenothecaRecordMetadata.concept_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      concept_id
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.ZenothecaFiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZenothecaFiles
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ZenothecaFiles">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.ZenothecaFiles.keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      keys
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.ZenothecaFileEntry" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZenothecaFileEntry
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.ZenothecaCommunity" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZenothecaCommunity
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.ZenothecaCommunityMetadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZenothecaCommunityMetadata
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.ZenothecaVocabulary" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZenothecaVocabulary
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ZenothecaVocabulary">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.ZenothecaVocabulary.english_title" class="md-nav__link">
+    <span class="md-ellipsis">
+      english_title
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.OaiIdentifyResponse" class="md-nav__link">
+    <span class="md-ellipsis">
+      OaiIdentifyResponse
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.OaiFormats" class="md-nav__link">
+    <span class="md-ellipsis">
+      OaiFormats
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.OaiSets" class="md-nav__link">
+    <span class="md-ellipsis">
+      OaiSets
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.OaiIdentifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      OaiIdentifiers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.OaiRecords" class="md-nav__link">
+    <span class="md-ellipsis">
+      OaiRecords
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.OaiRecordResponse" class="md-nav__link">
+    <span class="md-ellipsis">
+      OaiRecordResponse
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.OaiRecord" class="md-nav__link">
+    <span class="md-ellipsis">
+      OaiRecord
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.OaiHeader" class="md-nav__link">
+    <span class="md-ellipsis">
+      OaiHeader
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="OaiHeader">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.OaiHeader.deleted" class="md-nav__link">
+    <span class="md-ellipsis">
+      deleted
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zenotheca.models.OaiResumptionToken" class="md-nav__link">
+    <span class="md-ellipsis">
+      OaiResumptionToken
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="api-reference">API reference</h1>
+<p>Generated from the source with mkdocstrings.</p>
+<h2 id="client">Client</h2>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="zenotheca.ZenothecaClient" class="doc doc-heading">
+            <code>zenotheca.ZenothecaClient</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="BaseApiClient (bibliofabric.BaseApiClient)" href="../../bibliofabric/client/#bibliofabric._async.client.BaseApiClient">BaseApiClient</a></code></p>
+
+
+        <p>Client for the Zenodo REST API and its OAI-PMH endpoint.</p>
+<p>Public reads need no credentials. With <code>api_token</code> set the client
+sends <code>Authorization: Bearer</code> on every request and allows the larger
+authenticated page size. The client sends <code>Accept: application/json</code>
+and a <code>User-Agent</code> on every request; Zenodo rejects requests without
+a <code>User-Agent</code>.</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="zenotheca.ZenothecaClient.records" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">records</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-cached"><code>cached</code></small>
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>The records resource client.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="zenotheca.ZenothecaClient.communities" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">communities</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-cached"><code>cached</code></small>
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>The communities resource client.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="zenotheca.ZenothecaClient.vocabularies" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">vocabularies</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-cached"><code>cached</code></small>
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>The vocabularies resource client.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="zenotheca.ZenothecaClient.oai" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">oai</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-cached"><code>cached</code></small>
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>The OAI-PMH client for <code>https://zenodo.org/oai2d</code>.</p>
+
+    </div>
+
+</div>
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="zenotheca.ZenothecaClient.rate_class" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">rate_class</span><span class="p">(</span><span class="n">request</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Pace the two search routes in their own class.</p>
+<p>Callers without a token get 30 search requests per minute, far
+fewer than the 133 of the other routes, so the record search and
+the search over the records of one community get the <code>search</code>
+rate class of :attr:<code>ZenothecaSettings.rate_limits</code>.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="sync-client">Sync client</h2>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="zenotheca.ZenothecaSyncClient" class="doc doc-heading">
+            <code>zenotheca.ZenothecaSyncClient</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="bibliofabric.SyncBaseApiClient">SyncBaseApiClient</span></code></p>
+
+
+        <p>Client for the Zenodo REST API and its OAI-PMH endpoint.</p>
+<p>Public reads need no credentials. With <code>api_token</code> set the client
+sends <code>Authorization: Bearer</code> on every request and allows the larger
+authenticated page size. The client sends <code>Accept: application/json</code>
+and a <code>User-Agent</code> on every request; Zenodo rejects requests without
+a <code>User-Agent</code>.</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="zenotheca.ZenothecaSyncClient.records" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">records</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-cached"><code>cached</code></small>
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>The records resource client.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="zenotheca.ZenothecaSyncClient.communities" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">communities</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-cached"><code>cached</code></small>
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>The communities resource client.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="zenotheca.ZenothecaSyncClient.vocabularies" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">vocabularies</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-cached"><code>cached</code></small>
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>The vocabularies resource client.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="zenotheca.ZenothecaSyncClient.oai" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">oai</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-cached"><code>cached</code></small>
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>The OAI-PMH client for <code>https://zenodo.org/oai2d</code>.</p>
+
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div><p>The sync twins of the resource clients are exported from the package root
+(<code>ZenothecaRecordsSyncClient</code>, <code>ZenothecaCommunitiesSyncClient</code>,
+<code>VocabulariesSyncClient</code>, <code>OaiSyncClient</code>). They
+mirror the async resource clients method for method.</p>
+<h2 id="settings">Settings</h2>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="zenotheca.ZenothecaSettings" class="doc doc-heading">
+            <code>zenotheca.ZenothecaSettings</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="BaseApiSettings (bibliofabric.config.BaseApiSettings)" href="../../bibliofabric/config/#bibliofabric.config.BaseApiSettings">BaseApiSettings</a></code></p>
+
+
+        <p>Zenodo-specific client settings.</p>
+<p>Inherits <code>timeout</code>, <code>max_retries</code>, <code>max_retry_wait</code>,
+<code>max_requests_per_second</code>, <code>max_concurrency</code>, <code>rate_limits</code>,
+<code>user_agent</code> and <code>mailto</code> from :class:<code>bibliofabric.config.BaseApiSettings</code>
+and sets Zenodo defaults: 2 requests per second, concurrency 5, and a
+<code>search</code> class at one request every 2 seconds for the two search
+routes, which allow 30 requests per minute without a token. Public
+reads need no credentials. Zenodo rejects requests without a
+<code>User-Agent</code> header; the client always sends one.</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="zenotheca.ZenothecaSettings.api_token" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">api_token</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Optional Zenodo access token.</p>
+<p>Sent as <code>Authorization: Bearer</code>; lifts the page size cap from 25 to
+the documented 100 and grants access to private record reads. Public
+reads work without it.</p>
+
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="resource-clients">Resource clients</h2>
+<p>Each resource client inherits the generic operations from
+<code>bibliofabric.ResourceClient</code> (<code>get</code>, <code>search</code>, <code>iterate</code>, <code>collect</code>,
+<code>first</code>, <code>count</code>) through <code>zenotheca._async.dialect.ZenothecaResourceClient</code>.
+Only the members that Zenodo changes or adds are shown here.</p>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="zenotheca._async.records.ZenothecaRecordsClient" class="doc doc-heading">
+            <code>zenotheca._async.records.ZenothecaRecordsClient</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="zenotheca._async.dialect.ZenothecaResourceClient" href="#zenotheca._async.dialect.ZenothecaResourceClient">ZenothecaResourceClient</a>[<a class="autorefs autorefs-internal" title="zenotheca.models.ZenothecaRecord" href="#zenotheca.models.ZenothecaRecord">ZenothecaRecord</a>]</code></p>
+
+
+        <p>Client for the <code>/records</code> endpoints.</p>
+<p><code>get</code> accepts a version id (<code>24378467</code>) or a concept id
+(<code>6347574</code>); a concept id follows Zenodo's redirect and answers the
+newest version. <code>versions</code> and <code>latest</code> need a version id.</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="zenotheca._async.records.ZenothecaRecordsClient.get" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Fetch one record by version or concept id.</p>
+<p>Zenodo answers a concept id with a redirect to the newest version;
+the redirect is followed. 404 raises :class:<code>NotFoundError</code>.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="zenotheca._async.records.ZenothecaRecordsClient.search" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">search</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">page_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cursor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">on_error</span><span class="o">=</span><span class="s1">&#39;raise&#39;</span><span class="p">,</span> <span class="n">failures</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">all_versions</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Fetch one page of records.</p>
+<p><code>query</code> is an Elasticsearch query string (build clauses with
+:mod:<code>zenotheca.filters</code>). <code>sort</code> accepts <code>bestmatch</code>,
+<code>mostrecent</code>, and <code>-mostrecent</code>; <code>mostrecent</code> orders by last
+update, not by publication date. <code>all_versions</code> counts every
+version of each matching concept, not only the newest.
+:attr:<code>Page.meta</code> carries the facet counts (<code>access_status</code>,
+<code>file_type</code>, <code>publication_date</code>, <code>resource_type</code>,
+<code>subject</code>).</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="zenotheca._async.records.ZenothecaRecordsClient.iterate" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">iterate</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">page_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cursor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">on_error</span><span class="o">=</span><span class="s1">&#39;raise&#39;</span><span class="p">,</span> <span class="n">failures</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">on_page</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">all_versions</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Iterate over all matching records, page by page.</p>
+<p>Accepts the same arguments as :meth:<code>search</code>. Iteration stops at
+<code>limit</code>, on an empty page, when <code>hits.total</code> records were seen,
+or when a page would cross the Elasticsearch <code>max_result_window</code>
+of 10,000 results.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="zenotheca._async.records.ZenothecaRecordsClient.count" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">count</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">all_versions</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Return <code>hits.total</code> of the query.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="zenotheca._async.records.ZenothecaRecordsClient.versions" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">versions</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">page_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">on_error</span><span class="o">=</span><span class="s1">&#39;raise&#39;</span><span class="p">,</span> <span class="n">failures</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>List the versions of one concept, newest first.</p>
+<p><code>id</code> is any version id of the concept (<code>24378467</code>); a concept
+id answers 404. Zenodo pages the list like a search (default
+<code>size</code> 25, sorted by <code>version</code>) and reports the family size in
+<code>hits.total</code>.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="zenotheca._async.records.ZenothecaRecordsClient.latest" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">latest</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Return the newest version of the concept <code>id</code> belongs to.</p>
+<p><code>id</code> is any version id; Zenodo answers the <code>versions/latest</code>
+route with a redirect to the newest version, which is followed.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="zenotheca._async.records.ZenothecaRecordsClient.files" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">files</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>List the files of one record version.</p>
+<p>Returns the full listing with one :class:<code>ZenothecaFileEntry</code> per
+file; the file list embedded in a record is shorter.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="zenotheca._async.records.ZenothecaRecordsClient.download_file" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">download_file</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Stream one file of a record version to <code>dest</code> and return the path.</p>
+<p><code>key</code> is the file name from the record's <code>files</code> list or from
+:meth:<code>files</code>. Creates parent directories and overwrites an
+existing file.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="zenotheca._async.records.ZenothecaRecordsClient.communities" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">communities</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">page_size</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>List the communities that include one record version.</p>
+<p>Zenodo pages the list like a search and reports the number of
+communities in <code>hits.total</code>.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="zenotheca._async.records.ZenothecaRecordsClient.export" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">export</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="nb">format</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Return one record version in an export format, as text.</p>
+<p><code>format</code> is a name from :data:<code>zenotheca.RECORD_EXPORT_FORMATS</code>,
+such as <code>bibtex</code>, <code>csl</code>, <code>datacite-json</code>, or <code>dcat-ap</code>. The
+exports live on the website (<code>/records/{id}/export/{format}</code>), not
+under <code>/api</code>; an unknown format answers 404.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="zenotheca._async.communities.ZenothecaCommunitiesClient" class="doc doc-heading">
+            <code>zenotheca._async.communities.ZenothecaCommunitiesClient</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="zenotheca._async.dialect.ZenothecaResourceClient" href="#zenotheca._async.dialect.ZenothecaResourceClient">ZenothecaResourceClient</a>[<a class="autorefs autorefs-internal" title="zenotheca.models.ZenothecaCommunity" href="#zenotheca.models.ZenothecaCommunity">ZenothecaCommunity</a>]</code></p>
+
+
+        <p>Client for the <code>/communities</code> endpoints.</p>
+<p><code>get</code>, :meth:<code>search</code>, and :meth:<code>iterate</code> accept the community slug
+(<code>ror-data</code>) or the community URL. The community <code>id</code> the API
+returns is a UUID that the <code>/communities/{id}</code> routes accept too.</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="zenotheca._async.communities.ZenothecaCommunitiesClient.records" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">records</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">page_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">on_error</span><span class="o">=</span><span class="s1">&#39;raise&#39;</span><span class="p">,</span> <span class="n">failures</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">all_versions</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Search the records accepted into one community.</p>
+<p>Accepts the query parameters of the records search; <code>filters</code>
+takes a mapping such as <code>{"type": "dataset"}</code>. The route answers
+the same envelope, so :attr:<code>Page.meta</code> carries the records facet
+counts.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="zenotheca._async.communities.ZenothecaCommunitiesClient.subcommunities" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">subcommunities</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">page_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">on_error</span><span class="o">=</span><span class="s1">&#39;raise&#39;</span><span class="p">,</span> <span class="n">failures</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>List the subcommunities of one community.</p>
+<p>The route answers the community envelope with <code>sortBy</code> <code>newest</code>
+and the <code>type</code>, <code>funder</code>, and <code>organization</code> facets; most
+communities carry no children, so <code>total</code> is usually 0.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="zenotheca._async.vocabularies.VocabulariesClient" class="doc doc-heading">
+            <code>zenotheca._async.vocabularies.VocabulariesClient</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+
+
+        <p>Client for the vocabulary routes.</p>
+<p>A vocabulary is a reference list. Most live under <code>/vocabularies/{name}</code>
+(<code>resourcetypes</code>, <code>licenses</code>, <code>languages</code>, <code>communitytypes</code>).
+The four large ones have their own top-level routes, which the client
+picks for these names: <code>funders</code>, <code>awards</code>, <code>affiliations</code>, and
+<code>subjects</code> (<code>/funders</code> and so on). Unknown names answer 404. Entries
+page like a search (<code>size</code>, <code>page</code>, <code>q</code>).</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="zenotheca._async.vocabularies.VocabulariesClient.get" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Return one entry of vocabulary <code>name</code>; 404 raises <code>NotFoundError</code>.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="zenotheca._async.vocabularies.VocabulariesClient.iterate" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">iterate</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">page_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Iterate over every entry of vocabulary <code>name</code>; <code>limit</code> stops early.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="zenotheca._async.vocabularies.VocabulariesClient.search" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">search</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">page_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Fetch one page of the entries of vocabulary <code>name</code>.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="zenotheca._async.oai.OaiClient" class="doc doc-heading">
+            <code>zenotheca._async.oai.OaiClient</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+
+
+        <p>Client for the six OAI-PMH verbs of Zenodo.</p>
+<p><code>list_records</code> and <code>list_identifiers</code> accept <code>from</code>, <code>until</code>,
+<code>set</code>, and <code>resumption_token</code>; the <code>iterate_records</code> and
+<code>iterate_identifiers</code> helpers follow the resumption tokens until the
+repository reports the end of the list.</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="zenotheca._async.oai.OaiClient.get_record" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_record</span><span class="p">(</span><span class="n">identifier</span><span class="p">,</span> <span class="n">metadata_prefix</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Return one record by its OAI identifier (<code>oai:zenodo.org:&lt;id&gt;</code>).</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="zenotheca._async.oai.OaiClient.identify" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">identify</span><span class="p">()</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Return the repository identity (<code>Identify</code>).</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="zenotheca._async.oai.OaiClient.iterate_identifiers" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">iterate_identifiers</span><span class="p">(</span><span class="n">metadata_prefix</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">from_</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">until</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">set</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Yield every record header that matches, following resumption tokens.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="zenotheca._async.oai.OaiClient.iterate_records" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">iterate_records</span><span class="p">(</span><span class="n">metadata_prefix</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">from_</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">until</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">set</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Yield every record that matches, following resumption tokens.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="zenotheca._async.oai.OaiClient.list_identifiers" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">list_identifiers</span><span class="p">(</span><span class="n">metadata_prefix</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">from_</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">until</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">set</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">resumption_token</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Return one page of record headers.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="zenotheca._async.oai.OaiClient.list_metadata_formats" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">list_metadata_formats</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">identifier</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Return the metadata prefixes the repository offers.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="zenotheca._async.oai.OaiClient.list_records" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">list_records</span><span class="p">(</span><span class="n">metadata_prefix</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">from_</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">until</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">set</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">resumption_token</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Return one page of records with raw metadata payloads.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="zenotheca._async.oai.OaiClient.list_sets" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">list_sets</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">resumption_token</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Return one page of sets; pass the resumption token for the next page.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="zenotheca._async.dialect.ZenothecaResourceClient" class="doc doc-heading">
+            <code>zenotheca._async.dialect.ZenothecaResourceClient</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="ResourceClient (bibliofabric.ResourceClient)" href="../../bibliofabric/resources/#bibliofabric._async.resources.ResourceClient">ResourceClient</a>[<span title="E">E</span>]</code></p>
+
+
+        <p>Base client for Zenodo resources: the shared query dialect.</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="zenotheca._async.dialect.ZenothecaResourceClient.with_params" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">with_params</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">all_versions</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Merge the <code>all_versions</code> switch into <code>params</code>.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="query-helpers">Query helpers</h2>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="zenotheca.filters.term" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">zenotheca</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">term</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+
+        <p>Return <code>field:value</code> as a bare term clause.</p>
+<p>Use this for values without whitespace or special characters, such as
+<code>term("communities", "ror-data")</code>. Anything else needs
+:func:<code>phrase</code>.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="zenotheca.filters.phrase" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">zenotheca</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">phrase</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+
+        <p>Return <code>field:"value"</code> as a quoted phrase clause (<code>title:"ROR Data"</code>).</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="zenotheca.filters.community" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">zenotheca</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">community</span><span class="p">(</span><span class="n">slug</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+
+        <p>Return the <code>communities:&lt;slug&gt;</code> clause (verified 2026-11-27).</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="zenotheca.filters.resource_type" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">zenotheca</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">resource_type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+
+        <p>Return the <code>type:&lt;value&gt;</code> clause (<code>dataset</code>, <code>publication</code>, ...).</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="zenotheca.filters.any_of" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">zenotheca</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">any_of</span><span class="p">(</span><span class="o">*</span><span class="n">clauses</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+
+        <p>Join clauses with <code>OR</code>; a single clause passes through unchanged.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="zenotheca.filters.all_of" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">zenotheca</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">all_of</span><span class="p">(</span><span class="o">*</span><span class="n">clauses</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+
+        <p>Join clauses with the implicit <code>AND</code> of the query string.</p>
+
+
+    </div>
+
+</div><h2 id="identifier-helpers">Identifier helpers</h2>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="zenotheca.ids.normalize_record_id" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">zenotheca</span><span class="o">.</span><span class="n">ids</span><span class="o">.</span><span class="n">normalize_record_id</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+
+        <p>Return the bare numeric record or concept id behind <code>value</code>.</p>
+<p>Accepts the bare id (<code>24378467</code>), a DOI
+(<code>10.5281/zenodo.24378467</code>), and Zenodo record URLs
+(<code>https://zenodo.org/records/24378467</code> and the <code>/api/records/</code> and
+<code>/record/</code> variants). A value that does not resolve to a numeric id
+raises :class:<code>ConfigurationError</code>.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="zenotheca.ids.normalize_community_slug" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">zenotheca</span><span class="o">.</span><span class="n">ids</span><span class="o">.</span><span class="n">normalize_community_slug</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+
+        <p>Return the bare community slug behind <code>value</code>.</p>
+<p>Accepts the bare slug (<code>ror-data</code>) and the community URL
+(<code>https://zenodo.org/communities/ror-data</code>).</p>
+
+
+    </div>
+
+</div><h2 id="dialect">Dialect</h2>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h3 id="zenotheca.dialect" class="doc doc-heading">
+            <code>zenotheca.dialect</code>
+
+
+</h3>
+
+    <div class="doc doc-contents first">
+
+        <p>Zenodo query dialect constants.</p>
+<p><code>ZENODO_DIALECT</code> tells bibliofabric how Zenodo names its query parameters.
+The resource-client base that consumes these constants lives in
+:mod:<code>zenotheca._async.dialect</code> (its sync twin is generated from it).</p>
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="zenotheca.dialect.ZENODO_API_BASE_URL" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">ZENODO_API_BASE_URL</span> <span class="o">=</span> <span class="s1">&#39;https://zenodo.org/api&#39;</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="zenotheca.dialect.ZENODO_OAI_BASE_URL" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">ZENODO_OAI_BASE_URL</span> <span class="o">=</span> <span class="s1">&#39;https://zenodo.org/oai2d&#39;</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="zenotheca.dialect.ZENODO_MAX_PAGE_SIZE" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">ZENODO_MAX_PAGE_SIZE</span> <span class="o">=</span> <span class="mi">25</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="zenotheca.dialect.ZENODO_DEFAULT_PAGE_SIZE" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">ZENODO_DEFAULT_PAGE_SIZE</span> <span class="o">=</span> <span class="mi">25</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="zenotheca.dialect.ZENODO_MAX_RESULT_WINDOW" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">ZENODO_MAX_RESULT_WINDOW</span> <span class="o">=</span> <span class="mi">10000</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="zenotheca.dialect.RECORD_SORT_OPTIONS" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">RECORD_SORT_OPTIONS</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">({</span><span class="s1">&#39;bestmatch&#39;</span><span class="p">,</span> <span class="s1">&#39;mostrecent&#39;</span><span class="p">,</span> <span class="s1">&#39;-mostrecent&#39;</span><span class="p">})</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="zenotheca.dialect.RECORD_EXPORT_FORMATS" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">RECORD_EXPORT_FORMATS</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">({</span><span class="s1">&#39;bibtex&#39;</span><span class="p">,</span> <span class="s1">&#39;cff&#39;</span><span class="p">,</span> <span class="s1">&#39;codemeta&#39;</span><span class="p">,</span> <span class="s1">&#39;csl&#39;</span><span class="p">,</span> <span class="s1">&#39;datacite-json&#39;</span><span class="p">,</span> <span class="s1">&#39;datacite-xml&#39;</span><span class="p">,</span> <span class="s1">&#39;dcat-ap&#39;</span><span class="p">,</span> <span class="s1">&#39;dublincore&#39;</span><span class="p">,</span> <span class="s1">&#39;geojson&#39;</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">,</span> <span class="s1">&#39;json-ld&#39;</span><span class="p">,</span> <span class="s1">&#39;marcxml&#39;</span><span class="p">})</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="zenotheca.dialect.TOP_LEVEL_VOCABULARIES" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">TOP_LEVEL_VOCABULARIES</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">({</span><span class="s1">&#39;affiliations&#39;</span><span class="p">,</span> <span class="s1">&#39;awards&#39;</span><span class="p">,</span> <span class="s1">&#39;funders&#39;</span><span class="p">,</span> <span class="s1">&#39;subjects&#39;</span><span class="p">})</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="zenotheca.dialect.ZENODO_SEARCH_RATE_CLASS" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">ZENODO_SEARCH_RATE_CLASS</span> <span class="o">=</span> <span class="s1">&#39;search&#39;</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="zenotheca.dialect.ZENODO_SEARCH_REQUESTS_PER_SECOND" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">ZENODO_SEARCH_REQUESTS_PER_SECOND</span> <span class="o">=</span> <span class="mf">0.5</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+</div>
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="zenotheca.dialect.is_search_route" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">is_search_route</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">api_path</span><span class="o">=</span><span class="s1">&#39;/api&#39;</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Return whether <code>path</code> is one of the two Zenodo search routes.</p>
+<p>The record search (<code>/records</code>) and the search over the records of one
+community (<code>/communities/{slug}/records</code>) share the stricter limit of
+the search engine. Every other route, including OAI-PMH, does not.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>path</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Path of the request URL.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>api_path</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Path prefix of the REST API below the host.</p>
+              </div>
+            </td>
+            <td>
+                  <code>&#39;/api&#39;</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="models">Models</h2>
+<p>Entity models live in <code>zenotheca.models</code> and re-export from the top-level
+package (<code>from zenotheca import ZenothecaRecord, ...</code>). They are plain
+Pydantic models with <code>extra="allow"</code>; see the source for the full field
+list.</p>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="zenotheca.models.ZenothecaRecord" class="doc doc-heading">
+            <code>zenotheca.models.ZenothecaRecord</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+
+
+        <p>One Zenodo record (a published version of a concept).</p>
+<p><code>id</code> is the numeric version id, <code>conceptrecid</code> the id of the version
+family, and <code>recid</code> repeats <code>id</code> as a string. <code>state</code> is <code>done</code>
+on published records and <code>status</code> is <code>published</code>. <code>links</code> maps the
+related routes (<code>self</code>, <code>latest</code>, <code>versions</code>, <code>parent</code>,
+<code>files</code>, ...).</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="zenotheca.models.ZenothecaRecord.concept_id" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">concept_id</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>The concept id (<code>conceptrecid</code>), shared by every version.</p>
+
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="zenotheca.models.ZenothecaRecordMetadata" class="doc doc-heading">
+            <code>zenotheca.models.ZenothecaRecordMetadata</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+
+
+        <p>The <code>metadata</code> block of a record.</p>
+<p>Legacy deposit fields (<code>journal</code>, <code>part_of</code>, <code>thesis</code>, ...),
+granted fields, and any field added upstream are kept through
+<code>extra="allow"</code>.</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="zenotheca.models.ZenothecaRecordMetadata.concept_id" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">concept_id</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>The concept id from <code>relations.version[0].parent.pid_value</code>, if any.</p>
+
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="zenotheca.models.ZenothecaFiles" class="doc doc-heading">
+            <code>zenotheca.models.ZenothecaFiles</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+
+
+        <p>The answer of <code>GET /records/{id}/files</code>.</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="zenotheca.models.ZenothecaFiles.keys" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">keys</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>The file keys in <code>order</code> when set, else the <code>entries</code> order.</p>
+
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="zenotheca.models.ZenothecaFileEntry" class="doc doc-heading">
+            <code>zenotheca.models.ZenothecaFileEntry</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+
+
+        <p>One entry of the <code>/records/{id}/files</code> listing.</p>
+<p>Carries more detail than the file list embedded in a record:
+<code>mimetype</code>, <code>version_id</code>, <code>bucket_id</code>, and <code>links</code> with the
+<code>self</code>, <code>content</code>, and <code>container</code> routes.</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="zenotheca.models.ZenothecaCommunity" class="doc doc-heading">
+            <code>zenotheca.models.ZenothecaCommunity</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+
+
+        <p>One Zenodo community.</p>
+<p><code>id</code> is the stable UUID the API routes accept; <code>slug</code> is the short
+name (<code>ror-data</code>) that the <code>/communities/{slug}</code> routes and the
+<code>communities</code> parameter of the records search accept too.</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="zenotheca.models.ZenothecaCommunityMetadata" class="doc doc-heading">
+            <code>zenotheca.models.ZenothecaCommunityMetadata</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+
+
+        <p>The <code>metadata</code> block of a community.</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="zenotheca.models.ZenothecaVocabulary" class="doc doc-heading">
+            <code>zenotheca.models.ZenothecaVocabulary</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+
+
+        <p>One entry of a Zenodo vocabulary (<code>resourcetypes</code>, <code>licenses</code>, ...).</p>
+<p><code>title</code> and <code>description</code> map language codes to texts; <code>props</code>
+carries the vocabulary-specific extra properties (<code>schema.org</code>,
+<code>datacite_general</code>, <code>alpha_2</code>, ...).</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="zenotheca.models.ZenothecaVocabulary.english_title" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">english_title</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>The <code>en</code> title, else the first title the entry carries.</p>
+
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="zenotheca.models.OaiIdentifyResponse" class="doc doc-heading">
+            <code>zenotheca.models.OaiIdentifyResponse</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+
+
+        <p>The answer of <code>Identify</code>.</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="zenotheca.models.OaiFormats" class="doc doc-heading">
+            <code>zenotheca.models.OaiFormats</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+
+
+        <p>The answer of <code>ListMetadataFormats</code>.</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="zenotheca.models.OaiSets" class="doc doc-heading">
+            <code>zenotheca.models.OaiSets</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+
+
+        <p>One page of <code>ListSets</code>.</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="zenotheca.models.OaiIdentifiers" class="doc doc-heading">
+            <code>zenotheca.models.OaiIdentifiers</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+
+
+        <p>One page of <code>ListIdentifiers</code>.</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="zenotheca.models.OaiRecords" class="doc doc-heading">
+            <code>zenotheca.models.OaiRecords</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+
+
+        <p>One page of <code>ListRecords</code>.</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="zenotheca.models.OaiRecordResponse" class="doc doc-heading">
+            <code>zenotheca.models.OaiRecordResponse</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+
+
+        <p>The answer of <code>GetRecord</code>.</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="zenotheca.models.OaiRecord" class="doc doc-heading">
+            <code>zenotheca.models.OaiRecord</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+
+
+        <p>One OAI-PMH record.</p>
+<p><code>metadata</code> is the raw XML string of the metadata element, tagged with
+the <code>metadata_prefix</code> that produced it and the namespace URI of that
+prefix. <code>about</code> holds the raw XML strings of the <code>about</code> elements.</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="zenotheca.models.OaiHeader" class="doc doc-heading">
+            <code>zenotheca.models.OaiHeader</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+
+
+        <p>The header of an OAI record (identifier, datestamp, sets).</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="zenotheca.models.OaiHeader.deleted" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">deleted</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Whether the record carries <code>status="deleted"</code>.</p>
+
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="zenotheca.models.OaiResumptionToken" class="doc doc-heading">
+            <code>zenotheca.models.OaiResumptionToken</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+
+
+        <p>An OAI-PMH resumption token with its attributes.</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.60a45f97.min.js"></script>
+      
+    
+  </body>
+</html>

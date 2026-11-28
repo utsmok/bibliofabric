@@ -1,0 +1,5287 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="S. Mok">
+      
+      
+        <link rel="canonical" href="https://utsmok.github.io/bibliofabric/roadmap/canonical-fusion/">
+      
+      
+        <link rel="prev" href="../deferred/">
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.50">
+    
+    
+      
+        <title>Canonical Entity Fusion - bibliofabric family docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.a40c8224.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#canonical-entity-fusion-architecture" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="bibliofabric family docs" class="md-header__button md-logo" aria-label="bibliofabric family docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            bibliofabric family docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Canonical Entity Fusion
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/utsmok/bibliofabric/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="bibliofabric family docs" class="md-nav__button md-logo" aria-label="bibliofabric family docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    bibliofabric family docs
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/utsmok/bibliofabric/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Contributing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    bibliofabric
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            bibliofabric
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bibliofabric/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bibliofabric/client/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Quick start
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bibliofabric/sync/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Sync usage
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bibliofabric/errors/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Errors and limits
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            API reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bibliofabric/resources/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Resources
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bibliofabric/paging/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Paging
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bibliofabric/unwrap/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Unwrapping
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bibliofabric/config/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Configuration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bibliofabric/auth/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Authentication
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bibliofabric/ids/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Identifiers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bibliofabric/types/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Types
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bibliofabric/exceptions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Exceptions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bibliofabric/writing-a-client/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Building a client
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bibliofabric/authoring-sync/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Writing a client with sync support
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/bibliofabric/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    aireloom
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            aireloom
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aireloom/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Usage
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            Usage
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aireloom/usage/research_products/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Research products
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aireloom/usage/projects/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Projects, organizations, data sources, persons
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aireloom/usage/links/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Links
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aireloom/usage/scholix/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Scholix
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aireloom/errors/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Errors, retries, and rate limits
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aireloom/quirks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Upstream quirks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aireloom/api/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/aireloom/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    aletheca
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            aletheca
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aletheca/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_2" id="__nav_5_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Usage
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_2">
+            <span class="md-nav__icon md-icon"></span>
+            Usage
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aletheca/usage/works/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Works
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aletheca/usage/authors/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Authors
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aletheca/usage/sources/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Sources
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aletheca/usage/institutions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Institutions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aletheca/usage/topics/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Topics
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aletheca/usage/keywords/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Keywords
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aletheca/usage/publishers/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Publishers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aletheca/usage/funders/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Funders
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aletheca/usage/awards/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Awards
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aletheca/usage/locations/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Locations
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aletheca/usage/links/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Links
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aletheca/errors/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Errors, retries, and rate limits
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aletheca/upstream-quirks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Upstream quirks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aletheca/reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/aletheca/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    stavrophora
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            stavrophora
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../stavrophora/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_2" id="__nav_6_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Usage
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_2">
+            <span class="md-nav__icon md-icon"></span>
+            Usage
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../stavrophora/works/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Works
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../stavrophora/journals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Journals
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../stavrophora/funders/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Funders
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../stavrophora/members/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Members
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../stavrophora/types/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Types
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../stavrophora/prefixes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Prefixes
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../stavrophora/licenses/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Licenses
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../stavrophora/data-citations/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data citations (beta)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../stavrophora/errors/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Errors, retries, rate limits
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../stavrophora/quirks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Crossref quirks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../stavrophora/reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/stavrophora/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    rorifer
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            rorifer
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rorifer/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rorifer/organizations/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Organizations
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rorifer/dumps/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data dumps
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rorifer/upstream-quirks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Upstream quirks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rorifer/reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/rorifer/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    zenotheca
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            zenotheca
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../zenotheca/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../zenotheca/usage/records/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Records
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../zenotheca/usage/communities/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Communities
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../zenotheca/usage/vocabularies/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Vocabularies
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../zenotheca/usage/oai/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OAI-PMH
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../zenotheca/upstream-quirks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Upstream quirks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../zenotheca/reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/zenotheca/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    dataphora
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            dataphora
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dataphora/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dataphora/usage/dois/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DOIs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dataphora/usage/clients/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Clients
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dataphora/usage/providers/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Providers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dataphora/usage/repositories/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Repositories
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dataphora/usage/prefixes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Prefixes
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dataphora/usage/events/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Events
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dataphora/usage/media/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Media and other account routes
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dataphora/usage/graphql/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    GraphQL
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dataphora/upstream-quirks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Upstream quirks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dataphora/reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/dataphora/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    opcitato
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            opcitato
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../opcitato/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../opcitato/index-api/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Index API
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../opcitato/meta-api/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Meta API
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../opcitato/upstream-quirks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Upstream quirks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../opcitato/reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/opcitato/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    hodoi
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            hodoi
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hodoi/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hodoi/agencies/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Registration agencies
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hodoi/handles/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Handles
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hodoi/metadata/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Metadata
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hodoi/upstream-quirks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Upstream quirks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hodoi/reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/hodoi/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    scholiast
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            scholiast
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../scholiast/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../scholiast/papers/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Papers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../scholiast/authors/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Authors
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../scholiast/recommendations/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Recommendations
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../scholiast/datasets/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Datasets
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../scholiast/other-routes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Snippets and patents
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../scholiast/upstream-quirks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Upstream quirks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../scholiast/reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/scholiast/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    orchis
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13">
+            <span class="md-nav__icon md-icon"></span>
+            orchis
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../orchis/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../orchis/records/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Records
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../orchis/person/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Person sections
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../orchis/activities/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Activities
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../orchis/search/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Search
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../orchis/upstream-quirks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Upstream quirks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../orchis/reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/orchis/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_14" >
+        
+          
+          <label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    europaea
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_14_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_14">
+            <span class="md-nav__icon md-icon"></span>
+            europaea
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../europaea/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../europaea/search/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Search
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../europaea/articles/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Articles
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../europaea/annotations/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Annotations
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../europaea/grants-profiles-preprints/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Grants, profiles, and preprints
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../europaea/upstream-quirks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Upstream quirks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../europaea/reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/europaea/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_15" >
+        
+          
+          <label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    quiddita
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_15_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_15">
+            <span class="md-nav__icon md-icon"></span>
+            quiddita
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quiddita/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quiddita/entities/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Entities
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quiddita/search/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Search
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quiddita/claims/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Claims and statements
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quiddita/sitelinks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Site links
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quiddita/lexemes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Lexemes
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quiddita/sparql/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SPARQL
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quiddita/utilities/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Utility modules
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quiddita/upstream-quirks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Upstream quirks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quiddita/reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/quiddita/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_16" >
+        
+          
+          <label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    diurnalia
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_16_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_16">
+            <span class="md-nav__icon md-icon"></span>
+            diurnalia
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diurnalia/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diurnalia/journals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Journals
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diurnalia/articles/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Articles
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diurnalia/upstream-quirks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Upstream quirks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../diurnalia/reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/diurnalia/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_17" >
+        
+          
+          <label class="md-nav__link" for="__nav_17" id="__nav_17_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    seriatim
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_17_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_17">
+            <span class="md-nav__icon md-icon"></span>
+            seriatim
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../seriatim/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../seriatim/records/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Records
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../seriatim/search/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Search
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../seriatim/ltwa/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Title Word Abbreviations
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../seriatim/upstream-quirks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Upstream quirks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../seriatim/reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/seriatim/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_18" >
+        
+          
+          <label class="md-nav__link" for="__nav_18" id="__nav_18_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    archeion
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_18_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_18">
+            <span class="md-nav__icon md-icon"></span>
+            archeion
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../archeion/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../archeion/query/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Query
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../archeion/upstream-quirks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Upstream quirks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../archeion/reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/archeion/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_19" >
+        
+          
+          <label class="md-nav__link" for="__nav_19" id="__nav_19_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    prodromus
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_19_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_19">
+            <span class="md-nav__icon md-icon"></span>
+            prodromus
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prodromus/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home and reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/utsmok/bibliofabric/blob/main/packages/prodromus/CHANGELOG.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_20" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_20" id="__nav_20_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Roadmap & Architecture
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_20_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_20">
+            <span class="md-nav__icon md-icon"></span>
+            Roadmap & Architecture
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-landscape-works/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Works, Data & OA APIs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-landscape-registries/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Authority Registries & PIDs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wave-1-clients/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Wave 1 Client Specs & Core Enablers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wave-1-libraries/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Wave 1 Libraries
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deferred/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Deferred Work
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Canonical Entity Fusion
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Canonical Entity Fusion
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#design-synthesis-from-scholarly-knowledge-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Design Synthesis from Scholarly Knowledge Graphs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#layered-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      Layered Architecture
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ten-first-class-canonical-entities" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ten First-Class Canonical Entities
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#identity-clustering-guarded-links" class="md-nav__link">
+    <span class="md-ellipsis">
+      Identity Clustering &amp; Guarded Links
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#per-field-source-authority-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      Per-Field Source Authority Matrix
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#claim-provenance-conflict-resolution-license-governance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Claim Provenance, Conflict Resolution &amp; License Governance
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Claim Provenance, Conflict Resolution & License Governance">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#resolution-strategies-declarative-fusionpolicy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution Strategies (Declarative FusionPolicy)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#license-governance-fusionpolicy" class="md-nav__link">
+    <span class="md-ellipsis">
+      License Governance (FusionPolicy)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hybrid-waterfall-scatter-gather-execution-engine" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hybrid Waterfall + Scatter-Gather Execution Engine
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Hybrid Waterfall + Scatter-Gather Execution Engine">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#partial-failure-tolerance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Partial Failure Tolerance
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#local-caching-persistence-bulk-snapshots" class="md-nav__link">
+    <span class="md-ellipsis">
+      Local Caching, Persistence &amp; Bulk Snapshots
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lossy-export-adapters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lossy Export Adapters
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#design-synthesis-from-scholarly-knowledge-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Design Synthesis from Scholarly Knowledge Graphs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#layered-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      Layered Architecture
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ten-first-class-canonical-entities" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ten First-Class Canonical Entities
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#identity-clustering-guarded-links" class="md-nav__link">
+    <span class="md-ellipsis">
+      Identity Clustering &amp; Guarded Links
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#per-field-source-authority-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      Per-Field Source Authority Matrix
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#claim-provenance-conflict-resolution-license-governance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Claim Provenance, Conflict Resolution &amp; License Governance
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Claim Provenance, Conflict Resolution & License Governance">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#resolution-strategies-declarative-fusionpolicy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resolution Strategies (Declarative FusionPolicy)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#license-governance-fusionpolicy" class="md-nav__link">
+    <span class="md-ellipsis">
+      License Governance (FusionPolicy)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hybrid-waterfall-scatter-gather-execution-engine" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hybrid Waterfall + Scatter-Gather Execution Engine
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Hybrid Waterfall + Scatter-Gather Execution Engine">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#partial-failure-tolerance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Partial Failure Tolerance
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#local-caching-persistence-bulk-snapshots" class="md-nav__link">
+    <span class="md-ellipsis">
+      Local Caching, Persistence &amp; Bulk Snapshots
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lossy-export-adapters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lossy Export Adapters
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="canonical-entity-fusion-architecture">Canonical Entity Fusion Architecture</h1>
+<p><em>(Working name: <code>bibliocanon</code> — an orchestration, entity-resolution, and fusion
+library layered cleanly above <code>bibliofabric</code> and all single-source sibling
+clients.)</em></p>
+<h2 id="design-synthesis-from-scholarly-knowledge-graphs">Design Synthesis from Scholarly Knowledge Graphs</h2>
+<p>The architecture borrows proven patterns from major scholarly knowledge graphs
+while keeping local-first Python SDK ergonomics (no Spark or RDF triplestore
+required):</p>
+<table>
+<thead>
+<tr>
+<th>System</th>
+<th>Pattern Adopted</th>
+<th>Pitfall Avoided</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>OpenAIRE Graph</strong></td>
+<td>Multi-stage deduplication (blocking → similarity → transitive closure) + explicit per-assertion provenance &amp; trust scores (<code>0.0–1.0</code>).</td>
+<td>Heavy batch Hadoop/Spark coupling; must run both on-demand (async single-entity) and in local batch pipelines.</td>
+</tr>
+<tr>
+<td><strong>OpenAlex</strong></td>
+<td>Flat, ergonomic canonical Pydantic models grounded in ROR, ORCID, ISSN-L, and DOI; CC0 openness.</td>
+<td>Silent winner-takes-all overwrites where callers cannot inspect <em>which</em> source supplied a field or when.</td>
+</tr>
+<tr>
+<td><strong>OpenCitations Meta (OMID)</strong></td>
+<td>Internal stable IDs decoupled from external PIDs + versioned provenance snapshots.</td>
+<td>Triplestore/Blazegraph operational overhead; implement the data model in Pydantic + SQLite/DuckDB instead.</td>
+</tr>
+<tr>
+<td><strong>Wikidata / Scholia</strong></td>
+<td>Claim-centric model <code>(value, qualifiers, source, confidence)</code> so conflicting claims coexist transparently.</td>
+<td>Unbounded untyped schemas; preserve strict <code>ty</code>-checked Pydantic fields backed by a structured <code>claims</code> map.</td>
+</tr>
+<tr>
+<td><strong>CERIF / Research Graph</strong></td>
+<td>First-class temporal, role-typed relationships (<code>Person</code> —<code>[employed_at, 2020–2024]</code>→ <code>Organization</code>).</td>
+<td>CERIF-XML verbosity; represent edges as typed Pydantic models with optional export adapters.</td>
+</tr>
+<tr>
+<td><strong>CSL-JSON, BibTeX, Schema.org, Croissant</strong></td>
+<td>Standard <strong>lossy export projections</strong> tailored to downstream tools.</td>
+<td>Treating citation formats as the internal canonical schema (which drops affiliations, grants, OA policies, and provenance).</td>
+</tr>
+</tbody>
+</table>
+<h2 id="layered-architecture">Layered Architecture</h2>
+<pre><code class="language-text">┌─────────────────────────────────────────────────────────────────────────┐
+│                    Canonical Entity Fusion Library                      │
+│  ┌──────────────────┐  ┌─────────────────────┐  ┌────────────────────┐  │
+│  │  EntityResolver  │→ │  EnrichmentPlanner  │→ │   FusionEngine     │  │
+│  │ (PID norm + RA   │  │ (Waterfall / Scatter│  │ (Per-field policy, │  │
+│  │  routing + graph)│  │  Gather + Budgets)  │  │  claims + license) │  │
+│  └──────────────────┘  └─────────────────────┘  └─────────┬──────────┘  │
+│                                                           ▼             │
+│  ┌──────────────────┐  ┌─────────────────────┐  ┌────────────────────┐  │
+│  │  SourceAdapters  │  │  LocalCache &amp; Store │  │  ExportAdapters    │  │
+│  │ (aireloom,       │  │ (SQLite / DuckDB    │  │ (CSL-JSON, BibTeX, │  │
+│  │  stavrophora,    │  │  claims + ETag HTTP │  │  Schema.org, RIS,  │  │
+│  │  aletheca, ror,  │  │  + local snapshots) │  │  Croissant,Parquet)│  │
+│  │  orcid, doaj...) │  └─────────────────────┘  └────────────────────┘  │
+└────────────────────────────────────┬────────────────────────────────────┘
+                                     ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│    bibliofabric core (Async/Sync HTTP, Auth, Limiter, Retries, IDs)     │
+└─────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<h2 id="ten-first-class-canonical-entities">Ten First-Class Canonical Entities</h2>
+<p>Every entity inherits from <code>CanonicalEntity</code>:</p>
+<ul>
+<li><code>canonical_id: str</code> — deterministic internal URN (e.g.
+  <code>urn:biblio:work:doi:10.1038/...</code>, or content-addressed hash
+  <code>urn:biblio:work:sha256:...</code> when no hard PID exists).</li>
+<li><code>identifiers: IdentifierSet</code> — normalized multi-PID registry
+  (<code>dict[PidScheme, list[PidValue]]</code> with primary flag and source provenance).</li>
+<li><code>same_as: list[str]</code> — external canonical URIs (<code>ror.org</code>, <code>orcid.org</code>,
+  <code>wikidata.org</code>, <code>openalex.org</code>, <code>omid</code>).</li>
+<li><code>claims: dict[str, list[Claim]]</code> — raw per-field assertions retained for
+  auditability, offline re-fusion, and license filtering.</li>
+<li><code>provenance: EntityProvenance</code> — per-source fetch timestamps, fusion policy
+  version, source degradations, <code>has_conflict: bool</code>, and effective minimum
+  SPDX license.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Entity</th>
+<th>Primary Hard PIDs (Anchors)</th>
+<th>Secondary / Crosswalk PIDs</th>
+<th>Key Canonical Attributes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Work</strong> <em>(articles, preprints, books, chapters, proceedings)</em></td>
+<td><code>doi</code>, <code>isbn13</code>, <code>arxiv</code>, <code>pmid</code>, <code>pmcid</code>, <code>handle</code>, <code>ark</code></td>
+<td><code>openalex</code>, <code>openaire</code>, <code>s2</code>, <code>omid</code>, <code>wikidata</code>, <code>hal</code>, <code>oclc</code>, <code>lccn</code></td>
+<td>Title, subtitle, type (COAR/CSL), pub dates, abstract, language, ordered authorships (+ CRediT + affiliations), venue ref, citations/references, OA status/URLs, SPDX license, retraction/correction status, funding links, subjects.</td>
+</tr>
+<tr>
+<td><strong>Person / Author</strong></td>
+<td><code>orcid</code></td>
+<td><code>isni</code>, <code>viaf</code>, <code>wikidata</code>, <code>gnd</code>, <code>lcnaf</code>, <code>idref</code>, <code>openalex</code>, <code>s2</code>, <code>scopus_author</code></td>
+<td>Canonical name + variants, bio, keywords, temporal employments/educations (ROR-linked), external profiles, disambiguated works.</td>
+</tr>
+<tr>
+<td><strong>Organization</strong></td>
+<td><code>ror</code></td>
+<td><code>lei</code>, <code>isni</code>, <code>wikidata</code>, <code>grid</code>, <code>fundref</code>, <code>ringgold</code>, <code>gnd</code>, <code>eter</code>, <code>deqar</code>, <code>openalex</code></td>
+<td>Canonical name + aliases/acronyms/translations, types, geo (country/city/coords/continent), domains, temporal parent/child/successor links, corporate ownership (LEI).</td>
+</tr>
+<tr>
+<td><strong>Venue / Source</strong> <em>(journals, series, conferences, repos)</em></td>
+<td><code>issn_l</code>, <code>issn_p</code>, <code>issn_e</code></td>
+<td><code>doaj</code>, <code>openalex</code>, <code>crossref_journal</code>, <code>jufo</code>, <code>kanalregister</code>, <code>mirabel</code>, <code>wikidata</code>, <code>isbn_prefix</code></td>
+<td>Key title + title history (predecessor/successor), venue type, publisher ref, OA model (Diamond/Gold/Hybrid/Closed), APC + currency, DOAJ Seal, Keepers preservation, Green OA policy, namespaced national ratings (HK-dir/JUFO).</td>
+</tr>
+<tr>
+<td><strong>Publisher</strong></td>
+<td><code>ror</code>, <code>lei</code>, <code>crossref_member</code></td>
+<td><code>doi_prefix[]</code>, <code>isbn_prefix[]</code>, <code>isni</code>, <code>wikidata</code>, <code>kanalregister</code>, <code>jufo</code></td>
+<td>Canonical name, corporate parent (LEI/ROR), owned DOI/ISBN prefixes, imprint hierarchy, default archiving policies.</td>
+</tr>
+<tr>
+<td><strong>Funder</strong> <em>(Organization role)</em></td>
+<td><code>ror</code> <em>(2026 primary)</em></td>
+<td><code>fundref</code> <em>(legacy <code>10.13039/...</code>)</em>, <code>wikidata</code>, <code>crossref_funder</code>, <code>openalex</code></td>
+<td>Organization core + funder type (gov/philanthropy/industry), country, OA mandate policy (Open Policy Finder), funded grants count.</td>
+</tr>
+<tr>
+<td><strong>Grant / Project</strong></td>
+<td><code>raid</code>, <code>doi</code> (grant DOI), <code>(funder_ror, award_number)</code></td>
+<td><code>cordis</code>, <code>nih_core_project</code>, <code>nsf_award</code>, <code>ukri_gtr</code>, <code>arc_grant</code>, <code>snsf</code>, <code>openaire_project</code></td>
+<td>Title, abstract, funder ref, award number, start/end dates, budget + currency, PIs (ORCID), administering/partner orgs (ROR), linked outputs.</td>
+</tr>
+<tr>
+<td><strong>Dataset</strong></td>
+<td><code>doi</code>, <code>accession</code> (Identifiers.org CURIE), <code>ark</code></td>
+<td><code>zenodo</code>, <code>dryad</code>, <code>figshare</code>, <code>openaire</code>, <code>openalex</code></td>
+<td>Work core + version chain (<code>isVersionOf</code>), files/distributions, checksums/format/size, SPDX license, funding, <code>isSupplementTo</code>, Croissant ML-structure fields.</td>
+</tr>
+<tr>
+<td><strong>Software</strong></td>
+<td><code>doi</code>, <code>swhid</code>, <code>repo_url</code></td>
+<td><code>ascl</code>, <code>rrid</code>, <code>openaire</code>, <code>wikidata</code></td>
+<td>Name, version/release, repository URL, languages, SPDX license, authors/maintainers (ORCID), <code>CITATION.cff</code>/CodeMeta metadata, linked papers.</td>
+</tr>
+<tr>
+<td><strong>Concept / Subject</strong></td>
+<td>Canonical URI (<code>mesh:</code>, <code>lcsh:</code>, <code>anzsrc:</code>, <code>unesco:</code>, <code>oecd_fos:</code>, <code>openalex_topic:</code>)</td>
+<td><code>wikidata</code>, <code>gnd</code>, <code>skos:exactMatch</code> / <code>closeMatch</code></td>
+<td>Preferred multilingual labels, altLabels, taxonomy scheme, broader/narrower hierarchy, tree code.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="identity-clustering-guarded-links">Identity Clustering &amp; Guarded Links</h2>
+<p>Entity resolution maintains a bipartite equivalence graph
+<code>(EntityCluster) ↔ (PidScheme, normalized_value)</code>:</p>
+<ol>
+<li><strong>Hard 1:1 merges (Union-Find):</strong> Normalized <code>doi</code>, <code>orcid</code>, <code>ror</code>,
+   <code>issn_l</code>, <code>lei</code>, <code>raid</code>, <code>swhid</code>, <code>pmid</code>, and <code>wikidata</code> QID. Two records
+   sharing any hard PID merge deterministically into one equivalence cluster.</li>
+<li><strong>Guarded merges and version links (never collapsed destructively):</strong></li>
+<li><strong>Print vs. Electronic ISSN:</strong> Merge only through an authoritative
+     <strong>ISSN-L</strong> from ISSN Portal or DOAJ, never blindly on title similarity.</li>
+<li><strong>Preprint ↔ Version of Record (VoR):</strong> An arXiv ID or bioRxiv DOI and its
+     published journal DOI link via explicit <code>hasVersion</code> / <code>isVersionOf</code> edges
+     rather than destructive merge, preserving distinct dates, licenses, and
+     abstracts.</li>
+<li><strong>ISBN-10 / ISBN-13:</strong> Edition-level identifiers grouped under a parent
+     Work cluster.</li>
+<li><strong>Composite fallback keys:</strong></li>
+<li>Grants lacking DOIs/RAiDs anchor on <code>(funder_ror, normalized_award_code)</code>.</li>
+<li>Works lacking hard PIDs anchor on <code>(normalized_title_hash, year,
+     first_author_surname)</code> with fuzzy verification (Jaro-Winkler / Levenshtein
+     ≥ 0.92) before clustering.</li>
+</ol>
+<h2 id="per-field-source-authority-matrix">Per-Field Source Authority Matrix</h2>
+<table>
+<thead>
+<tr>
+<th>Entity</th>
+<th>Field Group</th>
+<th>Winning Authority Hierarchy (1st → Fallback)</th>
+<th>Resolution Strategy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Work</strong></td>
+<td>Bibliographic core (title, dates, container, issue/pages, type)</td>
+<td><strong>Crossref</strong> (journal/book DOIs) / <strong>DataCite</strong> (datasets/software/preprints) → <strong>DOI ConNeg</strong> (JaLC/mEDRA) → <strong>OpenAlex</strong> → <strong>OpenAIRE</strong> → <strong>Semantic Scholar</strong></td>
+<td><code>authority_priority</code></td>
+</tr>
+<tr>
+<td><strong>Work</strong></td>
+<td>Abstracts</td>
+<td><strong>PubMed / Europe PMC</strong> → <strong>Crossref</strong> (JATS) → <strong>OpenAIRE</strong> → <strong>Semantic Scholar</strong> → <strong>OpenAlex</strong></td>
+<td><code>authority_priority</code></td>
+</tr>
+<tr>
+<td><strong>Work</strong></td>
+<td>Citations &amp; References</td>
+<td><strong>OpenCitations</strong> ∪ <strong>Crossref</strong> ∪ <strong>OpenAlex</strong> ∪ <strong>Semantic Scholar</strong> ∪ <strong>OpenAIRE</strong> <em>(keep per-index counts separate)</em></td>
+<td><code>union_with_dedup</code></td>
+</tr>
+<tr>
+<td><strong>Work</strong></td>
+<td>OA Status, URLs &amp; License</td>
+<td><strong>Unpaywall / OpenAlex OA</strong> ∪ <strong>DOAJ</strong> ∪ <strong>Crossref</strong> ∪ <strong>OpenAIRE</strong> <em>(normalized via </em><em>SPDX</em><em>)</em></td>
+<td><code>union_with_dedup</code> + <code>authority_priority</code></td>
+</tr>
+<tr>
+<td><strong>Work</strong></td>
+<td>Retractions, Corrections &amp; EoCs</td>
+<td><strong>Retraction Watch (Crossref)</strong> → <strong>Crossref Crossmark</strong> → <strong>PubMed</strong> → <strong>OpenAlex</strong></td>
+<td><code>safety_monotonic</code> (<code>any_true_with_evidence</code>)</td>
+</tr>
+<tr>
+<td><strong>Work</strong></td>
+<td>Funding links</td>
+<td><strong>Crossref</strong> ∪ <strong>OpenAIRE</strong> ∪ <strong>NIH RePORTER / UKRI GtR</strong> ∪ <strong>OpenAlex</strong></td>
+<td><code>union_with_dedup</code> (tagged with confidence)</td>
+</tr>
+<tr>
+<td><strong>Person</strong></td>
+<td>Name, Bio, Temporal Affiliations, Curated Works</td>
+<td><strong>ORCID</strong> → <strong>Wikidata</strong> → <strong>Lobid-GND / VIAF / IdRef / LCNAF</strong> → <strong>OpenAlex</strong> → <strong>Semantic Scholar</strong></td>
+<td><code>authority_priority</code> + <code>union_with_dedup</code></td>
+</tr>
+<tr>
+<td><strong>Organization</strong></td>
+<td>Name, Hierarchy, Geo, Domains, Corporate Parent</td>
+<td><strong>ROR v2</strong> → <strong>GLEIF LEI</strong> <em>(legal form &amp; parent corp)</em> → <strong>Wikidata</strong> → <strong>DEQAR / ETER</strong> → <strong>OpenAlex</strong></td>
+<td><code>authority_priority</code></td>
+</tr>
+<tr>
+<td><strong>Venue / Journal</strong></td>
+<td>ISSN-L, Key Title, Title History, Preservation</td>
+<td><strong>ISSN Portal</strong> <em>(ISSN-L &amp; Keepers)</em> → <strong>DOAJ</strong> → <strong>Crossref Journals</strong> → <strong>OpenAlex Sources</strong></td>
+<td><code>authority_priority</code></td>
+</tr>
+<tr>
+<td><strong>Venue / Journal</strong></td>
+<td>OA Model, APC, Journal License, Peer Review</td>
+<td><strong>DOAJ</strong> → <strong>Mir@bel</strong> → <strong>OpenAlex</strong></td>
+<td><code>authority_priority</code></td>
+</tr>
+<tr>
+<td><strong>Venue / Journal</strong></td>
+<td>Green OA / Self-Archiving &amp; Embargo Policies</td>
+<td><strong>Open Policy Finder (Jisc)</strong> <em>(tagged <code>CC-BY-NC-ND-4.0</code>)</em> → <strong>Mir@bel</strong> → <strong>DOAJ</strong></td>
+<td><code>authority_priority</code> (license-gated)</td>
+</tr>
+<tr>
+<td><strong>Venue / Journal</strong></td>
+<td>National Quality Ratings / Book Publisher Tiers</td>
+<td><strong>HK-dir (Kanalregisteret)</strong>, <strong>JUFO</strong> <em>(stored as explicit namespaced ratings)</em></td>
+<td><code>namespaced_map</code></td>
+</tr>
+<tr>
+<td><strong>Grant / Project</strong></td>
+<td>Award Budget, Dates, PIs, Linked Outputs</td>
+<td><strong>Native Funder API</strong> <em>(NIH/NSF/UKRI/ARC/SNSF/CORDIS)</em> → <strong>RAiD</strong> → <strong>OpenAIRE Projects</strong> → <strong>Crossref Grants</strong></td>
+<td><code>authority_priority</code></td>
+</tr>
+<tr>
+<td><strong>Dataset / Software</strong></td>
+<td>Versions, Checksums, Files, License</td>
+<td><strong>DataCite</strong> / <strong>Zenodo</strong> / <strong>Software Heritage</strong> → <strong>OpenAIRE</strong> → <strong>Crossref</strong> → <strong>OpenAlex</strong></td>
+<td><code>authority_priority</code> + <code>spdx_normalize</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="claim-provenance-conflict-resolution-license-governance"><code>Claim</code> Provenance, Conflict Resolution &amp; License Governance</h2>
+<p>Every ingested upstream field is recorded as an immutable <code>Claim</code>:</p>
+<pre><code class="language-python">Claim(
+    field=&quot;title&quot;,
+    value=&quot;...&quot;,
+    source=&quot;crossref&quot;,
+    source_record_id=&quot;10.1038/s41586-020-2649-2&quot;,
+    retrieved_at=datetime(...),
+    source_updated_at=datetime(...),
+    confidence=1.0,
+    license_spdx=&quot;CC0-1.0&quot;,
+)
+</code></pre>
+<h3 id="resolution-strategies-declarative-fusionpolicy">Resolution Strategies (Declarative <code>FusionPolicy</code>)</h3>
+<ol>
+<li><strong><code>authority_priority</code>:</strong> Choose the claim from the highest-ranked source
+   for that field (tie-breaking by <code>confidence</code>, then <code>source_updated_at</code>).</li>
+<li><strong><code>freshest_timestamp</code>:</strong> Choose the latest <code>source_updated_at</code> for mutable
+   operational metadata (APCs, OA URL liveness, current employment flags).</li>
+<li><strong><code>union_with_dedup</code>:</strong> Merge normalized sets across sources (PIDs, aliases,
+   OA locations, funding awards, references, subject terms), retaining the list
+   of supporting sources per item. Never average incompatible citation counts
+   across indexes; expose per-source counts side by side.</li>
+<li><strong><code>safety_monotonic</code> (<code>any_true_with_evidence</code>):</strong> For retractions,
+   expressions of concern, and errata, any verified authoritative positive claim
+   surfaces prominently with evidence rather than being outvoted.</li>
+<li><strong><code>confidence_weighted</code>:</strong> For inferred links (affiliation string → ROR,
+   text-mined grants), accept claims at or above threshold (e.g. ROR
+   <code>chosen=True</code> or OpenAIRE trust ≥ 0.8) and keep lower-confidence matches in
+   <code>tentative_claims</code>.</li>
+<li><strong>Raw claim retention &amp; conflict surfacing:</strong> Non-winning claims stay in
+   <code>entity.claims[field]</code> and set <code>provenance.has_conflict = True</code> when
+   high-tier sources materially disagree (e.g., publication year off by &gt;1,
+   conflicting retractions, mismatched ISSN-L).</li>
+</ol>
+<h3 id="license-governance-fusionpolicy">License Governance (<code>FusionPolicy</code>)</h3>
+<p>Because upstream licenses differ materially — <strong>ROR, DOAJ, GLEIF, Wikidata,
+Lobid-GND, OpenAlex, Crossref bibliographic facts, DataCite, OpenCitations, and
+NIH/NSF</strong> are CC0/Public Domain, while <strong>Open Policy Finder</strong> is
+<code>CC-BY-NC-ND-4.0</code>, <strong>ORCID Public API</strong> carries non-commercial terms, and
+<strong>Google Books</strong> restricts persistent redistribution — <code>FusionPolicy</code> enforces
+licensing declaratively:</p>
+<pre><code class="language-python">policy = FusionPolicy(
+    commercial_safe=True,
+    allowed_licenses={&quot;CC0-1.0&quot;, &quot;CC-BY-4.0&quot;, &quot;ODC-By-1.0&quot;, &quot;OGL-UK-3.0&quot;},
+)
+</code></pre>
+<p>Disallowed sources are skipped during planning (saving quota) or stripped during
+offline re-fusion and export, and every fused entity computes its effective
+minimum license in <code>entity.provenance</code>.</p>
+<h2 id="hybrid-waterfall-scatter-gather-execution-engine">Hybrid Waterfall + Scatter-Gather Execution Engine</h2>
+<p>Pure scatter-gather wastes API quota (e.g. querying Crossref for a DataCite
+DOI); pure sequential waterfall is too slow. The planner runs a <strong>staged DAG</strong>
+with three built-in profiles (<code>fast</code>, <code>standard</code>, <code>deep</code>):</p>
+<ol>
+<li><strong>Stage 0 — Local &amp; Static Resolution (0 HTTP calls):</strong> Normalize PIDs via
+   <code>bibliofabric.ids</code>, query the local SQLite/DuckDB cache (with per-source
+   TTLs, e.g. ROR/ISSN 30d, Work metadata 7d, Citations 1d), and consult static
+   vocabularies (SPDX, CRediT, OECD FOS, ANZSRC) plus optional local ROR/DOAJ
+   dumps (<code>&lt;1 ms</code>).</li>
+<li><strong>Stage 1 — Fast Anchor &amp; Routing Call (1 call):</strong></li>
+<li>For DOIs: check local prefix cache or call <code>doi.org/ra/{doi}</code> (batchable)
+     to route straight to Crossref (<code>stavrophora</code>) vs. DataCite vs. ConNeg.</li>
+<li>Fetch the primary anchor record (Crossref/DataCite for Work, ORCID for
+     Person, ROR for Org, ISSN/DOAJ for Venue) to harvest secondary PIDs
+     (<code>orcid</code>, <code>ror</code>, <code>issn</code>, <code>pmid</code>, <code>grant_id</code>).</li>
+<li><strong>Stage 2 — Bounded Async Scatter-Gather (<code>run_bounded</code>):</strong></li>
+<li>Fan out in parallel across complementary sources unlocked by Stage 1 PIDs.</li>
+<li>Apply <strong>single-flight request coalescing</strong> so a batch of 50 works sharing
+     1 journal ISSN or 3 ROR IDs fires only 1 upstream fetch per unique anchor.</li>
+<li><strong>Stage 3 — Optional Recursive Graph Expansion (<code>depth=1..N</code>):</strong> Hydrate
+   linked <code>Author</code>, <code>Organization</code>, <code>Venue</code>, and <code>Grant</code> stubs into full
+   canonical entities on demand.</li>
+</ol>
+<h3 id="partial-failure-tolerance">Partial Failure Tolerance</h3>
+<p>Every adapter runs inside a per-source timeout and isolated error boundary
+(<code>on_error="degrade"</code> by default, <code>"raise"</code> optional) with a <strong>per-source
+circuit breaker</strong> that opens after consecutive <code>5xx</code>/<code>429</code>/timeout failures so a
+degraded registry (such as VIAF or LoC throttling) never stalls the pipeline.
+Each resolution returns <code>FusionResult[E]</code>:</p>
+<ul>
+<li><code>entity: E</code> — best canonical entity built from all succeeded sources</li>
+<li><code>sources_succeeded: list[str]</code></li>
+<li><code>source_errors: dict[str, SourceFailure]</code> — typed status, retryable flag, and
+  sanitized message</li>
+<li><code>completeness: float</code> — fraction of target field groups populated</li>
+</ul>
+<h2 id="local-caching-persistence-bulk-snapshots">Local Caching, Persistence &amp; Bulk Snapshots</h2>
+<p>Persistence is organized into three tiers:</p>
+<ul>
+<li><strong>Tier 1 — Raw HTTP ETag/TTL Cache (SQLite):</strong> Stores
+  <code>(source, canonical_request_key) → (etag, last_modified, status, gzip_json,
+  fetched_at, ttl)</code> to enable <code>If-None-Match</code> conditional revalidation for
+  slow-changing authorities (ROR, Wikidata, MeSH, SPDX).</li>
+<li><strong>Tier 2 — Claim &amp; Entity Graph Store (SQLite OLTP + DuckDB OLAP):</strong></li>
+<li><code>entities(canonical_id, entity_type, payload_json, updated_at, schema_version)</code></li>
+<li><code>identifiers(scheme, value, canonical_id, primary_flag, source)</code> — indexed
+    for O(1) PID crosswalk and Union-Find cluster lookups.</li>
+<li><code>claims(canonical_id, field, value_json, source, source_record_id,
+    confidence, license_spdx, retrieved_at)</code> — retaining raw claims allows
+    callers to <strong>re-run <code>FusionEngine</code> offline</strong> under a different
+    <code>FusionPolicy</code> (e.g. toggling <code>commercial_safe=True</code> or changing source
+    priority) without re-querying any API.</li>
+<li><code>relations(src_id, rel_type, dst_id, qualifiers_json, source, confidence)</code> —
+    CERIF-style typed temporal edges.</li>
+<li><strong>DuckDB bridge:</strong> Zero-copy SQL analytics and Parquet export over millions
+    of fused entities and claims.</li>
+<li><strong>Tier 3 — Local Bulk Snapshot Loaders:</strong> First-class loaders for compact,
+  high-value open dumps — <strong>ROR Zenodo dump (~115k orgs)</strong>, <strong>DOAJ journal dump
+  (~21k journals)</strong>, <strong>Retraction Watch daily GitLab CSV (~50k+ rows)</strong>, plus
+  static <strong>SPDX</strong>, <strong>CRediT</strong>, and <strong>ANZSRC</strong> tables — turning the highest-hit
+  lookups into <code>&lt;1 ms</code> zero-network calls.</li>
+</ul>
+<h2 id="lossy-export-adapters">Lossy Export Adapters</h2>
+<p>All exporters live under <code>exports/</code> with zero network I/O and optional
+license-compliance validation before serialization:</p>
+<table>
+<thead>
+<tr>
+<th>Exporter</th>
+<th>Output Format</th>
+<th>Primary Target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>to_csl_json(work)</code></td>
+<td>CSL-JSON</td>
+<td>Pandoc, Zotero, Citeproc (<code>id</code>, <code>type</code>, <code>DOI</code>, <code>ISSN</code>, <code>ISBN</code>, <code>author</code>, <code>issued.date-parts</code>, <code>container-title</code>)</td>
+</tr>
+<tr>
+<td><code>to_bibtex(work)</code></td>
+<td>BibTeX / BibLaTeX</td>
+<td>LaTeX workflows (deterministic citekeys, LaTeX escaping, <code>@article</code>/<code>@inproceedings</code>/<code>@book</code>/<code>@software</code>/<code>@dataset</code>)</td>
+</tr>
+<tr>
+<td><code>to_schema_org(entity)</code></td>
+<td>Schema.org JSON-LD</td>
+<td>Web/SEO &amp; knowledge graphs (<code>ScholarlyArticle</code>, <code>Person</code>, <code>Organization</code>, <code>Periodical</code>, <code>Grant</code>, <code>SoftwareSourceCode</code>, <code>Dataset</code> with <code>@id</code> &amp; <code>sameAs</code>)</td>
+</tr>
+<tr>
+<td><code>to_croissant(dataset)</code></td>
+<td>MLCommons Croissant JSON-LD</td>
+<td>ML-ready dataset metadata (<code>schema.org/Dataset</code> + <code>cr:distribution</code>, <code>cr:recordSet</code>, <code>cr:field</code>)</td>
+</tr>
+<tr>
+<td><code>to_ris(work)</code></td>
+<td>RIS</td>
+<td>Legacy reference managers &amp; systematic review tools (EndNote, RefWorks, Rayyan, Covidence)</td>
+</tr>
+<tr>
+<td><code>to_parquet(entities)</code></td>
+<td>Apache Parquet / Arrow</td>
+<td>Columnar bibliometrics &amp; ML pipelines (flattened entities, PID crosswalks, and edge tables via PyArrow/DuckDB)</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.60a45f97.min.js"></script>
+      
+    
+  </body>
+</html>
