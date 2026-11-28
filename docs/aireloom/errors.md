@@ -21,9 +21,10 @@ inspect them afterwards.
 
 ## Retries
 
-The core retries transient failures (429 and 5xx responses, network errors)
-with exponential backoff and honors the `Retry-After` header. Only idempotent
-GET requests retry; the client sends no mutating requests.
+The core retries transient failures: 429, 500, 502, 503, and 504 responses,
+plus network errors, with exponential backoff, and it honors the
+`Retry-After` header. By default every idempotent method retries (GET, HEAD,
+OPTIONS, PUT, DELETE); the client sends no mutating requests of its own.
 
 ## Rate limits
 

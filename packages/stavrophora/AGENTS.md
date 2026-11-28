@@ -2,7 +2,7 @@
 
 ## What It Is
 
-Stavrophora is a Python client library for the [Crossref REST API](https://www.crossref.org/documentation/retrieve-metadata/rest-api/), shipping an async client (`StavrophoraClient`) and a generated sync twin (`StavrophoraSyncClient`). It covers the works, journals, funders, members, types, prefixes, and licenses endpoints with typed Pydantic models. Built on **bibliofabric 0.6**, which owns HTTP, retries, per-class pacing, paging, and the generic `ResourceClient` / `SyncResourceClient`.
+Stavrophora is a Python client library for the [Crossref REST API](https://www.crossref.org/documentation/retrieve-metadata/rest-api/), shipping an async client (`StavrophoraClient`) and a generated sync twin (`StavrophoraSyncClient`). It covers the works, journals, funders, members, types, prefixes, and licenses endpoints with typed Pydantic models. Built on **bibliofabric>=0.8,<0.9**, which owns HTTP, retries, per-class pacing, paging, and the generic `ResourceClient` / `SyncResourceClient`.
 
 **Status:** Alpha. Published on PyPI as `stavrophora`. Current release: 0.3.0.
 
@@ -43,7 +43,7 @@ StavrophoraClient (_async/client.py, extends bibliofabric.BaseApiClient)
 ## Tech Stack
 
 - Python 3.12+, managed by the workspace `uv` setup
-- **bibliofabric 0.6** (resolved from `packages/bibliofabric` in this workspace)
+- **bibliofabric>=0.8,<0.9** (resolved from `packages/bibliofabric` in this workspace)
 - **pydantic v2** + **pydantic-settings** for models and config
 - **httpx** for async and sync HTTP (via bibliofabric); stdlib `logging`
 

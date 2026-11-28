@@ -1,6 +1,6 @@
 # Links
 
-`client.links` talks to the `/links` endpoint and returns `Link` models: typed one-hop edges between works, each labeled with a link-type URL (`https://openalex.org/link-types/citation` and the part-of link types). OpenAlex renamed these from "relationships" on 2026-11-14; models accept the old field name until the 2026-12-07 cutover and map old `/relationships/` ids to `/link-types/`.
+`client.links` talks to the `/links` endpoint and returns `Link` models: typed one-hop edges between works, each labeled with a link-type URL (`https://openalex.org/link-types/citation` and the part-of link types). OpenAlex renamed these from "relationships" on 2026-11-14; models accept either field name with no end date, and OpenAlex stops serving the old name on 2026-12-07. The models map old `/relationships/` ids to `/link-types/`.
 
 ```python
 references = await client.links.origin("W2741809807")  # edges leaving the work

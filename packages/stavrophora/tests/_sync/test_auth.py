@@ -10,7 +10,10 @@ EMPTY = works_envelope([])
 
 
 def settings(**overrides) -> StavrophoraSettings:
-    return StavrophoraSettings(max_requests_per_second=None, **overrides)
+    # `_env_file=None` keeps a developer's `.env` out of the offline suite.
+    return StavrophoraSettings(
+        _env_file=None, max_requests_per_second=None, **overrides
+    )
 
 
 def single_request(httpx_mock, client):
@@ -95,7 +98,7 @@ def test_max_requests_per_second_overrides_default_rate_limits():
     assert custom.rate_limits == {"single": 20.0, "list": None}
 
 
-def _clear_stavrophora_env(monkeypatch) -> None:
+def _clear_stavrophora_env(monkeypatch, tmp_path) -> None:
     for var in (
         "STAVROPHORA_MAILTO",
         "STAVROPHORA_PLUS_TOKEN",
@@ -105,10 +108,11 @@ def _clear_stavrophora_env(monkeypatch) -> None:
     ):
         monkeypatch.delenv(var, raising=False)
     get_settings.cache_clear()
+    monkeypatch.chdir(tmp_path)  # no `.env` in an empty directory
 
 
-def test_pool_default_rate_limits(monkeypatch):
-    _clear_stavrophora_env(monkeypatch)
+def test_pool_default_rate_limits(monkeypatch, tmp_path):
+    _clear_stavrophora_env(monkeypatch, tmp_path)
 
     public = StavrophoraSyncClient()
     assert public.settings.rate_limits == {"single": 5.0, "list": 1.0}
@@ -129,8 +133,8 @@ def test_pool_default_rate_limits(monkeypatch):
     assert plus_with_mailto.settings.max_concurrency == 10
 
 
-def test_explicit_rate_limits_and_concurrency_are_not_overridden(monkeypatch):
-    _clear_stavrophora_env(monkeypatch)
+def test_explicit_rate_limits_and_concurrency_are_not_overridden(monkeypatch, tmp_path):
+    _clear_stavrophora_env(monkeypatch, tmp_path)
 
     explicit = StavrophoraSyncClient(
         plus_token="plus-key-1",

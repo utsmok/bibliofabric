@@ -8,7 +8,7 @@ award = await client.awards.get("G6193623415")
 
 ## Filters
 
-`AwardsFilters` is the widest filter model in the library: `id`, `doi`, `funder_name`, `funder_award_id`, `funder_scheme`, `funding_type`, `provenance`, `collection`, `currency`, `amount`, `start_year`, `end_year`, `funded_outputs`, `funded_outputs_count`, and nested fields under `funder.*`, `lead_investigator.*`, and `institution_awarded.*`.
+`WorksFilters` is wider, but `AwardsFilters` is the largest of the dedicated filter models beyond works, and it covers the awards endpoint's filters: `id`, `doi`, `funder_name`, `funder_award_id`, `funder_scheme`, `funding_type`, `provenance`, `collection`, `currency`, `amount`, `start_year`, `end_year`, `funded_outputs`, `funded_outputs_count`, and nested fields under `funder.*`, `lead_investigator.*`, and `institution_awarded.*`.
 
 OpenAlex documents only part of these; the full list is discoverable by sending an invalid filter and reading the 400 body (see [upstream quirks](../upstream-quirks.md)). All shared operations are available: `get()`, `search()`, `iterate()`, `collect()`, `first()`, `count()`, `batch_get()`.
 

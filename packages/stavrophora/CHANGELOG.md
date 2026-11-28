@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Changed
+
+- Requires `bibliofabric>=0.8,<0.9` (the workspace core is now 0.8.0).
+
 ## [0.4.0] - 2026-11-27
 
 ### Added

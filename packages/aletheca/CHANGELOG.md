@@ -6,6 +6,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Requires `bibliofabric>=0.8,<0.9`; `request()` forwards the new
+  `follow_redirects=` argument.
+
 ## [0.5.0] - 2026-11-27
 
 Requires `bibliofabric>=0.7,<0.8`.

@@ -1,6 +1,6 @@
 # Aletheca — Project Guide
 
-Aletheca is an async + generated-sync Python client for the OpenAlex API, built on bibliofabric 0.6. Published on PyPI as `aletheca`; status alpha.
+Aletheca is an async + generated-sync Python client for the OpenAlex API, built on bibliofabric 0.8. Published on PyPI as `aletheca`; status alpha.
 
 ## Architecture
 
@@ -14,7 +14,7 @@ AlethecaClient / AlethecaSyncClient   # _async/client.py -> _sync/client.py
 
 | File(s) | Role |
 |---|---|
-| `_async/client.py` | `AlethecaClient(BaseApiClient)`. Resolves credentials (explicit `api_key` > `ALETHECA_API_KEY`/legacy alias env), picks `QueryParameterAuth` (default `?api_key=`) or `StaticTokenAuth` (`auth_scheme="bearer"`), routes `search.semantic` to the 1 req/s `"semantic"` rate class, captures `x-ratelimit-*` headers in `on_response()` (`last_rate_limit_headers`), forwards `retry=` on `request()`, re-raises keyless 401s with an actionable message, and vetoes retries for 429s with `reason: "daily_budget"` in `is_retryable()`. Adds `autocomplete()` and `rate_limit()` (both wrapped via `bibliofabric.validate_model`). |
+| `_async/client.py` | `AlethecaClient(BaseApiClient)`. Resolves credentials (explicit `api_key` > `ALETHECA_API_KEY`/legacy alias env), picks `QueryParameterAuth` (default `?api_key=`) or `StaticTokenAuth` (`auth_scheme="bearer"`), routes `search.semantic` to the 1 req/s `"semantic"` rate class, captures `x-ratelimit-*` headers in `on_response()` (`last_rate_limit_headers`), forwards `retry=` and `follow_redirects=` on `request()`, re-raises keyless 401s with an actionable message, and vetoes retries for 429s with `reason: "daily_budget"` in `is_retryable()`. Adds `autocomplete()` and `rate_limit()` (both wrapped via `bibliofabric.validate_model`). |
 | `dialect.py`, `_async/dialect.py` | `OPENALEX_DIALECT` (`per_page`, `iterate_page_size=100`, `max_offset=10_000`, `cursor`, `sort`, `search`, `select`) and `OpenAlexResourceClient`: single `filter=` serialization with `\|`-joined OR groups (cap 100, `MAX_OR_VALUES`), DOI/ORCID/ROR/ISSN/PMID/PMCID normalization, free `$0` singleton `item_path()` prefixing (`doi:`, `orcid:`, `ror:`, `issn:`, `pmid:`, `pmcid:`), external-ID `record_keys()`, basic-paging 10,000-result cap & `page`+`cursor` guards, `count()` with `select=id`, `sample()`, `group_by()` -> `Page[GroupByBucket]`, and cursor-paged `iterate_group_by()`. |
 | `_async/{works,authors,...,locations,links}.py` | One client per endpoint (`path`, `model`). `works.py` adds corpus controls (including on `sample()`), `search_scoped`, `citing`/`referenced`, `oa_pdf_urls`, `batch_get_by_doi`, `batch_get_by_openalex_id`. |
 | `_sync/*.py` | Generated sync twins from `_async/*.py` via `scripts/unasync.py --package aletheca`; never edit by hand. |

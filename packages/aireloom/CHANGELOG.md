@@ -4,6 +4,11 @@ All notable changes to AIREloom are documented here. Format follows [Keep a Chan
 
 ## [Unreleased]
 
+### Changed
+
+- Requires `bibliofabric>=0.8,<0.9`; `request()` forwards the new
+  `follow_redirects=` argument.
+
 ## [0.9.0] - 2026-11-27
 
 ### Breaking

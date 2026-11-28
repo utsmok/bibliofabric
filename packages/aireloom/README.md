@@ -124,8 +124,10 @@ Every entity resource (`client.research_products`, `client.projects`,
 | `batch_get(ids, field, batch_size)` | Fetch many ids via OR filters |
 
 `client.research_products` additionally has `batch_get_by_doi(dois)`,
-`search_links()`, `iterate_links()`, and `get_relations_info()`.
-`client.persons` has `batch_get_by_orcid(orcids)`.
+`by_orcid(orcid, limit=100)`, `get_fields(ids, fields)`, `search_links()`,
+`iterate_links()`, and `get_relations_info()`.
+`client.persons` has `batch_get_by_orcid(orcids)`, and `client.organizations`
+has `find_variants(names)`.
 
 ### Filters and sorting
 

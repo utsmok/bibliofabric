@@ -48,7 +48,7 @@ async def main():
 asyncio.run(main())
 ```
 
-Every resource client exposes `get()`, `search()`, `iterate()`, `collect()`, `first()`, `count()`, `sample()`, `group_by()`, and `iterate_group_by()`. The works client adds OpenAlex-specific helpers: `batch_get_by_doi()`, `citing()`, `referenced()`, `oa_pdf_urls()`, `search_scoped()`, and `corpus=`/`include_parts=`/`include_pulled=`/`rerank=` controls. The client itself offers free `autocomplete()` and `rate_limit()` endpoints, plus `last_rate_limit_headers` after responses.
+Every resource client exposes `get()`, `search()`, `iterate()`, `collect()`, `first()`, `count()`, `sample()`, `group_by()`, and `iterate_group_by()`. The works client adds OpenAlex-specific helpers: `batch_get_by_doi()`, `batch_get_by_openalex_id()`, `citing()`, `referenced()`, `oa_pdf_urls()`, `search_scoped()`, and `corpus=`/`include_parts=`/`include_pulled=`/`rerank=` controls. The client itself offers free `autocomplete()` and `rate_limit()` endpoints, plus `last_rate_limit_headers` after responses.
 
 ## Sync usage
 
@@ -76,7 +76,7 @@ Use the async client in asyncio applications and for many concurrent requests. U
 
 ## Settings
 
-`AlethecaSettings` loads from environment variables prefixed with `ALETHECA_`: `ALETHECA_API_KEY`, `ALETHECA_AUTH_SCHEME`, `ALETHECA_MAX_REQUESTS_PER_SECOND`, `ALETHECA_MAX_CONCURRENCY`, `ALETHECA_TIMEOUT`, `ALETHECA_MAX_RETRIES`, `ALETHECA_MAX_RETRY_WAIT`, `ALETHECA_USER_AGENT`. The legacy `ALETHECA_OPENALEX_API_KEY` name still works.
+`AlethecaSettings` loads from environment variables prefixed with `ALETHECA_`: `ALETHECA_API_KEY`, `ALETHECA_AUTH_SCHEME`, `ALETHECA_MAX_REQUESTS_PER_SECOND`, `ALETHECA_MAX_CONCURRENCY`, `ALETHECA_RATE_LIMITS` (JSON, default `{"semantic": 1.0}`), `ALETHECA_TIMEOUT`, `ALETHECA_MAX_RETRIES`, `ALETHECA_MAX_RETRY_WAIT`, `ALETHECA_USER_AGENT`. The legacy `ALETHECA_OPENALEX_API_KEY` name still works.
 
 ## Where to go next
 

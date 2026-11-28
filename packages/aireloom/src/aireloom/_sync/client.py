@@ -168,6 +168,7 @@ class AireloomSyncClient(SyncBaseApiClient):
         headers: Mapping[str, str] | None = None,
         timeout: float | httpx.Timeout | None = None,
         retry: bool | None = None,
+        follow_redirects: bool | None = None,
     ) -> httpx.Response:
         """Send a request through the core retry pipeline.
 
@@ -195,6 +196,7 @@ class AireloomSyncClient(SyncBaseApiClient):
             headers=headers,
             timeout=timeout,
             retry=retry,
+            follow_redirects=follow_redirects,
         )
 
     @functools.cached_property

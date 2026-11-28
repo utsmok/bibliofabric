@@ -64,7 +64,7 @@ and raise the same errors. See [Sync usage](index.md#sync-usage).
 
 ## Paging
 
-::: bibliofabric.paging.Page
+`iterate()` yields `Page` records. The model is documented in the [bibliofabric paging reference](../bibliofabric/paging.md).
 
 ## Models
 

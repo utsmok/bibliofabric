@@ -144,6 +144,7 @@ class AlethecaClient(BaseApiClient):
         headers: Mapping[str, str] | None = None,
         timeout: float | httpx.Timeout | None = None,
         retry: bool | None = None,
+        follow_redirects: bool | None = None,
     ) -> httpx.Response:
         """Send a request with retries, mapping keyless 401s to clear errors.
 
@@ -161,6 +162,7 @@ class AlethecaClient(BaseApiClient):
                 headers=headers,
                 timeout=timeout,
                 retry=retry,
+                follow_redirects=follow_redirects,
             )
         except AuthError as error:
             response = error.response
