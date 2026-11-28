@@ -1,0 +1,63 @@
+{
+  "data": [
+    {
+      "id": "scpr",
+      "type": "providers",
+      "attributes": {
+        "name": "4TU.ResearchData",
+        "displayName": "4TU.ResearchData",
+        "symbol": "SCPR",
+        "website": "https://data.4tu.nl",
+        "description": null,
+        "region": "EMEA",
+        "country": "NL",
+        "logoUrl": null,
+        "memberType": "direct_member",
+        "organizationType": "serviceProvider",
+        "focusArea": "naturalSciences",
+        "nonProfitStatus": "non-profit",
+        "isActive": true,
+        "joined": null,
+        "rorId": "https://ror.org/02d887280",
+        "created": "2024-07-26T09:18:53.000Z",
+        "updated": "2026-09-02T07:30:07.000Z",
+        "doiEstimate": 0
+      },
+      "relationships": {
+        "clients": {
+          "data": [
+            {
+              "id": "delft.data4tu",
+              "type": "clients"
+            },
+            {
+              "id": "scpr.uoadij",
+              "type": "clients"
+            }
+          ]
+        },
+        "prefixes": {
+          "data": [
+            {
+              "id": "10.4121",
+              "type": "prefixes"
+            },
+            {
+              "id": "10.83126",
+              "type": "prefixes"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "meta": {
+    "total": 1879,
+    "totalPages": 1879,
+    "page": 1
+  },
+  "links": {
+    "self": "https://api.datacite.org/providers?page%5Bsize%5D=1",
+    "next": "https://api.datacite.org/providers?page%5Bnumber%5D=2&page%5Bsize%5D=1&sort%5Bdisplay_name.raw%5D%5Border%5D=asc"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "data": [
+    {
+      "id": "rhtq.rjxpkl",
+      "type": "clients",
+      "attributes": {
+        "name": "\"Developmental Psychology: Iranian Psychologists - روانشناسی تحولی: روانشناسان ایرانی \"",
+        "symbol": "RHTQ.RJXPKL",
+        "year": 2026,
+        "alternateName": null,
+        "description": null,
+        "language": [
+          "fa"
+        ],
+        "clientType": "periodical",
+        "domains": "sanad.iau.ir",
+        "re3data": null,
+        "opendoar": null,
+        "issn": {
+          "issnl": null,
+          "print": null,
+          "electronic": "2251-9955"
+        },
+        "url": "https://sanad.iau.ir/journal/jip/",
+        "created": "2026-06-30T10:14:05Z",
+        "updated": "2026-06-30T10:15:28Z",
+        "isActive": true
+      },
+      "relationships": {
+        "provider": {
+          "data": {
+            "id": "rhtq",
+            "type": "providers"
+          }
+        },
+        "consortium": {
+          "data": {
+            "id": "QCQQ",
+            "type": "providers"
+          }
+        },
+        "prefixes": {
+          "data": [
+            {
+              "id": "10.83357",
+              "type": "prefixes"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "meta": {
+    "total": 4609,
+    "totalPages": 4609,
+    "page": 1
+  },
+  "links": {
+    "self": "https://api.datacite.org/clients?page%5Bsize%5D=1",
+    "next": "https://api.datacite.org/clients?page%5Bnumber%5D=2&page%5Bsize%5D=1"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "data": [
+    {
+      "id": "ec105772-0ec6-4317-8566-39c8ddab9dca",
+      "type": "activities",
+      "attributes": {
+        "prov:generatedAtTime": "2025-06-09T21:05:58.967Z",
+        "prov:wasAttributedTo": "https://api.datacite.org/repositories/datacite.datacite",
+        "action": "update",
+        "version": 81,
+        "changes": {
+          "titles": [
+            [
+              {
+                "title": "DataCite Metadata Schema Documentation for the Publication and Citation of Research Data v4.0"
+              }
+            ],
+            [
+              {
+                "lang": null,
+                "title": "DataCite Metadata Schema Documentation for the Publication and Citation of Research Data v4.0",
+                "titleType": null
+              }
+            ]
+          ]
+        }
+      }
+    }
+  ],
+  "meta": {
+    "total": 2
+  }
+}

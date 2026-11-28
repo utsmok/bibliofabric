@@ -1,0 +1,23 @@
+"""Client for the DataCite ``/events`` endpoint."""
+
+from ..dialect import dialect_with
+from ..filters import EventFilters
+from ..models import DataphoraEvent
+from .dialect import DataphoraResourceClient
+
+
+class EventsClient(DataphoraResourceClient[DataphoraEvent]):
+    """Client for the ``/events`` endpoint.
+
+    Events are the citation graph DataCite records between identifiers;
+    the collection is large, so prefer ``first()``, ``search()`` with a
+    filter, or ``count()`` over full ``iterate()`` walks.
+    """
+
+    path = "events"
+    model = DataphoraEvent
+    dialect = dialect_with("fields[events]")
+    filters_model = EventFilters
+
+
+__all__ = ["EventsClient"]

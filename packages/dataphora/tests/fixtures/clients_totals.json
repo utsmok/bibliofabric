@@ -1,0 +1,91 @@
+[
+  {
+    "id": "rpht.nifs",
+    "title": "NIFS",
+    "count": 46241024,
+    "temporal": {
+      "this_month": [
+        {
+          "id": "2026",
+          "title": "2026",
+          "count": 1035855
+        }
+      ],
+      "this_year": [
+        {
+          "id": "2026",
+          "title": "2026",
+          "count": 16241370
+        }
+      ],
+      "last_year": [
+        {
+          "id": "2025",
+          "title": "2025",
+          "count": 19999598
+        }
+      ],
+      "two_years_ago": [
+        {
+          "id": "2024",
+          "title": "2024",
+          "count": 10000056
+        }
+      ]
+    },
+    "states": [
+      {
+        "id": "findable",
+        "title": "Findable",
+        "count": 46241024
+      }
+    ]
+  },
+  {
+    "id": "cern.zenodo",
+    "title": "Zenodo",
+    "count": 16669878,
+    "temporal": {
+      "this_month": [
+        {
+          "id": "2026",
+          "title": "2026",
+          "count": 564933
+        }
+      ],
+      "this_year": [
+        {
+          "id": "2026",
+          "title": "2026",
+          "count": 5005798
+        }
+      ],
+      "last_year": [
+        {
+          "id": "2025",
+          "title": "2025",
+          "count": 2592307
+        }
+      ],
+      "two_years_ago": [
+        {
+          "id": "2024",
+          "title": "2024",
+          "count": 3346895
+        }
+      ]
+    },
+    "states": [
+      {
+        "id": "findable",
+        "title": "Findable",
+        "count": 14193489
+      },
+      {
+        "id": "registered",
+        "title": "Registered",
+        "count": 2476389
+      }
+    ]
+  }
+]

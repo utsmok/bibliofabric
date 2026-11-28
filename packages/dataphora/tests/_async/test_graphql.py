@@ -1,0 +1,77 @@
+"""GraphQL client: request shape, answer parsing, and error mapping."""
+
+import json
+
+import pytest
+from bibliofabric.exceptions import APIError, ConfigurationError
+
+QUERY = '{ work(id: "https://doi.org/10.5438/0012") { doi titles { title } } }'
+REJECTED = {
+    "errors": [{"message": 'Cannot query field "nosuchfield" on type "Query".'}]
+}
+NOT_FOUND = {
+    "errors": [{"message": "Record not found", "path": ["work"]}],
+    "data": None,
+}
+
+
+def last_request(httpx_mock):
+    return httpx_mock.get_requests()[-1]
+
+
+async def test_query_posts_the_document_as_json(client, httpx_mock):
+    httpx_mock.add_response(
+        json={"data": {"work": {"doi": "10.5438/0012", "titles": []}}}
+    )
+    data = await client.graphql.query(QUERY)
+    assert data == {"work": {"doi": "10.5438/0012", "titles": []}}
+    request = last_request(httpx_mock)
+    assert request.method == "POST"
+    assert request.url.path == "/graphql"
+    assert json.loads(request.content) == {"query": QUERY}
+
+
+async def test_query_sends_variables(client, httpx_mock):
+    httpx_mock.add_response(json={"data": {"work": {"doi": "10.5438/0012"}}})
+    document = "query($id: ID!) { work(id: $id) { doi } }"
+    variables = {"id": "https://doi.org/10.5438/0012"}
+    await client.graphql.query(document, variables)
+    assert json.loads(last_request(httpx_mock).content) == {
+        "query": document,
+        "variables": variables,
+    }
+
+
+async def test_empty_variables_are_not_sent(client, httpx_mock):
+    httpx_mock.add_response(json={"data": {"work": {"doi": "10.5438/0012"}}})
+    await client.graphql.query(QUERY, {})
+    assert set(json.loads(last_request(httpx_mock).content)) == {"query"}
+
+
+async def test_query_rejects_an_empty_document(client):
+    with pytest.raises(ConfigurationError):
+        await client.graphql.query("   ")
+
+
+async def test_field_error_raises_api_error_with_the_errors_body(client, httpx_mock):
+    httpx_mock.add_response(json=NOT_FOUND)
+    with pytest.raises(APIError) as info:
+        await client.graphql.query(QUERY)
+    assert info.value.body == NOT_FOUND
+    assert "Record not found" in str(info.value)
+
+
+async def test_rejected_query_raises_api_error(client, httpx_mock):
+    httpx_mock.add_response(json=REJECTED, status_code=400)
+    with pytest.raises(APIError) as info:
+        await client.graphql.query("{ nosuchfield }")
+    assert info.value.status_code == 400
+
+
+async def test_answer_without_data_object_raises_api_error(client, httpx_mock):
+    httpx_mock.add_response(json={"data": None})
+    httpx_mock.add_response(json=[])
+    with pytest.raises(APIError):
+        await client.graphql.query(QUERY)
+    with pytest.raises(APIError):
+        await client.graphql.query(QUERY)

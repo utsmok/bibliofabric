@@ -1,0 +1,43 @@
+{
+  "data": [
+    {
+      "id": "df53896f-6d88-4de1-8244-e64928258269",
+      "type": "client-prefixes",
+      "attributes": {
+        "createdAt": "2026-11-27T15:08:07Z",
+        "updatedAt": "2026-11-27T15:08:07Z"
+      },
+      "relationships": {
+        "client": {
+          "data": {
+            "id": "nasasmd.awards",
+            "type": "clients"
+          }
+        },
+        "provider": {
+          "data": {
+            "id": "nasasmd",
+            "type": "providers"
+          }
+        },
+        "providerPrefix": {
+          "data": {
+            "id": "62aad24a-1f25-4201-94d1-f465d55bb423",
+            "type": "provider-prefixes"
+          }
+        },
+        "prefix": {
+          "data": {
+            "id": "10.83353",
+            "type": "prefixes"
+          }
+        }
+      }
+    }
+  ],
+  "meta": {
+    "total": 5541,
+    "totalPages": 5541,
+    "page": 1
+  }
+}

@@ -1,0 +1,153 @@
+{
+  "data": [
+    {
+      "id": "10.5281/zenodo.24609598",
+      "type": "dois",
+      "attributes": {
+        "doi": "10.5281/zenodo.24609598",
+        "identifiers": [
+          {
+            "identifier": "oai:zenodo.org:24609598",
+            "identifierType": "oai"
+          }
+        ],
+        "creators": [
+          {
+            "nameType": "Personal",
+            "givenName": "Benjamin Stanley",
+            "familyName": "Frohman",
+            "name": "Frohman, Benjamin Stanley",
+            "nameIdentifiers": [
+              {
+                "nameIdentifierScheme": "ORCID",
+                "nameIdentifier": "0009-0006-7068-3718"
+              }
+            ],
+            "affiliation": []
+          }
+        ],
+        "titles": [
+          {
+            "title": "Euler's Form for Odd Perfect Numbers: Machine-Verified Statement, Kernel Certificate, and Reproducibility Notes"
+          }
+        ],
+        "publisher": "Zenodo",
+        "container": {},
+        "publicationYear": 2026,
+        "subjects": [
+          {
+            "subject": "odd perfect numbers"
+          },
+          {
+            "subject": "Euler form"
+          },
+          {
+            "subject": "Lean 4"
+          },
+          {
+            "subject": "kernel certificate"
+          },
+          {
+            "subject": "Steuerwald"
+          },
+          {
+            "subject": "formalization"
+          }
+        ],
+        "contributors": [],
+        "dates": [
+          {
+            "date": "2026-11-27",
+            "dateType": "Issued"
+          }
+        ],
+        "language": null,
+        "types": {
+          "schemaOrg": "CreativeWork",
+          "resourceTypeGeneral": "Preprint",
+          "citeproc": "article",
+          "bibtex": "misc",
+          "ris": "GEN",
+          "resourceType": ""
+        },
+        "relatedIdentifiers": [
+          {
+            "relationType": "IsSupplementTo",
+            "resourceTypeGeneral": "Software",
+            "relatedIdentifier": "https://github.com/BenFrohman/opn-euler-steuerwald-lean",
+            "relatedIdentifierType": "URL"
+          },
+          {
+            "relationType": "IsSupplementTo",
+            "resourceTypeGeneral": "Software",
+            "relatedIdentifier": "https://github.com/BenFrohman/opn-omega2-base-case-lean",
+            "relatedIdentifierType": "URL"
+          },
+          {
+            "relationType": "IsVersionOf",
+            "relatedIdentifier": "10.5281/zenodo.24609488",
+            "relatedIdentifierType": "DOI"
+          }
+        ],
+        "relatedItems": [],
+        "sizes": [],
+        "formats": [],
+        "version": null,
+        "rightsList": [
+          {
+            "rightsIdentifierScheme": "SPDX",
+            "rightsUri": "https://creativecommons.org/licenses/by/4.0/legalcode",
+            "schemeUri": "https://spdx.org/licenses/",
+            "rights": "Creative Commons Attribution 4.0 International",
+            "rightsIdentifier": "cc-by-4.0"
+          }
+        ],
+        "descriptions": [
+          {
+            "descriptionType": "Abstract",
+            "description": "Machine-checked formalization of Euler's form and the ω(N)=2 base case of Steuerwald's theorem. Includes kernel certificate from successful Lake build. Existence of an odd perfect number remains open.\n\nGitHub repositories:\n- https://github.com/BenFrohman/opn-euler-steuerwald-lean\n- https://github.com/BenFrohman/opn-omega2-base-case-lean\n\nORCID: 0009-0006-7068-3718"
+          }
+        ],
+        "geoLocations": [],
+        "fundingReferences": [],
+        "url": "https://zenodo.org/doi/10.5281/zenodo.24609598",
+        "contentUrl": null,
+        "metadataVersion": 0,
+        "schemaVersion": "http://datacite.org/schema/kernel-4",
+        "source": "api",
+        "isActive": true,
+        "state": "findable",
+        "reason": null,
+        "viewCount": 0,
+        "downloadCount": 0,
+        "referenceCount": 0,
+        "citationCount": 0,
+        "partCount": 0,
+        "partOfCount": 0,
+        "versionCount": 0,
+        "versionOfCount": 1,
+        "created": "2026-11-27T22:19:07Z",
+        "registered": "2026-11-27T22:19:07Z",
+        "published": null,
+        "updated": "2026-11-27T22:19:07Z"
+      },
+      "relationships": {
+        "client": {
+          "data": {
+            "id": "cern.zenodo",
+            "type": "clients"
+          }
+        }
+      }
+    }
+  ],
+  "meta": {
+    "total": 143184779,
+    "totalPages": 10000,
+    "page": 1
+  },
+  "links": {
+    "self": "https://api.datacite.org/dois?page%5Bsize%5D=1",
+    "next": "https://api.datacite.org/dois?page%5Bnumber%5D=2&page%5Bsize%5D=1"
+  }
+}

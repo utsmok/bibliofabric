@@ -1,0 +1,185 @@
+"""dataphora: Python interface for the DataCite REST API."""
+
+try:
+    from importlib.metadata import PackageNotFoundError, version as _get_version
+
+    __version__ = _get_version("dataphora")
+except PackageNotFoundError:
+    __version__ = "0.0.0"
+
+from bibliofabric import Page
+from bibliofabric.exceptions import (
+    APIError,
+    AuthError,
+    BibliofabricError,
+    ConfigurationError,
+    NetworkError,
+    NotFoundError,
+    RateLimitError,
+    TimeoutError,
+    ValidationError,
+)
+
+from ._async.client import DataphoraClient
+from ._async.dialect import serialize_filter_params
+from ._async.dois import ActivitiesClient, DoisClient
+from ._async.events import EventsClient
+from ._async.graphql import GraphqlClient
+from ._async.registry import (
+    ClientPrefixesClient,
+    ClientsClient,
+    PrefixesClient,
+    ProviderPrefixesClient,
+    ProvidersClient,
+    RepositoriesClient,
+)
+from ._sync.client import DataphoraSyncClient
+from ._sync.dois import ActivitiesSyncClient, DoisSyncClient
+from ._sync.events import EventsSyncClient
+from ._sync.graphql import GraphqlSyncClient
+from ._sync.registry import (
+    ClientPrefixesSyncClient,
+    ClientsSyncClient,
+    PrefixesSyncClient,
+    ProviderPrefixesSyncClient,
+    ProvidersSyncClient,
+    RepositoriesSyncClient,
+)
+from .config import DataphoraSettings, get_settings
+from .dialect import (
+    DATACITE_API_BASE_URL,
+    DATACITE_DIALECT,
+    DATACITE_MAX_PAGE_SIZE,
+    DATACITE_SORT_OPTIONS,
+)
+from .filters import (
+    ClientFilters,
+    DoiFilters,
+    EventFilters,
+    PrefixFilters,
+    ProviderFilters,
+    RepositoryFilters,
+)
+from .models import (
+    Affiliation,
+    Container,
+    Contributor,
+    Creator,
+    DataphoraActivity,
+    DataphoraClientPrefix,
+    DataphoraClientRecord,
+    DataphoraDoi,
+    DataphoraEvent,
+    DataphoraModel,
+    DataphoraPrefix,
+    DataphoraProvider,
+    DataphoraProviderPrefix,
+    DataphoraRepository,
+    DataphoraResource,
+    DataphoraTotals,
+    Date,
+    Description,
+    FacetCount,
+    FundingReference,
+    GeoLocation,
+    GeoLocationBox,
+    GeoPoint,
+    Identifier,
+    JsonApiIdentifier,
+    JsonApiRelationship,
+    NameIdentifier,
+    OverTime,
+    Publisher,
+    RelatedIdentifier,
+    RelatedItem,
+    RelatedItemIdentifier,
+    Rights,
+    Subject,
+    Title,
+    Types,
+    resource_ids,
+)
+
+__all__ = [
+    "__version__",
+    "ActivitiesClient",
+    "ActivitiesSyncClient",
+    "Affiliation",
+    "APIError",
+    "AuthError",
+    "BibliofabricError",
+    "ClientFilters",
+    "ClientPrefixesClient",
+    "ClientPrefixesSyncClient",
+    "ClientsClient",
+    "ClientsSyncClient",
+    "ConfigurationError",
+    "Container",
+    "Contributor",
+    "Creator",
+    "DATACITE_API_BASE_URL",
+    "DATACITE_DIALECT",
+    "DATACITE_MAX_PAGE_SIZE",
+    "DATACITE_SORT_OPTIONS",
+    "Date",
+    "Description",
+    "DoiFilters",
+    "DoisClient",
+    "DoisSyncClient",
+    "EventsClient",
+    "EventsSyncClient",
+    "FacetCount",
+    "FundingReference",
+    "GeoLocation",
+    "GeoLocationBox",
+    "GeoPoint",
+    "GraphqlClient",
+    "GraphqlSyncClient",
+    "get_settings",
+    "Identifier",
+    "JsonApiIdentifier",
+    "JsonApiRelationship",
+    "NameIdentifier",
+    "NetworkError",
+    "NotFoundError",
+    "OverTime",
+    "Page",
+    "PrefixFilters",
+    "PrefixesClient",
+    "PrefixesSyncClient",
+    "ProviderFilters",
+    "ProviderPrefixesClient",
+    "ProviderPrefixesSyncClient",
+    "ProvidersClient",
+    "ProvidersSyncClient",
+    "Publisher",
+    "RateLimitError",
+    "RelatedIdentifier",
+    "RelatedItem",
+    "RelatedItemIdentifier",
+    "RepositoriesClient",
+    "RepositoriesSyncClient",
+    "RepositoryFilters",
+    "resource_ids",
+    "Rights",
+    "serialize_filter_params",
+    "Subject",
+    "TimeoutError",
+    "Title",
+    "DataphoraActivity",
+    "DataphoraClientRecord",
+    "DataphoraClientPrefix",
+    "DataphoraDoi",
+    "DataphoraEvent",
+    "DataphoraModel",
+    "DataphoraPrefix",
+    "DataphoraProvider",
+    "DataphoraProviderPrefix",
+    "DataphoraRepository",
+    "DataphoraResource",
+    "DataphoraSettings",
+    "DataphoraSyncClient",
+    "DataphoraTotals",
+    "Types",
+    "ValidationError",
+]

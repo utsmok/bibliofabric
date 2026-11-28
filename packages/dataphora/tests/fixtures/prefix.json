@@ -1,0 +1,55 @@
+{
+  "data": [
+    {
+      "id": "10.10273",
+      "type": "prefixes",
+      "attributes": {
+        "prefix": "10.10273",
+        "createdAt": "2021-06-09T12:39:20Z"
+      },
+      "relationships": {
+        "clients": {
+          "data": [
+            {
+              "id": "nbqj.ojs",
+              "type": "clients"
+            }
+          ]
+        },
+        "providers": {
+          "data": [
+            {
+              "id": "nbqj",
+              "type": "providers"
+            }
+          ]
+        },
+        "clientPrefixes": {
+          "data": [
+            {
+              "id": "9770da2c-2ce0-4e91-9c0b-cd24f04bfdab",
+              "type": "client-prefixes"
+            }
+          ]
+        },
+        "providerPrefixes": {
+          "data": [
+            {
+              "id": "48cfdacc-d2e9-4dbb-aeac-1a68872a5e46",
+              "type": "provider-prefixes"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "meta": {
+    "total": 6256,
+    "totalPages": 6256,
+    "page": 1
+  },
+  "links": {
+    "self": "https://api.datacite.org/prefixes?page%5Bsize%5D=1",
+    "next": "https://api.datacite.org/prefixes?page%5Bnumber%5D=2&page%5Bsize%5D=1"
+  }
+}

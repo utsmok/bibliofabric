@@ -1,0 +1,91 @@
+[
+  {
+    "id": "rpht",
+    "title": "National Institute for Fusion Science",
+    "count": 46241024,
+    "temporal": {
+      "this_month": [
+        {
+          "id": "2026",
+          "title": "2026",
+          "count": 1035855
+        }
+      ],
+      "this_year": [
+        {
+          "id": "2026",
+          "title": "2026",
+          "count": 16241370
+        }
+      ],
+      "last_year": [
+        {
+          "id": "2025",
+          "title": "2025",
+          "count": 19999598
+        }
+      ],
+      "two_years_ago": [
+        {
+          "id": "2024",
+          "title": "2024",
+          "count": 10000056
+        }
+      ]
+    },
+    "states": [
+      {
+        "id": "findable",
+        "title": "Findable",
+        "count": 46241024
+      }
+    ]
+  },
+  {
+    "id": "cern",
+    "title": "CERN - European Organization for Nuclear Research",
+    "count": 17130466,
+    "temporal": {
+      "this_month": [
+        {
+          "id": "2026",
+          "title": "2026",
+          "count": 566623
+        }
+      ],
+      "this_year": [
+        {
+          "id": "2026",
+          "title": "2026",
+          "count": 5027140
+        }
+      ],
+      "last_year": [
+        {
+          "id": "2025",
+          "title": "2025",
+          "count": 2661853
+        }
+      ],
+      "two_years_ago": [
+        {
+          "id": "2024",
+          "title": "2024",
+          "count": 3359364
+        }
+      ]
+    },
+    "states": [
+      {
+        "id": "findable",
+        "title": "Findable",
+        "count": 14502567
+      },
+      {
+        "id": "registered",
+        "title": "Registered",
+        "count": 2627899
+      }
+    ]
+  }
+]

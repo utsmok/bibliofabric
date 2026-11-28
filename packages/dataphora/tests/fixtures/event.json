@@ -1,0 +1,42 @@
+{
+  "data": [
+    {
+      "id": "dec4ff36-e969-48c2-b325-8235fd886138",
+      "type": "events",
+      "attributes": {
+        "subj-id": "https://api.datacite.org/reports/80169585-58cc-406e-a4be-b8ee84dd63c1",
+        "obj-id": "https://doi.org/10.5438/0012",
+        "source-id": "datacite-resolution",
+        "relation-type-id": "total-resolutions-machine",
+        "total": 8,
+        "message-action": "create",
+        "source-token": "65903a54-01c8-4a3f-9bf2-04ecc658247a",
+        "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "occurred-at": "2019-06-01T00:00:00.000Z",
+        "timestamp": "2019-08-22T17:17:11.752Z"
+      },
+      "relationships": {
+        "subj": {
+          "data": {
+            "id": "https://api.datacite.org/reports/80169585-58cc-406e-a4be-b8ee84dd63c1",
+            "type": "objects"
+          }
+        },
+        "obj": {
+          "data": {
+            "id": "https://doi.org/10.5438/0012",
+            "type": "objects"
+          }
+        }
+      }
+    }
+  ],
+  "meta": {
+    "total": 26,
+    "totalPages": null,
+    "page": 1
+  },
+  "links": {
+    "self": "https://api.datacite.org/events?doi=10.5438%2F0012&page%5Bsize%5D=1"
+  }
+}
