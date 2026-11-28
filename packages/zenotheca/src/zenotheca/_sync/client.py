@@ -3,13 +3,19 @@
 
 import logging
 from functools import cached_property
+from typing import override
 
 import httpx
 from bibliofabric import SyncBaseApiClient
 from bibliofabric.auth import NoAuth, StaticTokenAuth
 
 from ..config import ZenothecaSettings, get_settings
-from ..dialect import ZENODO_API_BASE_URL, dialect_for
+from ..dialect import (
+    ZENODO_API_BASE_URL,
+    ZENODO_SEARCH_RATE_CLASS,
+    dialect_for,
+    is_search_route,
+)
 from ..unwrapper import ZenothecaUnwrapper
 from .communities import ZenothecaCommunitiesSyncClient
 from .oai import OaiSyncClient
@@ -60,6 +66,19 @@ class ZenothecaSyncClient(SyncBaseApiClient):
     def default_headers(self) -> dict[str, str]:
         """Headers sent with every request: the JSON representation."""
         return {"Accept": "application/json"}
+
+    @override
+    def rate_class(self, request: httpx.Request) -> str:
+        """Pace the two search routes in their own class.
+
+        Callers without a token get 30 search requests per minute, far
+        fewer than the 133 of the other routes, so the record search and
+        the search over the records of one community get the ``search``
+        rate class of :attr:`ZenothecaSettings.rate_limits`.
+        """
+        if is_search_route(request.url.path, httpx.URL(self.base_url).path):
+            return ZENODO_SEARCH_RATE_CLASS
+        return "default"
 
     @cached_property
     def records(self) -> ZenothecaRecordsSyncClient:

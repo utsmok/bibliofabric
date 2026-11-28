@@ -3,6 +3,7 @@
 
 from typing import Any
 
+import httpx
 import pytest
 from zenotheca import ConfigurationError, NotFoundError, ZenothecaSyncClient
 
@@ -252,3 +253,40 @@ def test_base_url_override_points_elsewhere(httpx_mock, settings):
         client.records.get(RECORD_ID)
     assert last_request(httpx_mock).url.path == "/api/records/24378467"
     assert last_request(httpx_mock).url.host == "example.org"
+
+
+def test_rate_class_separates_the_search_routes(settings):
+    """Only the two search routes allow 30 requests a minute without a token."""
+    with ZenothecaSyncClient(settings=settings) as client:
+        for path in ("/api/records", "/api/communities/ror-data/records"):
+            request = httpx.Request("GET", f"https://zenodo.org{path}")
+            assert client.rate_class(request) == "search"
+        for path in (
+            "/api/records/24378467",
+            "/api/records/24378467/versions",
+            "/api/records/24378467/files",
+            "/api/communities",
+            "/api/communities/ror-data",
+            "/api/communities/ror-data/subcommunities",
+            "/api/vocabularies/resourcetypes",
+            "/oai2d",
+        ):
+            request = httpx.Request("GET", f"https://zenodo.org{path}")
+            assert client.rate_class(request) == "default"
+
+
+def test_rate_class_follows_the_base_url_path(settings):
+    """Another InvenioRDM instance mounts its search routes below its own prefix."""
+    with ZenothecaSyncClient(
+        settings=settings, base_url="https://example.org/rdm/api"
+    ) as client:
+        assert (
+            client.rate_class(
+                httpx.Request("GET", "https://example.org/rdm/api/records")
+            )
+            == "search"
+        )
+        assert (
+            client.rate_class(httpx.Request("GET", "https://example.org/api/records"))
+            == "default"
+        )

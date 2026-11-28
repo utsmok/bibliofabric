@@ -17,6 +17,15 @@ documentation links an OpenAPI schema that does not match either shape
 completely, so the live API was treated as ground truth and the models use
 `extra="allow"`.
 
+## Rate limits differ per route (checked on 2026-11-28)
+
+The documentation names no limit. The live API sends `x-ratelimit-limit` headers that split the routes in two groups for callers without a token:
+
+- The record search (`/api/records`, with or without `q`) and the search over the records of one community (`/api/communities/{slug}/records`) allow 30 requests per minute. The 31st request answers 429 with `{"message": "30 per 1 minute"}` and a `Retry-After` header of the seconds until the window resets.
+- Every other route allows 133 per minute: a record, its files, its versions, the communities list, a community's subcommunities, and the vocabularies.
+
+A pace of 2 requests per second therefore fails on a long iteration over a search. zenotheca puts the two search routes in the `search` rate class at 0.5 requests per second and keeps 2 requests per second for everything else. The limits for token holders were not checked.
+
 ## Paging limits
 
 - `size` caps at 25 without an access token. `size=101` answers HTTP 400

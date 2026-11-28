@@ -1,16 +1,16 @@
 # zenotheca
 
-zenotheca is a placeholder name. The package will be renamed before its first release.
+zenotheca is not yet published on PyPI. Until the first release, use it from a checkout of the `bibliofabric` workspace, where `uv sync --all-packages` installs it together with the `bibliofabric` 0.8 it needs.
 
 zenotheca is a Python client for the [Zenodo REST API](https://developers.zenodo.org/), built on [bibliofabric](https://github.com/utsmok/bibliofabric). It types the records, communities, and vocabularies endpoints with Pydantic models, wraps the OAI-PMH endpoint, builds the Elasticsearch `q` clauses for you, and streams file downloads to disk. It ships an async client and a generated sync twin with the same API.
 
 ## Install
 
 ```bash
-uv add zenotheca
+uv sync --all-packages
 ```
 
-Requires Python 3.12 or newer.
+The command runs in a checkout of the `bibliofabric` workspace and installs zenotheca with the `bibliofabric` 0.8 it needs. `uv add zenotheca` works once the package is on PyPI. Requires Python 3.12 or newer.
 
 ## Authentication
 
@@ -82,10 +82,16 @@ settings the same way.
 `ZenothecaSettings` loads from environment variables prefixed with
 `ZENOTHECA_`: `ZENOTHECA_MAX_REQUESTS_PER_SECOND` (default 2),
 `ZENOTHECA_MAX_CONCURRENCY` (default 5), `ZENOTHECA_TIMEOUT`,
-`ZENOTHECA_MAX_RETRIES`, `ZENOTHECA_MAX_RETRY_WAIT`, and
-`ZENOTHECA_USER_AGENT`, and `ZENOTHECA_API_TOKEN`. Zenodo publishes no
-documented rate limit; the default keeps the client at a courtesy pace of
-2 requests per second. Zenodo rejects requests without a `User-Agent`
+`ZENOTHECA_MAX_RETRIES`, `ZENOTHECA_MAX_RETRY_WAIT`,
+`ZENOTHECA_USER_AGENT`, and `ZENOTHECA_API_TOKEN`.
+
+Without a token, the record search and the search over the records of one
+community allow 30 requests per minute, and every other route allows 133.
+The two search routes therefore run in their own rate class:
+`ZENOTHECA_RATE_LIMITS` is a JSON object of requests per second per class
+and defaults to `{"search": 0.5}`. A `ZENOTHECA_MAX_REQUESTS_PER_SECOND`
+that you set applies to every class, unless you also set
+`ZENOTHECA_RATE_LIMITS`. Zenodo rejects requests without a `User-Agent`
 header, and the client always sends one.
 
 ## Where to go next

@@ -2,8 +2,9 @@
 
 Samuel Mok -- 2026
 
-`zenotheca` is a placeholder name. The package will be renamed before its
-first release.
+The package is not yet published on PyPI. Until the first release, use it
+from a checkout of the `bibliofabric` workspace, where `uv sync
+--all-packages` installs it together with the `bibliofabric` 0.8 it needs.
 
 zenotheca is a Python client for the
 [Zenodo REST API](https://developers.zenodo.org/), built on
@@ -37,10 +38,12 @@ same API without an event loop. Public reads need no credentials.
 ## Installation
 
 ```bash
-uv add zenotheca
+uv sync --all-packages
 ```
 
-Requires Python >=3.12.
+The command runs in a checkout of the `bibliofabric` workspace and installs
+zenotheca with the `bibliofabric` 0.8 it needs. `uv add zenotheca` works once
+the package is on PyPI. Requires Python >=3.12.
 
 ## Quick Start
 
@@ -109,6 +112,11 @@ details.
   10,000 also answers 400; the client rejects it before sending.
 - **Zenodo rejects requests without a `User-Agent` header.** The client
   always sends one.
+- **Search routes are throttled harder.** Without a token, the record
+  search and the search over the records of one community allow 30
+  requests per minute; every other route allows 133. The client paces the
+  search routes at one request every 2 seconds and everything else at 2
+  requests per second (`ZENOTHECA_RATE_LIMITS` sets the classes).
 - **A concept id redirects.** `GET /api/records/{conceptrecid}` answers 302
   for the newest version, and `versions/latest` answers 301; the client
   follows both.
@@ -122,6 +130,6 @@ Commands live at the workspace root (see the root `AGENTS.md`). Package-specific
 
 ```bash
 uv run python scripts/unasync.py --package zenotheca   # regenerate _sync twins
-uv run pytest packages/zenodo/tests                     # offline suite
+uv run pytest packages/zenotheca/tests                 # offline suite
 uv run pytest -m live_api packages/zenotheca/tests     # live smoke tests
 ```
