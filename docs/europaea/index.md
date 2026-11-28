@@ -1,6 +1,6 @@
 # europaea
 
-europaea is a placeholder name. The package will be renamed before its first release.
+europaea is not yet published on PyPI; until its first release it installs from the bibliofabric workspace.
 
 europaea is a Python client for the [Europe PMC REST web services](https://europepmc.org/RestfulWebService), the [annotations API](https://europepmc.org/AnnotationsApi), and the [grants API](https://europepmc.org/GristAPI), built on [bibliofabric](https://github.com/utsmok/bibliofabric). It types the article search (cursor paging, sorting, `resultType=lite|core`), the per-article routes, annotations, grants, profiles, and the preprint subset with Pydantic models. It ships an async client and a generated sync twin with the same API. The APIs need no credentials.
 

@@ -27,11 +27,7 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   identifier strings the APIs return.
 - Generated sync twin: `OpcitatoSyncClient`, `IndexSyncClient`,
   `MetaSyncClient`.
-
-### Fixed
-
-- Identifiers are percent-encoded before they enter the URL path. A DOI
-  with `#` or `?` used to lose everything after that character.
-- A JSON body that is not a list raises `ConfigurationError` instead of
-  surfacing as an index error.
-- A count route that answers a zero row returns `0`.
+- Identifiers are percent-encoded before they enter the URL path, so a DOI
+  with `#` or `?` keeps its full value.
+- A JSON body that is not a list raises `ConfigurationError`, and a count
+  route that answers a zero row returns `0`.

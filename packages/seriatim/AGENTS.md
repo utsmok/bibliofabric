@@ -1,9 +1,5 @@
 # seriatim: Project Guide
 
-seriatim is a placeholder name. Rename the distribution name, the import name,
-the environment prefix (`SERIATIM_`), the class prefix (`Seriatim`), and the
-directories `packages/seriatim`, `src/seriatim`, and `docs/seriatim` together.
-
 seriatim is an async + generated-sync Python client for the ISSN Portal,
 built on bibliofabric 0.8. Not yet published.
 

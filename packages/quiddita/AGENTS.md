@@ -1,7 +1,5 @@
 # quiddita: Project Guide
 
-quiddita is a placeholder name. Rename the distribution name, the import name, the environment prefix (`QUIDDITA_`), the class prefix (`Quiddita`), and the directories `packages/quiddita`, `src/quiddita`, and `docs/quiddita` together.
-
 quiddita is an async + generated-sync Python client for Wikidata's read interfaces, built on bibliofabric 0.8. Not yet published.
 
 ## Architecture

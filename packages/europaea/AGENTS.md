@@ -1,10 +1,5 @@
 # europaea: Project Guide
 
-europaea is a placeholder name. Rename the distribution name, the import
-name, the environment prefix (`EUROPAEA_`), the class prefix
-(`Europaea`), and the directories `packages/europaea`,
-`src/europaea`, and `docs/europaea` together.
-
 europaea is an async + generated-sync Python client for the Europe PMC
 REST web services (plus the annotations API and the grants Grist API), built
 on bibliofabric 0.8. Not yet published.

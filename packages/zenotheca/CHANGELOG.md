@@ -38,11 +38,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `resource_type`, `any_of`, `all_of`).
 - `normalize_record_id()` and `normalize_community_slug()` for the bare id,
   DOI, and URL spellings Zenodo answers.
-
-### Changed
-
 - The two search routes (the record search and the search over the records
   of one community) run in their own `search` rate class at 0.5 requests
   per second, because they allow 30 requests per minute without a token.
-  The overall default stays at 2 requests per second for the other routes,
-  which allow 133 per minute.
+  The overall default is 2 requests per second for the other routes, which
+  allow 133 per minute.

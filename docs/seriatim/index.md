@@ -1,7 +1,7 @@
 # seriatim: Python client for the ISSN Portal (async and sync)
 
-`seriatim` is a placeholder name. The package will be renamed before its
-first release.
+`seriatim` is not yet published on PyPI; until its first release it installs
+from the bibliofabric workspace.
 
 seriatim is a Python client for the [ISSN Portal](https://portal.issn.org/),
 built on [bibliofabric](https://github.com/utsmok/bibliofabric). It reads

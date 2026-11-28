@@ -1,7 +1,7 @@
 # quiddita: Python client for Wikidata (async and sync)
 
-`quiddita` is a placeholder name. The package will be renamed before its
-first release.
+`quiddita` is not yet published on PyPI; until its first release it installs
+from the bibliofabric workspace.
 
 quiddita is a Python client for [Wikidata](https://www.wikidata.org),
 built on [bibliofabric](https://github.com/utsmok/bibliofabric). It covers all

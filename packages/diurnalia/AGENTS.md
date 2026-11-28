@@ -1,7 +1,5 @@
 # diurnalia: Project Guide
 
-diurnalia is a placeholder name. Rename the distribution name, the import name, the environment prefix (`DIURNALIA_`), the class prefix (`Diurnalia`), and the directories `packages/diurnalia`, `src/diurnalia`, and `docs/diurnalia` together.
-
 diurnalia is an async + generated-sync Python client for the DOAJ (Directory of Open Access Journals) API v4, built on bibliofabric 0.8. Not yet published.
 
 ## Architecture

@@ -1,6 +1,6 @@
 # quiddita
 
-quiddita is a placeholder name. The package will be renamed before its first release.
+quiddita is not yet published on PyPI; until its first release it installs from the bibliofabric workspace.
 
 quiddita is a Python client for [Wikidata](https://www.wikidata.org), built on [bibliofabric](https://github.com/utsmok/bibliofabric). It covers Wikidata's three read interfaces: the MediaWiki Action API (`wbgetentities`, `wbsearchentities`, `wbgetclaims`), the Wikibase REST API (items, properties, statements, per-language term routes), and the SPARQL query service. It types every payload with Pydantic models, batches `wbgetentities` id requests at the API's 50-id limit, and ships an async client plus a generated sync twin with the same API. The API needs no credentials, but all three services ask for a descriptive `User-Agent` with contact information, which the client builds for you.
 

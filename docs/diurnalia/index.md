@@ -1,6 +1,6 @@
 # diurnalia
 
-diurnalia is a placeholder name. The package will be renamed before its first release.
+diurnalia is not yet published on PyPI; until its first release it installs from the bibliofabric workspace.
 
 diurnalia is a Python client for the [DOAJ API v4](https://doaj.org/api/docs), built on [bibliofabric](https://github.com/utsmok/bibliofabric). It types the journal and article search routes with Pydantic models, resolves journals by ISSN and articles by DOI, and enforces the paging limits the API imposes. It ships an async client and a generated sync twin with the same API. The search routes need no credentials.
 

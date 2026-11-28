@@ -27,20 +27,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Pydantic models for the `/ra/` answers, Handle records, and the CSL JSON,
   DataCite JSON, and schema.org JSON-LD representations.
 - Generated sync twin: `HodoiSyncClient`.
-
-### Fixed
-
-- DOIs are percent-encoded before they enter the URL path, and a DOI
-  inside a URL form is decoded first.
-- A query string or fragment in a DOI URL is cut before the lookup, as in
+- DOIs are percent-encoded before they enter the URL path. A DOI inside a
+  URL form is decoded first, and its query string or fragment is cut, as in
   `https://doi.org/10.1038/nature12373?from=mail`.
-- A list of long DOIs no longer produces one overlong `/ra/` path. A
-  request also ends when its path would pass 4000 characters.
+- `/ra/` lookups split long DOI lists so that no request path passes 4000
+  characters.
 - Every entry of a `/ra/` answer is validated. A body that is not a list
   raises `ConfigurationError`, and a malformed entry raises
-  `ValidationError` instead of passing through.
+  `ValidationError`.
 - `content()` returns `None` for an HTTP 204 answer and accepts a media
   type with parameters, such as `application/vnd.citationstyles.csl+json;
   charset=utf-8`.
-- `AGENCY_SUPPORT` lists RIS for mEDRA and no longer lists DataCite for
-  RDF XML and Turtle, matching the live answers of 2026-11-28.
+- `AGENCY_SUPPORT` matches the live answers of 2026-11-28: RIS for mEDRA,
+  and no RDF XML or Turtle for DataCite.
