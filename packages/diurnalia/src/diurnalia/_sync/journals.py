@@ -5,6 +5,7 @@ from collections.abc import Mapping
 from pathlib import Path
 from typing import Any, override
 
+import httpx
 from bibliofabric.exceptions import NotFoundError
 
 from ..dialect import DOAJ_JOURNAL_CSV_URL
@@ -59,15 +60,18 @@ class JournalsSyncClient(DiurnaliaResourceSyncClient[Journal]):
         """
         target = Path(dest)
         target.parent.mkdir(parents=True, exist_ok=True)
-        with (
-            self._client.stream(
-                "GET", DOAJ_JOURNAL_CSV_URL, follow_redirects=True
-            ) as response,
-            target.open("wb") as handle,
-        ):
-            for chunk in response.iter_bytes():
-                handle.write(chunk)
+        with self._client.stream(
+            "GET", DOAJ_JOURNAL_CSV_URL, follow_redirects=True
+        ) as response:
+            _write_body(response, target)
         return target
+
+
+def _write_body(response: httpx.Response, target: Path) -> None:
+    """Write a streamed response body to ``target`` chunk by chunk."""
+    with target.open("wb") as handle:
+        for chunk in response.iter_bytes():
+            handle.write(chunk)
 
 
 __all__ = ["JournalsSyncClient"]
