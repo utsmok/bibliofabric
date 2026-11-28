@@ -14,12 +14,11 @@ Wave 1 needed two of the six planned core additions. `BaseApiClient.default_head
 | Pluggable non-JSON decoder | The DOI client returns XML and BibTeX representations as text and parses the JSON ones. | arXiv Atom, PubMed `efetch`, SRU, or a generic OAI-PMH harvester. |
 | Identifier normalizers for LEI, ARK, RAiD, SWHID, and SPDX | No Wave 1 payload carries these identifiers as first-class fields. | GLEIF LEI, arXiv, DataCite (RAiD), or Software Heritage clients. |
 
-## Release and naming
+## Release
 
 | Item | Why it is deferred | Unblocked by |
 |---|---|---|
-| Real package names | The eleven libraries use placeholder names until the names are chosen. | Filling the roster in [Wave 1 libraries](wave-1-libraries.md) and running the rename steps on that page. |
-| PyPI trusted publishers for the new names | The names do not exist yet. | Registering each name on PyPI and adding its trusted publisher. The publish job reads the package name from the tag, so the workflow needs no change. |
+| PyPI trusted publishers for the new names | PyPI registers a pending publisher only through its web interface, signed in as the owner. | Adding a pending publisher for each name, as described in [Wave 1 libraries](wave-1-libraries.md#release). |
 | Release of the new libraries | They depend on `bibliofabric>=0.8`, which is not released. | Publishing `bibliofabric` 0.8.0 first, then `aireloom`, `aletheca`, and `stavrophora` with their new pins, then the new libraries. |
 
 ## Existing clients

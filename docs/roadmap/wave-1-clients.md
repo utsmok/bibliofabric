@@ -8,7 +8,7 @@ For the step-by-step recipe to scaffold, type-check, generate sync twins, and
 test any client package in this workspace, see
 [Building a client on `bibliofabric`](../bibliofabric/writing-a-client.md).
 
-Status on 2026-11-27: all eleven libraries are built under placeholder names
+Status on 2026-11-28: all eleven libraries are built under their final names
 (see [Wave 1 libraries](wave-1-libraries.md)). These specs were the starting
 point. Where the live API differs from a spec, the client follows the live
 API, and the upstream-quirks page of the package records the difference.

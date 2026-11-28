@@ -8,8 +8,8 @@ ship async clients alongside generated sync twins (`<Name>SyncClient`) and
 `py.typed`. They live in one uv workspace at
 [github.com/utsmok/bibliofabric](https://github.com/utsmok/bibliofabric)
 (`packages/<name>`); this site documents all of them. Three client libraries
-are published on PyPI. Eleven more are built in the workspace under
-placeholder names and are listed in the second table.
+are published on PyPI. Eleven more Wave 1 libraries are built in the
+workspace and wait for their first release; the second table lists them.
 
 | Package | API | PyPI | Install |
 |---|---|---|---|
@@ -20,10 +20,11 @@ placeholder names and are listed in the second table.
 
 ## Wave 1 libraries
 
-These packages are complete and tested but not published. They install from
-the workspace only, and their names change before the first release. The
-[Wave 1 roster](roadmap/wave-1-libraries.md) has the rename steps and the
-[deferred list](roadmap/deferred.md) records what each one leaves out.
+These packages are complete and tested but not yet published on PyPI. Until
+their first release they install from the workspace only. The
+[Wave 1 roster](roadmap/wave-1-libraries.md) lists the upstream API of each
+one, and the [deferred list](roadmap/deferred.md) records what each one leaves
+out.
 
 | Package | API | PyPI |
 |---|---|---|

@@ -70,14 +70,12 @@ The `dev` group pins `ty` and `ruff` versions so local checks match CI.
 - Write small, focused, conventional commits (`feat:`, `fix:`, `docs:`,
   `chore:`, ...), short and imperative, with no AI attribution.
 
-## Placeholder packages
+## Wave 1 packages
 
-The `tbd_*` packages are finished client libraries that wait for their real
-PyPI names. Each name has three spellings (`rorifer`, `RORIFER_`, `Rorifer`),
-and the rename is one find-and-replace per spelling, so keep the spellings
-exact when you edit these packages. Do not publish a `tbd_*` package. The
-[Wave 1 roster](roadmap/wave-1-libraries.md) lists the packages and the
-rename steps.
+The eleven Wave 1 packages (`rorifer` through `seriatim`) are finished client
+libraries that wait for their first PyPI release. The
+[Wave 1 roster](roadmap/wave-1-libraries.md) lists them with their upstream
+APIs.
 
 In a test, build settings with every credential field explicit, for example
 `OrchisSettings(_env_file=None, access_token=None)`. The `_env_file=None`

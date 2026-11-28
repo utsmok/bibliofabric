@@ -27,8 +27,8 @@ monorepo.
 | `packages/aireloom` | OpenAIRE client |
 | `packages/aletheca` | OpenAlex client |
 | `packages/stavrophora` | Crossref client |
-| `packages/tbd_*` | eleven Wave 1 clients under placeholder names (ROR, Zenodo, DataCite, OpenCitations, DOI, Semantic Scholar, ORCID, Europe PMC, Wikidata, DOAJ, ISSN Portal) |
-| `docs/roadmap/` | API landscape, Wave 1 specs, the placeholder roster, and the deferred list |
+| `packages/rorifer`, `zenotheca`, `dataphora`, `opcitato`, `hodoi`, `scholiast`, `orchis`, `europaea`, `quiddita`, `diurnalia`, `seriatim` | eleven Wave 1 clients, not yet published (ROR, Zenodo, DataCite, OpenCitations, DOI, Semantic Scholar, ORCID, Europe PMC, Wikidata, DOAJ, ISSN Portal) |
+| `docs/roadmap/` | API landscape, Wave 1 specs, the Wave 1 roster, and the deferred list |
 | `scripts/unasync.py` | generates committed `_sync/` source and test twins from `_async/` |
 | `docs/contributing.md` | monorepo contributor guide |
 | `docs/<name>/` | that package's docs pages, one mkdocs site at the root |
@@ -66,16 +66,13 @@ uv build --package <name>                         # build one package (wheel con
 Client packages depend on `bibliofabric>=0.8,<0.9`; inside the workspace uv
 resolves that to the sibling package (`[tool.uv.sources]` at the root).
 
-## Placeholder packages
+## Wave 1 packages
 
-The `tbd_*` packages are complete Wave 1 client libraries that wait for
-their real PyPI names. Each placeholder has three spellings: the
-distribution and import name (`rorifer`), the settings environment prefix
-(`RORIFER_`), and the class prefix (`Rorifer`). Use them with no variation,
-because the rename is one find-and-replace per spelling. Never publish a
-`tbd_*` package. The roster and the rename steps are in
-`docs/roadmap/wave-1-libraries.md`, and `docs/roadmap/deferred.md` lists
-what each package leaves out.
+The eleven Wave 1 packages wait for their first PyPI release. Each name has
+three spellings: the distribution and import name (`rorifer`), the settings
+environment prefix (`RORIFER_`), and the class prefix (`Rorifer`). The roster
+is in `docs/roadmap/wave-1-libraries.md`, and `docs/roadmap/deferred.md`
+lists what each package leaves out.
 
 Tests must pass with and without the credentials of `.env` exported in the
 shell. Build settings in a test with every credential field explicit, for

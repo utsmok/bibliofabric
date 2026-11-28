@@ -2,47 +2,49 @@
 
 Wave 1 adds eleven single-source client libraries to the three existing ones. Each library covers every public read endpoint of its upstream API and models every field the API returns. Write endpoints are out of scope for this wave. The [deferred list](deferred.md) records what was left out and why.
 
-Every library is built and tested under a placeholder name. The names are unique strings with no collision in the repository, so each one can be replaced with a single find-and-replace.
+The libraries are not yet published on PyPI. The [release section](#release) lists what each first release needs.
 
 ## Roster
 
-Fill the real name into the last column.
+| Library | Package | Covers | Upstream docs |
+|---|---|---|---|
+| ROR | `rorifer` | Organization records, search, filters, affiliation matching, registry dumps on Zenodo | [REST API](https://ror.readme.io/docs/rest-api) |
+| Zenodo | `zenotheca` | Record search, record versions, files and downloads, communities, vocabularies, OAI-PMH harvesting | [REST API](https://developers.zenodo.org/) |
+| DataCite | `dataphora` | DOIs, activities, clients, providers, repositories, prefixes, events, GraphQL queries | [REST API](https://datacite.readme.io/docs/datacite-rest-api-guide) |
+| OpenCitations | `opcitato` | Citation links, references, citation counts, and metadata | [API documentation](https://opencitations.github.io/) |
+| DOI RA and content negotiation | `hodoi` | Registration agency lookup, metadata by media type, handle records | [DOI resolution documentation](https://www.doi.org/the-identifier/resources/factsheets/doi-resolution-documentation) |
+| Semantic Scholar | `scholiast` | Papers, authors, citations, references, search, batch lookup, recommendations, patents, snippets, and dataset releases | [API docs](https://api.semanticscholar.org/api-docs/) |
+| ORCID | `orchis` | Researcher records, person sections, activities, and both public search routes | [Public API guide](https://info.orcid.org/documentation/integration-guide/public-api/) |
+| Europe PMC | `europaea` | Literature search, article records, full text, references, citations, data links, evaluations, annotations, grants, profiles, and preprints | [Web services](https://europepmc.org/RestfulWebService) |
+| Wikidata | `quiddita` | Entities, claims, sitelinks, lexemes, search, entity data in RDF formats, utility modules, and SPARQL | [Action API](https://www.wikidata.org/w/api.php?action=help&modules=wbgetentities) |
+| DOAJ | `diurnalia` | Journal and article search, journal and article records | [API v4 docs](https://doaj.org/api/v4/docs) |
+| ISSN Portal | `seriatim` | ISSN and ISSN-L records as JSON-LD, the free search, and the Title Word Abbreviation list | [ISSN Portal](https://portal.issn.org/) |
 
-| Library | Covers | Upstream docs | Placeholder | Real name |
-|---|---|---|---|---|
-| ROR | Organization records, search, filters, affiliation matching, registry dumps on Zenodo | [REST API](https://ror.readme.io/docs/rest-api) | `rorifer` | |
-| Zenodo | Record search, record versions, files and downloads, communities, vocabularies, OAI-PMH harvesting | [REST API](https://developers.zenodo.org/) | `zenotheca` | |
-| DataCite | DOIs, activities, clients, providers, repositories, prefixes, events, GraphQL queries | [REST API](https://datacite.readme.io/docs/datacite-rest-api-guide) | `dataphora` | |
-| OpenCitations | Citation links, references, citation counts, and metadata | [API documentation](https://opencitations.github.io/) | `opcitato` | |
-| DOI RA and content negotiation | Registration agency lookup, metadata by media type, handle records | [DOI resolution documentation](https://www.doi.org/the-identifier/resources/factsheets/doi-resolution-documentation) | `hodoi` | |
-| Semantic Scholar | Papers, authors, citations, references, search, batch lookup, recommendations, patents, snippets, and dataset releases | [API docs](https://api.semanticscholar.org/api-docs/) | `scholiast` | |
-| ORCID | Researcher records, person sections, activities, and both public search routes | [Public API guide](https://info.orcid.org/documentation/integration-guide/public-api/) | `orchis` | |
-| Europe PMC | Literature search, article records, full text, references, citations, data links, evaluations, annotations, grants, profiles, and preprints | [Web services](https://europepmc.org/RestfulWebService) | `europaea` | |
-| Wikidata | Entities, claims, sitelinks, lexemes, search, entity data in RDF formats, utility modules, and SPARQL | [Action API](https://www.wikidata.org/w/api.php?action=help&modules=wbgetentities) | `quiddita` | |
-| DOAJ | Journal and article search, journal and article records | [API v4 docs](https://doaj.org/api/v4/docs) | `diurnalia` | |
-| ISSN Portal | ISSN and ISSN-L records as JSON-LD, the free search, and the Title Word Abbreviation list | [ISSN Portal](https://portal.issn.org/) | `seriatim` | |
+## Names
 
-## The placeholder names
+The names follow the existing family. `aireloom` weaves OpenAIRE, `aletheca` is a library of truth for OpenAlex, and `stavrophora` is Greek for "cross bearer", after Crossref. Each Wave 1 name is a Latin or Greek word that points at its source.
 
-Each placeholder has three spellings, and all three appear in code, tests, docs, and configuration. `uv.lock` carries a fourth, dashed form that `uv lock` writes.
+| Package | Origin |
+|---|---|
+| `rorifer` | Latin for "dew bearing" (*ros*, *roris*), and it starts with ROR. |
+| `zenotheca` | Zeno plus *theca* (library). Zenodo is named after Zenodotus, the first librarian of Alexandria. |
+| `dataphora` | "Data bearer", the DataCite counterpart of `stavrophora`. |
+| `opcitato` | From *opere citato* ("in the work cited"), the "op. cit." of footnotes. |
+| `hodoi` | Greek for "roads" or "ways". The client routes a DOI to its registration agency, and the word contains "doi". |
+| `scholiast` | A scholar who writes scholia, the notes in the margins of a text. |
+| `orchis` | The Greek and botanical name of the orchid, after ORCID. |
+| `europaea` | Latin for "European", after Europe PMC. |
+| `quiddita` | From *quidditas* ("whatness"), for the Q identifiers of Wikidata. |
+| `diurnalia` | Latin for daily records, the root of "journal", after the Directory of Open Access Journals. |
+| `seriatim` | Latin for "one after another", for serials and their ISSNs. |
 
-| Spelling | Where it appears | Example |
-|---|---|---|
-| Lower case with underscore | Distribution name, import name, and the directories `packages/`, `src/`, and `docs/` | `rorifer` |
-| Upper case with underscore | Prefix of the environment variables of the settings | `RORIFER_MAX_CONCURRENCY` |
-| PascalCase without underscore | Prefix of the client, settings, and model class names | `RoriferClient` |
-| Lower case with dash | The package entries of `uv.lock`, which `uv lock` rewrites | `dataphora` |
+Each name has three spellings: the distribution and import name (`rorifer`), the prefix of the settings environment variables (`RORIFER_MAX_CONCURRENCY`), and the prefix of the class names (`RoriferClient`).
 
-## Renaming a placeholder
+## Release
 
-Do this once the real name is registered on PyPI. For a real name `xyz`, the three spellings are `xyz`, `XYZ`, and `Xyz`.
-
-1. Replace each placeholder spelling in the whole repository with a case-sensitive match. Start with the PascalCase spelling (`Rorifer`), then the upper case prefix (`RORIFER`), then the lower case name (`rorifer`), so that no replacement feeds the next one.
-2. Rename the directories `packages/rorifer`, `packages/rorifer/src/rorifer`, and `docs/rorifer`.
-3. Register the trusted publisher for `xyz` on PyPI. The publish job reads the package name from the tag `xyz-v<version>`, so the workflow needs no change.
-4. From the repository root, run `uv lock`, then `uv run python scripts/unasync.py`, then the gates listed in the root `AGENTS.md`. The generator rewrites the `_sync/` directories from the renamed sources, and `uv lock` rewrites the lock entries, so neither needs a manual replacement.
-5. Write the real name into the roster on this page.
-6. Remove the placeholder notes that the rename leaves behind: the `tbd_*` paragraphs in the root `AGENTS.md`, `docs/contributing.md`, and `README.md`, and the naming sections on this page.
+1. Register a pending trusted publisher on PyPI for each name: owner `utsmok`, repository `bibliofabric`, workflow `ci.yml`, environment `pypi`. The publish job reads the package name from the tag `<name>-v<version>`, so the workflow needs no change.
+2. Release `bibliofabric` 0.8.0 first, because every Wave 1 library requires `bibliofabric>=0.8,<0.9`. Release `aireloom`, `aletheca`, and `stavrophora` next with their new pins.
+3. Tag each Wave 1 library as `<name>-v0.1.0`, following the release flow in the root `AGENTS.md`.
 
 ## Package pages
 

@@ -4,8 +4,8 @@ Async and sync Python client libraries for scholarly metadata APIs, in one uv
 workspace. The [`bibliofabric`](https://pypi.org/project/bibliofabric/) core
 owns HTTP with retries and rate limiting, authentication, error mapping,
 paging, batch retrieval, identifier normalization, and typed resource
-clients. Three libraries build on it, one per API, and eleven more are built
-in this workspace under placeholder names.
+clients. Three libraries build on it, one per API, and eleven more Wave 1
+libraries are built in this workspace and wait for their first release.
 
 | Package | API | Version | Docs |
 |---|---|---|---|
@@ -14,11 +14,11 @@ in this workspace under placeholder names.
 | [aletheca](packages/aletheca/README.md) | OpenAlex | [0.5.0](https://pypi.org/project/aletheca/) | [docs](https://utsmok.github.io/bibliofabric/aletheca/) |
 | [stavrophora](packages/stavrophora/README.md) | Crossref REST API | [0.4.0](https://pypi.org/project/stavrophora/) | [docs](https://utsmok.github.io/bibliofabric/stavrophora/) |
 
-The eleven placeholder packages (`tbd_*`) are complete and tested but not
-published, so they install from this workspace only. The
+The eleven Wave 1 packages are complete and tested but not yet published on
+PyPI, so they install from this workspace only. The
 [Wave 1 roster](docs/roadmap/wave-1-libraries.md) lists each one with its
-placeholder name and a field for the real name, and the
-[deferred list](docs/roadmap/deferred.md) records what each one leaves out.
+upstream API, and the [deferred list](docs/roadmap/deferred.md) records what
+each one leaves out.
 
 | Package | API | Version | Docs |
 |---|---|---|---|

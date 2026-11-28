@@ -10,7 +10,7 @@ Layer 3: Canonical Entity Fusion (working name: bibliocanon)
                               ▲
 Layer 2: Modular Single-Source Client Libraries
          Original: aireloom (OpenAIRE), aletheca (OpenAlex), stavrophora (Crossref)
-         Wave 1 (built under placeholder names): ROR v2, Zenodo, DataCite,
+         Wave 1 (built, not yet released): ROR v2, Zenodo, DataCite,
                   OpenCitations, DOI RA/ConNeg, Semantic Scholar, ORCID v3,
                   Europe PMC, Wikidata, DOAJ v4, ISSN Portal
          Wave 2:  Domain indexes, repositories, funder APIs, protocol adapters
@@ -132,7 +132,7 @@ CC0 / ODC-By / Public Domain):
   Semantic Scholar (Graph + Bulk + POST batch), OpenCitations (Index v2 + Meta
   v1), Europe PMC, Zenodo (reusable InvenioRDM pattern).
 
-Status on 2026-11-27: all eleven libraries are built under placeholder names
+Status on 2026-11-28: all eleven libraries are built under their final names
 and cover the public read endpoints of their APIs. See
 [Wave 1 libraries](wave-1-libraries.md) for the roster and
 [Deferred work](deferred.md) for what was left out.
@@ -197,8 +197,8 @@ Keep the open core free of legal/licensing blockers and deprecated endpoints:
 - [Wave 1 Client Specs & Core Enablers](wave-1-clients.md) — Starter
   implementation specs for the 11 Wave 1 clients and the 6 `bibliofabric` core
   additions.
-- [Wave 1 Libraries](wave-1-libraries.md) — The roster with the placeholder
-  names, a blank field for each real name, and the rename steps.
+- [Wave 1 Libraries](wave-1-libraries.md) — The roster with the package
+  names, their origins, and the release steps.
 - [Deferred Work](deferred.md) — Everything Wave 1 left out, with the reason
   and the condition that unblocks it.
 - [Canonical Entity Fusion Architecture](canonical-fusion.md) — End-to-end
