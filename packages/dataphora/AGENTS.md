@@ -1,8 +1,8 @@
 # dataphora: Project Guide
 
 dataphora is an async + generated-sync Python client for the DataCite
-REST API (https://api.datacite.org), built on bibliofabric 0.8. Placeholder
-name; the user renames it before release. Status alpha, not yet on PyPI.
+REST API (https://api.datacite.org), built on bibliofabric 0.8. The name is
+final. Status alpha, not yet published on PyPI.
 
 ## Architecture
 
@@ -48,12 +48,12 @@ DataphoraClient / DataphoraSyncClient    # _async/client.py -> _sync/client.py
 
 ## Development
 
-Commands live at the workspace root (see the root `AGENTS.md`). This package
-is not yet a workspace member (no pyproject.toml until the rename); run its
-tests with `PYTHONPATH=packages/dataphora/src .venv/bin/python -m pytest
-packages/dataphora/tests` and regenerate twins with
-`.venv/bin/python scripts/unasync.py --package dataphora`. Live tests need
-no credentials.
+Commands live at the workspace root (see the root `AGENTS.md`). The package
+is a workspace member with its own `pyproject.toml`. Package-specific bits:
+regenerate twins with `uv run python scripts/unasync.py --package
+dataphora`, run the offline suite with `uv run pytest
+packages/dataphora/tests`, and run the live tests with `uv run pytest -m
+live_api packages/dataphora/tests`. Live tests need no credentials.
 
 ## Testing
 

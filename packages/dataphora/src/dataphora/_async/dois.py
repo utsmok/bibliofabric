@@ -2,6 +2,8 @@
 
 from typing import override
 
+from bibliofabric import validate_model
+
 from ..dialect import dialect_with
 from ..filters import DoiFilters
 from ..models import DataphoraActivity, DataphoraDoi
@@ -31,7 +33,15 @@ class DoisClient(DataphoraDoiClient[DataphoraDoi]):
         response = await self._client.request("GET", path)
         body = self._client.parse_json(response)
         records = self._client.unwrapper.results(body)
-        return [DataphoraActivity.model_validate(record) for record in records]
+        return [
+            validate_model(
+                DataphoraActivity,
+                record,
+                request=getattr(response, "request", None),
+                response=response,
+            )
+            for record in records
+        ]
 
 
 class ActivitiesClient(DataphoraDoiClient[DataphoraActivity]):

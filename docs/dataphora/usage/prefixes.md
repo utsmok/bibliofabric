@@ -7,7 +7,6 @@ The `prefixes` resource lists the [DOI prefixes](https://support.datacite.org/re
 ```python
 record = await client.prefixes.get("10.5438")
 record.prefix
-record.state  # "active" or "unallocated"
 ```
 
 ```python
@@ -48,7 +47,7 @@ page.results[0].relationships["provider"].data.id
 
 ```python
 totals = await client.prefixes.totals()
-totals  # None anonymously; the route answers 204 No Content
+totals  # [] anonymously; the route answers 204 No Content and the client returns an empty list
 ```
 
 `/prefixes/totals` requires a login; the model accepts the empty answer as

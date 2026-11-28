@@ -10,20 +10,21 @@ page = await client.events.search(
     page_size=100,
 )
 event = page.results[0]
-event.subjId  # landing page or DOI the event happened on
-event.objId  # target of a citation or reference
-event.relationTypeId  # "is-referenced-by", "is-cited-by", "views", ...
-event.occurredAt
-event.sourceId  # "datacite-crossref", "datacite-usage", ...
+event.subj_id  # landing page or DOI the event happened on
+event.obj_id  # target of a citation or reference
+event.relation_type_id  # "is-referenced-by", "is-cited-by", "views", ...
+event.occurred_at  # None on older records, which carry occured_at instead
+event.source_id  # "datacite-crossref", "datacite-usage", ...
 event.total
 event.relationships["subj"].data.id
-event.meta["facets"]
+page.meta["facets"]
 ```
 
 Attribute aliases mirror the upstream hyphenated names (`subj-id`,
-`relation-type-id`, `citation-type`, `source-id`, `message-action`),
-including the spec spelling `occured-at`; recent records answer with the
-correct spelling `occurred-at`, and both land in the same field.
+`obj-id`, `relation-type-id`, `source-id`, `message-action`,
+`source-token`). The date exists under two spellings: older records carry
+the spec spelling `occured-at` and recent records carry `occurred-at`, so
+the model has the two fields `occured_at` and `occurred_at`.
 
 ## Always pass a filter
 

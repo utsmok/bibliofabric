@@ -170,7 +170,7 @@ and allows extra fields.
       members:
         - DATACITE_API_BASE_URL
         - DATACITE_MAX_PAGE_SIZE
-        - MAX_NUMBERED_RESULTS
+        - DATACITE_MAX_NUMBERED_RESULTS
         - DATACITE_DIALECT
 
 ::: dataphora._async.dialect.DataphoraResourceClient

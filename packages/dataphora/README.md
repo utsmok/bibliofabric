@@ -2,9 +2,6 @@
 
 Samuel Mok -- 2026
 
-`dataphora` is a placeholder name. The package will be renamed before its
-first release.
-
 dataphora is a Python client for the
 [DataCite REST API](https://support.datacite.org/docs/rest-api), built on
 [bibliofabric](https://github.com/utsmok/bibliofabric). It types the public
@@ -34,10 +31,10 @@ same API without an event loop. Public reads need no login.
 ## Installation
 
 ```bash
-uv add dataphora
+uv sync --all-packages
 ```
 
-Requires Python >=3.12.
+The package is not yet published on PyPI. The command runs in a checkout of the `bibliofabric` workspace and installs dataphora with the `bibliofabric` 0.8 it needs. `uv add dataphora` works once the package is on PyPI. Requires Python >=3.12.
 
 ## Quick start
 

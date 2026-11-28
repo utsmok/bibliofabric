@@ -7,15 +7,15 @@ read routes for DOIs, clients, providers, repositories, prefixes, prefix
 assignments, activities, and events, flattens the JSON:API envelope so
 record fields sit at the top level of each model, and sends queries to the
 public GraphQL API. It ships an async client and a generated sync twin with
-the same API. The name is a placeholder and will change before the first
-release.
+the same API.
 
 ## Install
 
-The package is not yet on PyPI. Until the rename lands, install from the
-monorepo and import it with `PYTHONPATH=packages/dataphora/src`.
+```bash
+uv sync --all-packages
+```
 
-Requires Python 3.12 or newer.
+The package is not yet published on PyPI. The command runs in a checkout of the `bibliofabric` workspace and installs dataphora with the `bibliofabric` 0.8 it needs. `uv add dataphora` works once the package is on PyPI. Requires Python 3.12 or newer.
 
 ## Authentication
 
