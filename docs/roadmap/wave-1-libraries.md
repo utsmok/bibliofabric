@@ -43,8 +43,7 @@ Each name has three spellings: the distribution and import name (`rorifer`), the
 ## Release
 
 1. Register a pending trusted publisher on PyPI for each name: owner `utsmok`, repository `bibliofabric`, workflow `ci.yml`, environment `pypi`. The publish job reads the package name from the tag `<name>-v<version>`, so the workflow needs no change.
-2. Release `bibliofabric` 0.8.0 first, because every Wave 1 library requires `bibliofabric>=0.8,<0.9`. Release `aireloom`, `aletheca`, and `stavrophora` next with their new pins.
-3. Tag each Wave 1 library as `<name>-v0.1.0`, following the release flow in the root `AGENTS.md`.
+2. Tag each Wave 1 library as `<name>-v0.1.0`, following the release flow in the root `AGENTS.md`. Every library requires `bibliofabric>=0.8,<0.9`; `bibliofabric` 0.8.0 is on PyPI since 2026-11-28.
 
 ## Package pages
 

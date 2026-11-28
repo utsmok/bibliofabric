@@ -19,7 +19,7 @@ Wave 1 needed two of the six planned core additions. `BaseApiClient.default_head
 | Item | Why it is deferred | Unblocked by |
 |---|---|---|
 | PyPI trusted publishers for the new names | PyPI registers a pending publisher only through its web interface, signed in as the owner. | Adding a pending publisher for each name, as described in [Wave 1 libraries](wave-1-libraries.md#release). |
-| Release of the new libraries | They depend on `bibliofabric>=0.8`, which is not released. | Publishing `bibliofabric` 0.8.0 first, then `aireloom`, `aletheca`, and `stavrophora` with their new pins, then the new libraries. |
+| Release of the new libraries | Each first release needs its trusted publisher. `bibliofabric` 0.8.0, which they require, is on PyPI since 2026-11-28, with `aireloom` 0.9.1, `aletheca` 0.5.1, and `stavrophora` 0.5.0. | The trusted publishers above, then one `<name>-v0.1.0` tag per library. |
 
 ## ROR (`rorifer`)
 

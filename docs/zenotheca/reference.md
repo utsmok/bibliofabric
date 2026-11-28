@@ -14,6 +14,7 @@ Generated from the source with mkdocstrings.
         - vocabularies
         - oai
         - request
+        - rate_class
 
 ## Sync client
 
@@ -141,6 +142,9 @@ Only the members that Zenodo changes or adds are shown here.
         - ZENODO_DEFAULT_PAGE_SIZE
         - ZENODO_MAX_RESULT_WINDOW
         - RECORD_SORT_OPTIONS
+        - ZENODO_SEARCH_RATE_CLASS
+        - ZENODO_SEARCH_REQUESTS_PER_SECOND
+        - is_search_route
 
 ## Models
 
