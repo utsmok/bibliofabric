@@ -117,8 +117,10 @@ candidates.
    - **`aletheca` (OpenAlex):** Expose OpenAlex credit/budget telemetry headers
      (`X-RateLimit-Credits-Used`, `cost_usd`) cleanly via `on_response()`.
 
-   Status on 2026-11-27: both enhancements are still open; see
-   [Deferred work](deferred.md#existing-clients).
+   Status on 2026-11-28: all three are done. `stavrophora` has
+   `client.data_citations` for the beta route and `Work.retractions` /
+   `Work.is_retracted` for the Retraction Watch data, and the aletheca docs
+   describe the credit and cost headers.
 
 ### Phase 1 — Wave 1: Authorities & Open Scholarly Graphs
 

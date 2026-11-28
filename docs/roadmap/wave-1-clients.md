@@ -87,6 +87,10 @@ packages:
     (`X-RateLimit-Credits-Used`, `cost_usd`) via `BaseApiClient.on_response()`
     alongside existing `daily_budget` 429 retry vetoing.
 
+Status on 2026-11-28: all three are done. The Data Citation API is still
+beta upstream (`/beta/datacitations`, its own pool at 3 requests per
+second), so `stavrophora` labels `client.data_citations` as beta.
+
 ## Wave 1 Candidate Client Starter Specs
 
 ### 1. ROR v2 (Organizations & Funders)

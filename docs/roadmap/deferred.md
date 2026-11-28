@@ -21,13 +21,6 @@ Wave 1 needed two of the six planned core additions. `BaseApiClient.default_head
 | PyPI trusted publishers for the new names | PyPI registers a pending publisher only through its web interface, signed in as the owner. | Adding a pending publisher for each name, as described in [Wave 1 libraries](wave-1-libraries.md#release). |
 | Release of the new libraries | They depend on `bibliofabric>=0.8`, which is not released. | Publishing `bibliofabric` 0.8.0 first, then `aireloom`, `aletheca`, and `stavrophora` with their new pins, then the new libraries. |
 
-## Existing clients
-
-| Item | Why it is deferred | Unblocked by |
-|---|---|---|
-| `stavrophora`: Crossref Data Citation API (`/beta/datacitations/`) | The route is live but still in beta upstream. | Crossref declaring the route stable, or a decision to ship a beta client. |
-| `stavrophora`: Retraction Watch helpers | The data is in the Crossref `updated-by` fields, which `stavrophora` already returns as fields on a work. | Typed helpers once the fusion layer defines what it needs. |
-
 ## ROR (`rorifer`)
 
 | Item | Why it is deferred | Unblocked by |
