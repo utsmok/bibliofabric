@@ -1,0 +1,197 @@
+"""Outgoing request shape: paths, query-in-path, paging, identifier lookups."""
+
+from urllib.parse import unquote
+
+import pytest
+from diurnalia import ConfigurationError, NotFoundError
+
+from ..conftest import envelope, journal, load_fixture
+
+JOURNAL_PAGE = load_fixture("journal_by_issn.json")
+ARTICLE_PAGE = load_fixture("article_by_doi.json")
+EMPTY = load_fixture("empty_search.json")
+JOURNAL_RECORD = load_fixture("journal_get_by_id.json")
+ARTICLE_RECORD = load_fixture("article_get_by_id.json")
+
+
+def last_request(httpx_mock):
+    return httpx_mock.get_requests()[-1]
+
+
+def last_path(httpx_mock) -> str:
+    """The request path with the percent-encoding read back."""
+    return unquote(last_request(httpx_mock).url.raw_path.decode().split("?", 1)[0])
+
+
+def last_params(httpx_mock) -> dict[str, str]:
+    return dict(last_request(httpx_mock).url.params)
+
+
+async def test_search_encodes_the_query_in_the_path(client, httpx_mock):
+    httpx_mock.add_response(json=JOURNAL_PAGE)
+    page = await client.journals.search(query="title:plos one", page=3)
+    assert page.total == JOURNAL_PAGE["total"]
+    assert page.results[0].title == "PLoS ONE"
+    request = last_request(httpx_mock)
+    assert last_path(httpx_mock) == "/api/v4/search/journals/title:plos one"
+    assert request.headers["accept"] == "application/json"
+    assert last_params(httpx_mock) == {"page": "3", "pageSize": "10"}
+
+
+async def test_search_without_query_uses_match_all(client, httpx_mock):
+    httpx_mock.add_response(json=envelope([]))
+    await client.journals.search()
+    assert last_path(httpx_mock) == "/api/v4/search/journals/*"
+
+
+async def test_search_clamps_page_size_to_50(client, httpx_mock):
+    httpx_mock.add_response(json=envelope([]))
+    await client.journals.search(page_size=100)
+    assert last_params(httpx_mock)["pageSize"] == "50"
+
+
+async def test_search_forwards_sort(client, httpx_mock):
+    httpx_mock.add_response(json=envelope([]))
+    await client.articles.search(query="title:hunger", sort="bibjson.year:desc")
+    assert last_path(httpx_mock) == "/api/v4/search/articles/title:hunger"
+    assert last_params(httpx_mock) == {
+        "page": "1",
+        "pageSize": "10",
+        "sort": "bibjson.year:desc",
+    }
+
+
+async def test_page_beyond_1000_records_raises_without_request(client, httpx_mock):
+    with pytest.raises(ConfigurationError, match="max_offset"):
+        await client.journals.search(page_size=50, page=21)
+    with pytest.raises(ConfigurationError, match="max_offset"):
+        await client.articles.search(page_size=1, page=1001)
+    assert not httpx_mock.get_requests()
+
+
+async def test_last_full_page_is_allowed(client, httpx_mock):
+    httpx_mock.add_response(json=envelope([journal("a")]))
+    await client.journals.search(page_size=50, page=20)
+    assert last_params(httpx_mock) == {"page": "20", "pageSize": "50"}
+
+
+async def test_count_reads_total_with_one_record(client, httpx_mock):
+    httpx_mock.add_response(json=JOURNAL_PAGE)
+    assert await client.journals.count(query="issn:1932-6203") == JOURNAL_PAGE["total"]
+    assert last_params(httpx_mock) == {"page": "1", "pageSize": "1"}
+
+
+async def test_iterate_pages_until_total(client, httpx_mock):
+    httpx_mock.add_response(json=envelope([journal("a"), journal("b")], total=3))
+    httpx_mock.add_response(json=envelope([journal("c")], total=3))
+    records = [record async for record in client.journals.iterate(query="*")]
+    assert [record.id for record in records] == ["a", "b", "c"]
+    assert [r.url.params["page"] for r in httpx_mock.get_requests()] == ["1", "2"]
+
+
+async def test_iterate_limit_and_page_size(client, httpx_mock):
+    httpx_mock.add_response(json=envelope([journal("a")], total=500))
+    records = [record async for record in client.journals.iterate(query="*", limit=1)]
+    assert len(records) == 1
+    assert last_params(httpx_mock) == {"page": "1", "pageSize": "50"}
+
+
+async def test_get_journal_by_issn(client, httpx_mock):
+    httpx_mock.add_response(json=JOURNAL_PAGE)
+    record = await client.journals.get("1932-6203")
+    assert record.title == "PLoS ONE"
+    assert last_path(httpx_mock) == "/api/v4/search/journals/issn:1932-6203"
+    assert last_params(httpx_mock) == {"page": "1", "pageSize": "1"}
+
+
+async def test_get_journal_accepts_compact_issn(client, httpx_mock):
+    httpx_mock.add_response(json=JOURNAL_PAGE)
+    await client.journals.get("19326203")
+    assert last_path(httpx_mock) == "/api/v4/search/journals/issn:1932-6203"
+
+
+async def test_get_journal_missing_issn_raises(client, httpx_mock):
+    httpx_mock.add_response(json=EMPTY)
+    with pytest.raises(NotFoundError, match="1234-5678"):
+        await client.journals.get("1234-5678")
+
+
+async def test_get_article_by_doi(client, httpx_mock):
+    httpx_mock.add_response(json=ARTICLE_PAGE)
+    record = await client.articles.get("https://doi.org/10.3389/fpubh.2020.00115")
+    assert record.doi == "10.3389/fpubh.2020.00115"
+    assert last_path(httpx_mock) == (
+        "/api/v4/search/articles/doi:10.3389/fpubh.2020.00115"
+    )
+    assert last_params(httpx_mock) == {"page": "1", "pageSize": "1"}
+
+
+async def test_get_article_missing_doi_raises(client, httpx_mock):
+    httpx_mock.add_response(json=EMPTY)
+    with pytest.raises(NotFoundError, match="10.9999"):
+        await client.articles.get("10.9999/nope")
+
+
+async def test_exists_uses_the_search_route(client, httpx_mock):
+    httpx_mock.add_response(json=JOURNAL_PAGE)
+    assert await client.journals.exists("1932-6203") is True
+    httpx_mock.add_response(json=EMPTY)
+    assert await client.journals.exists("1234-5678") is False
+    assert [r.method for r in httpx_mock.get_requests()] == ["GET", "GET"]
+
+
+async def test_meta_carries_the_envelope_extras(client, httpx_mock):
+    body = envelope([journal("a")], total=1)
+    body["last"] = "https://doaj.org/api/v4/search/journals/*?page=1&pageSize=10"
+    body["query"] = "*"
+    httpx_mock.add_response(json=body)
+    page = await client.journals.search()
+    assert page.meta["query"] == "*"
+    assert page.page == 1
+
+
+async def test_bad_records_are_reported(client, httpx_mock):
+    httpx_mock.add_response(json=envelope([{"id": "no-bibjson"}]))
+    failures: list[tuple[dict, Exception]] = []
+    records = [
+        record
+        async for record in client.journals.iterate(
+            query="*", on_error="skip", failures=failures
+        )
+    ]
+    assert records == []
+    assert len(failures) == 1
+    assert "bibjson" in str(failures[0][1])
+
+
+async def test_get_journal_by_record_id(client, httpx_mock):
+    httpx_mock.add_response(json=JOURNAL_RECORD)
+    record = await client.journals.get_by_id(JOURNAL_RECORD["id"])
+    assert record.title == "PLoS ONE"
+    assert record.es_type == "journal"
+    assert record.admin is not None and record.admin.in_doaj is True
+    assert last_path(httpx_mock) == f"/api/v4/journals/{JOURNAL_RECORD['id']}"
+    assert last_params(httpx_mock) == {}
+
+
+async def test_get_article_by_record_id(client, httpx_mock):
+    httpx_mock.add_response(json=ARTICLE_RECORD)
+    record = await client.articles.get_by_id(ARTICLE_RECORD["id"])
+    assert record.doi == "10.3389/fpubh.2020.00115"
+    assert record.es_type == "article"
+    assert record.admin is not None
+    assert record.admin.in_doaj is True
+    assert record.admin.publisher_record_id == "501082"
+    assert last_path(httpx_mock) == f"/api/v4/articles/{ARTICLE_RECORD['id']}"
+
+
+async def test_get_by_id_missing_record_raises(client, httpx_mock):
+    httpx_mock.add_response(status_code=404, json={"status": "not_found"})
+    with pytest.raises(NotFoundError):
+        await client.articles.get_by_id("0")
+
+
+async def test_get_by_id_requires_an_id(client, httpx_mock):
+    with pytest.raises(ConfigurationError, match="non-empty id"):
+        await client.journals.get_by_id("")
+    assert not httpx_mock.get_requests()

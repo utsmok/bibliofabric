@@ -1,0 +1,95 @@
+{
+  "total": 1,
+  "page": 1,
+  "pageSize": 10,
+  "timestamp": "2026-11-27T23:27:57.995940Z",
+  "query": "doi:10.3389/fpubh.2020.00115",
+  "results": [
+    {
+      "last_updated": "2025-08-19T17:16:09Z",
+      "bibjson": {
+        "identifier": [
+          {
+            "id": "2296-2565",
+            "type": "eissn"
+          },
+          {
+            "id": "10.3389/fpubh.2020.00115",
+            "type": "doi"
+          }
+        ],
+        "journal": {
+          "volume": "8",
+          "country": "CH",
+          "issns": [
+            "2296-2565"
+          ],
+          "publisher": "Frontiers Media S.A.",
+          "language": [
+            "EN"
+          ],
+          "title": "Frontiers in Public Health"
+        },
+        "month": "4",
+        "keywords": [
+          "hunger",
+          "food insecurity",
+          "violence",
+          "mental health",
+          "support",
+          "socioeconomic status"
+        ],
+        "year": "2020",
+        "subject": [
+          {
+            "code": "RA1-1270",
+            "scheme": "LCC",
+            "term": "Public aspects of medicine"
+          }
+        ],
+        "author": [
+          {
+            "affiliation": "Institute of Psychology, Alps-Adria University, Klagenfurt am Woerthersee, Austria",
+            "name": "Elena Jansen"
+          },
+          {
+            "affiliation": "Department of Social Policy and Intervention, University of Oxford, Oxford, United Kingdom",
+            "name": "Jamie M. Lachman"
+          },
+          {
+            "affiliation": "MRC/CSO Social and Public Health Sciences Unit, University of Glasgow, Glasgow, United Kingdom",
+            "name": "Jamie M. Lachman"
+          },
+          {
+            "affiliation": "Department of Psychology, University of Bremen, Bremen, Germany",
+            "name": "Nina Heinrichs"
+          },
+          {
+            "affiliation": "School of Psychology, Bangor University, Wales, United Kingdom",
+            "name": "Judy Hutchings"
+          },
+          {
+            "affiliation": "Department of Psychology, Babeş-Bolyai University, Cluj-Napoca, Romania",
+            "name": "Adriana Baban"
+          },
+          {
+            "affiliation": "Institute of Psychology, Alps-Adria University, Klagenfurt am Woerthersee, Austria",
+            "name": "Heather M. Foran"
+          }
+        ],
+        "link": [
+          {
+            "content_type": "HTML",
+            "type": "fulltext",
+            "url": "https://www.frontiersin.org/article/10.3389/fpubh.2020.00115/full"
+          }
+        ],
+        "abstract": "Background: Hunger can influence healthy development of children and has been shown to be associated with other determinants of child health, such as violence within the family and maternal (mental) health problems. Whilst the majority of research has been conducted in high-income countries with vulnerable populations, less is known about the circumstances in low-and-middle-income countries. This study explored the experience of hunger in vulnerable families in three Southeastern European countries, and simultaneously examined relationships with four sets of risk factors—lack of financial, mental, familial, and social resources.Methods: Families (N = 140) were recruited for a parenting intervention targeting child behavioral problems. Baseline data was collected on hunger, socioeconomic characteristics, mental health and wellbeing, family violence (i.e., child maltreatment and intimate partner violence), and social and emotional support. Univariate and multivariable risk factors of hunger were examined cross-sectionally with regression models.Results: Overall, 31% of families experienced at least one form of hunger in the last month. Worse family functioning, current intimate partner violence, and more instances of child neglect showed univariate associations with family hunger. In hierarchical analysis, five risk factors remained significantly associated with the experience of hunger: lower adult educational, literacy level, emotional support, more children in the household and higher scores on parental depression, anxiety, and stress.Conclusions: Hunger in Southeastern European families, among families with children showing elevated behavioral problems, was associated with more family violence, but specifically poorer mental health and less emotional support above and beyond socio-structural strains. Adapting parenting interventions to support the primary caregiver in getting more access to emotional support may potentially also change hunger and its association with health and violence. However, this hypothetical pathway of change needs explicit testing.",
+        "title": "Hunger in Vulnerable Families in Southeastern Europe: Associations With Mental Health and Violence"
+      },
+      "id": "57dfae3d0df24509a5f65fc0498f72fc",
+      "created_date": "2020-04-15T06:11:09Z"
+    }
+  ],
+  "last": "https://doaj.org/api/v4/search/articles/doi:10.3389/fpubh.2020.00115?page=1&pageSize=10"
+}

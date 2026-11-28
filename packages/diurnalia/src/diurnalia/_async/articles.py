@@ -1,0 +1,48 @@
+"""Client for the DOAJ article search route."""
+
+from collections.abc import Mapping
+from typing import Any, override
+
+from bibliofabric.exceptions import NotFoundError
+
+from ..filters import doi_query
+from ..models import Article
+from .base import DiurnaliaResourceClient
+
+
+class ArticlesClient(DiurnaliaResourceClient[Article]):
+    """Client for the ``/search/articles`` route.
+
+    The route indexes about 14 million articles, but like the journals
+    route it serves at most 1000 records per query. Harvest everything
+    through the DOAJ public data dump instead.
+    """
+
+    path = "search/articles"
+    search_prefix = "search/articles"
+    record_path = "articles"
+    model = Article
+
+    @override
+    async def get(
+        self,
+        id: str | int,
+        *,
+        select: Any = None,
+        params: Mapping[str, Any] | None = None,
+    ) -> Article:
+        """Return the article with a given DOI.
+
+        Accepts a bare DOI (``10.3389/fpubh.2020.00115``) and a DOI URL.
+        Raises ``NotFoundError`` when no article carries the DOI; DOAJ
+        answers such a search with a 200 envelope of zero results.
+        """
+        del select  # the API has no field selection
+        query = doi_query(str(id))
+        page = await self.search(query=query, page_size=1, params=params)
+        if not page.results:
+            raise NotFoundError(f"No DOAJ article with DOI {id!r}.")
+        return page.results[0]
+
+
+__all__ = ["ArticlesClient"]

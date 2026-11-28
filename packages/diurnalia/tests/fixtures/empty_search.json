@@ -1,0 +1,9 @@
+{
+  "total": 0,
+  "page": 1,
+  "pageSize": 10,
+  "timestamp": "2026-11-27T23:28:30.288103Z",
+  "query": "title:xqxqxq",
+  "results": [],
+  "last": "https://doaj.org/api/v4/search/journals/title:xqxqxq?page=1&pageSize=10"
+}
