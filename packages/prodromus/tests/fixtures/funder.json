@@ -1,0 +1,106 @@
+{
+ "messages": [
+  {
+   "status": "ok",
+   "category": "all",
+   "interval": "2025-06-01:2025-06-30",
+   "funder": "European Commission : https://ror.org/00k4n6c32",
+   "cursor": 0,
+   "count": 24,
+   "count_new_papers": "17",
+   "total": "24"
+  }
+ ],
+ "collection": [
+  {
+   "title": "Modelling Glomerular Filtration using Multispectral Optoacoustic Tomography and a Novel Near-infrared Dye",
+   "authors": "Littlewood, J.; Harwood, R.; Vajpayee, S.; Perciaccante, R.; Trivino-Cepeda, K.; Sharkey, J.; Sardella, T.; Burton, N.; Taylor, A.; Wilm, B.; Bearon, R.; Murray, P.",
+   "author_corresponding": "Patricia Murray",
+   "author_corresponding_institution": "University of Liverpool",
+   "doi": "10.1101/2025.05.31.657147",
+   "date": "2025-06-03",
+   "version": "1",
+   "type": "new results",
+   "license": "cc_by",
+   "category": "physiology",
+   "jatsxml": "https://www.biorxiv.org/content/early/2025/06/03/2025.05.31.657147.source.xml",
+   "abstract": "Kidney disease carries significant morbidity, mortality, and financial cost. Preclinical work exploring more accurate methods for assessing renal function is key for monitoring disease progression and",
+   "funder": [
+    {
+     "name": "European Commission",
+     "id": "https://ror.org/00k4n6c32",
+     "id-type": "ROR",
+     "award": "Marie Sklodowska-Curie grant agreement No. 813839"
+    }
+   ],
+   "published": "NA",
+   "server": "bioRxiv"
+  },
+  {
+   "title": "How individual vigor shapes human-human physical interaction",
+   "authors": "Verdel, D.; Berret, B.; Burdet, E.",
+   "author_corresponding": "Dorian Verdel",
+   "author_corresponding_institution": "Bioengineering department, Imperial College of Science, Technology and Medicine",
+   "doi": "10.1101/2025.06.01.657232",
+   "date": "2025-06-03",
+   "version": "1",
+   "type": "new results",
+   "license": "cc_by_nc_nd",
+   "category": "neuroscience",
+   "jatsxml": "https://www.biorxiv.org/content/early/2025/06/03/2025.06.01.657232.source.xml",
+   "abstract": "The speed of voluntary movements varies systematically, with some individuals moving consistently faster than others across different actions. These variations, conceptualized as vigor, reflect a time",
+   "funder": [
+    {
+     "name": "European Research Council",
+     "id": "https://ror.org/0472cxd90",
+     "id-type": "ROR",
+     "award": "810346"
+    },
+    {
+     "name": "European Commission",
+     "id": "https://ror.org/00k4n6c32",
+     "id-type": "ROR",
+     "award": "899626871767"
+    }
+   ],
+   "published": "10.7554/eLife.109781.3",
+   "server": "bioRxiv"
+  },
+  {
+   "title": "Single-cell morphological profiling reveals insights into programmed cell death",
+   "authors": "Frey, B.; Holmberg, D.; Bystrom, P.; Bergman, E.; Georgiev, P.; Johansson, M. M.; Hennig, P.; Rietdijk, J.; Rosen, D.; Carreras-Puigvert, J.; Spjuth, O.",
+   "author_corresponding": "Ola Spjuth",
+   "author_corresponding_institution": "Department of Pharmaceutical Biosciences, Uppsala University, Uppsala, Sweden Phenaros Pharmaceuticals AB, Uppsala, Sweden",
+   "doi": "10.1101/2025.01.15.633042",
+   "date": "2025-06-04",
+   "version": "2",
+   "type": "new results",
+   "license": "cc_by",
+   "category": "bioinformatics",
+   "jatsxml": "https://www.biorxiv.org/content/early/2025/06/04/2025.01.15.633042.source.xml",
+   "abstract": "Analysis at the single-cell level is a powerful approach to study biological processes and responses to perturbations. However, its application in morphological profiling with phenomics remains undere",
+   "funder": [
+    {
+     "name": "Swedish Research Council",
+     "id": "https://ror.org/03zttf063",
+     "id-type": "ROR",
+     "award": "2022-067252021-001792024-045762020-03731_VR2024-035662022-00940_Formas"
+    },
+    {
+     "name": "Swedish Cancer Foundation",
+     "id": "",
+     "id-type": "ROR",
+     "award": "22 2412 Pj 03 H"
+    },
+    {
+     "name": "European Commission",
+     "id": "https://ror.org/00k4n6c32",
+     "id-type": "ROR",
+     "award": "101057014101057442"
+    }
+   ],
+   "published": "10.1016/j.ailsci.2026.100181",
+   "server": "bioRxiv"
+  }
+ ]
+}

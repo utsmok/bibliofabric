@@ -1,6 +1,6 @@
 # Deferred work
 
-This page lists everything that the Wave 1 libraries and the first Wave 2 library left out, with the reason and the condition that unblocks it. An item leaves this page only when it is done.
+This page lists everything that the Wave 1 and Wave 2 libraries left out, with the reason and the condition that unblocks it. An item leaves this page only when it is done.
 
 ## Core framework
 
@@ -136,3 +136,11 @@ Wave 1 needed two of the six planned core additions. `BaseApiClient.default_head
 | OAI-PMH interface (`https://oaipmh.arxiv.org/oai`, formats `arXiv`, `arXivRaw`, and `oai_dc`) | It is the bulk harvest route and answers XML with resumption tokens. The roadmap plans one shared OAI-PMH harvester in `bibliofabric` for arXiv, EarthArXiv, and repositories; `zenotheca` has its own OAI-PMH client today. | The shared harvester, then an `oai` resource on `archeion`. |
 | RSS and Atom announcement feeds (`https://rss.arxiv.org/rss/{category}`) | They list the daily announcements, which the query API returns too with `sortBy=submittedDate`. | A caller that needs the announcement order of one day. |
 | Bulk data on Amazon S3 (PDF and source tarballs) | The buckets are requester-pays and need AWS credentials. | An AWS account and a decision to ship a loader. |
+
+## bioRxiv and medRxiv (`prodromus`)
+
+| Item | Why it is deferred | Unblocked by |
+|---|---|---|
+| The XML (OAI-PMH style) and HTML formats of `details` and `funder`, and the CSV downloads of `pub`, `sum`, and `usage` | They carry the same records as the JSON format the client reads. | A caller that needs one of these formats. |
+| Full text (the `jatsxml` URL of each version) | It is a download per preprint, not an API route. `Preprint.jatsxml` holds the URL. | A decision to wrap the download, as `europaea` does for Europe PMC. |
+| The reports pages (`https://api.biorxiv.org/reports`) | They are HTML pages for people. | A machine-readable form of the reports. |

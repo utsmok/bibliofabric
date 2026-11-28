@@ -1,0 +1,316 @@
+"""Resource clients for the routes of ``api.biorxiv.org``.
+
+Every list route pages by a cursor in the path (the record offset) with a
+fixed page size: 30 on ``details``, 100 elsewhere. The clients take date
+ranges, build the path, and follow ``cursor + count`` until ``total``.
+"""
+
+from collections.abc import AsyncIterator, Callable, Mapping
+from datetime import date
+from typing import Any
+
+from bibliofabric import BaseApiClient, Page, validate_model
+from bibliofabric.exceptions import ConfigurationError, NotFoundError
+from bibliofabric.ids import normalize_doi, normalize_ror
+from pydantic import BaseModel
+
+from ..dialect import STATISTICS_INTERVALS, date_range, server_segment
+from ..models import (
+    ContentStatistic,
+    Preprint,
+    PublishedArticle,
+    UsageStatistic,
+)
+from ..unwrapper import check_status
+
+
+class _RoutesClient:
+    """Shared request, paging, and validation helpers."""
+
+    def __init__(self, client: BaseApiClient) -> None:
+        self._client = client
+
+    async def _body(self, path: str, params: Mapping[str, Any] | None = None) -> Any:
+        response = await self._client.request("GET", path, params=params)
+        body = self._client.parse_json(response)
+        check_status(body)
+        return body
+
+    async def _records[M: BaseModel](
+        self, path: str, model: type[M], params: Mapping[str, Any] | None = None
+    ) -> list[M]:
+        body = await self._body(path, params)
+        return [
+            validate_model(model, record)
+            for record in self._client.unwrapper.results(body)
+        ]
+
+    async def _page[M: BaseModel](
+        self,
+        path: str,
+        model: type[M],
+        *,
+        cursor: int,
+        page_size: int,
+        params: Mapping[str, Any] | None = None,
+    ) -> Page[M]:
+        body = await self._body(path, params)
+        unwrapper = self._client.unwrapper
+        return Page(
+            results=[
+                validate_model(model, record) for record in unwrapper.results(body)
+            ],
+            total=unwrapper.total(body),
+            next_cursor=unwrapper.next_cursor(body),
+            page=cursor // page_size + 1,
+            meta=unwrapper.meta(body),
+        )
+
+    async def _iterate[M: BaseModel](
+        self,
+        path_at: Callable[[int], str],
+        model: type[M],
+        params: Mapping[str, Any] | None = None,
+    ) -> AsyncIterator[M]:
+        cursor: int | None = 0
+        while cursor is not None:
+            body = await self._body(path_at(cursor), params)
+            unwrapper = self._client.unwrapper
+            for record in unwrapper.results(body):
+                yield validate_model(model, record)
+            following = unwrapper.next_cursor(body)
+            cursor = int(following) if following is not None else None
+
+
+def _category(category: str | None) -> dict[str, str] | None:
+    """Return the ``category`` query parameter (spaces as underscores)."""
+    if category is None:
+        return None
+    return {"category": category.strip().lower().replace(" ", "_")}
+
+
+def _check_cursor(cursor: int) -> int:
+    if cursor < 0:
+        raise ConfigurationError(f"cursor must be >= 0, got {cursor}.")
+    return cursor
+
+
+class DetailsClient(_RoutesClient):
+    """Preprint metadata from the ``details`` routes (30 records per page)."""
+
+    async def get(self, doi: str, *, server: str = "biorxiv") -> list[Preprint]:
+        """Return every version of one preprint, oldest first.
+
+        An unknown DOI raises :class:`NotFoundError`.
+        """
+        wanted = normalize_doi(doi)
+        versions = await self._records(
+            f"details/{server_segment(server)}/{wanted}/na/json", Preprint
+        )
+        if not versions:
+            raise NotFoundError(f"No {server} preprint with DOI {doi!r}.")
+        return versions
+
+    async def search(
+        self,
+        server: str,
+        start: date | str,
+        end: date | str,
+        *,
+        cursor: int = 0,
+        category: str | None = None,
+    ) -> Page[Preprint]:
+        """Return one page of the preprint versions posted between two dates.
+
+        ``category`` filters by subject category (``cell biology`` or
+        ``cell_biology``). ``page.next_cursor`` is the next offset.
+        """
+        path = (
+            f"details/{server_segment(server)}/{date_range(start, end)}"
+            f"/{_check_cursor(cursor)}"
+        )
+        return await self._page(
+            path, Preprint, cursor=cursor, page_size=30, params=_category(category)
+        )
+
+    def iterate(
+        self,
+        server: str,
+        start: date | str,
+        end: date | str,
+        *,
+        category: str | None = None,
+    ) -> AsyncIterator[Preprint]:
+        """Yield every preprint version posted between two dates."""
+        prefix = f"details/{server_segment(server)}/{date_range(start, end)}"
+        return self._iterate(
+            lambda cursor: f"{prefix}/{cursor}", Preprint, _category(category)
+        )
+
+    async def recent(
+        self,
+        server: str,
+        *,
+        posts: int | None = None,
+        days: int | None = None,
+        category: str | None = None,
+    ) -> list[Preprint]:
+        """Return the most recent posts, by count or by days, in one request.
+
+        Pass ``posts`` (the N newest versions) or ``days`` (everything of the
+        last N days). These forms take no cursor upstream, so the method
+        returns the single answer.
+        """
+        if (posts is None) == (days is None):
+            raise ConfigurationError("Pass exactly one of posts and days.")
+        amount = posts if posts is not None else days
+        if amount is None or amount <= 0:
+            raise ConfigurationError("posts and days must be positive.")
+        interval = f"{posts}" if posts is not None else f"{days}d"
+        return await self._records(
+            f"details/{server_segment(server)}/{interval}",
+            Preprint,
+            _category(category),
+        )
+
+
+class PublishedClient(_RoutesClient):
+    """Preprints and the journal articles they became (100 records per page)."""
+
+    async def get(self, doi: str, *, server: str = "biorxiv") -> list[PublishedArticle]:
+        """Return the publication links of one preprint or journal DOI.
+
+        Both the preprint DOI and the published DOI work. A DOI without a
+        link raises :class:`NotFoundError`.
+        """
+        wanted = normalize_doi(doi)
+        links = await self._records(
+            f"pubs/{server_segment(server)}/{wanted}/na/json", PublishedArticle
+        )
+        if not links:
+            raise NotFoundError(f"No {server} publication link for DOI {doi!r}.")
+        return links
+
+    async def search(
+        self, server: str, start: date | str, end: date | str, *, cursor: int = 0
+    ) -> Page[PublishedArticle]:
+        """Return one page of preprints published as articles between two dates."""
+        path = (
+            f"pubs/{server_segment(server)}/{date_range(start, end)}"
+            f"/{_check_cursor(cursor)}"
+        )
+        return await self._page(path, PublishedArticle, cursor=cursor, page_size=100)
+
+    def iterate(
+        self, server: str, start: date | str, end: date | str
+    ) -> AsyncIterator[PublishedArticle]:
+        """Yield every preprint published as an article between two dates."""
+        prefix = f"pubs/{server_segment(server)}/{date_range(start, end)}"
+        return self._iterate(lambda cursor: f"{prefix}/{cursor}", PublishedArticle)
+
+    async def by_publisher(
+        self, prefix: str, start: date | str, end: date | str, *, cursor: int = 0
+    ) -> Page[PublishedArticle]:
+        """Return one page of bioRxiv preprints published under a DOI prefix.
+
+        ``prefix`` is the publisher DOI prefix, such as ``10.15252``.
+        """
+        path = (
+            f"publisher/{_doi_prefix(prefix)}/{date_range(start, end)}"
+            f"/{_check_cursor(cursor)}"
+        )
+        return await self._page(path, PublishedArticle, cursor=cursor, page_size=100)
+
+    def iterate_by_publisher(
+        self, prefix: str, start: date | str, end: date | str
+    ) -> AsyncIterator[PublishedArticle]:
+        """Yield every bioRxiv preprint published under a DOI prefix."""
+        base = f"publisher/{_doi_prefix(prefix)}/{date_range(start, end)}"
+        return self._iterate(lambda cursor: f"{base}/{cursor}", PublishedArticle)
+
+    async def biorxiv(
+        self, start: date | str, end: date | str, *, cursor: int = 0
+    ) -> Page[PublishedArticle]:
+        """Return one page of the ``pub`` route (bioRxiv only, fewer fields)."""
+        path = f"pub/{date_range(start, end)}/{_check_cursor(cursor)}"
+        return await self._page(path, PublishedArticle, cursor=cursor, page_size=100)
+
+
+def _doi_prefix(prefix: str) -> str:
+    wanted = prefix.strip().rstrip("/")
+    if not wanted.startswith("10.") or "/" in wanted:
+        raise ConfigurationError(f"{prefix!r} is not a DOI prefix such as 10.15252.")
+    return wanted
+
+
+class FundersClient(_RoutesClient):
+    """Preprints with a funding declaration of one funder (100 per page).
+
+    The funder is a ROR id; the route covers posts from 2025-04-10 on, when
+    the submission system began to record funders.
+    """
+
+    async def search(
+        self,
+        server: str,
+        ror_id: str,
+        start: date | str,
+        end: date | str,
+        *,
+        cursor: int = 0,
+        category: str | None = None,
+    ) -> Page[Preprint]:
+        """Return one page of preprint versions that declare the funder."""
+        path = (
+            f"funder/{server_segment(server)}/{date_range(start, end)}"
+            f"/{normalize_ror(ror_id)}/{_check_cursor(cursor)}"
+        )
+        return await self._page(
+            path, Preprint, cursor=cursor, page_size=100, params=_category(category)
+        )
+
+    def iterate(
+        self,
+        server: str,
+        ror_id: str,
+        start: date | str,
+        end: date | str,
+        *,
+        category: str | None = None,
+    ) -> AsyncIterator[Preprint]:
+        """Yield every preprint version that declares the funder."""
+        prefix = (
+            f"funder/{server_segment(server)}/{date_range(start, end)}"
+            f"/{normalize_ror(ror_id)}"
+        )
+        return self._iterate(
+            lambda cursor: f"{prefix}/{cursor}", Preprint, _category(category)
+        )
+
+
+class StatisticsClient(_RoutesClient):
+    """Content and usage statistics per month (``m``) or year (``y``)."""
+
+    async def content(self, interval: str = "m") -> list[ContentStatistic]:
+        """Return new and revised bioRxiv papers per month or year."""
+        return await self._records(f"sum/{_interval(interval)}", ContentStatistic)
+
+    async def usage(self, server: str, interval: str = "m") -> list[UsageStatistic]:
+        """Return abstract views, full text views, and PDF downloads."""
+        return await self._records(
+            f"usage/{_interval(interval)}/{server_segment(server)}", UsageStatistic
+        )
+
+
+def _interval(interval: str) -> str:
+    if interval not in STATISTICS_INTERVALS:
+        raise ConfigurationError("interval must be 'm' (monthly) or 'y' (yearly).")
+    return interval
+
+
+__all__ = [
+    "DetailsClient",
+    "FundersClient",
+    "PublishedClient",
+    "StatisticsClient",
+]

@@ -168,9 +168,10 @@ clients:
   **FAIR Signposting** `HEAD`/`Link` resolver, and **CodeMeta / `CITATION.cff`**
   software metadata parsers.
 
-Status on 2026-11-28: the first Wave 2 library is built. `archeion` covers
-the arXiv query API (search, lookups by id, paging) with an Atom parser of
-its own. Its OAI-PMH interface waits for the shared harvester above; see
+Status on 2026-11-28: two Wave 2 libraries are built. `archeion` covers the
+arXiv query API (search, lookups by id, paging) with an Atom parser of its
+own; its OAI-PMH interface waits for the shared harvester above. `prodromus`
+covers every route of `api.biorxiv.org` for bioRxiv and medRxiv. See
 [Deferred work](deferred.md).
 
 ### Restricted, Commercial & Do-Not-Build List

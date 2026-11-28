@@ -72,6 +72,7 @@ jobs:
           - diurnalia
           - seriatim
           - archeion
+          - prodromus
         python-version: ["3.12", "3.13", "3.14"]
     env:
       UV_PYTHON: ${{ matrix.python-version }}

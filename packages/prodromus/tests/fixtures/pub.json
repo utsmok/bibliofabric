@@ -1,0 +1,37 @@
+{
+ "messages": [
+  {
+   "status": "ok",
+   "interval": "2026-11-01:2026-11-02",
+   "cursor": 0,
+   "count": 3,
+   "total": 3
+  }
+ ],
+ "collection": [
+  {
+   "biorxiv_doi": "10.64898/2026.03.19.712977",
+   "published_doi": "10.1111/pce.71008",
+   "preprint_title": "Zinc and iron homeostatic interactions in a mutant lacking nicotianamine vacuolar storage and citrate xylem loading",
+   "preprint_category": "plant biology",
+   "preprint_date": "2026-03-21",
+   "published_date": "2026-11-01"
+  },
+  {
+   "biorxiv_doi": "10.64898/2026.08.11.743997",
+   "published_doi": "10.1093/nar/gkag1089",
+   "preprint_title": "mV2G: a multiomic atlas for tissue-specific variant-to-gene prioritization",
+   "preprint_category": "genomics",
+   "preprint_date": "2026-08-20",
+   "published_date": "2026-11-02"
+  },
+  {
+   "biorxiv_doi": "10.64898/2026.02.24.707689",
+   "published_doi": "10.1111/ede.70071",
+   "preprint_title": "ABCG transporter knockouts alter integument and eye pigmentation with gene-specific effects on viability in butterflies and moths",
+   "preprint_category": "genetics",
+   "preprint_date": "2026-02-25",
+   "published_date": "2026-11-02"
+  }
+ ]
+}

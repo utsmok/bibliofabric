@@ -1,0 +1,23 @@
+{
+ "messages": [
+  {
+   "status": "ok"
+  }
+ ],
+ "collection": [
+  {
+   "preprint_doi": "10.1101/2021.04.29.21256344",
+   "published_doi": "10.1371/journal.pone.0256482",
+   "published_journal": "PLOS ONE",
+   "preprint_platform": "medRxiv",
+   "preprint_title": "Original antigenic sin responses to heterologous Betacoronavirus spike proteins are observed in mice following intramuscular administration, but are not apparent in children following SARS-CoV-2 infection",
+   "preprint_authors": "Lapp, S. A.; Edara, V. V.; Lu, A.; Lai, L.; Hussaini, L.; Chahroudi, A.; Anderson, L. J.; Suthar, M. S.; Anderson, E. J.; Rostad, C. A.",
+   "preprint_category": "infectious diseases",
+   "preprint_date": "2021-04-30",
+   "published_date": "2021-08-27",
+   "preprint_abstract": "BackgroundThe effects of pre-existing endemic human coronavirus (HCoV) immunity on SARS-CoV-2 serologic and clinical responses are incompletely understood.\n\nObjectivesWe sought to determine the effects of prior exposure to HCoV Betacoronavirus HKU1 spike protein on serologic responses to SARS-CoV-2 spike protein after intramuscular administration in mice. We also sought to understand the baseline seroprevalence of HKU1 spike antibodies in healthy children and to measure their correlation with SARS-CoV-2 binding and neutralizing antibodies in children hospitalized with acute coronavirus disease 2019 (COVID-19) or multisystem inflammatory syndrome (MIS-C).\n\nMethodsGroups of 5 mice were injected intramuscularly with two doses of alum-adjuvanted HKU1 spike followed by SARS-CoV-2 spike; or the reciprocal regimen of SARS-Cov-2 spike followed by HKU1 spike. Sera collected 21 days following each injection was analyzed for IgG antibodies to HKU1 spike, SARS-CoV-2 spike, and SARS-CoV-2 neutralization. Sera from children hospitalized with acute COVID-19, MIS-C or healthy controls (n=14 per group) were analyzed for these same antibodies.\n\nResultsMice primed with SARS-CoV-2 spike and boosted with HKU1 spike developed high titers of SARS-CoV-2 binding and neutralizing antibodies; however, mice primed with HKU1 spike and boosted with SARS-CoV-2 spike were unable to mount neutralizing antibodies to SARS-CoV-2. HKU1 spike antibodies were detected in all children with acute COVID-19, MIS-C, and healthy controls. Although children with MIS-C had significantly higher HKU1 spike titers than healthy children (GMT 37239 vs. 7551, P=0.012), these titers correlated positively with both SARS-CoV-2 binding (r=0.7577, P<0.001) and neutralizing (r=0.6201, P=0.001) antibodies.\n\nConclusionsPrior murine exposure to HKU1 spike protein completely impeded the development of neutralizing antibodies to SARS-CoV-2, consistent with original antigenic sin. In contrast, the presence of HKU1 spike IgG antibodies in children with acute COVID-19 or MIS-C was not associated with diminished neutralizing antibody responses to SARS-CoV-2.",
+   "preprint_author_corresponding": "Christina A. Rostad",
+   "preprint_author_corresponding_institution": "Emory University School of Medicine"
+  }
+ ]
+}

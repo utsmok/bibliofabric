@@ -34,6 +34,7 @@ each one leaves out.
 | [diurnalia](packages/diurnalia/README.md) | DOAJ (open access journals and articles) | [0.1.0](packages/diurnalia/CHANGELOG.md), not published | [docs](https://utsmok.github.io/bibliofabric/diurnalia/) |
 | [seriatim](packages/seriatim/README.md) | ISSN Portal | [0.1.0](packages/seriatim/CHANGELOG.md), not published | [docs](https://utsmok.github.io/bibliofabric/seriatim/) |
 | [archeion](packages/archeion/README.md) | arXiv API (Wave 2) | [0.1.0](packages/archeion/CHANGELOG.md), not published | [docs](https://utsmok.github.io/bibliofabric/archeion/) |
+| [prodromus](packages/prodromus/README.md) | bioRxiv and medRxiv API (Wave 2) | [0.1.0](packages/prodromus/CHANGELOG.md), not published | [docs](https://utsmok.github.io/bibliofabric/prodromus/) |
 
 ```bash
 uv add aireloom    # or aletheca, stavrophora, bibliofabric

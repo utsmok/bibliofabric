@@ -1,0 +1,74 @@
+{
+ "messages": [
+  {
+   "status": "ok",
+   "category": "all"
+  }
+ ],
+ "collection": [
+  {
+   "title": "Oxygen restriction induces a viable but non-culturable population in bacteria",
+   "authors": "Kvich, L. A.; Fritz, B. G.; Crone, S. G.; Kragh, K. N.; Kolpen, M.; Sonderholm, M.; Andersson, M.; Koch, A.; Jensen, P. O.; Bjarnsholt, T.",
+   "author_corresponding": "Thomas  Bjarnsholt",
+   "author_corresponding_institution": "University of Copenhagen",
+   "doi": "10.1101/339747",
+   "date": "2018-06-05",
+   "version": "1",
+   "type": "new results",
+   "license": "cc_no",
+   "category": "microbiology",
+   "jatsxml": "https://www.biorxiv.org/content/early/2018/06/05/339747.source.xml",
+   "abstract": "Induction of a non-culturable state has been demonstrated for many bacteria. In a clinical perspective, the lack of growth due to these non-culturable bacteria can have major consequences for the diag",
+   "published": "NA",
+   "server": "bioRxiv"
+  },
+  {
+   "title": "Oxygen restriction generates difficult-to-culture pathogens",
+   "authors": "Kvich, L. A.; Fritz, B. G.; Crone, S. G.; Kragh, K. N.; Kolpen, M.; Sonderholm, M.; Andersson, M.; Koch, A.; Jensen, P. O.; Bjarnsholt, T.",
+   "author_corresponding": "Thomas  Bjarnsholt",
+   "author_corresponding_institution": "University of Copenhagen",
+   "doi": "10.1101/339747",
+   "date": "2019-02-07",
+   "version": "2",
+   "type": "new results",
+   "license": "cc_no",
+   "category": "microbiology",
+   "jatsxml": "https://www.biorxiv.org/content/early/2019/02/07/339747.source.xml",
+   "abstract": "Induction of a non-culturable state has been demonstrated for many bacteria. In a clinical perspective, the lack of growth due to these non-culturable bacteria can have major consequences for the diag",
+   "published": "NA",
+   "server": "bioRxiv"
+  },
+  {
+   "title": "Oxygen restriction generates difficult-to-culture pathogens",
+   "authors": "Kvich, L. A.; Fritz, B. G.; Crone, S. G.; Kragh, K. N.; Kolpen, M.; Sonderholm, M.; Andersson, M.; Koch, A.; Jensen, P. O.; Bjarnsholt, T.",
+   "author_corresponding": "Thomas  Bjarnsholt",
+   "author_corresponding_institution": "University of Copenhagen",
+   "doi": "10.1101/339747",
+   "date": "2019-02-07",
+   "version": "3",
+   "type": "new results",
+   "license": "cc_no",
+   "category": "microbiology",
+   "jatsxml": "https://www.biorxiv.org/content/early/2019/02/07/339747.source.xml",
+   "abstract": "Induction of a non-culturable state has been demonstrated for many bacteria. In a clinical perspective, the lack of growth due to these non-culturable bacteria can have major consequences for the diag",
+   "published": "NA",
+   "server": "bioRxiv"
+  },
+  {
+   "title": "Oxygen Restriction Generates Difficult-To-Culture Pathogens",
+   "authors": "Kvich, L.; Fritz, B.; Crone, S. G.; Kragh, K. N.; Kolpen, M.; Soenderholm, M.; Andersson, M.; Koch, A.; Jensen, P. O.; Bjarnsholt, T.",
+   "author_corresponding": "Thomas  Bjarnsholt",
+   "author_corresponding_institution": "University of Copenhagen",
+   "doi": "10.1101/339747",
+   "date": "2019-05-10",
+   "version": "4",
+   "type": "new results",
+   "license": "cc_no",
+   "category": "microbiology",
+   "jatsxml": "https://www.biorxiv.org/content/early/2019/05/10/339747.source.xml",
+   "abstract": "Induction of a non-culturable state has been demonstrated for many bacteria. In a clinical perspective, the lack of growth due to these non-culturable bacteria can have major consequences for the diag",
+   "published": "NA",
+   "server": "bioRxiv"
+  }
+ ]
+}

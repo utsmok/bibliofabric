@@ -42,11 +42,12 @@ out.
 
 ## Wave 2 libraries
 
-Wave 2 adds specialist sources. The first library is built and not yet published.
+Wave 2 adds specialist sources. These libraries are built and not yet published.
 
 | Package | API | PyPI |
 |---|---|---|
 | [archeion](archeion/index.md) | arXiv API | not published |
+| [prodromus](prodromus/index.md) | bioRxiv and medRxiv API | not published |
 
 ## Which package do I need?
 
@@ -69,6 +70,7 @@ Wave 2 adds specialist sources. The first library is built and not yet published
 - You want records from **DOAJ**: use **diurnalia**.
 - You want records from the **ISSN Portal**: use **seriatim**.
 - You want preprints from **arXiv**: use **archeion**.
+- You want preprints from **bioRxiv** or **medRxiv**: use **prodromus**.
 - You are building a client for **another scholarly API** in this style:
   build on **bibliofabric**. Start with the
   [Building a client guide](bibliofabric/writing-a-client.md) (and the

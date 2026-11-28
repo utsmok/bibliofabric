@@ -1,0 +1,88 @@
+{
+ "messages": {
+  "status": "ok"
+ },
+ "medRxiv content statistics": [
+  {
+   "year": "",
+   "abstract_views": "3277367",
+   "full_text_views": "383040",
+   "pdf_downloads": "981864",
+   "abstract_cumulative": 3277367,
+   "full_text_cumulative": 383040,
+   "pdf_cumulative": 981864
+  },
+  {
+   "year": "2019",
+   "abstract_views": "25253",
+   "full_text_views": "0",
+   "pdf_downloads": "6795",
+   "abstract_cumulative": 3302620,
+   "full_text_cumulative": 383040,
+   "pdf_cumulative": 988659
+  },
+  {
+   "year": "2020",
+   "abstract_views": "704370",
+   "full_text_views": "0",
+   "pdf_downloads": "299010",
+   "abstract_cumulative": 4006990,
+   "full_text_cumulative": 383040,
+   "pdf_cumulative": 1287669
+  },
+  {
+   "year": "2021",
+   "abstract_views": "4764191",
+   "full_text_views": "405129",
+   "pdf_downloads": "1818107",
+   "abstract_cumulative": 8771181,
+   "full_text_cumulative": 788169,
+   "pdf_cumulative": 3105776
+  },
+  {
+   "year": "2022",
+   "abstract_views": "6726261",
+   "full_text_views": "1198836",
+   "pdf_downloads": "2470441",
+   "abstract_cumulative": 15497442,
+   "full_text_cumulative": 1987005,
+   "pdf_cumulative": 5576217
+  },
+  {
+   "year": "2023",
+   "abstract_views": "2365369",
+   "full_text_views": "513439",
+   "pdf_downloads": "717780",
+   "abstract_cumulative": 17862811,
+   "full_text_cumulative": 2500444,
+   "pdf_cumulative": 6293997
+  },
+  {
+   "year": "2024",
+   "abstract_views": "1383538",
+   "full_text_views": "219377",
+   "pdf_downloads": "543124",
+   "abstract_cumulative": 19246349,
+   "full_text_cumulative": 2719821,
+   "pdf_cumulative": 6837121
+  },
+  {
+   "year": "2025",
+   "abstract_views": "2139605",
+   "full_text_views": "530834",
+   "pdf_downloads": "1069644",
+   "abstract_cumulative": 21385954,
+   "full_text_cumulative": 3250655,
+   "pdf_cumulative": 7906765
+  },
+  {
+   "year": "2026",
+   "abstract_views": "4667023",
+   "full_text_views": "2759047",
+   "pdf_downloads": "2796583",
+   "abstract_cumulative": 26052977,
+   "full_text_cumulative": 6009702,
+   "pdf_cumulative": 10703348
+  }
+ ]
+}

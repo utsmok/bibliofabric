@@ -1,0 +1,63 @@
+{
+ "messages": [
+  {
+   "status": "ok",
+   "category": "all",
+   "interval": "2026-11-01:2026-11-01",
+   "cursor": 0,
+   "count": 30,
+   "count_new_papers": "35",
+   "total": "43"
+  }
+ ],
+ "collection": [
+  {
+   "title": "Which Attention Helps? A Slide-Level Ablation of Attention-Augmented CNNs for Serous Ovarian Carcinoma Grading",
+   "authors": "Rani, A.; Mishra, S.",
+   "author_corresponding": "Aiswarya Rani",
+   "author_corresponding_institution": "CSIR-IGIB",
+   "doi": "10.64898/2026.04.21.26351441",
+   "date": "2026-11-01",
+   "version": "2",
+   "type": "PUBLISHAHEADOFPRINT",
+   "license": "cc_by",
+   "category": "oncology",
+   "jatsxml": "https://www.medrxiv.org/content/early/2026/11/01/2026.04.21.26351441.source.xml",
+   "abstract": "BackgroundDistinguishing high-grade (HGSC) from low-grade serous carcinoma (LGSC) is clinically consequential yet difficult, as the subtypes share a serous morphology but differ in prognosis and treat",
+   "published": "NA",
+   "server": "medRxiv"
+  },
+  {
+   "title": "Reference calibration, autozygosity and blood-derived variant interpretation in older adults",
+   "authors": "El-Haddad, M.; Hendi, N.; El-Hajj Fuleihan, G.; Nemer, G.; El-Hachem, N.",
+   "author_corresponding": "Nehme El-Hachem",
+   "author_corresponding_institution": "Lebanese American University",
+   "doi": "10.64898/2026.10.28.26366687",
+   "date": "2026-11-01",
+   "version": "3",
+   "type": "PUBLISHAHEADOFPRINT",
+   "license": "cc_by_nc_nd",
+   "category": "genetic and genomic medicine",
+   "jatsxml": "https://www.medrxiv.org/content/early/2026/11/01/2026.10.28.26366687.source.xml",
+   "abstract": "Population exomes contain signals of demographic history, inherited disease alleles and, when derived from blood, possible acquired variation. Distinguishing these signals is important in underreprese",
+   "published": "NA",
+   "server": "medRxiv"
+  },
+  {
+   "title": "Evaluating the Incremental Value of AI-Derived ECG Features Beyond Automated ECG Reports and Clinical Data for 30-Day Mortality: A MIMIC-IV Cohort Study",
+   "authors": "Park, S.-H.; Ji, Z.; Lewey, J.; Tsui, F.",
+   "author_corresponding": "Sae-Hwan Park",
+   "author_corresponding_institution": "University of Pennsylvania",
+   "doi": "10.64898/2026.10.28.26366716",
+   "date": "2026-11-01",
+   "version": "2",
+   "type": "PUBLISHAHEADOFPRINT",
+   "license": "cc_by",
+   "category": "cardiovascular medicine",
+   "jatsxml": "https://www.medrxiv.org/content/early/2026/11/01/2026.10.28.26366716.source.xml",
+   "abstract": "Automated electrocardiogram (ECG) reports and clinical records already carry prognostic information, so the relevant question is what artificial intelligence (AI)-derived ECG waveform features add bey",
+   "published": "NA",
+   "server": "medRxiv"
+  }
+ ]
+}

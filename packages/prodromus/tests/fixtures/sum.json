@@ -1,0 +1,107 @@
+{
+ "messages": {
+  "status": "ok",
+  "category": "all",
+  "interval": "y"
+ },
+ "bioRxiv content statistics": [
+  {
+   "year": 2013,
+   "new_papers": 109,
+   "new_papers_cumulative": 109,
+   "revised_papers": 34,
+   "revised_papers_cumulative": 34
+  },
+  {
+   "year": 2014,
+   "new_papers": 886,
+   "new_papers_cumulative": 995,
+   "revised_papers": 372,
+   "revised_papers_cumulative": 406
+  },
+  {
+   "year": 2015,
+   "new_papers": 1774,
+   "new_papers_cumulative": 2769,
+   "revised_papers": 776,
+   "revised_papers_cumulative": 1182
+  },
+  {
+   "year": 2016,
+   "new_papers": 4718,
+   "new_papers_cumulative": 7487,
+   "revised_papers": 1903,
+   "revised_papers_cumulative": 3085
+  },
+  {
+   "year": 2017,
+   "new_papers": 11339,
+   "new_papers_cumulative": 18826,
+   "revised_papers": 4625,
+   "revised_papers_cumulative": 7710
+  },
+  {
+   "year": 2018,
+   "new_papers": 20778,
+   "new_papers_cumulative": 39604,
+   "revised_papers": 7786,
+   "revised_papers_cumulative": 15496
+  },
+  {
+   "year": 2019,
+   "new_papers": 29179,
+   "new_papers_cumulative": 68783,
+   "revised_papers": 10683,
+   "revised_papers_cumulative": 26179
+  },
+  {
+   "year": 2020,
+   "new_papers": 38717,
+   "new_papers_cumulative": 107500,
+   "revised_papers": 14323,
+   "revised_papers_cumulative": 40502
+  },
+  {
+   "year": 2021,
+   "new_papers": 36866,
+   "new_papers_cumulative": 144366,
+   "revised_papers": 14424,
+   "revised_papers_cumulative": 54926
+  },
+  {
+   "year": 2022,
+   "new_papers": 35750,
+   "new_papers_cumulative": 180116,
+   "revised_papers": 12838,
+   "revised_papers_cumulative": 67764
+  },
+  {
+   "year": 2023,
+   "new_papers": 39155,
+   "new_papers_cumulative": 219271,
+   "revised_papers": 14804,
+   "revised_papers_cumulative": 82568
+  },
+  {
+   "year": 2024,
+   "new_papers": 43632,
+   "new_papers_cumulative": 262903,
+   "revised_papers": 16936,
+   "revised_papers_cumulative": 99504
+  },
+  {
+   "year": 2025,
+   "new_papers": 49318,
+   "new_papers_cumulative": 312221,
+   "revised_papers": 17893,
+   "revised_papers_cumulative": 117397
+  },
+  {
+   "year": 2026,
+   "new_papers": 50533,
+   "new_papers_cumulative": 362754,
+   "revised_papers": 18760,
+   "revised_papers_cumulative": 136157
+  }
+ ]
+}
