@@ -1,0 +1,274 @@
+"""Live Zenodo smoke tests against the real API.
+
+Public reads need no credentials; the tests stay polite (2 req/s via the
+settings) and download only one small file.
+"""
+
+import hashlib
+
+import pytest
+from bibliofabric.exceptions import AuthError
+from zenotheca import (
+    ConfigurationError,
+    NotFoundError,
+    ZenothecaClient,
+    ZenothecaSettings,
+    community,
+    phrase,
+    term,
+)
+
+pytestmark = pytest.mark.live_api
+
+ROR_RECORD = 24378467
+ROR_CONCEPT = "6347574"
+ROR_OLD_VERSION = 5534443
+SMALL_RECORD = 24609769
+SMALL_KEY = (
+    "Art-152 — Minador: umbral de acción al 11 % (Cosecha 15-16) — depositada.pdf"
+)
+
+
+@pytest.fixture
+async def live_client():
+    settings = ZenothecaSettings(_env_file=None)
+    async with ZenothecaClient(settings=settings) as client:
+        yield client
+
+
+async def test_get_smoke(live_client):
+    record = await live_client.records.get(ROR_RECORD)
+    assert record.id == ROR_RECORD
+    assert record.conceptrecid == ROR_CONCEPT
+    metadata = record.metadata
+    assert metadata is not None
+    assert metadata.title == "ROR Data"
+    assert metadata.resource_type is not None
+    assert metadata.resource_type.type == "dataset"
+
+
+async def test_get_by_doi_spelling_smoke(live_client):
+    record = await live_client.records.get(f"10.5281/zenodo.{ROR_RECORD}")
+    assert record.id == ROR_RECORD
+
+
+async def test_get_concept_id_follows_redirect_smoke(live_client):
+    record = await live_client.records.get(ROR_CONCEPT)
+    assert record.conceptrecid == ROR_CONCEPT
+    metadata = record.metadata
+    assert metadata is not None
+    assert metadata.relations is not None
+    assert metadata.relations.version[0].is_last is True
+
+
+async def test_get_not_found_smoke(live_client):
+    with pytest.raises(NotFoundError):
+        await live_client.records.get(99999999)
+
+
+async def test_exists_smoke(live_client):
+    assert await live_client.records.exists(ROR_RECORD) is True
+    assert await live_client.records.exists(99999999) is False
+
+
+async def test_search_smoke(live_client):
+    page = await live_client.records.search(
+        {"type": "dataset"},
+        query=community("ror-data"),
+        sort="mostrecent",
+    )
+    assert page.total == 3
+    assert page.results[0].id == ROR_RECORD
+    assert "resource_type" in page.meta.get("aggregations", {})
+
+
+async def test_search_phrase_query_smoke(live_client):
+    page = await live_client.records.search(
+        {"type": "dataset"}, query=phrase("title", "ROR Data")
+    )
+    assert page.total == 4
+
+
+async def test_search_all_versions_smoke(live_client):
+    plain = await live_client.records.search({"communities": "ror-data"}, page_size=1)
+    every = await live_client.records.search(
+        {"communities": "ror-data"}, page_size=1, all_versions=True
+    )
+    assert plain.total == 3
+    assert every.total == 99
+
+
+async def test_search_rejects_bad_sort_smoke(live_client):
+    with pytest.raises(Exception, match="A validation error occurred"):
+        await live_client.records.search(query="zenodo", sort="bogus")
+
+
+async def test_count_smoke(live_client):
+    assert await live_client.records.count(query="communities:ror-data") == 3
+
+
+async def test_iterate_smoke(live_client):
+    records = [
+        record
+        async for record in live_client.records.iterate(
+            {"communities": "ror-data"}, all_versions=True, page_size=25, limit=3
+        )
+    ]
+    assert len(records) == 3
+    assert records[0].conceptrecid == ROR_CONCEPT
+
+
+async def test_versions_smoke(live_client):
+    page = await live_client.records.versions(ROR_RECORD, page_size=5)
+    assert page.total == 97
+    assert page.results[0].id == ROR_RECORD
+
+
+async def test_versions_rejects_concept_id_smoke(live_client):
+    with pytest.raises(NotFoundError):
+        await live_client.records.versions(ROR_CONCEPT)
+
+
+async def test_latest_smoke(live_client):
+    latest = await live_client.records.latest(ROR_OLD_VERSION)
+    assert latest.id == ROR_OLD_VERSION
+
+
+async def test_files_smoke(live_client):
+    files = await live_client.records.files(ROR_RECORD)
+    assert files.enabled is True
+    assert files.keys == ["v2.16-2026-11-19-ror-data.zip"]
+
+
+async def test_download_file_smoke(live_client, tmp_path):
+    target = await live_client.records.download_file(
+        SMALL_RECORD, SMALL_KEY, tmp_path / "small.pdf"
+    )
+    payload = target.read_bytes()
+    assert 0 < len(payload) < 100_000
+    record = await live_client.records.get(SMALL_RECORD)
+    checksum = record.files[0].checksum
+    assert checksum is not None
+    if checksum.startswith("md5:"):
+        assert hashlib.md5(payload).hexdigest() == checksum.removeprefix("md5:")
+
+
+async def test_term_helper_matches_live_api_smoke(live_client):
+    """The bare-term builder produces a query Zenodo accepts."""
+    page = await live_client.records.search(query=term("communities", "ror-data"))
+    assert page.total == 3
+    with pytest.raises(ConfigurationError):
+        term("title", "colon:inside")
+
+
+async def test_communities_search_smoke(live_client):
+    page = await live_client.communities.search(query="data curation", page_size=2)
+    assert page.total > 0
+    assert len(page.results) == 2
+
+
+async def test_communities_get_smoke(live_client):
+    got = await live_client.communities.get("ror-data")
+    assert got.slug == "ror-data"
+    metadata = got.metadata
+    assert metadata is not None
+    assert metadata.title == "ROR Data"
+
+
+async def test_communities_records_smoke(live_client):
+    page = await live_client.communities.records(
+        "ror-data", {"type": "dataset"}, page_size=5
+    )
+    assert page.total == 3
+    assert page.results[0].id == ROR_RECORD
+
+
+async def test_legacy_deposits_need_credentials_smoke(live_client):
+    """Write routes need an account; unauthenticated reads get a 403."""
+    with pytest.raises(AuthError) as error:
+        await live_client.request("GET", "deposit/depositions", retry=False)
+    assert error.value.response is not None
+    assert error.value.response.status_code == 403
+
+
+async def test_vocabularies_search_smoke(live_client):
+    page = await live_client.vocabularies.search("resourcetypes", page_size=5)
+    assert page.total and page.total >= 40
+    assert page.results
+    assert page.results[0].id
+
+
+async def test_vocabularies_query_smoke(live_client):
+    page = await live_client.vocabularies.search(
+        "licenses", query="creative", page_size=5
+    )
+    assert 30 <= (page.total or 0) <= 45
+    assert page.results
+
+
+async def test_vocabularies_get_smoke(live_client):
+    entry = await live_client.vocabularies.get("resourcetypes", "publication")
+    assert entry.english_title == "Publication"
+
+
+async def test_vocabularies_unknown_name_smoke(live_client):
+    with pytest.raises(NotFoundError):
+        await live_client.vocabularies.get("datatypes", "publication")
+
+
+async def test_vocabularies_iterate_smoke(live_client):
+    entries = [
+        entry async for entry in live_client.vocabularies.iterate("communitytypes")
+    ]
+    assert len(entries) == 4
+
+
+async def test_communities_subcommunities_smoke(live_client):
+    page = await live_client.communities.subcommunities("zenodo")
+    assert page.total == 0
+    assert page.results == []
+
+
+async def test_oai_identify_smoke(live_client):
+    answer = await live_client.oai.identify()
+    assert answer.identify is not None
+    assert answer.identify.repository_name == "Zenodo"
+    assert answer.identify.protocol_version == "2.0"
+
+
+async def test_oai_metadata_formats_smoke(live_client):
+    formats = await live_client.oai.list_metadata_formats()
+    prefixes = [item.metadata_prefix for item in formats.formats]
+    assert "oai_dc" in prefixes and "datacite4" in prefixes
+
+
+async def test_oai_sets_smoke(live_client):
+    page = await live_client.oai.list_sets()
+    assert page.sets
+    assert page.resumption_token is not None
+    second = await live_client.oai.list_sets(
+        resumption_token=page.resumption_token.token
+    )
+    assert second.sets
+
+
+async def test_oai_get_record_smoke(live_client):
+    answer = await live_client.oai.get_record(f"oai:zenodo.org:{ROR_RECORD}", "oai_dc")
+    assert answer.record is not None
+    assert answer.record.header is not None
+    assert str(ROR_RECORD) in (answer.record.header.identifier or "")
+
+
+async def test_oai_no_records_match_smoke(live_client):
+    page = await live_client.oai.list_records(
+        "oai_datacite4", from_="1990-01-01", until="1990-01-02"
+    )
+    assert page.records == []
+
+
+async def test_oai_list_records_smoke(live_client):
+    page = await live_client.oai.list_records(
+        "oai_dc", from_="2026-11-20", until="2026-11-26"
+    )
+    assert page.records
+    assert page.records[0].header is not None

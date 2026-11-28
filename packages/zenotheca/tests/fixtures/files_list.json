@@ -1,0 +1,37 @@
+{
+  "enabled": true,
+  "default_preview": null,
+  "order": [],
+  "entries": [
+    {
+      "created": "2026-11-19T19:53:44.239727+00:00",
+      "updated": "2026-11-19T19:53:44.260929+00:00",
+      "mimetype": "application/zip",
+      "version_id": "fc9f5e93-66e2-4b67-b8df-0f1c523353bd",
+      "file_id": "887d7095-21a8-4fb2-844a-dd6ba88ca792",
+      "bucket_id": "87373012-a540-4ae9-b8f1-1cd5d7e2e9a9",
+      "metadata": {
+        "zip_toc_position": 40860981
+      },
+      "access": {
+        "hidden": false
+      },
+      "links": {
+        "self": "https://zenodo.org/api/records/24378467/files/v2.16-2026-11-19-ror-data.zip",
+        "content": "https://zenodo.org/api/records/24378467/files/v2.16-2026-11-19-ror-data.zip/content",
+        "container": "https://zenodo.org/api/records/24378467/files/v2.16-2026-11-19-ror-data.zip/container"
+      },
+      "key": "v2.16-2026-11-19-ror-data.zip",
+      "transfer": {
+        "type": "L"
+      },
+      "status": "completed",
+      "checksum": "md5:0769f596ca9e8ebf87224a1ad93a7722",
+      "size": 40861154,
+      "storage_class": "L"
+    }
+  ],
+  "links": {
+    "self": "https://zenodo.org/api/records/24378467/files"
+  }
+}

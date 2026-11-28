@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><responseDate>2026-11-27T22:44:00Z</responseDate><request verb="ListRecords" metadataPrefix="oai_datacite4">https://zenodo.org/oai2d</request><ListRecords><record>
+      <header>
+        <identifier>oai:zenodo.org:23669037</identifier>
+        <datestamp>2026-11-20T04:55:31Z</datestamp>
+      </header>
+      <metadata>
+        <oai_datacite xmlns="http://schema.datacite.org/oai/oai-1.1/" xsi:schemaLocation="http://schema.datacite.org/oai/oai-1.1/ http://schema.datacite.org/oai/oai-1.1/oai.xsd">
+          <schemaVersion>4.5</schemaVersion>
+          <datacentreSymbol>CERN.ZENODO</datacentreSymbol>
+          <payload>
+            <resource xmlns="http://datacite.org/schema/kernel-4" xsi:schemaLocation="http://datacite.org/schema/kernel-4 http://schema.datacite.org/meta/kernel-4.5/metadata.xsd">
+              <alternateIdentifiers>
+                <alternateIdentifier alternateIdentifierType="oai">oai:zenodo.org:23669037</alternateIdentifier>
+              </alternateIdentifiers>
+              <creators>
+                <creator>
+                  <creatorName nameType="Personal">Lan, Zihang</creatorName>
+                  <givenName>Zihang</givenName>
+                  <familyName>Lan</familyName>
+                  <nameIdentifier nameIdentifierScheme="ORCID">0009-0002-0017-6906</nameIdentifier>
+                  <affiliation affiliationIdentifier="https://ror.org/00rzspn62" affiliationIdentifierScheme="ROR">University of Malaya</affiliation>
+                </creator>
+              </creators>
+              <titles>
+                <title>supplementary material for "Query design for correcting label and relation errors in natural language inference"</title>
+              </titles>
+              <publisher>Zenodo</publisher>
+              <publicationYear>2026</publicationYear>
+              <dates>
+                <date dateType="Issued">2026-10-26</date>
+                <date dateType="Updated">2026-11-20</date>
+              </dates>
+              <resourceType resourceTypeGeneral="Journal"></resourceType>
+              <identifier identifierType="DOI">10.5281/zenodo.23669037</identifier>
+              <relatedIdentifiers>
+                <relatedIdentifier relationType="IsVersionOf" relatedIdentifierType="DOI">10.5281/zenodo.23669036</relatedIdentifier>
+              </relatedIdentifiers>
+              <rightsList>
+                <rights rightsURI="https://creativecommons.org/licenses/by/4.0/legalcode" rightsIdentifierScheme="spdx" rightsIdentifier="cc-by-4.0">Creative Commons Attribution 4.0 International</rights>
+                <rights rightsURI="info:eu-repo/semantics/embargoedAccess"/>
+              </rightsList>
+            </resource>
+          </payload>
+        </oai_datacite>
+      </metadata>
+    </record><resumptionToken expirationDate="2026-11-27T22:46:46Z" cursor="0" completeListSize="92554">.eJxNkEtvqzAQhf-L10ll80gLu-SWR9ziliTYiTeVwaQBG4ICKZCq_720uouOjjTS-UZHR_MJ2jyXwIV3945t2479cL94QJZlL2agEe85cI0ZUL24vLfA_QTHy7kCLjCgsZgjNDfgDkL3V2AGrnVX6L908ZdWeSek6MTrJT8Ww3R2FsXbj5EVXW6Brxlos8tZ67diqgP8QF8PxoB4QI8Hw7nKgFrSd5BkWj3WPuJ7bNPgpFPFtQzIeTnwNdnhKjZ5lFO_I5pXpJa9oJimJV4tf8b3usG0mCzXVlLxV_noJ1vYWlklb9LDu4hhyge-ShN7ZMnQUL1RckfMTb2C23ppEv-0-c3x4LKYt0zWBzNheB1TvGUMWlLZcRQ2nfBwLwd-EwiH0mzEC_VPsTF1CciN7fnTS0D-5zgfkVYsKw_9Jkx6poYkC1AkIIXcQEfiNVj23uo5bHRaOSodUZ9N-3mPVbrHevrLyMOoyypapiZW2YhGzshHVsWdLLNr9M_qwdc3VeqY9A.awoH3g.QAZu4e57-KaZedmigEtEreOrEds</resumptionToken></ListRecords></OAI-PMH>

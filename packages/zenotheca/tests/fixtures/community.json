@@ -1,0 +1,120 @@
+{
+  "id": "433f41f0-e824-4498-9ae9-87baadcc27c7",
+  "created": "2021-02-05T23:08:05.725975+00:00",
+  "updated": "2025-04-25T17:21:08.930031+00:00",
+  "links": {
+    "self": "https://zenodo.org/api/communities/433f41f0-e824-4498-9ae9-87baadcc27c7",
+    "self_html": "https://zenodo.org/communities/ror-data/",
+    "settings_html": "https://zenodo.org/communities/ror-data/settings",
+    "members_html": "https://zenodo.org/communities/ror-data/members",
+    "logo": "https://zenodo.org/api/communities/433f41f0-e824-4498-9ae9-87baadcc27c7/logo",
+    "rename": "https://zenodo.org/api/communities/433f41f0-e824-4498-9ae9-87baadcc27c7/rename",
+    "members": "https://zenodo.org/api/communities/433f41f0-e824-4498-9ae9-87baadcc27c7/members",
+    "public_members": "https://zenodo.org/api/communities/433f41f0-e824-4498-9ae9-87baadcc27c7/members/public",
+    "invitations": "https://zenodo.org/api/communities/433f41f0-e824-4498-9ae9-87baadcc27c7/invitations",
+    "requests": "https://zenodo.org/api/communities/433f41f0-e824-4498-9ae9-87baadcc27c7/requests",
+    "records": "https://zenodo.org/api/communities/433f41f0-e824-4498-9ae9-87baadcc27c7/records",
+    "collection_trees": "https://zenodo.org/api/communities/433f41f0-e824-4498-9ae9-87baadcc27c7/collection-trees",
+    "membership_requests": "https://zenodo.org/api/communities/433f41f0-e824-4498-9ae9-87baadcc27c7/membership-requests"
+  },
+  "revision_id": 3,
+  "slug": "ror-data",
+  "metadata": {
+    "title": "ROR Data",
+    "description": "Trimmed description.",
+    "type": {
+      "id": "project",
+      "title": {
+        "de": "Projekt",
+        "en": "Project"
+      }
+    },
+    "website": "https://ror.org",
+    "organizations": [
+      {
+        "id": "03yrm5c26",
+        "name": "California Digital Library",
+        "identifiers": [
+          {
+            "identifier": "03yrm5c26",
+            "scheme": "ror"
+          },
+          {
+            "identifier": "grid.463323.3",
+            "scheme": "grid"
+          },
+          {
+            "identifier": "0000 0001 1957 5136",
+            "scheme": "isni"
+          }
+        ]
+      },
+      {
+        "id": "02twcfp32",
+        "name": "Crossref",
+        "identifiers": [
+          {
+            "identifier": "02twcfp32",
+            "scheme": "ror"
+          },
+          {
+            "identifier": "grid.466633.2",
+            "scheme": "grid"
+          },
+          {
+            "identifier": "0000 0004 0506 2673",
+            "scheme": "isni"
+          }
+        ]
+      },
+      {
+        "id": "04wxnsj81",
+        "name": "DataCite",
+        "identifiers": [
+          {
+            "identifier": "04wxnsj81",
+            "scheme": "ror"
+          },
+          {
+            "identifier": "grid.475826.a",
+            "scheme": "grid"
+          },
+          {
+            "identifier": "0000 0004 9229 9539",
+            "scheme": "isni"
+          }
+        ]
+      }
+    ]
+  },
+  "access": {
+    "visibility": "public",
+    "members_visibility": "public",
+    "member_policy": "open",
+    "record_submission_policy": "open",
+    "review_policy": "open"
+  },
+  "custom_fields": {
+    "subjects": [
+      {
+        "id": "mesh:D000071253",
+        "subject": "Metadata"
+      },
+      {
+        "id": "mesh:D007254",
+        "subject": "Information Science"
+      },
+      {
+        "id": "mesh:D012106",
+        "subject": "Research"
+      }
+    ]
+  },
+  "deletion_status": {
+    "is_deleted": false,
+    "status": "P"
+  },
+  "children": {
+    "allow": false
+  }
+}

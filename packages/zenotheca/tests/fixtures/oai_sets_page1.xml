@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?xml-stylesheet type="text/xsl" href="/static/oai2.xsl"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd"><responseDate>2026-11-27T22:44:26Z</responseDate><request verb="ListSets">https://zenodo.org/oai2d</request><ListSets><set>
+      <setSpec>user-harmonic-radar</setSpec>
+      <setName>Harmonic Radar</setName>
+      <setDescription>
+        <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/">
+          <dc:description>&lt;p&gt;Radar using a non-linear element with the radar receiver at a multiple of the transmitter frequency.&lt;/p&gt;
+</dc:description>
+        </oai_dc:dc>
+      </setDescription>
+    </set><set>
+      <setSpec>user-eliminatinewq</setSpec>
+      <setName>Eliminating Flies</setName>
+    </set><set>
+      <setSpec>user-sciencedomain-international</setSpec>
+      <setName>Sciencedomain international</setName>
+      <setDescription>
+        <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/">
+          <dc:description>&lt;p style="text-align: justify;"&gt;
+	&lt;strong&gt;SCIENCEDOMAIN&lt;em&gt; international&lt;/em&gt; (SDI)&lt;/strong&gt; publishes high-quality, &lt;a href="http://www.sciencedomain.org/page.php?id=sdi-general-editorial-policy#SDI_Peer_review_mechanism"&gt;OPEN&amp;nbsp;peer reviewed&lt;/a&gt;, OPEN access international journals in various sectors of science, technology and medicine (STM). Fast and Open access principle of SDI help to promote rapid propagation of most up-to-date research findings to the researchers worldwide without any financial barrier.&lt;/p&gt;
+</dc:description>
+        </oai_dc:dc>
+      </setDescription>
+    </set><resumptionToken expirationDate="2026-11-27T22:46:27Z" cursor="0" completeListSize="48294">eyJzZWVkIjowLjQxNjA4Njc4ODg2NjU5NDQ1LCJwYWdlIjoyLCJrd2FyZ3MiOnt9fQ.awoHyw.C_GfaTECaw8dNXZRC08LEKbjSy0</resumptionToken></ListSets></OAI-PMH>

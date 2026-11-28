@@ -1,0 +1,275 @@
+{
+  "hits": {
+    "hits": [
+      {
+        "created": "2026-11-19T19:53:44.178911+00:00",
+        "modified": "2026-11-19T19:53:44.337941+00:00",
+        "id": 24378467,
+        "conceptrecid": "6347574",
+        "doi": "10.5281/zenodo.24378467",
+        "conceptdoi": "10.5281/zenodo.6347574",
+        "doi_url": "https://doi.org/10.5281/zenodo.24378467",
+        "metadata": {
+          "title": "ROR Data",
+          "doi": "10.5281/zenodo.24378467",
+          "publication_date": "2026-11-19",
+          "description": "<p>Trimmed description.</p>",
+          "access_right": "open",
+          "creators": [
+            {
+              "name": "Research Organization Registry",
+              "affiliation": null
+            }
+          ],
+          "contributors": [
+            {
+              "name": "Gould, Maria",
+              "affiliation": "DataCite",
+              "type": "ProjectManager",
+              "orcid": "0000-0002-2916-3423"
+            },
+            {
+              "name": "Janderová, Kateřina",
+              "affiliation": "Czech Academy of Sciences",
+              "type": "DataCurator",
+              "orcid": "0000-0003-4945-3951"
+            }
+          ],
+          "keywords": [
+            "ROR",
+            "persistent identifier"
+          ],
+          "related_identifiers": [
+            {
+              "identifier": "10.5281/zenodo.5534443",
+              "relation": "isNewVersionOf",
+              "resource_type": "dataset",
+              "scheme": "doi"
+            },
+            {
+              "identifier": "10.5281/zenodo.4929693",
+              "relation": "isNewVersionOf",
+              "resource_type": "dataset",
+              "scheme": "doi"
+            }
+          ],
+          "dates": [
+            {
+              "type": "created"
+            }
+          ],
+          "version": "v2.16",
+          "resource_type": {
+            "title": "Dataset",
+            "type": "dataset"
+          },
+          "license": {
+            "id": "cc-zero"
+          },
+          "communities": [
+            {
+              "id": "ror-data"
+            }
+          ],
+          "relations": {
+            "version": [
+              {
+                "index": 78,
+                "is_last": true,
+                "parent": {
+                  "pid_type": "recid",
+                  "pid_value": "6347574"
+                }
+              }
+            ]
+          }
+        },
+        "title": "ROR Data",
+        "links": {
+          "self": "https://zenodo.org/api/records/24378467",
+          "self_html": "https://zenodo.org/records/24378467",
+          "doi": "https://doi.org/10.5281/zenodo.24378467",
+          "self_doi": "https://doi.org/10.5281/zenodo.24378467",
+          "self_doi_html": "https://zenodo.org/doi/10.5281/zenodo.24378467",
+          "parent": "https://zenodo.org/api/records/6347574",
+          "files": "https://zenodo.org/api/records/24378467/files",
+          "latest": "https://zenodo.org/api/records/24378467/versions/latest",
+          "latest_html": "https://zenodo.org/records/24378467/latest",
+          "versions": "https://zenodo.org/api/records/24378467/versions",
+          "draft": "https://zenodo.org/api/records/24378467/draft",
+          "access": "https://zenodo.org/api/records/24378467/access"
+        },
+        "updated": "2026-11-19T19:53:44.337941+00:00",
+        "recid": "24378467",
+        "revision": 4,
+        "files": [
+          {
+            "id": "887d7095-21a8-4fb2-844a-dd6ba88ca792",
+            "key": "v2.16-2026-11-19-ror-data.zip",
+            "size": 40861154,
+            "checksum": "md5:0769f596ca9e8ebf87224a1ad93a7722",
+            "links": {
+              "self": "https://zenodo.org/api/records/24378467/files/v2.16-2026-11-19-ror-data.zip/content"
+            }
+          }
+        ],
+        "swh": null,
+        "owners": [
+          {
+            "id": "73440"
+          }
+        ],
+        "status": "published",
+        "stats": {
+          "downloads": 330100,
+          "unique_downloads": 257425,
+          "views": 126256,
+          "unique_views": 117383,
+          "version_downloads": 5152,
+          "version_unique_downloads": 3968,
+          "version_unique_views": 962,
+          "version_views": 1037
+        },
+        "state": "done",
+        "submitted": true
+      },
+      {
+        "created": "2026-10-20T14:35:53.162074+00:00",
+        "modified": "2026-10-20T14:35:53.430092+00:00",
+        "id": 23500708,
+        "conceptrecid": "6347574",
+        "doi": "10.5281/zenodo.23500708",
+        "conceptdoi": "10.5281/zenodo.6347574",
+        "doi_url": "https://doi.org/10.5281/zenodo.23500708",
+        "metadata": {
+          "title": "ROR Data",
+          "doi": "10.5281/zenodo.23500708",
+          "publication_date": "2026-10-20",
+          "description": "<p>Trimmed description.</p>",
+          "access_right": "open",
+          "creators": [
+            {
+              "name": "Research Organization Registry",
+              "affiliation": null
+            }
+          ],
+          "contributors": [
+            {
+              "name": "Gould, Maria",
+              "affiliation": "DataCite",
+              "type": "ProjectManager",
+              "orcid": "0000-0002-2916-3423"
+            },
+            {
+              "name": "Janderová, Kateřina",
+              "affiliation": "Czech Academy of Sciences",
+              "type": "DataCurator",
+              "orcid": "0000-0003-4945-3951"
+            }
+          ],
+          "keywords": [
+            "ROR",
+            "persistent identifier"
+          ],
+          "related_identifiers": [
+            {
+              "identifier": "10.5281/zenodo.5534443",
+              "relation": "isNewVersionOf",
+              "resource_type": "dataset",
+              "scheme": "doi"
+            },
+            {
+              "identifier": "10.5281/zenodo.4929693",
+              "relation": "isNewVersionOf",
+              "resource_type": "dataset",
+              "scheme": "doi"
+            }
+          ],
+          "dates": [
+            {
+              "type": "created"
+            }
+          ],
+          "version": "v2.15",
+          "resource_type": {
+            "title": "Dataset",
+            "type": "dataset"
+          },
+          "license": {
+            "id": "cc-zero"
+          },
+          "communities": [
+            {
+              "id": "ror-data"
+            }
+          ],
+          "relations": {
+            "version": [
+              {
+                "index": 77,
+                "is_last": false,
+                "parent": {
+                  "pid_type": "recid",
+                  "pid_value": "6347574"
+                }
+              }
+            ]
+          }
+        },
+        "title": "ROR Data",
+        "links": {
+          "self": "https://zenodo.org/api/records/23500708",
+          "self_html": "https://zenodo.org/records/23500708",
+          "doi": "https://doi.org/10.5281/zenodo.23500708",
+          "self_doi": "https://doi.org/10.5281/zenodo.23500708",
+          "self_doi_html": "https://zenodo.org/doi/10.5281/zenodo.23500708",
+          "parent": "https://zenodo.org/api/records/6347574",
+          "files": "https://zenodo.org/api/records/23500708/files",
+          "latest": "https://zenodo.org/api/records/23500708/versions/latest",
+          "latest_html": "https://zenodo.org/records/23500708/latest",
+          "versions": "https://zenodo.org/api/records/23500708/versions",
+          "draft": "https://zenodo.org/api/records/23500708/draft",
+          "access": "https://zenodo.org/api/records/23500708/access"
+        },
+        "updated": "2026-10-20T14:35:53.430092+00:00",
+        "recid": "23500708",
+        "revision": 4,
+        "files": [
+          {
+            "id": "360e866f-bcb1-461f-82e1-934abb75f4e4",
+            "key": "v2.15-2026-10-20-ror-data.zip",
+            "size": 39263398,
+            "checksum": "md5:5522990688eb1b94811a8145e131b41e",
+            "links": {
+              "self": "https://zenodo.org/api/records/23500708/files/v2.15-2026-10-20-ror-data.zip/content"
+            }
+          }
+        ],
+        "swh": null,
+        "owners": [
+          {
+            "id": "73440"
+          }
+        ],
+        "status": "published",
+        "stats": {
+          "downloads": 330100,
+          "unique_downloads": 257425,
+          "views": 126256,
+          "unique_views": 117383,
+          "version_downloads": 30737,
+          "version_unique_downloads": 23741,
+          "version_unique_views": 2235,
+          "version_views": 2549
+        },
+        "state": "done",
+        "submitted": true
+      }
+    ],
+    "total": 97
+  },
+  "links": {
+    "self": "https://zenodo.org/api/records/24378467/versions?page=1&size=25&sort=version",
+    "next": "https://zenodo.org/api/records/24378467/versions?page=2&size=25&sort=version"
+  }
+}

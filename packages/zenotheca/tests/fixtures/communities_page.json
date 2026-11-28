@@ -1,0 +1,259 @@
+{
+  "hits": {
+    "hits": [
+      {
+        "id": "cf27f338-7448-4cc7-bca6-dc8f043b6fc4",
+        "created": "2026-11-17T18:03:37.170245+00:00",
+        "updated": "2026-11-17T18:12:13.409752+00:00",
+        "links": {
+          "self": "https://zenodo.org/api/communities/cf27f338-7448-4cc7-bca6-dc8f043b6fc4",
+          "self_html": "https://zenodo.org/communities/dcc27/",
+          "settings_html": "https://zenodo.org/communities/dcc27/settings",
+          "members_html": "https://zenodo.org/communities/dcc27/members",
+          "logo": "https://zenodo.org/api/communities/cf27f338-7448-4cc7-bca6-dc8f043b6fc4/logo",
+          "rename": "https://zenodo.org/api/communities/cf27f338-7448-4cc7-bca6-dc8f043b6fc4/rename",
+          "members": "https://zenodo.org/api/communities/cf27f338-7448-4cc7-bca6-dc8f043b6fc4/members",
+          "public_members": "https://zenodo.org/api/communities/cf27f338-7448-4cc7-bca6-dc8f043b6fc4/members/public",
+          "invitations": "https://zenodo.org/api/communities/cf27f338-7448-4cc7-bca6-dc8f043b6fc4/invitations",
+          "requests": "https://zenodo.org/api/communities/cf27f338-7448-4cc7-bca6-dc8f043b6fc4/requests",
+          "records": "https://zenodo.org/api/communities/cf27f338-7448-4cc7-bca6-dc8f043b6fc4/records",
+          "collection_trees": "https://zenodo.org/api/communities/cf27f338-7448-4cc7-bca6-dc8f043b6fc4/collection-trees",
+          "membership_requests": "https://zenodo.org/api/communities/cf27f338-7448-4cc7-bca6-dc8f043b6fc4/membership-requests"
+        },
+        "revision_id": 5,
+        "slug": "dcc27",
+        "metadata": {
+          "title": "Data Curation Conference 2027",
+          "description": "Trimmed description.",
+          "type": {
+            "id": "event",
+            "title": {
+              "de": "Event",
+              "en": "Event"
+            }
+          },
+          "website": "https://researchdata.unibas.ch/en/dcc27/",
+          "organizations": [
+            {
+              "id": "02s6k3f65",
+              "name": "University of Basel",
+              "identifiers": [
+                {
+                  "identifier": "02s6k3f65",
+                  "scheme": "ror"
+                },
+                {
+                  "identifier": "grid.6612.3",
+                  "scheme": "grid"
+                }
+              ]
+            }
+          ]
+        },
+        "access": {
+          "visibility": "public",
+          "members_visibility": "public",
+          "member_policy": "closed",
+          "record_submission_policy": "open",
+          "review_policy": "closed"
+        },
+        "custom_fields": {
+          "subjects": [
+            {
+              "id": "mesh:D066289",
+              "subject": "Data Curation"
+            },
+            {
+              "id": "mesh:D001185",
+              "subject": "Artificial Intelligence"
+            }
+          ]
+        },
+        "deletion_status": {
+          "is_deleted": false,
+          "status": "P"
+        },
+        "children": {
+          "allow": false
+        }
+      },
+      {
+        "id": "1821716b-3eb9-46df-8fb8-461d1735b6d2",
+        "created": "2024-04-16T12:29:30.366618+00:00",
+        "updated": "2025-09-30T09:31:23.594846+00:00",
+        "links": {
+          "self": "https://zenodo.org/api/communities/1821716b-3eb9-46df-8fb8-461d1735b6d2",
+          "self_html": "https://zenodo.org/communities/mdmc/",
+          "settings_html": "https://zenodo.org/communities/mdmc/settings",
+          "members_html": "https://zenodo.org/communities/mdmc/members",
+          "logo": "https://zenodo.org/api/communities/1821716b-3eb9-46df-8fb8-461d1735b6d2/logo",
+          "rename": "https://zenodo.org/api/communities/1821716b-3eb9-46df-8fb8-461d1735b6d2/rename",
+          "members": "https://zenodo.org/api/communities/1821716b-3eb9-46df-8fb8-461d1735b6d2/members",
+          "public_members": "https://zenodo.org/api/communities/1821716b-3eb9-46df-8fb8-461d1735b6d2/members/public",
+          "invitations": "https://zenodo.org/api/communities/1821716b-3eb9-46df-8fb8-461d1735b6d2/invitations",
+          "requests": "https://zenodo.org/api/communities/1821716b-3eb9-46df-8fb8-461d1735b6d2/requests",
+          "records": "https://zenodo.org/api/communities/1821716b-3eb9-46df-8fb8-461d1735b6d2/records",
+          "collection_trees": "https://zenodo.org/api/communities/1821716b-3eb9-46df-8fb8-461d1735b6d2/collection-trees",
+          "membership_requests": "https://zenodo.org/api/communities/1821716b-3eb9-46df-8fb8-461d1735b6d2/membership-requests"
+        },
+        "revision_id": 19,
+        "slug": "mdmc",
+        "metadata": {
+          "title": "Master in Data Management and Curation (MDMC) AA 2024-2025",
+          "description": "Trimmed description.",
+          "type": {
+            "id": "topic",
+            "title": {
+              "de": "Thema",
+              "en": "Topic"
+            }
+          },
+          "website": "https://www.sissa.it/training/professional-master-courses/master-data-management-and-curation",
+          "funding": [
+            {
+              "funder": {
+                "id": "0166hxq48",
+                "name": "Ministry of Education, Universities and Research"
+              },
+              "award": {
+                "number": "IR0000015",
+                "title": {
+                  "en": "NFFA-DI, Nano Foundries Fine Analisys - Digital Infrastructure  (NFFA-DI)"
+                },
+                "identifiers": [
+                  {
+                    "identifier": "https://nffa-di.it/",
+                    "scheme": "url"
+                  }
+                ]
+              }
+            },
+            {
+              "funder": {
+                "id": "0166hxq48",
+                "name": "Ministry of Education, Universities and Research"
+              },
+              "award": {
+                "number": "IR0000028",
+                "title": {
+                  "en": "PRP, Pathogen Readiness Platform for CERIC-ERIC upgrade (PRP@CERIC)"
+                },
+                "identifiers": [
+                  {
+                    "identifier": "https://www.pathogen-ri.eu/",
+                    "scheme": "url"
+                  }
+                ]
+              }
+            }
+          ],
+          "organizations": [
+            {
+              "id": "01dt7qh15",
+              "name": "AREA Science Park",
+              "identifiers": [
+                {
+                  "identifier": "01dt7qh15",
+                  "scheme": "ror"
+                },
+                {
+                  "identifier": "grid.419994.8",
+                  "scheme": "grid"
+                }
+              ]
+            },
+            {
+              "id": "004fze387",
+              "name": "Scuola Internazionale Superiore di Studi Avanzati",
+              "identifiers": [
+                {
+                  "identifier": "004fze387",
+                  "scheme": "ror"
+                },
+                {
+                  "identifier": "grid.5970.b",
+                  "scheme": "grid"
+                }
+              ]
+            }
+          ]
+        },
+        "access": {
+          "visibility": "public",
+          "members_visibility": "public",
+          "member_policy": "open",
+          "record_submission_policy": "open",
+          "review_policy": "closed"
+        },
+        "custom_fields": {},
+        "deletion_status": {
+          "is_deleted": false,
+          "status": "P"
+        },
+        "children": {
+          "allow": false
+        }
+      }
+    ],
+    "total": 8978
+  },
+  "links": {
+    "self": "https://zenodo.org/api/communities?page=1&q=data+curation&size=2&sort=bestmatch",
+    "next": "https://zenodo.org/api/communities?page=2&q=data+curation&size=2&sort=bestmatch"
+  },
+  "aggregations": {
+    "type": {
+      "buckets": [
+        {
+          "key": "project",
+          "doc_count": 2436,
+          "label": "Project",
+          "is_selected": false
+        },
+        {
+          "key": "organization",
+          "doc_count": 1649,
+          "label": "Organization",
+          "is_selected": false
+        }
+      ],
+      "label": "Type"
+    },
+    "funder": {
+      "buckets": [
+        {
+          "key": "00k4n6c32",
+          "doc_count": 1177,
+          "label": "European Commission (BE)",
+          "is_selected": false
+        },
+        {
+          "key": "018mejw64",
+          "doc_count": 49,
+          "label": "German Research Foundation (DE)",
+          "is_selected": false
+        }
+      ],
+      "label": "Funders"
+    },
+    "organization": {
+      "buckets": [
+        {
+          "key": "04qw24q55",
+          "doc_count": 27,
+          "label": "Wageningen University & Research",
+          "is_selected": false
+        },
+        {
+          "key": "01nffqt88",
+          "doc_count": 26,
+          "label": "Polytechnic University of Milan",
+          "is_selected": false
+        }
+      ],
+      "label": "Organizations"
+    }
+  },
+  "page": 1,
+  "sortBy": "bestmatch"
+}

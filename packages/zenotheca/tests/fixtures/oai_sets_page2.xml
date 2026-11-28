@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?xml-stylesheet type="text/xsl" href="/static/oai2.xsl"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd"><responseDate>2026-11-27T22:44:44Z</responseDate><request resumptionToken="eyJzZWVkIjowLjQxNjA4Njc4ODg2NjU5NDQ1LCJwYWdlIjoyLCJrd2FyZ3MiOnt9fQ.awoHyw.C_GfaTECaw8dNXZRC08LEKbjSy0" verb="ListSets">https://zenodo.org/oai2d</request><ListSets><set>
+      <setSpec>user-young-bds</setSpec>
+      <setName>Young Brown Dwarfs</setName>
+      <setDescription>
+        <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/">
+          <dc:description>&lt;p&gt;This community is dedicated to the census and study of young brown dwarfs.&lt;/p&gt;
+</dc:description>
+        </oai_dc:dc>
+      </setDescription>
+    </set><set>
+      <setSpec>user-envin-umr</setSpec>
+      <setName>Environmental Informatics Marburg</setName>
+      <setDescription>
+        <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/">
+          <dc:description>&lt;p&gt;Community repository of the environmental informatics working group at Marburg University.&lt;/p&gt;
+
+&lt;p&gt;http://environmentalinformatics-marburg.de/&lt;/p&gt;
+</dc:description>
+        </oai_dc:dc>
+      </setDescription>
+    </set><resumptionToken expirationDate="2026-11-27T22:46:45Z" cursor="50" completeListSize="48294">eyJzZWVkIjowLjc3ODU2NDE5NTE2ODEwMDIsInBhZ2UiOjMsImt3YXJncyI6e319.awoH3Q.j5CRyEGfPiNtFiwlAXm_7tlyp6Y</resumptionToken></ListSets></OAI-PMH>

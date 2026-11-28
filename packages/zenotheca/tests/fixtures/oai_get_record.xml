@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?xml-stylesheet type="text/xsl" href="/static/oai2.xsl"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd"><responseDate>2026-11-27T22:44:29Z</responseDate><request verb="GetRecord" identifier="oai:zenodo.org:24378467" metadataPrefix="oai_dc">https://zenodo.org/oai2d</request><GetRecord><record>
+      <header>
+        <identifier>oai:zenodo.org:24378467</identifier>
+        <datestamp>2026-11-19T19:53:44Z</datestamp>
+        <setSpec>openaire_data</setSpec>
+        <setSpec>user-ror-data</setSpec>
+      </header>
+      <metadata>
+        <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+          <dc:title>ROR data release</dc:title>
+          <dc:creator>DataCite</dc:creator>
+          <dc:date>2026-11-19</dc:date>
+        </oai_dc:dc>
+      </metadata>
+    </record></GetRecord></OAI-PMH>

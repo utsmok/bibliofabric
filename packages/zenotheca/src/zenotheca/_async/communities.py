@@ -1,0 +1,153 @@
+"""Client for the Zenodo communities endpoints."""
+
+from collections.abc import Mapping, Sequence
+from typing import Any, override
+
+from bibliofabric import OnError, validate_model
+from bibliofabric.exceptions import ConfigurationError
+from bibliofabric.paging import Page
+from pydantic import BaseModel, ValidationError as PydanticValidationError
+
+from ..ids import normalize_community_slug
+from ..models import ZenothecaCommunity, ZenothecaRecord
+from .dialect import ZenothecaResourceClient
+
+
+class ZenothecaCommunitiesClient(ZenothecaResourceClient[ZenothecaCommunity]):
+    """Client for the ``/communities`` endpoints.
+
+    ``get``, :meth:`search`, and :meth:`iterate` accept the community slug
+    (``ror-data``) or the community URL. The community ``id`` the API
+    returns is a UUID that the ``/communities/{id}`` routes accept too.
+    """
+
+    path = "communities"
+    model = ZenothecaCommunity
+    batch_size = 0
+
+    @override
+    def normalize_id(self, value: str) -> str:
+        """Return the bare community slug behind ``value``."""
+        return normalize_community_slug(value)
+
+    async def records(
+        self,
+        id: str | int,
+        filters: BaseModel | Mapping[str, Any] | None = None,
+        *,
+        query: str | None = None,
+        sort: str | Sequence[str] | None = None,
+        page: int | None = None,
+        page_size: int | None = None,
+        on_error: OnError = "raise",
+        failures: list[tuple[dict[str, Any], Exception]] | None = None,
+        params: Mapping[str, Any] | None = None,
+        all_versions: bool = False,
+    ) -> Page[ZenothecaRecord]:
+        """Search the records accepted into one community.
+
+        Accepts the query parameters of the records search; ``filters``
+        takes a mapping such as ``{"type": "dataset"}``. The route answers
+        the same envelope, so :attr:`Page.meta` carries the records facet
+        counts.
+        """
+        _check_on_error(on_error)
+        query_params = self._search_params(
+            filters=filters,
+            query=query,
+            sort=sort,
+            page=page,
+            page_size=page_size,
+            params=self.with_params(params, all_versions=all_versions),
+        )
+        response = await self._client.request(
+            "GET",
+            f"{self.path.rstrip('/')}/{self.normalize_id(str(id))}/records",
+            params=query_params,
+        )
+        body = self._client.parse_json(response)
+        unwrapper = self._client.unwrapper
+        request = getattr(response, "request", None)
+        results: list[ZenothecaRecord] = []
+        for record in unwrapper.results(body):
+            try:
+                results.append(
+                    validate_model(
+                        ZenothecaRecord, record, request=request, response=response
+                    )
+                )
+            except PydanticValidationError as error:
+                if on_error == "skip":
+                    if failures is not None:
+                        failures.append((record, error))
+                    continue
+                raise
+        effective_page = page if page is not None else self.dialect.page_start
+        return Page(
+            results=results,
+            total=unwrapper.total(body),
+            next_cursor=None,
+            page=effective_page,
+            meta=unwrapper.meta(body),
+        )
+
+    async def subcommunities(
+        self,
+        id: str | int,
+        filters: BaseModel | Mapping[str, Any] | None = None,
+        *,
+        query: str | None = None,
+        sort: str | Sequence[str] | None = None,
+        page: int | None = None,
+        page_size: int | None = None,
+        on_error: OnError = "raise",
+        failures: list[tuple[dict[str, Any], Exception]] | None = None,
+        params: Mapping[str, Any] | None = None,
+    ) -> Page[ZenothecaCommunity]:
+        """List the subcommunities of one community.
+
+        The route answers the community envelope with ``sortBy`` ``newest``
+        and the ``type``, ``funder``, and ``organization`` facets; most
+        communities carry no children, so ``total`` is usually 0.
+        """
+        _check_on_error(on_error)
+        query_params = self._search_params(
+            filters=filters,
+            query=query,
+            sort=sort,
+            page=page,
+            page_size=page_size,
+            params=params,
+        )
+        response = await self._client.request(
+            "GET",
+            f"{self.path.rstrip('/')}/{self.normalize_id(str(id))}/subcommunities",
+            params=query_params,
+        )
+        body = self._client.parse_json(response)
+        unwrapper = self._client.unwrapper
+        results = self._validate_records(
+            unwrapper.results(body),
+            on_error=on_error,
+            failures=failures,
+            request=getattr(response, "request", None),
+            response=response,
+        )
+        effective_page = page if page is not None else self.dialect.page_start
+        return Page(
+            results=results,
+            total=unwrapper.total(body),
+            next_cursor=None,
+            page=effective_page,
+            meta=unwrapper.meta(body),
+        )
+
+
+def _check_on_error(on_error: OnError) -> None:
+    if on_error not in ("raise", "skip"):
+        raise ConfigurationError(
+            f"on_error must be 'raise' or 'skip', got {on_error!r}."
+        )
+
+
+__all__ = ["ZenothecaCommunitiesClient"]

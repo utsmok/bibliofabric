@@ -1,0 +1,36 @@
+"""Resource base shared by the Zenodo resources.
+
+Zenodo differs from the bibliofabric defaults in three ways: page sizes
+travel in ``size`` (max 25 unauthenticated), searches accept extra switches
+such as ``all_versions`` alongside the query string, and ids are numeric
+record or concept ids that arrive in longer spellings (DOIs, URLs).
+"""
+
+from collections.abc import Mapping
+from typing import Any
+
+from bibliofabric import ResourceClient
+from pydantic import BaseModel
+
+from ..dialect import ZENODO_DIALECT
+
+
+class ZenothecaResourceClient[E: BaseModel](ResourceClient[E]):
+    """Base client for Zenodo resources: the shared query dialect."""
+
+    dialect = ZENODO_DIALECT
+
+    @staticmethod
+    def with_params(
+        params: Mapping[str, Any] | None,
+        *,
+        all_versions: bool = False,
+    ) -> dict[str, Any]:
+        """Merge the ``all_versions`` switch into ``params``."""
+        merged: dict[str, Any] = dict(params) if params else {}
+        if all_versions:
+            merged["all_versions"] = "true"
+        return merged
+
+
+__all__ = ["ZenothecaResourceClient"]

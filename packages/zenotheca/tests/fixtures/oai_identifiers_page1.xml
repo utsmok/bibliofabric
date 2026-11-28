@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/"><responseDate>2026-11-27T22:44:00Z</responseDate><request verb="ListIdentifiers" metadataPrefix="oai_dc">https://zenodo.org/oai2d</request><ListIdentifiers><header>
+        <identifier>oai:zenodo.org:23669037</identifier>
+        <datestamp>2026-11-20T04:55:31Z</datestamp>
+      </header><resumptionToken expirationDate="2026-11-27T23:00:00Z" cursor="0" completeListSize="92554">tok-1</resumptionToken></ListIdentifiers></OAI-PMH>

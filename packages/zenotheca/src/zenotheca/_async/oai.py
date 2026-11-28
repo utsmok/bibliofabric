@@ -1,0 +1,428 @@
+"""Client for the OAI-PMH endpoint of Zenodo.
+
+Zenodo exposes OAI-PMH 2.0 at ``https://zenodo.org/oai2d``. The answers are
+XML; this client parses them with the standard library and types the
+envelope, headers, sets, and metadata formats. Record metadata stays a raw
+XML string because its schema depends on the metadata prefix.
+"""
+
+from collections.abc import AsyncIterator
+from xml.etree import ElementTree
+from xml.etree.ElementTree import ParseError as XmlParseError
+
+import httpx
+from bibliofabric import BaseApiClient
+from bibliofabric.exceptions import (
+    APIError,
+    ConfigurationError,
+    NotFoundError,
+)
+
+from ..dialect import ZENODO_OAI_BASE_URL
+from ..models import (
+    OaiFormats,
+    OaiHeader,
+    OaiIdentifiers,
+    OaiIdentify,
+    OaiIdentifyResponse,
+    OaiMetadataFormat,
+    OaiRecord,
+    OaiRecordResponse,
+    OaiRecords,
+    OaiRequest,
+    OaiResumptionToken,
+    OaiSet,
+    OaiSets,
+)
+
+#: ElementTree namespace prefix of the OAI-PMH 2.0 schema.
+OAI_NAMESPACE = "{http://www.openarchives.org/OAI/2.0/}"
+
+#: Error codes that mean "no results"; the list methods answer empty pages.
+EMPTY_ERROR_CODES = frozenset({"noRecordsMatch", "noSetHierarchy"})
+
+#: Error codes that mean "this identifier does not exist".
+NOT_FOUND_ERROR_CODES = frozenset({"idDoesNotExist"})
+
+
+class OaiErrorInfo:
+    """Internal carrier for an OAI error code and message."""
+
+    __slots__ = ("code", "message")
+
+    def __init__(self, code: str, message: str) -> None:
+        self.code = code
+        self.message = message
+
+
+class OaiClient:
+    """Client for the six OAI-PMH verbs of Zenodo.
+
+    ``list_records`` and ``list_identifiers`` accept ``from``, ``until``,
+    ``set``, and ``resumption_token``; the ``iterate_records`` and
+    ``iterate_identifiers`` helpers follow the resumption tokens until the
+    repository reports the end of the list.
+    """
+
+    def __init__(self, client: BaseApiClient) -> None:
+        self._client = client
+
+    async def identify(self) -> OaiIdentifyResponse:
+        """Return the repository identity (``Identify``)."""
+        root = self._parse(await self._fetch("Identify", {}))
+        self._raise_for_error(root)
+        element = self._container(root, "Identify")
+        identify = OaiIdentify(
+            repository_name=self._text(element, "repositoryName"),
+            base_url=self._text(element, "baseURL"),
+            protocol_version=self._text(element, "protocolVersion"),
+            earliest_datestamp=self._text(element, "earliestDatestamp"),
+            deleted_record=self._text(element, "deletedRecord"),
+            granularity=self._text(element, "granularity"),
+            admin_emails=[
+                (item.text or "")
+                for item in element.findall(f"{OAI_NAMESPACE}adminEmail")
+            ],
+        )
+        return self._wrap(OaiIdentifyResponse(identify=identify), root)
+
+    async def list_metadata_formats(
+        self, *, identifier: str | None = None
+    ) -> OaiFormats:
+        """Return the metadata prefixes the repository offers."""
+        params = {"identifier": identifier} if identifier else {}
+        root = self._parse(await self._fetch("ListMetadataFormats", params))
+        self._raise_for_error(root)
+        element = self._container(root, "ListMetadataFormats")
+        formats = [
+            OaiMetadataFormat(
+                metadata_prefix=self._text(item, "metadataPrefix"),
+                schema_url=self._text(item, "schema"),
+                metadata_namespace=self._text(item, "metadataNamespace"),
+            )
+            for item in element.findall(f"{OAI_NAMESPACE}metadataFormat")
+        ]
+        return self._wrap(OaiFormats(formats=formats), root)
+
+    async def list_sets(self, *, resumption_token: str | None = None) -> OaiSets:
+        """Return one page of sets; pass the resumption token for the next page."""
+        root = self._parse(
+            await self._fetch(
+                "ListSets", _without_nones(resumptionToken=resumption_token)
+            )
+        )
+        error = self._error(root)
+        if error is not None and error.code in EMPTY_ERROR_CODES:
+            return self._wrap(OaiSets(), root)
+        self._raise_for_error(root, error)
+        element = self._container(root, "ListSets")
+        sets = [
+            OaiSet(
+                set_spec=self._text(item, "setSpec"),
+                set_name=self._text(item, "setName"),
+                set_description=self._raw(item, "setDescription"),
+            )
+            for item in element.findall(f"{OAI_NAMESPACE}set")
+        ]
+        return self._wrap(
+            OaiSets(sets=sets, resumption_token=self._resumption_token(element)),
+            root,
+        )
+
+    async def list_identifiers(
+        self,
+        metadata_prefix: str,
+        *,
+        from_: str | None = None,
+        until: str | None = None,
+        set: str | None = None,
+        resumption_token: str | None = None,
+    ) -> OaiIdentifiers:
+        """Return one page of record headers."""
+        params = self._list_params(
+            metadata_prefix, from_=from_, until=until, set=set
+        ) | _without_nones(resumptionToken=resumption_token)
+        root = self._parse(await self._fetch("ListIdentifiers", params))
+        error = self._error(root)
+        if error is not None and error.code in EMPTY_ERROR_CODES:
+            return self._wrap(OaiIdentifiers(), root)
+        self._raise_for_error(root, error)
+        element = self._container(root, "ListIdentifiers")
+        headers = [
+            self._header(item) for item in element.findall(f"{OAI_NAMESPACE}header")
+        ]
+        return self._wrap(
+            OaiIdentifiers(
+                headers=headers,
+                resumption_token=self._resumption_token(element),
+            ),
+            root,
+        )
+
+    async def list_records(
+        self,
+        metadata_prefix: str,
+        *,
+        from_: str | None = None,
+        until: str | None = None,
+        set: str | None = None,
+        resumption_token: str | None = None,
+    ) -> OaiRecords:
+        """Return one page of records with raw metadata payloads."""
+        params = self._list_params(
+            metadata_prefix, from_=from_, until=until, set=set
+        ) | _without_nones(resumptionToken=resumption_token)
+        root = self._parse(await self._fetch("ListRecords", params))
+        error = self._error(root)
+        if error is not None and error.code in EMPTY_ERROR_CODES:
+            return self._wrap(OaiRecords(), root)
+        self._raise_for_error(root, error)
+        element = self._container(root, "ListRecords")
+        records = [
+            self._record(item, params["metadataPrefix"])
+            for item in element.findall(f"{OAI_NAMESPACE}record")
+        ]
+        return self._wrap(
+            OaiRecords(
+                records=records,
+                resumption_token=self._resumption_token(element),
+            ),
+            root,
+        )
+
+    async def get_record(
+        self, identifier: str, metadata_prefix: str
+    ) -> OaiRecordResponse:
+        """Return one record by its OAI identifier (``oai:zenodo.org:<id>``)."""
+        wanted = identifier.strip()
+        if not wanted:
+            raise ConfigurationError("identifier must be a non-empty string.")
+        root = self._parse(
+            await self._fetch(
+                "GetRecord",
+                {"identifier": wanted, "metadataPrefix": self._prefix(metadata_prefix)},
+            )
+        )
+        self._raise_for_error(root)
+        element = self._container(root, "GetRecord")
+        record_el = element.find(f"{OAI_NAMESPACE}record")
+        if record_el is None:
+            raise NotFoundError(
+                f"The repository answered no record for {identifier!r}."
+            )
+        record = self._record(record_el, self._prefix(metadata_prefix))
+        return self._wrap(OaiRecordResponse(record=record), root)
+
+    async def iterate_records(
+        self,
+        metadata_prefix: str,
+        *,
+        from_: str | None = None,
+        until: str | None = None,
+        set: str | None = None,
+    ) -> AsyncIterator[OaiRecord]:
+        """Yield every record that matches, following resumption tokens."""
+        token: str | None = None
+        while True:
+            page = await self.list_records(
+                metadata_prefix,
+                from_=from_,
+                until=until,
+                set=set,
+                resumption_token=token,
+            )
+            index = 0
+            while index < len(page.records):
+                yield page.records[index]
+                index += 1
+            token = page.resumption_token.token if page.resumption_token else None
+            if not token:
+                return
+
+    async def iterate_identifiers(
+        self,
+        metadata_prefix: str,
+        *,
+        from_: str | None = None,
+        until: str | None = None,
+        set: str | None = None,
+    ) -> AsyncIterator[OaiHeader]:
+        """Yield every record header that matches, following resumption tokens."""
+        token: str | None = None
+        while True:
+            page = await self.list_identifiers(
+                metadata_prefix,
+                from_=from_,
+                until=until,
+                set=set,
+                resumption_token=token,
+            )
+            index = 0
+            while index < len(page.headers):
+                yield page.headers[index]
+                index += 1
+            token = page.resumption_token.token if page.resumption_token else None
+            if not token:
+                return
+
+    # --- internals ------------------------------------------------------
+
+    @staticmethod
+    def _list_params(
+        metadata_prefix: str,
+        *,
+        from_: str | None,
+        until: str | None,
+        set: str | None,
+    ) -> dict[str, str]:
+        """Validate and collect the shared ``List*`` query parameters."""
+        params = {"metadataPrefix": OaiClient._prefix(metadata_prefix)}
+        params.update(
+            {
+                name: value
+                for name, value in (("from", from_), ("until", until), ("set", set))
+                if value is not None
+            }
+        )
+        return params
+
+    @staticmethod
+    def _prefix(metadata_prefix: str) -> str:
+        wanted = metadata_prefix.strip()
+        if not wanted:
+            raise ConfigurationError("metadata_prefix must be a non-empty string.")
+        return wanted
+
+    async def _fetch(self, verb: str, params: dict[str, str]) -> httpx.Response:
+        """Send one OAI request; error answers (422) come back for parsing."""
+        query: dict[str, str] = {"verb": verb, **params}
+        try:
+            return await self._client.request("GET", ZENODO_OAI_BASE_URL, params=query)
+        except APIError as error:
+            if error.response is not None:
+                return error.response
+            raise
+
+    @staticmethod
+    def _parse(response: httpx.Response) -> ElementTree.Element:
+        """Parse the OAI-PMH XML body of a response."""
+        try:
+            return ElementTree.fromstring(response.text)
+        except XmlParseError as error:
+            raise APIError(
+                f"The OAI-PMH answer is not valid XML: {error}",
+                response=response,
+            ) from error
+
+    @staticmethod
+    def _error(root: ElementTree.Element) -> OaiErrorInfo | None:
+        """Return the ``error`` element of the answer, if any."""
+        element = root.find(f"{OAI_NAMESPACE}error")
+        if element is None:
+            return None
+        code = element.get("code") or ""
+        return OaiErrorInfo(code=code, message=(element.text or "").strip())
+
+    def _raise_for_error(
+        self, root: ElementTree.Element, error: OaiErrorInfo | None = None
+    ) -> None:
+        """Map an OAI error code to a bibliofabric exception."""
+        wanted = error if error is not None else self._error(root)
+        if wanted is None or not wanted.code:
+            return
+        detail = f"{wanted.code}: {wanted.message}" if wanted.message else wanted.code
+        if wanted.code in NOT_FOUND_ERROR_CODES:
+            raise NotFoundError(f"The OAI repository reported {detail}.")
+        raise ConfigurationError(f"The OAI repository rejected the request: {detail}.")
+
+    @staticmethod
+    def _container(root: ElementTree.Element, verb: str) -> ElementTree.Element:
+        """Return the per-verb container element of a successful answer."""
+        element = root.find(f"{OAI_NAMESPACE}{verb}")
+        if element is None:
+            raise APIError(f"The OAI-PMH answer carries no {verb} element.")
+        return element
+
+    @staticmethod
+    def _wrap(wrapped, root: ElementTree.Element):
+        """Fill ``response_date`` and ``request`` on an answer model."""
+        wrapped.response_date = root.findtext(f"{OAI_NAMESPACE}responseDate")
+        request_el = root.find(f"{OAI_NAMESPACE}request")
+        if request_el is not None:
+            wrapped.request = OaiRequest(
+                url=request_el.text or "",
+                params=dict(request_el.attrib),
+            )
+        return wrapped
+
+    @staticmethod
+    def _text(element: ElementTree.Element, path: str) -> str | None:
+        found = element.findtext(f"{OAI_NAMESPACE}{path}")
+        return found if found is None else found.strip()
+
+    @staticmethod
+    def _raw(element: ElementTree.Element, path: str) -> str | None:
+        found = element.find(f"{OAI_NAMESPACE}{path}")
+        if found is None:
+            return None
+        return ElementTree.tostring(found, encoding="unicode")
+
+    def _header(self, element: ElementTree.Element) -> OaiHeader:
+        return OaiHeader(
+            identifier=self._text(element, "identifier"),
+            datestamp=self._text(element, "datestamp"),
+            set_spec=[
+                (item.text or "") for item in element.findall(f"{OAI_NAMESPACE}setSpec")
+            ],
+            status=element.get("status"),
+        )
+
+    def _record(self, element: ElementTree.Element, metadata_prefix: str) -> OaiRecord:
+        header_el = element.find(f"{OAI_NAMESPACE}header")
+        metadata_el = element.find(f"{OAI_NAMESPACE}metadata")
+        namespace = None
+        if metadata_el is not None and len(metadata_el):
+            namespace = metadata_el[0].tag.split("}", 1)[0].lstrip("{") or None
+        about = [
+            ElementTree.tostring(item, encoding="unicode")
+            for item in element.findall(f"{OAI_NAMESPACE}about")
+        ]
+        return OaiRecord(
+            header=self._header(header_el) if header_el is not None else None,
+            metadata=(
+                ElementTree.tostring(metadata_el, encoding="unicode")
+                if metadata_el is not None
+                else None
+            ),
+            about=about,
+            metadata_prefix=metadata_prefix,
+            metadata_namespace=namespace,
+        )
+
+    @staticmethod
+    def _resumption_token(
+        element: ElementTree.Element,
+    ) -> OaiResumptionToken | None:
+        found = element.find(f"{OAI_NAMESPACE}resumptionToken")
+        if found is None:
+            return None
+        return OaiResumptionToken(
+            token=(found.text or "").strip(),
+            expiration_date=found.get("expirationDate"),
+            complete_list_size=OaiClient._int(found.get("completeListSize")),
+            cursor=OaiClient._int(found.get("cursor")),
+        )
+
+    @staticmethod
+    def _int(value: str | None) -> int | None:
+        if value is None or not value.isdigit():
+            return None
+        return int(value)
+
+
+def _without_nones(**params: str | None) -> dict[str, str]:
+    """Drop the ``None`` parameters of a keyword call."""
+    return {name: value for name, value in params.items() if value is not None}
+
+
+__all__ = ["OAI_NAMESPACE", "OaiClient", "OaiErrorInfo"]

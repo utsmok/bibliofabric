@@ -1,0 +1,277 @@
+"""Client for the Zenodo records endpoint: search, versions, files, downloads."""
+
+from collections.abc import AsyncIterator, Callable, Mapping, Sequence
+from pathlib import Path
+from typing import Any, override
+from urllib.parse import quote
+
+import httpx
+from bibliofabric import OnError, validate_model
+from bibliofabric.exceptions import ConfigurationError
+from bibliofabric.paging import Page
+from pydantic import BaseModel
+
+from ..ids import normalize_record_id
+from ..models import ZenothecaFiles, ZenothecaRecord
+from .dialect import ZenothecaResourceClient
+
+
+class ZenothecaRecordsClient(ZenothecaResourceClient[ZenothecaRecord]):
+    """Client for the ``/records`` endpoints.
+
+    ``get`` accepts a version id (``24378467``) or a concept id
+    (``6347574``); a concept id follows Zenodo's redirect and answers the
+    newest version. ``versions`` and ``latest`` need a version id.
+    """
+
+    path = "records"
+    model = ZenothecaRecord
+    batch_size = 0
+
+    @override
+    def normalize_id(self, value: str) -> str:
+        """Return the bare numeric record id behind ``value``."""
+        return normalize_record_id(value)
+
+    @override
+    async def get(
+        self,
+        id: str | int,
+        *,
+        select: Sequence[str] | None = None,
+        params: Mapping[str, Any] | None = None,
+    ) -> ZenothecaRecord:
+        """Fetch one record by version or concept id.
+
+        Zenodo answers a concept id with a redirect to the newest version;
+        the redirect is followed. 404 raises :class:`NotFoundError`.
+        """
+        if select is not None:
+            raise ConfigurationError(
+                f"{type(self).__name__} does not support field selection."
+            )
+        response = await self._client.request(
+            "GET",
+            self.item_path(id),
+            params=dict(params) if params else None,
+            follow_redirects=True,
+        )
+        body = self._client.parse_json(response)
+        data = self._client.unwrapper.item(body)
+        return self._validate(
+            data, request=getattr(response, "request", None), response=response
+        )
+
+    @override
+    async def search(
+        self,
+        filters: BaseModel | Mapping[str, Any] | None = None,
+        *,
+        query: str | None = None,
+        sort: str | Sequence[str] | None = None,
+        select: Sequence[str] | None = None,
+        page: int | None = None,
+        page_size: int | None = None,
+        cursor: str | None = None,
+        on_error: OnError = "raise",
+        failures: list[tuple[dict[str, Any], Exception]] | None = None,
+        params: Mapping[str, Any] | None = None,
+        all_versions: bool = False,
+    ) -> Page[ZenothecaRecord]:
+        """Fetch one page of records.
+
+        ``query`` is an Elasticsearch query string (build clauses with
+        :mod:`zenotheca.filters`). ``sort`` accepts ``bestmatch``,
+        ``mostrecent``, and ``-mostrecent``; ``mostrecent`` orders by last
+        update, not by publication date. ``all_versions`` counts every
+        version of each matching concept, not only the newest.
+        :attr:`Page.meta` carries the facet counts (``access_status``,
+        ``file_type``, ``publication_date``, ``resource_type``,
+        ``subject``).
+        """
+        return await super().search(
+            filters,
+            query=query,
+            sort=sort,
+            select=select,
+            page=page,
+            page_size=page_size,
+            cursor=cursor,
+            on_error=on_error,
+            failures=failures,
+            params=self.with_params(params, all_versions=all_versions),
+        )
+
+    @override
+    def iterate(
+        self,
+        filters: BaseModel | Mapping[str, Any] | None = None,
+        *,
+        query: str | None = None,
+        sort: str | Sequence[str] | None = None,
+        select: Sequence[str] | None = None,
+        page_size: int | None = None,
+        limit: int | None = None,
+        cursor: str | None = None,
+        on_error: OnError = "raise",
+        failures: list[tuple[dict[str, Any], Exception]] | None = None,
+        on_page: Callable[[int, str | None], Any] | None = None,
+        params: Mapping[str, Any] | None = None,
+        all_versions: bool = False,
+    ) -> AsyncIterator[ZenothecaRecord]:
+        """Iterate over all matching records, page by page.
+
+        Accepts the same arguments as :meth:`search`. Iteration stops at
+        ``limit``, on an empty page, when ``hits.total`` records were seen,
+        or when a page would cross the Elasticsearch ``max_result_window``
+        of 10,000 results.
+        """
+        return super().iterate(
+            filters,
+            query=query,
+            sort=sort,
+            select=select,
+            page_size=page_size,
+            limit=limit,
+            cursor=cursor,
+            on_error=on_error,
+            failures=failures,
+            on_page=on_page,
+            params=self.with_params(params, all_versions=all_versions),
+        )
+
+    @override
+    async def count(
+        self,
+        filters: BaseModel | Mapping[str, Any] | None = None,
+        *,
+        query: str | None = None,
+        params: Mapping[str, Any] | None = None,
+        all_versions: bool = False,
+    ) -> int:
+        """Return ``hits.total`` of the query."""
+        return await super().count(
+            filters,
+            query=query,
+            params=self.with_params(params, all_versions=all_versions),
+        )
+
+    async def versions(
+        self,
+        id: str | int,
+        *,
+        page: int | None = None,
+        page_size: int | None = None,
+        on_error: OnError = "raise",
+        failures: list[tuple[dict[str, Any], Exception]] | None = None,
+        params: Mapping[str, Any] | None = None,
+    ) -> Page[ZenothecaRecord]:
+        """List the versions of one concept, newest first.
+
+        ``id`` is any version id of the concept (``24378467``); a concept
+        id answers 404. Zenodo pages the list like a search (default
+        ``size`` 25, sorted by ``version``) and reports the family size in
+        ``hits.total``.
+        """
+        _check_on_error(on_error)
+        query_params = self._search_params(
+            filters=None, page=page, page_size=page_size, params=params
+        )
+        response = await self._client.request(
+            "GET",
+            f"{self.path.rstrip('/')}/{self.normalize_id(str(id))}/versions",
+            params=query_params,
+        )
+        body = self._client.parse_json(response)
+        unwrapper = self._client.unwrapper
+        results = self._validate_records(
+            unwrapper.results(body),
+            on_error=on_error,
+            failures=failures,
+            request=getattr(response, "request", None),
+            response=response,
+        )
+        effective_page = page if page is not None else self.dialect.page_start
+        return Page(
+            results=results,
+            total=unwrapper.total(body),
+            next_cursor=None,
+            page=effective_page,
+            meta=unwrapper.meta(body),
+        )
+
+    async def latest(self, id: str | int) -> ZenothecaRecord:
+        """Return the newest version of the concept ``id`` belongs to.
+
+        ``id`` is any version id; Zenodo answers the ``versions/latest``
+        route with a redirect to the newest version, which is followed.
+        """
+        response = await self._client.request(
+            "GET",
+            f"{self.path.rstrip('/')}/{self.normalize_id(str(id))}/versions/latest",
+            follow_redirects=True,
+        )
+        body = self._client.parse_json(response)
+        data = self._client.unwrapper.item(body)
+        return self._validate(
+            data, request=getattr(response, "request", None), response=response
+        )
+
+    async def files(self, id: str | int) -> ZenothecaFiles:
+        """List the files of one record version.
+
+        Returns the full listing with one :class:`ZenothecaFileEntry` per
+        file; the file list embedded in a record is shorter.
+        """
+        response = await self._client.request(
+            "GET", f"{self.path.rstrip('/')}/{self.normalize_id(str(id))}/files"
+        )
+        body = self._client.parse_json(response)
+        return validate_model(
+            ZenothecaFiles,
+            body,
+            request=getattr(response, "request", None),
+            response=response,
+        )
+
+    async def download_file(
+        self,
+        id: str | int,
+        key: str,
+        dest: Path | str,
+    ) -> Path:
+        """Stream one file of a record version to ``dest`` and return the path.
+
+        ``key`` is the file name from the record's ``files`` list or from
+        :meth:`files`. Creates parent directories and overwrites an
+        existing file.
+        """
+        wanted = key.strip()
+        if not wanted:
+            raise ConfigurationError("key must be a non-empty file name.")
+        target = Path(dest)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        async with self._client.stream(
+            "GET",
+            f"{self.path.rstrip('/')}/{self.normalize_id(str(id))}"
+            f"/files/{quote(wanted, safe='')}/content",
+        ) as response:
+            await self._copy_to(response, target)
+        return target
+
+    @staticmethod
+    async def _copy_to(response: httpx.Response, target: Path) -> None:
+        """Write a streamed response body to ``target`` chunk by chunk."""
+        with target.open("wb") as handle:
+            async for chunk in response.aiter_bytes():
+                handle.write(chunk)
+
+
+def _check_on_error(on_error: OnError) -> None:
+    if on_error not in ("raise", "skip"):
+        raise ConfigurationError(
+            f"on_error must be 'raise' or 'skip', got {on_error!r}."
+        )
+
+
+__all__ = ["ZenothecaRecordsClient"]

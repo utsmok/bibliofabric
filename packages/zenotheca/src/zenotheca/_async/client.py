@@ -1,0 +1,84 @@
+"""Async Zenodo client; the single source of truth for the sync twin."""
+
+import logging
+from functools import cached_property
+
+import httpx
+from bibliofabric import BaseApiClient
+from bibliofabric.auth import NoAuth, StaticTokenAuth
+
+from ..config import ZenothecaSettings, get_settings
+from ..dialect import ZENODO_API_BASE_URL, dialect_for
+from ..unwrapper import ZenothecaUnwrapper
+from .communities import ZenothecaCommunitiesClient
+from .oai import OaiClient
+from .records import ZenothecaRecordsClient
+from .vocabularies import VocabulariesClient
+
+logger = logging.getLogger(__name__)
+
+
+class ZenothecaClient(BaseApiClient):
+    """Client for the Zenodo REST API and its OAI-PMH endpoint.
+
+    Public reads need no credentials. With ``api_token`` set the client
+    sends ``Authorization: Bearer`` on every request and allows the larger
+    authenticated page size. The client sends ``Accept: application/json``
+    and a ``User-Agent`` on every request; Zenodo rejects requests without
+    a ``User-Agent``.
+    """
+
+    def __init__(
+        self,
+        settings: ZenothecaSettings | None = None,
+        *,
+        base_url: str | None = None,
+        http_client: httpx.AsyncClient | None = None,
+    ) -> None:
+        """Build the client.
+
+        Args:
+            settings: Settings instance; ``None`` loads from the environment.
+            base_url: API base URL override (testing).
+            http_client: Optional pre-configured ``httpx.AsyncClient`` (caller
+                retains ownership and is responsible for closing it).
+        """
+        resolved = settings or get_settings()
+        token = (resolved.api_token or "").strip() or None
+        super().__init__(
+            base_url=base_url or ZENODO_API_BASE_URL,
+            settings=resolved,
+            unwrapper=ZenothecaUnwrapper(),
+            auth=StaticTokenAuth(token) if token else NoAuth(),
+            http_client=http_client,
+        )
+        self._dialect = dialect_for(token)
+        logger.debug("%s initialized.", type(self).__name__)
+
+    @property
+    def default_headers(self) -> dict[str, str]:
+        """Headers sent with every request: the JSON representation."""
+        return {"Accept": "application/json"}
+
+    @cached_property
+    def records(self) -> ZenothecaRecordsClient:
+        """The records resource client."""
+        return ZenothecaRecordsClient(self, dialect=self._dialect)
+
+    @cached_property
+    def communities(self) -> ZenothecaCommunitiesClient:
+        """The communities resource client."""
+        return ZenothecaCommunitiesClient(self, dialect=self._dialect)
+
+    @cached_property
+    def vocabularies(self) -> VocabulariesClient:
+        """The vocabularies resource client."""
+        return VocabulariesClient(self)
+
+    @cached_property
+    def oai(self) -> OaiClient:
+        """The OAI-PMH client for ``https://zenodo.org/oai2d``."""
+        return OaiClient(self)
+
+
+__all__ = ["ZenothecaClient"]

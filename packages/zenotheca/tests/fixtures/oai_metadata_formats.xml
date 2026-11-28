@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?xml-stylesheet type="text/xsl" href="/static/oai2.xsl"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd"><responseDate>2026-11-27T22:44:26Z</responseDate><request verb="ListMetadataFormats">https://zenodo.org/oai2d</request><ListMetadataFormats><metadataFormat>
+      <metadataPrefix>marcxml</metadataPrefix>
+      <schema>https://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd</schema>
+      <metadataNamespace>https://www.loc.gov/standards/marcxml/</metadataNamespace>
+    </metadataFormat><metadataFormat>
+      <metadataPrefix>oai_dc</metadataPrefix>
+      <schema>http://www.openarchives.org/OAI/2.0/oai_dc.xsd</schema>
+      <metadataNamespace>http://www.openarchives.org/OAI/2.0/oai_dc/</metadataNamespace>
+    </metadataFormat><metadataFormat>
+      <metadataPrefix>dcat</metadataPrefix>
+      <schema>http://schema.datacite.org/meta/kernel-4/metadata.xsd</schema>
+      <metadataNamespace>https://www.w3.org/ns/dcat</metadataNamespace>
+    </metadataFormat><metadataFormat>
+      <metadataPrefix>marc21</metadataPrefix>
+      <schema>https://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd</schema>
+      <metadataNamespace>https://www.loc.gov/standards/marcxml/</metadataNamespace>
+    </metadataFormat></ListMetadataFormats></OAI-PMH>
