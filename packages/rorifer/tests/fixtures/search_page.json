@@ -1,0 +1,220 @@
+{
+  "number_of_results": 132,
+  "time_taken": 3,
+  "items": [
+    {
+      "admin": {
+        "created": {
+          "date": "2018-11-14",
+          "schema_version": "1.0"
+        },
+        "last_modified": {
+          "date": "2024-12-11",
+          "schema_version": "2.1"
+        }
+      },
+      "domains": [],
+      "established": 1946,
+      "external_ids": [
+        {
+          "all": [
+            "grid.449564.e"
+          ],
+          "preferred": "grid.449564.e",
+          "type": "grid"
+        },
+        {
+          "all": [
+            "0000 0004 0501 5199"
+          ],
+          "preferred": null,
+          "type": "isni"
+        },
+        {
+          "all": [
+            "Q1516779"
+          ],
+          "preferred": null,
+          "type": "wikidata"
+        }
+      ],
+      "id": "https://ror.org/018528593",
+      "links": [
+        {
+          "type": "website",
+          "value": "http://www.nyenrode.com/Pages/Default.aspx"
+        },
+        {
+          "type": "wikipedia",
+          "value": "https://en.wikipedia.org/wiki/Nyenrode_Business_University"
+        }
+      ],
+      "locations": [
+        {
+          "geonames_details": {
+            "continent_code": "EU",
+            "continent_name": "Europe",
+            "country_code": "NL",
+            "country_name": "The Netherlands",
+            "country_subdivision_code": "UT",
+            "country_subdivision_name": "Utrecht",
+            "lat": 52.17417,
+            "lng": 5.00139,
+            "name": "Breukelen"
+          },
+          "geonames_id": 2758333
+        }
+      ],
+      "names": [
+        {
+          "lang": "nl",
+          "types": [
+            "alias"
+          ],
+          "value": "Nijenrode"
+        },
+        {
+          "lang": "nl",
+          "types": [
+            "label"
+          ],
+          "value": "Nyenrode Business Universiteit"
+        },
+        {
+          "lang": "en",
+          "types": [
+            "ror_display",
+            "label"
+          ],
+          "value": "Nyenrode Business University"
+        }
+      ],
+      "relationships": [],
+      "status": "active",
+      "types": [
+        "education"
+      ]
+    },
+    {
+      "admin": {
+        "created": {
+          "date": "2018-11-14",
+          "schema_version": "1.0"
+        },
+        "last_modified": {
+          "date": "2024-12-11",
+          "schema_version": "2.1"
+        }
+      },
+      "domains": [],
+      "established": 1987,
+      "external_ids": [
+        {
+          "all": [
+            "grid.449815.5"
+          ],
+          "preferred": "grid.449815.5",
+          "type": "grid"
+        },
+        {
+          "all": [
+            "0000 0004 1786 6695"
+          ],
+          "preferred": null,
+          "type": "isni"
+        },
+        {
+          "all": [
+            "Q2788956"
+          ],
+          "preferred": null,
+          "type": "wikidata"
+        }
+      ],
+      "id": "https://ror.org/020z55s31",
+      "links": [
+        {
+          "type": "website",
+          "value": "https://www.wittenborg.eu/"
+        },
+        {
+          "type": "wikipedia",
+          "value": "https://en.wikipedia.org/wiki/Wittenborg_University"
+        }
+      ],
+      "locations": [
+        {
+          "geonames_details": {
+            "continent_code": "EU",
+            "continent_name": "Europe",
+            "country_code": "NL",
+            "country_name": "The Netherlands",
+            "country_subdivision_code": "GE",
+            "country_subdivision_name": "Gelderland",
+            "lat": 52.21,
+            "lng": 5.96944,
+            "name": "Apeldoorn"
+          },
+          "geonames_id": 2759706
+        }
+      ],
+      "names": [
+        {
+          "lang": "nl",
+          "types": [
+            "label"
+          ],
+          "value": "Hogeschool Wittenborg"
+        },
+        {
+          "lang": "en",
+          "types": [
+            "ror_display",
+            "label"
+          ],
+          "value": "Wittenborg University"
+        }
+      ],
+      "relationships": [],
+      "status": "active",
+      "types": [
+        "education"
+      ]
+    }
+  ],
+  "meta": {
+    "types": [
+      {
+        "id": "education",
+        "title": "education",
+        "count": 132
+      },
+      {
+        "id": "funder",
+        "title": "funder",
+        "count": 25
+      }
+    ],
+    "countries": [
+      {
+        "id": "nl",
+        "title": "Netherlands",
+        "count": 132
+      }
+    ],
+    "continents": [
+      {
+        "id": "eu",
+        "title": "Europe",
+        "count": 132
+      }
+    ],
+    "statuses": [
+      {
+        "id": "active",
+        "title": "active",
+        "count": 132
+      }
+    ]
+  }
+}

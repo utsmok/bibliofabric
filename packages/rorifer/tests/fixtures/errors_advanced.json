@@ -1,0 +1,5 @@
+{
+  "errors": [
+    "RequestError(400, 'search_phase_execution_exception', 'parse_exception: Encountered \"<EOF>\" at line 1, column 14.\\nWas expecting one of:\\n    <NOT> ...\\n    \"+\" ...\\n    \"-\" ...\\n    <BAREOPER> ...\\n    \"(\" ...\\n    \"*\" ...\\n    <QUOTED> ...\\n    <TERM> ...\\n    <PREFIXTERM> ...\\n    <WILDTERM> ...\\n    <REGEXPTERM> ...\\n    \"[\" ...\\n    \"{\" ...\\n    <NUMBER> ...\\n    <TERM> ...\\n    ')"
+  ]
+}

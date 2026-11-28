@@ -1,0 +1,35 @@
+[project]
+name = "rorifer"
+version = "0.1.0"
+description = "Python interface for the ROR API v2, built on top of the bibliofabric framework."
+authors = [
+    {name = "Samuel Mok"}
+]
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.12"
+dependencies = [
+    "bibliofabric>=0.8,<0.9",
+]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Framework :: AsyncIO",
+    "Typing :: Typed",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/utsmok/bibliofabric/tree/main/packages/rorifer"
+"Repository" = "https://github.com/utsmok/bibliofabric"
+"Documentation" = "https://utsmok.github.io/bibliofabric/rorifer/"
+"Issues" = "https://github.com/utsmok/bibliofabric/issues"
+"Changelog" = "https://github.com/utsmok/bibliofabric/blob/main/packages/rorifer/CHANGELOG.md"
+
+[build-system]
+requires = ["uv_build>=0.9.22,<0.12"]
+build-backend = "uv_build"
