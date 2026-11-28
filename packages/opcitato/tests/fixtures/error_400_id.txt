@@ -1,0 +1,1 @@
+HTTP status code 400: the value '10.1108/jd-12-2013-0166' is not valid for parameter 'id' in operation '/index/v2/citations/{id}'. Example: /index/v2/citations/doi:10.1108/jd-12-2013-0166

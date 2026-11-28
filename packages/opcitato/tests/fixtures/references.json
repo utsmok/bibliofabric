@@ -1,0 +1,29 @@
+[
+  {
+    "oci": "06101801781-06101802023",
+    "citing": "omid:br/06101801781 doi:10.7717/peerj-cs.421 openalex:W3134956838 pmid:33817056",
+    "cited": "omid:br/06101802023 pmid:33816816 doi:10.7287/peerj.preprints.26727v1 doi:10.7717/peerj-cs.163",
+    "creation": "2021-03-10",
+    "timespan": "P2Y5M21D",
+    "journal_sc": "yes",
+    "author_sc": "no"
+  },
+  {
+    "oci": "06101801781-061202127742",
+    "citing": "omid:br/06101801781 doi:10.7717/peerj-cs.421 openalex:W3134956838 pmid:33817056",
+    "cited": "omid:br/061202127742 doi:10.1007/s11192-020-03792-z openalex:W4236101832",
+    "creation": "2021-03-10",
+    "timespan": "P0Y3M6D",
+    "journal_sc": "no",
+    "author_sc": "no"
+  },
+  {
+    "oci": "06101801781-061202127823",
+    "citing": "omid:br/06101801781 doi:10.7717/peerj-cs.421 openalex:W3134956838 pmid:33817056",
+    "cited": "omid:br/061202127823 pmid:32981987 openalex:W3101883599 doi:10.1007/s11192-020-03690-4",
+    "creation": "2021-03-10",
+    "timespan": "P0Y5M17D",
+    "journal_sc": "no",
+    "author_sc": "no"
+  }
+]
