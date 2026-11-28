@@ -8,6 +8,7 @@ so the suite never depends on the developer's shell or ``.env``. The variant
 
 import json
 from pathlib import Path
+from typing import Any
 
 import pytest
 from hodoi import HodoiSettings
@@ -18,10 +19,20 @@ FIXTURES = Path(__file__).parent / "fixtures"
 
 def load_fixture(name: str) -> dict | list | str:
     """Load a trimmed real-API payload from ``tests/fixtures``."""
-    text = (FIXTURES / name).read_text()
+    text = load_text(name)
     if name.endswith(".json"):
         return json.loads(text)
     return text
+
+
+def load_text(name: str) -> str:
+    """Load a text or XML fixture."""
+    return (FIXTURES / name).read_text()
+
+
+def load_json(name: str) -> dict[str, Any]:
+    """Load a JSON fixture that the test modifies before registering it."""
+    return json.loads((FIXTURES / name).read_text())
 
 
 @pytest.fixture

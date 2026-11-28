@@ -2,25 +2,28 @@
 
 Samuel Mok -- 2026
 
-`hodoi` is a placeholder name. The package will be renamed before its
-first release.
-
 hodoi is a Python client for the DOI System proxy server at
 [doi.org](https://www.doi.org), built on
 [bibliofabric](https://github.com/utsmok/bibliofabric). It looks up the
-registration agency of DOIs, reads the Handle.net record behind a DOI, and
-fetches metadata in every representation the content negotiation offers
-(CSL JSON, DataCite JSON, schema.org JSON-LD, BibTeX, RIS, Crossref
+registration agency of DOIs, reads the Handle.net record behind a DOI,
+returns the redirect a DOI resolves to, and fetches metadata in every
+representation the content negotiation of Crossref, DataCite, and mEDRA
+offers (CSL JSON, DataCite JSON, schema.org JSON-LD, BibTeX, RIS, Crossref
 Unixref XML, and more). It ships an async client and a generated sync twin
 with the same API. The proxy needs no credentials.
+
+The package is not yet published on PyPI. Until the first release, use it
+from a checkout of the `bibliofabric` workspace, where `uv sync
+--all-packages` installs it together with the `bibliofabric` 0.8 it needs.
 
 ## Install
 
 ```bash
-uv add hodoi
+uv sync --all-packages
 ```
 
-Requires Python 3.12 or newer.
+Run the command from the root of the `bibliofabric` workspace checkout. It
+requires Python 3.12 or newer.
 
 ## Quick start
 
@@ -67,20 +70,15 @@ with HodoiSyncClient() as client:
 
 ## What the client covers
 
-- `agencies(dois)`: the `GET /ra/{doi}` lookup for one DOI or a comma
-  list, chunked at 100 DOIs per request. Unknown or malformed DOIs come
-  back as a `status` answer instead of an error.
-- `handle(doi)`: the `GET /api/handles/{doi}` record typed as
-  `HandleRecord` (values of type `URL`, `HS_ADMIN`, `HS_ALIAS`, and
-  numeric types), with optional `index`, `type`, and `auth` filters.
-- `landing_url(doi)`: the `URL` entry of the handle record, without
-  fetching the landing page.
-- `content(doi, media_type)`: the negotiated representation, following the
-  resolver's redirect. JSON media types parse into `CslItem`,
-  `DataciteRecord`, or `SchemaOrgThing`; every other media type returns as
-  text.
-- `raw(doi, media_type)`: the un-parsed bytes. Redirects stay off by
-  default, so you can inspect the resolver's 302 body and `Location`.
+| Method | Request | Result |
+|---|---|---|
+| `agencies(dois)` | `GET /ra/{doi}` for one DOI or a comma list, in requests of at most 100 DOIs and 4000 path characters | A list of `AgencyAnswer`. Unknown or malformed DOIs carry a `status` string instead of raising. |
+| `handle(doi)` | `GET /api/handles/{doi}`, with optional `index`, `type`, `auth`, and `cert` filters (`index` and `type` take one value or a list) | A `HandleRecord`. |
+| `landing_url(doi)` | The handle record, without fetching the landing page | The `URL` entry of the record. |
+| `resolve(doi)` | `GET https://doi.org/{doi}` for `text/html`, redirects off | The 302 as an `httpx.Response`; its `Location` header holds the landing page. |
+| `locations(doi)` | `GET https://doi.org/{doi}?action=showurls` | A list of `RedirectLocation`, one per URL the proxy could redirect to. |
+| `content(doi, media_type)` | `GET https://doi.org/{doi}` with an `Accept` header, redirects followed | A `CslItem`, `DataciteRecord`, or `SchemaOrgThing` for the three JSON media types, text for every other type, and `None` for an HTTP 204 answer. |
+| `raw(doi, media_type)` | The same request, redirects off by default | The un-parsed bytes, which are the resolver's 302 body unless you pass `follow_redirects=True`. |
 
 ## Media types
 
@@ -88,8 +86,8 @@ Import the strings from the catalog instead of typing them by hand:
 `CSL_JSON`, `DATACITE_JSON`, `DATACITE_XML`, `SCHEMAORG_JSONLD`,
 `UNIXREF_XML`, `UNIXSD_XML`, `ONIX_DOI_XML`, `BIBTEX`, `RIS`,
 `BIBLIOGRAPHY`, `RDF_XML`, and `TURTLE`. `AGENCY_SUPPORT` records which of
-Crossref, DataCite, and mEDRA answer each type; unsupported combinations
-answer HTTP 406.
+Crossref, DataCite, and mEDRA answer each type; the others answer with an
+HTTP error (406 in most cases).
 
 ## Rate limiting and etiquette
 

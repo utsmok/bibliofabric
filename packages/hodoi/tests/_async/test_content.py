@@ -7,10 +7,12 @@ from hodoi import (
     DATACITE_JSON,
     RIS,
     SCHEMAORG_JSONLD,
+    UNIXREF_XML,
     ConfigurationError,
     CslItem,
     DataciteRecord,
     SchemaOrgThing,
+    ValidationError,
 )
 
 from ..conftest import load_fixture
@@ -35,12 +37,22 @@ async def test_content_parses_csl_json(client, httpx_mock):
     assert request.headers["accept"] == CSL_JSON
 
 
+async def test_content_parses_the_csl_json_of_medra(client, httpx_mock):
+    httpx_mock.add_response(json=load_fixture("cn_medra_csl.json"))
+    item = await client.content("10.1400/56174", CSL_JSON)
+    assert isinstance(item, CslItem)
+    assert item.type == "article-journal"
+    assert item.container_title == "Ce.S.E.T. - Atti degli incontri"
+    assert item.model_extra["ISSN"] == "00000001"
+
+
 async def test_content_parses_datacite_json(client, httpx_mock):
     httpx_mock.add_response(json=DATACITE)
     record = await client.content("10.5281/zenodo.1238808", DATACITE_JSON)
     assert isinstance(record, DataciteRecord)
     assert record.doi == "10.5281/ZENODO.1238808"
     assert record.publication_year == 2018
+    assert record.model_extra["agency"] == "datacite"
 
 
 async def test_content_parses_schemaorg_jsonld(client, httpx_mock):
@@ -49,6 +61,13 @@ async def test_content_parses_schemaorg_jsonld(client, httpx_mock):
     assert isinstance(thing, SchemaOrgThing)
     assert thing.type == "SoftwareSourceCode"
     assert thing.id == "https://doi.org/10.5281/zenodo.1238808"
+
+
+async def test_content_parses_a_media_type_with_parameters(client, httpx_mock):
+    httpx_mock.add_response(json=CSL)
+    item = await client.content("10.1038/nature12373", f"{CSL_JSON}; charset=utf-8")
+    assert isinstance(item, CslItem)
+    assert last_request(httpx_mock).headers["accept"] == f"{CSL_JSON}; charset=utf-8"
 
 
 async def test_content_returns_bibtex_and_ris_as_text(client, httpx_mock):
@@ -65,12 +84,30 @@ async def test_content_returns_bibtex_and_ris_as_text(client, httpx_mock):
     assert requests[1].headers["accept"] == RIS
 
 
+@pytest.mark.parametrize(
+    ("fixture", "doi", "media_type", "start"),
+    [
+        ("cn_medra_bibtex.bib", "10.1400/56174", BIBTEX, "@article"),
+        ("cn_datacite_bibtex.bib", "10.5281/zenodo.1238808", BIBTEX, "@misc"),
+        ("cn_datacite_ris.txt", "10.5281/zenodo.1238808", RIS, "TY  - COMP"),
+        ("cn_crossref_unixref.xml", "10.1038/nature12373", UNIXREF_XML, "<?xml"),
+    ],
+)
+async def test_content_returns_the_text_of_every_agency(
+    client, httpx_mock, fixture, doi, media_type, start
+):
+    body = load_fixture(fixture)
+    httpx_mock.add_response(text=body)
+    assert (await client.content(doi, media_type)).strip().startswith(start)
+    assert last_request(httpx_mock).headers["accept"] == media_type
+
+
 async def test_content_follows_redirects(client, httpx_mock):
     """The client asks the framework to follow the resolver's 302."""
     httpx_mock.add_response(
         status_code=302,
         headers={"Location": "https://api.crossref.org/v1/works/x/transform"},
-        text="Handle Redirect",
+        text=load_fixture("redirect_crossref.html"),
     )
     httpx_mock.add_response(json=CSL)
     item = await client.content("10.1038/nature12373", CSL_JSON)
@@ -78,10 +115,36 @@ async def test_content_follows_redirects(client, httpx_mock):
     assert len(httpx_mock.get_requests()) == 2
 
 
+async def test_content_of_no_metadata_is_none(client, httpx_mock):
+    """204 means the DOI exists but the agency has no metadata for it."""
+    httpx_mock.add_response(status_code=204)
+    httpx_mock.add_response(status_code=204)
+    assert await client.content("10.1038/nature12373", CSL_JSON) is None
+    assert await client.content("10.1038/nature12373", BIBTEX) is None
+
+
 async def test_content_rejects_empty_media_type(client, httpx_mock):
     with pytest.raises(ConfigurationError, match="non-empty"):
         await client.content("10.1038/nature12373", "  ")
     assert not httpx_mock.get_requests()
+
+
+async def test_content_rejects_a_malformed_doi_before_sending(client, httpx_mock):
+    with pytest.raises(ConfigurationError, match="Not a DOI name"):
+        await client.content("nonsense", CSL_JSON)
+    assert not httpx_mock.get_requests()
+
+
+async def test_content_percent_encodes_the_doi(client, httpx_mock):
+    httpx_mock.add_response(text="@article{x}")
+    await client.content("https://doi.org/10.1000/res%23test", BIBTEX)
+    assert last_request(httpx_mock).url.raw_path == b"/10.1000/res%23test"
+
+
+async def test_content_raises_on_a_body_that_fails_its_model(client, httpx_mock):
+    httpx_mock.add_response(json=["not", "an", "item"])
+    with pytest.raises(ValidationError, match="CslItem"):
+        await client.content("10.1038/nature12373", CSL_JSON)
 
 
 async def test_raw_returns_bytes_without_parsing(client, httpx_mock):
@@ -97,11 +160,11 @@ async def test_raw_keeps_redirects_off_by_default(client, httpx_mock):
     """Without an explicit flag, the 302 itself is returned."""
     httpx_mock.add_response(
         status_code=302,
-        headers={"Location": "https://api.crossref.org/v1/works/x/transform"},
-        text="Handle Redirect",
+        headers={"Location": "https://data.crosscite.org/x"},
+        text=load_fixture("redirect_datacite.html"),
     )
-    payload = await client.raw("10.1038/nature12373", CSL_JSON)
-    assert payload == b"Handle Redirect"
+    payload = await client.raw("10.5281/zenodo.1238808", DATACITE_JSON)
+    assert b"data.crosscite.org" in payload
     assert len(httpx_mock.get_requests()) == 1
 
 
@@ -109,9 +172,15 @@ async def test_raw_can_follow_redirects(client, httpx_mock):
     httpx_mock.add_response(
         status_code=302,
         headers={"Location": "https://api.crossref.org/v1/works/x/transform"},
-        text="Handle Redirect",
+        text=load_fixture("redirect_crossref.html"),
     )
     httpx_mock.add_response(json=CSL)
     payload = await client.raw("10.1038/nature12373", CSL_JSON, follow_redirects=True)
     assert b"Nanometre" in payload
     assert len(httpx_mock.get_requests()) == 2
+
+
+async def test_raw_rejects_empty_media_type(client, httpx_mock):
+    with pytest.raises(ConfigurationError, match="non-empty"):
+        await client.raw("10.1038/nature12373", "")
+    assert not httpx_mock.get_requests()

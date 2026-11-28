@@ -2,6 +2,7 @@
 
 from .agency import AgencyAnswer
 from .handle import HandleAdminValue, HandleRecord, HandleValue, HandleValueData
+from .location import RedirectLocation
 from .metadata import CslItem, DataciteRecord, SchemaOrgThing
 
 __all__ = [
@@ -12,5 +13,6 @@ __all__ = [
     "HandleRecord",
     "HandleValue",
     "HandleValueData",
+    "RedirectLocation",
     "SchemaOrgThing",
 ]

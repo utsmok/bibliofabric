@@ -1,0 +1,4 @@
+<locations>
+<location mode="legacy" weight="1.0" href="https://zenodo.org/record/1238808"/>
+<location weight="0" http_role="conneg" href="https://data.crosscite.org/10.5281%2Fzenodo.1238808" href_template="https://data.crosscite.org/{hdl}"/>
+</locations>

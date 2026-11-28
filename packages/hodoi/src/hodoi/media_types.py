@@ -2,7 +2,8 @@
 
 Use the constants instead of the raw strings. Which registration agency
 answers which type is recorded in :data:`AGENCY_SUPPORT` and in
-``docs/hodoi/upstream-quirks.md``; unsupported combinations answer HTTP 406.
+``docs/hodoi/upstream-quirks.md``; unsupported combinations answer with an
+HTTP error (406 in most cases).
 """
 
 CSL_JSON = "application/vnd.citationstyles.csl+json"
@@ -22,20 +23,24 @@ TURTLE = "text/turtle"
 #: returned as text (BibTeX, RIS, XML, formatted citations).
 JSON_MEDIA_TYPES = (CSL_JSON, DATACITE_JSON, SCHEMAORG_JSONLD)
 
-#: Agency availability per the DOI Foundation content negotiation page
-#: (https://citation.doi.org/docs.html), confirmed live on 2026-11-27.
+#: Agency availability, checked request by request against one DOI of each
+#: agency on 2026-11-28 (Crossref 10.1038/nature12373, DataCite
+#: 10.5281/zenodo.1238808, mEDRA 10.1400/56174). The DOI Foundation page
+#: (https://citation.doi.org/docs.html) lists RIS as missing for mEDRA and
+#: RDF XML and Turtle as served by DataCite; the live answers differ there.
 AGENCY_SUPPORT: dict[str, tuple[str, ...]] = {
     CSL_JSON: ("Crossref", "DataCite", "mEDRA"),
-    BIBTEX: ("Crossref", "DataCite", "mEDRA"),
-    RIS: ("Crossref", "DataCite"),
-    BIBLIOGRAPHY: ("Crossref", "DataCite", "mEDRA"),
+    DATACITE_JSON: ("DataCite",),
+    DATACITE_XML: ("DataCite",),
     SCHEMAORG_JSONLD: ("DataCite",),
     UNIXREF_XML: ("Crossref",),
     UNIXSD_XML: ("Crossref",),
-    DATACITE_XML: ("DataCite",),
     ONIX_DOI_XML: ("mEDRA",),
-    RDF_XML: ("Crossref", "DataCite", "mEDRA"),
-    TURTLE: ("Crossref", "DataCite", "mEDRA"),
+    BIBTEX: ("Crossref", "DataCite", "mEDRA"),
+    RIS: ("Crossref", "DataCite", "mEDRA"),
+    BIBLIOGRAPHY: ("Crossref", "DataCite", "mEDRA"),
+    RDF_XML: ("Crossref", "mEDRA"),
+    TURTLE: ("Crossref", "mEDRA"),
 }
 
 #: All catalogued media type strings, for iteration and tests.

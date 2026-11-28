@@ -1,0 +1,4 @@
+<locations>
+<location mode="legacy" weight="1.0" href="https://www.nature.com/articles/nature12373"/>
+<location weight="0" http_role="conneg" href="https://api.crossref.org/v1/works/10.1038%2Fnature12373/transform" href_template="https://api.crossref.org/v1/works/{hdl}/transform"/>
+</locations>

@@ -13,6 +13,8 @@ Generated from the source with mkdocstrings.
         - agency
         - handle
         - landing_url
+        - resolve
+        - locations
         - content
         - raw
 
@@ -27,6 +29,8 @@ Generated from the source with mkdocstrings.
         - agency
         - handle
         - landing_url
+        - resolve
+        - locations
         - content
         - raw
 
@@ -79,6 +83,11 @@ Generated from the source with mkdocstrings.
       heading_level: 3
       show_source: false
 
+::: hodoi.models.RedirectLocation
+    options:
+      heading_level: 3
+      show_source: false
+
 ## Helpers
 
 ::: hodoi.normalize_doi
@@ -86,7 +95,22 @@ Generated from the source with mkdocstrings.
       heading_level: 3
       show_source: false
 
-::: hodoi.dialect.strip_doi_form
+::: hodoi.doi_path
+    options:
+      heading_level: 3
+      show_source: false
+
+::: hodoi.ra_chunks
+    options:
+      heading_level: 3
+      show_source: false
+
+::: hodoi.strip_doi_form
+    options:
+      heading_level: 3
+      show_source: false
+
+::: hodoi.parse_locations
     options:
       heading_level: 3
       show_source: false

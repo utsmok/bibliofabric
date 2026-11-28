@@ -4,9 +4,13 @@
 import pytest
 from hodoi import ConfigurationError, NotFoundError
 
-from ..conftest import load_fixture
+from ..conftest import load_fixture, load_json
 
 HANDLE = load_fixture("handle_crossref.json")
+
+#: A real DOI whose suffix carries parentheses, angle brackets, colons, and
+#: a semicolon.
+SICI_DOI = "10.1002/(SICI)1097-4636(199823)43:3<338::AID-JBM16>3.0.CO;2-B"
 
 
 def last_request(httpx_mock):
@@ -40,6 +44,24 @@ def test_handle_parses_url_and_admin_values(client, httpx_mock):
     assert admin.data.value.index == 200
 
 
+def test_handle_parses_the_datacite_record(client, httpx_mock):
+    httpx_mock.add_response(json=load_fixture("handle_datacite.json"))
+    record = client.handle("10.5281/zenodo.1238808")
+    admin = record.values[0].data.value
+    assert admin is not None
+    assert admin.handle == "10.admin/codata"
+    assert admin.index == 300
+    assert record.values[1].data.value == "https://zenodo.org/record/1238808"
+
+    body = load_json("handle_crossref.json")
+    body["extra"] = "kept"
+    body["values"][0]["note"] = "kept"
+    httpx_mock.add_response(json=body)
+    record = client.handle("10.1038/nature12373")
+    assert record.model_extra == {"extra": "kept"}
+    assert record.values[0].model_extra == {"note": "kept"}
+
+
 def test_handle_sends_filters_and_auth(client, httpx_mock):
     httpx_mock.add_response(json=load_fixture("handle_type_url.json"))
     client.handle("10.1038/nature12373", index=1, type="URL", auth=True)
@@ -48,6 +70,49 @@ def test_handle_sends_filters_and_auth(client, httpx_mock):
         "type": "URL",
         "auth": "true",
     }
+
+
+def test_handle_repeats_index_and_type_and_sends_cert(client, httpx_mock):
+    httpx_mock.add_response(json=HANDLE)
+    client.handle(
+        "10.1038/nature12373", index=[1, 100], type=["URL", "HS_ADMIN"], cert=True
+    )
+    params = last_request(httpx_mock).url.params
+    assert params.get_list("index") == ["1", "100"]
+    assert params.get_list("type") == ["URL", "HS_ADMIN"]
+    assert params["cert"] == "true"
+
+
+@pytest.mark.parametrize("keyword", [{"index": [""]}, {"type": "  "}])
+def test_handle_rejects_blank_filter_values(client, httpx_mock, keyword):
+    with pytest.raises(ConfigurationError, match="non-empty"):
+        client.handle("10.1038/nature12373", **keyword)
+    assert not httpx_mock.get_requests()
+
+
+def test_handle_of_a_type_the_record_lacks_is_an_empty_record(client, httpx_mock):
+    """The proxy answers 200 with ``responseCode`` 200 and no values."""
+    httpx_mock.add_response(json=load_fixture("handle_values_not_found.json"))
+    record = client.handle("10.1038/nature12373", type="NOPE")
+    assert record.responseCode == 200
+    assert record.values == []
+
+
+def test_handle_percent_encodes_the_doi(client, httpx_mock):
+    httpx_mock.add_response(json=load_fixture("handle_sici.json"))
+    record = client.handle(f"https://doi.org/{SICI_DOI}")
+    assert record.handle == SICI_DOI
+    assert record.values[0].data.value.startswith("https://onlinelibrary.wiley.com")
+    assert last_request(httpx_mock).url.raw_path == (
+        b"/api/handles/10.1002/(SICI)1097-4636(199823)43:3%3C338::AID-JBM16%3E"
+        b"3.0.CO;2-B"
+    )
+
+
+def test_handle_rejects_a_malformed_doi_before_sending(client, httpx_mock):
+    with pytest.raises(ConfigurationError, match="Not a DOI name"):
+        client.handle("nonsense")
+    assert not httpx_mock.get_requests()
 
 
 def test_handle_unknown_doi_raises_not_found(client, httpx_mock):

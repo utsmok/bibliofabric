@@ -2,26 +2,45 @@
 
 import logging
 from collections.abc import Sequence
+from urllib.parse import urlencode
 
 import httpx
 from bibliofabric import BaseApiClient, validate_model
 from bibliofabric.exceptions import ConfigurationError
 
 from ..config import HodoiSettings, get_settings
-from ..dialect import DOI_BASE_URL, RA_BATCH_SIZE, normalize_doi, strip_doi_form
+from ..dialect import (
+    DOI_BASE_URL,
+    doi_path,
+    normalize_doi,
+    ra_chunks,
+    strip_doi_form,
+)
 from ..media_types import CSL_JSON, DATACITE_JSON, SCHEMAORG_JSONLD
-from ..models import AgencyAnswer, CslItem, DataciteRecord, HandleRecord, SchemaOrgThing
+from ..models import (
+    AgencyAnswer,
+    CslItem,
+    DataciteRecord,
+    HandleRecord,
+    RedirectLocation,
+    SchemaOrgThing,
+)
 from ..unwrapper import HodoiUnwrapper
+from ..xmlparse import parse_locations
 
 logger = logging.getLogger(__name__)
+
+#: The query string that asks the proxy for its redirect listing.
+_SHOWURLS_QUERY = "action=showurls"
 
 
 class HodoiClient(BaseApiClient):
     """Client for the DOI System proxy server at ``https://doi.org``.
 
-    The proxy needs no credentials. It resolves DOIs, looks up registration
-    agencies (``/ra/``), serves Handle.net records (``/api/handles/``), and
-    negotiates metadata representations on plain DOI URLs.
+    The proxy needs no credentials. It resolves DOIs (``resolve``,
+    ``locations``), looks up registration agencies (``/ra/``), serves
+    Handle.net records (``/api/handles/``), and negotiates metadata
+    representations on plain DOI URLs (``content``, ``raw``).
 
     Redirects stay off by default so a caller can inspect the resolver's
     302 response. :meth:`content` turns them on for the request it sends.
@@ -53,67 +72,94 @@ class HodoiClient(BaseApiClient):
     async def agencies(self, dois: str | Sequence[str]) -> list[AgencyAnswer]:
         """Return the registration agency of one or many DOIs.
 
-        Sends ``GET /ra/{doi}`` with the DOIs joined by commas, in chunks of
-        :data:`~hodoi.dialect.RA_BATCH_SIZE` (100). Every entry arrives as
-        HTTP 200: known DOIs carry ``RA``, unknown ones a ``status`` string,
-        both modeled as :class:`~hodoi.models.AgencyAnswer`. The result
-        order follows the request order across chunks.
+        Sends ``GET /ra/{doi}`` with the DOIs joined by commas. A request
+        carries at most :data:`~hodoi.dialect.RA_BATCH_SIZE` DOIs and stays
+        under :data:`~hodoi.dialect.RA_MAX_PATH_CHARS` characters, so a long
+        list takes several requests. Every entry arrives as HTTP 200: known
+        DOIs carry ``RA``, unknown ones a ``status`` string, both modeled as
+        :class:`~hodoi.models.AgencyAnswer`. The result order follows the
+        request order across requests. The argument takes a bare DOI, a DOI
+        URL, or a ``doi:`` string; anything else is sent as given, and the
+        proxy answers ``Invalid DOI``.
         """
         names = [dois] if isinstance(dois, str) else list(dois)
         if not names:
             raise ConfigurationError("agencies() needs at least one DOI.")
-        normalized = [strip_doi_form(name) for name in names]
+        encoded = [doi_path(strip_doi_form(name)) for name in names]
+        if any(not doi for doi in encoded):
+            raise ConfigurationError("agencies() got a blank DOI.")
         answers: list[AgencyAnswer] = []
-        for start in range(0, len(normalized), RA_BATCH_SIZE):
-            chunk = normalized[start : start + RA_BATCH_SIZE]
-            response = await self.request("GET", f"ra/{','.join(chunk)}")
-            body = self.parse_json(response)
-            if not isinstance(body, list):
-                raise ConfigurationError(f"/ra/ answered a non-list body: {body!r}.")
-            answers.extend(
-                validate_model(
-                    AgencyAnswer,
-                    entry,
-                    request=getattr(response, "request", None),
-                    response=response,
-                )
-                for entry in body
-                if isinstance(entry, dict)
-            )
+        for chunk in ra_chunks(encoded):
+            response = await self.request("GET", f"ra/{chunk}")
+            answers.extend(self._agency_answers(response, f"/ra/{chunk}"))
         return answers
 
     async def agency(self, doi: str) -> AgencyAnswer:
         """Return the registration agency answer for one DOI."""
         answers = await self.agencies(doi)
+        if not answers:
+            raise ConfigurationError(f"/ra/ answered no entry for {doi!r}.")
         return answers[0]
+
+    def _agency_answers(
+        self, response: httpx.Response, path: str
+    ) -> list[AgencyAnswer]:
+        """Validate every entry of one ``/ra/`` answer."""
+        body = self.parse_json(response)
+        if not isinstance(body, list):
+            raise ConfigurationError(f"{path} answered a non-list body: {body!r}.")
+        return [
+            validate_model(
+                AgencyAnswer,
+                entry,
+                request=getattr(response, "request", None),
+                response=response,
+            )
+            for entry in body
+        ]
 
     async def handle(
         self,
         doi: str,
         *,
-        index: int | None = None,
-        type: str | None = None,
+        index: int | Sequence[int] | None = None,
+        type: str | Sequence[str] | None = None,
         auth: bool = False,
+        cert: bool = False,
     ) -> HandleRecord:
         """Return the Handle.net record of a DOI.
 
         Sends ``GET /api/handles/{doi}`` and validates the answer into
         :class:`~hodoi.models.HandleRecord`. ``index`` and ``type``
-        restrict the returned values. ``auth=True`` bypasses the proxy cache
-        and asks the primary handle server. An unknown DOI answers HTTP 404,
-        which raises :class:`bibliofabric.exceptions.NotFoundError`.
+        restrict the returned values; each takes one value or a list, and
+        the proxy answers the values that match any of them. ``auth=True``
+        bypasses the proxy cache and asks the primary handle server;
+        ``cert=True`` asks for an authenticated answer from it. An unknown
+        DOI answers HTTP 404, which raises
+        :class:`bibliofabric.exceptions.NotFoundError`.
         """
-        name = normalize_doi(doi)
-        params: dict[str, str] = {}
-        if index is not None:
-            params["index"] = str(index)
-        if type is not None:
-            params["type"] = type
+        params: list[tuple[str, str]] = []
+        for key, values in (("index", index), ("type", type)):
+            if values is None:
+                continue
+            for value in [values] if isinstance(values, int | str) else values:
+                text = str(value).strip()
+                if not text:
+                    raise ConfigurationError(
+                        f"handle() {key} entries must be non-empty, got {value!r}."
+                    )
+                params.append((key, text))
         if auth:
-            params["auth"] = "true"
-        response = await self.request(
-            "GET", f"api/handles/{name}", params=params or None
-        )
+            params.append(("auth", "true"))
+        if cert:
+            params.append(("cert", "true"))
+        path = f"api/handles/{doi_path(normalize_doi(doi))}"
+        if params:
+            # The query string travels in the path: ``index`` and ``type``
+            # may repeat, which the framework's mapping of parameters
+            # cannot express.
+            path = f"{path}?{urlencode(params)}"
+        response = await self.request("GET", path)
         return validate_model(
             HandleRecord,
             self.parse_json(response),
@@ -126,7 +172,8 @@ class HodoiClient(BaseApiClient):
 
         Reads the ``URL`` entry of the record without fetching the landing
         page itself. A DOI whose record has no ``URL`` value raises
-        :class:`bibliofabric.exceptions.ConfigurationError`.
+        :class:`bibliofabric.exceptions.ConfigurationError`;
+        :meth:`locations` lists the URLs of a multiple-resolution DOI.
         """
         record = await self.handle(doi)
         for value in record.values:
@@ -134,50 +181,79 @@ class HodoiClient(BaseApiClient):
                 return value.data.value
         raise ConfigurationError(f"The handle record of {doi} has no URL value.")
 
+    async def resolve(self, doi: str) -> httpx.Response:
+        """Return the proxy's answer to ``GET https://doi.org/{doi}``.
+
+        The request asks for ``text/html``, so the proxy answers 302 with
+        the landing page URL in the ``Location`` header and a small HTML
+        body titled "Handle Redirect". Redirects follow the
+        ``follow_redirects`` setting (off by default), so the response is
+        the 302 itself unless the setting is on. An unknown DOI answers
+        404, which raises :class:`bibliofabric.exceptions.NotFoundError`.
+        """
+        return await self.request(
+            "GET",
+            doi_path(normalize_doi(doi)),
+            headers={"Accept": "text/html"},
+        )
+
+    async def locations(self, doi: str) -> list[RedirectLocation]:
+        """Return every URL the proxy could redirect a DOI to.
+
+        Sends ``GET https://doi.org/{doi}?action=showurls``, the proxy's XML
+        listing. An ordinary DOI has two entries: the landing page
+        (``mode="legacy"``) and the registration agency's metadata server
+        (``http_role="conneg"``, with a ``href_template``). A
+        multiple-resolution DOI lists its further locations. An unknown DOI
+        answers 404, which raises
+        :class:`bibliofabric.exceptions.NotFoundError`.
+        """
+        response = await self.request(
+            "GET", f"{doi_path(normalize_doi(doi))}?{_SHOWURLS_QUERY}"
+        )
+        return parse_locations(response.text)
+
     async def content(
         self, doi: str, media_type: str
-    ) -> CslItem | DataciteRecord | SchemaOrgThing | str:
+    ) -> CslItem | DataciteRecord | SchemaOrgThing | str | None:
         """Return the negotiated metadata representation for a DOI.
 
         Sends ``GET https://doi.org/{doi}`` with the given ``Accept`` header
         and follows the resolver's redirect to the registration agency's
-        data server. JSON media types parse into typed models
-        (:class:`~hodoi.models.CslItem`,
-        :class:`~hodoi.models.DataciteRecord`,
-        :class:`~hodoi.models.SchemaOrgThing`); every other media type
-        (BibTeX, RIS, the XML dialects, formatted citations) returns as
-        text. Media types an agency does not answer raise
-        :class:`bibliofabric.exceptions.APIError` with the agency's HTTP 406.
+        data server. The three JSON media types parse into typed models
+        (:class:`~hodoi.models.CslItem` for
+        :data:`~hodoi.media_types.CSL_JSON`,
+        :class:`~hodoi.models.DataciteRecord` for
+        :data:`~hodoi.media_types.DATACITE_JSON`,
+        :class:`~hodoi.models.SchemaOrgThing` for
+        :data:`~hodoi.media_types.SCHEMAORG_JSONLD`); every other media
+        type (BibTeX, RIS, the XML dialects, a formatted citation) returns
+        as text. The answer is ``None`` when the agency reports 204, which
+        means that no metadata is available. A media type the agency does
+        not answer raises :class:`bibliofabric.exceptions.APIError` with
+        its HTTP 406.
         """
-        name = normalize_doi(doi)
-        media_type = media_type.strip()
-        if not media_type:
-            raise ConfigurationError("media_type must be a non-empty string.")
-        response = await self.request(
-            "GET",
-            name,
-            headers={"Accept": media_type},
-            follow_redirects=True,
-        )
-        if media_type == CSL_JSON:
+        response = await self._negotiated(doi, media_type, follow_redirects=True)
+        if response.status_code == httpx.codes.NO_CONTENT:
+            return None
+        base_type = _base_media_type(media_type)
+        request = getattr(response, "request", None)
+        if base_type == CSL_JSON:
             return validate_model(
-                CslItem,
-                self.parse_json(response),
-                request=getattr(response, "request", None),
-                response=response,
+                CslItem, self.parse_json(response), request=request, response=response
             )
-        if media_type == DATACITE_JSON:
+        if base_type == DATACITE_JSON:
             return validate_model(
                 DataciteRecord,
                 self.parse_json(response),
-                request=getattr(response, "request", None),
+                request=request,
                 response=response,
             )
-        if media_type == SCHEMAORG_JSONLD:
+        if base_type == SCHEMAORG_JSONLD:
             return validate_model(
                 SchemaOrgThing,
                 self.parse_json(response),
-                request=getattr(response, "request", None),
+                request=request,
                 response=response,
             )
         return response.text
@@ -194,18 +270,31 @@ class HodoiClient(BaseApiClient):
         ``follow_redirects=None`` keeps the client setting (off), so the
         bytes are the resolver's 302 body ("Handle Redirect"); pass
         ``follow_redirects=True`` to receive the agency's metadata bytes.
+        To read the ``Location`` header of the 302, use :meth:`resolve`.
         """
-        name = normalize_doi(doi)
+        response = await self._negotiated(
+            doi, media_type, follow_redirects=follow_redirects
+        )
+        return response.content
+
+    async def _negotiated(
+        self, doi: str, media_type: str, *, follow_redirects: bool | None
+    ) -> httpx.Response:
+        """Send one content negotiation request with an ``Accept`` header."""
         media_type = media_type.strip()
         if not media_type:
             raise ConfigurationError("media_type must be a non-empty string.")
-        response = await self.request(
+        return await self.request(
             "GET",
-            name,
+            doi_path(normalize_doi(doi)),
             headers={"Accept": media_type},
             follow_redirects=follow_redirects,
         )
-        return response.content
+
+
+def _base_media_type(media_type: str) -> str:
+    """Return ``media_type`` without parameters, in lower case."""
+    return media_type.split(";", 1)[0].strip().lower()
 
 
 __all__ = ["HodoiClient"]

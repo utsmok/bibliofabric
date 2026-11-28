@@ -7,7 +7,6 @@ try:
 except PackageNotFoundError:
     __version__ = "0.0.0"
 
-from bibliofabric import Page
 from bibliofabric.exceptions import (
     APIError,
     AuthError,
@@ -29,7 +28,15 @@ from .config import (
     HodoiSettings,
     get_settings,
 )
-from .dialect import DOI_BASE_URL, RA_BATCH_SIZE, normalize_doi
+from .dialect import (
+    DOI_BASE_URL,
+    RA_BATCH_SIZE,
+    RA_MAX_PATH_CHARS,
+    doi_path,
+    normalize_doi,
+    ra_chunks,
+    strip_doi_form,
+)
 from .media_types import (
     AGENCY_SUPPORT,
     BIBLIOGRAPHY,
@@ -55,51 +62,59 @@ from .models import (
     HandleRecord,
     HandleValue,
     HandleValueData,
+    RedirectLocation,
     SchemaOrgThing,
 )
+from .xmlparse import parse_locations
 
 __all__ = [
+    "__version__",
     "AGENCY_SUPPORT",
     "APIError",
-    "AuthError",
     "AgencyAnswer",
+    "AuthError",
     "BIBLIOGRAPHY",
     "BIBTEX",
     "BibliofabricError",
     "CSL_JSON",
     "ConfigurationError",
+    "CslItem",
     "DATACITE_JSON",
     "DATACITE_XML",
-    "DOI_BASE_URL",
-    "DataciteRecord",
     "DEFAULT_MAX_CONCURRENCY",
     "DEFAULT_MAX_REQUESTS_PER_SECOND",
     "DEFAULT_TIMEOUT",
+    "DOI_BASE_URL",
+    "DataciteRecord",
     "HandleAdminValue",
     "HandleRecord",
     "HandleValue",
     "HandleValueData",
+    "HodoiClient",
+    "HodoiSettings",
+    "HodoiSyncClient",
     "JSON_MEDIA_TYPES",
     "MEDIA_TYPES",
     "NetworkError",
     "NotFoundError",
     "ONIX_DOI_XML",
-    "Page",
-    "RDF_XML",
     "RA_BATCH_SIZE",
+    "RA_MAX_PATH_CHARS",
+    "RDF_XML",
     "RIS",
     "RateLimitError",
+    "RedirectLocation",
     "SCHEMAORG_JSONLD",
     "SchemaOrgThing",
     "TimeoutError",
     "TURTLE",
-    "HodoiClient",
-    "HodoiSettings",
-    "HodoiSyncClient",
     "UNIXREF_XML",
     "UNIXSD_XML",
     "ValidationError",
-    "CslItem",
+    "doi_path",
     "get_settings",
     "normalize_doi",
+    "parse_locations",
+    "ra_chunks",
+    "strip_doi_form",
 ]

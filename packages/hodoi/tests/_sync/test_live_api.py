@@ -26,6 +26,7 @@ CROSSREF_DOI = "10.1038/nature12373"
 DATACITE_DOI = "10.5281/zenodo.1238808"
 MEDRA_DOI = "10.1400/56174"
 LANDING = "https://www.nature.com/articles/nature12373"
+SICI_DOI = "10.1002/(SICI)1097-4636(199823)43:3<338::AID-JBM16>3.0.CO;2-B"
 
 
 @pytest.fixture
@@ -94,3 +95,35 @@ def test_content_unsupported_type_smoke(live_client):
 def test_raw_redirect_smoke(live_client):
     payload = live_client.raw(CROSSREF_DOI, CSL_JSON)
     assert b"Handle Redirect" in payload
+
+
+def test_resolve_smoke(live_client):
+    response = live_client.resolve(CROSSREF_DOI)
+    assert response.status_code == 302
+    assert response.headers["location"] == LANDING
+
+
+def test_resolve_special_characters_smoke(live_client):
+    """The SICI DOI carries characters the request path must encode."""
+    response = live_client.resolve(SICI_DOI)
+    assert response.status_code == 302
+    assert "onlinelibrary.wiley.com" in response.headers["location"]
+
+
+def test_locations_smoke(live_client):
+    locations = live_client.locations(CROSSREF_DOI)
+    assert [location.mode for location in locations] == ["legacy", None]
+    assert locations[0].href == LANDING
+    assert locations[1].http_role == "conneg"
+    assert "crossref.org" in locations[1].href
+
+
+def test_handle_special_characters_smoke(live_client):
+    record = live_client.handle(SICI_DOI)
+    assert record.handle == SICI_DOI
+    assert any(value.type == "URL" for value in record.values)
+
+
+def test_handle_repeated_filters_smoke(live_client):
+    record = live_client.handle(CROSSREF_DOI, type=["URL", "HS_ADMIN"], cert=True)
+    assert sorted(value.type for value in record.values) == ["HS_ADMIN", "URL"]
