@@ -6,7 +6,12 @@ Public reads need no credentials. Tests stay lean so the anonymous budget of
 
 import pytest
 from bibliofabric import NotFoundError
-from dataphora import DataphoraClient, DataphoraSettings
+from dataphora import (
+    DataphoraClient,
+    DataphoraSettings,
+    PrefixFilters,
+    ProviderFilters,
+)
 
 pytestmark = pytest.mark.live_api
 
@@ -133,3 +138,62 @@ async def test_events_smoke(live_client):
     page = await live_client.events.search({"doi": SCHEMA_DOI}, page_size=2)
     assert page.results
     assert page.results[0].relation_type_id
+
+
+async def test_heartbeat_smoke(live_client):
+    assert await live_client.heartbeat() is True
+
+
+async def test_global_activities_smoke(live_client):
+    """``query`` finds the activities of one DOI; the ``id`` filters answer
+    nothing without a login."""
+    listed = await live_client.activities.search(query=f'"{SCHEMA_DOI}"', page_size=5)
+    scoped = await live_client.dois.activities(SCHEMA_DOI)
+    assert scoped
+    assert {activity.id for activity in listed.results} == {
+        activity.id for activity in scoped
+    }
+    assert scoped[0].prov_was_derived_from == f"https://doi.org/{SCHEMA_DOI}"
+
+
+async def test_account_activities_smoke(live_client):
+    client_page = await live_client.clients.activities(DATACITE_CLIENT, page_size=5)
+    assert client_page.results
+    assert client_page.next_cursor is None
+    assert client_page.results[0].prov_was_derived_from is not None
+    assert client_page.results[0].prov_was_derived_from.endswith(DATACITE_CLIENT)
+    provider_page = await live_client.providers.activities("datacite", page_size=5)
+    assert provider_page.results
+    assert provider_page.next_cursor is None
+
+
+async def test_totals_smoke(live_client):
+    prefixes = await live_client.prefixes.totals("cern.zenodo")
+    assert [entry.id for entry in prefixes] == ["10.5281"]
+    assert await live_client.prefixes.totals("nosuch.client9999") == []
+    clients = await live_client.clients.totals(provider_id="cern")
+    assert clients
+    assert all(entry.id.startswith("cern.") for entry in clients)
+    providers = await live_client.providers.totals()
+    assert "datacite" in {entry.id for entry in providers}
+
+
+async def test_filter_models_smoke(live_client):
+    page = await live_client.providers.search(
+        ProviderFilters(region="apac"), page_size=5
+    )
+    assert page.results
+    assert {record.region for record in page.results} == {"APAC"}
+    unassigned = await live_client.prefixes.count(PrefixFilters(state="unassigned"))
+    without_repository = await live_client.prefixes.count(
+        PrefixFilters(state="without-repository")
+    )
+    assert unassigned > 0
+    assert without_repository > 0
+    assert unassigned != without_repository
+
+
+async def test_repositories_serve_periodicals_too_smoke(live_client):
+    """``/repositories`` is an alias of ``/clients``, not a filtered view."""
+    periodical = await live_client.repositories.get("rhtq.rjxpkl")
+    assert periodical.clientType == "periodical"

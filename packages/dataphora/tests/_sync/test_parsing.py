@@ -3,7 +3,7 @@
 
 from dataphora import DataphoraSyncClient
 
-from ..conftest import doi_resource, envelope, load_fixture
+from ..conftest import doi_resource, envelope, load_fixture, plain_resource
 
 DOI = load_fixture("doi.json")
 PAGE = load_fixture("dois_list.json")
@@ -100,8 +100,12 @@ def test_activities_from_real_payload(client, httpx_mock):
     assert activity.action == "update"
     assert activity.version == 81
     assert activity.changes is not None
-    assert "titles" in activity.changes
-    assert any(key.startswith("prov:") for key in (activity.model_extra or {}))
+    assert activity.prov_generated_at_time == "2025-06-09T21:05:58.967Z"
+    assert (
+        activity.prov_was_attributed_to
+        == "https://api.datacite.org/repositories/datacite.datacite"
+    )
+    assert not activity.model_extra
 
 
 def test_global_activities_from_real_payload(client, httpx_mock):
@@ -156,6 +160,130 @@ def test_unknown_attributes_are_kept_as_extras(client, httpx_mock):
     )
     page = client.dois.search()
     assert page.results[0].model_extra == {"brandNewField": 42}
+
+
+def test_doi_attributes_that_change_shape_between_repositories(client, httpx_mock):
+    httpx_mock.add_response(
+        json=envelope(
+            [
+                doi_resource(
+                    "10.1/shapes",
+                    sizes=[3963, "45 pages"],
+                    geoLocations=[
+                        {
+                            "geoLocationPoint": {
+                                "pointLongitude": 137.166,
+                                "pointLatitude": "-5.0",
+                            },
+                            "geoLocationBox": {
+                                "westBoundLongitude": -5.0,
+                                "eastBoundLongitude": "3",
+                            },
+                        }
+                    ],
+                    relatedItems=[
+                        {
+                            "publisher": "OSF",
+                            "titles": {"title": "MedienPädagogik"},
+                        }
+                    ],
+                    types={"resourceTypeGeneral": "text", "ris": "GEN"},
+                    citationsOverTime=[{"year": "2016", "total": 2}],
+                    downloadsOverTime=[{"yearMonth": "2016-02", "total": 1}],
+                )
+            ]
+        )
+    )
+    doi = (client.dois.search()).results[0]
+    assert doi.sizes == [3963, "45 pages"]
+    point = doi.geoLocations[0].geoLocationPoint
+    assert point is not None
+    assert point.pointLongitude == 137.166
+    assert point.pointLatitude == "-5.0"
+    box = doi.geoLocations[0].geoLocationBox
+    assert box is not None
+    assert box.westBoundLongitude == -5.0
+    assert box.eastBoundLongitude == "3"
+    item = doi.relatedItems[0]
+    assert item.publisher == "OSF"
+    assert item.titles[0].title == "MedienPädagogik"
+    assert doi.types is not None
+    assert doi.types.ris == "GEN"
+    assert doi.citationsOverTime[0].year == "2016"
+    assert doi.downloadsOverTime[0].yearMonth == "2016-02"
+
+
+def test_repository_subjects_are_objects_and_a_missing_issn_is_none(client, httpx_mock):
+    httpx_mock.add_response(
+        json=envelope(
+            [
+                plain_resource(
+                    "a.b",
+                    "repositories",
+                    subjects=[
+                        {"subject": "Biological science", "classificationCode": "1.6"}
+                    ],
+                    issn=[],
+                )
+            ]
+        )
+    )
+    repository = (client.repositories.search()).results[0]
+    assert repository.subjects[0].subject == "Biological science"
+    assert repository.subjects[0].classificationCode == "1.6"
+    assert repository.issn is None
+
+
+def test_client_activities_from_real_payload(client, httpx_mock):
+    httpx_mock.add_response(json=load_fixture("client_activities.json"))
+    page = client.clients.activities("datacite.datacite", page=2, page_size=2)
+    assert page.total == 13
+    assert page.next_cursor is None
+    activity = page.results[0]
+    assert activity.action == "update"
+    assert activity.version == 11
+    assert (
+        activity.prov_was_derived_from
+        == "https://api.datacite.org/repositories/datacite.datacite"
+    )
+    assert activity.prov_was_attributed_to == "https://api.datacite.org/providers/admin"
+    assert activity.changes is not None
+    assert "domains" in activity.changes
+
+
+def test_provider_activities_from_real_payload(client, httpx_mock):
+    httpx_mock.add_response(json=load_fixture("provider_activities.json"))
+    page = client.providers.activities("datacite")
+    assert page.total == 2
+    assert (
+        page.results[0].prov_was_derived_from
+        == "https://api.datacite.org/providers/datacite"
+    )
+
+
+def test_prefix_and_provider_totals_from_real_payload(client, httpx_mock):
+    httpx_mock.add_response(json=load_fixture("prefix_totals.json"))
+    httpx_mock.add_response(json=load_fixture("providers_totals.json"))
+    prefixes = client.prefixes.totals("cern.zenodo")
+    assert [entry.id for entry in prefixes] == ["10.5281"]
+    assert prefixes[0].states is not None
+    assert prefixes[0].states[0].id == "findable"
+    providers = client.providers.totals()
+    assert [entry.id for entry in providers] == ["rpht", "cern"]
+    assert providers[0].temporal is not None
+    assert "two_years_ago" in providers[0].temporal
+
+
+def test_event_keeps_the_spec_misspelling_of_the_date_as_an_extra(client, httpx_mock):
+    record = plain_resource(
+        "1",
+        "events",
+        **{"subj-id": "a", "occured-at": "2019-01-01", "occurred-at": "2019-06-01"},
+    )
+    httpx_mock.add_response(json=envelope([record]))
+    event = (client.events.search()).results[0]
+    assert event.occurred_at == "2019-06-01"
+    assert event.model_extra == {"occured-at": "2019-01-01"}
 
 
 def test_client_exposes_all_resources(settings):

@@ -64,8 +64,9 @@ this client and the upstream documentation does not always state them.
 - `GET /dois/{id}/media` returns 404 anonymously, and an
   `Accept: application/vnd.api+json` request answers with an empty
   `data: []`, so it is useless without a login and is not wrapped.
-- `GET /prefixes/totals` answers `204 No Content` anonymously; the model
-  reads that as `None`.
+- `GET /prefixes/totals` answers `204 No Content` without a `client-id`
+  parameter and a JSON array with one entry per prefix with it (verified
+  2026-11-28). `prefixes.totals()` therefore requires a client id.
 - `/clients/totals` and `/providers/totals` are public but are bare JSON
   arrays of `{id, title, count, temporal, states}` entries, not JSON:API
   envelopes, and they are unpaged (about 1.5 MB and 0.6 MB).

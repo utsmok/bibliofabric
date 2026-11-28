@@ -9,7 +9,7 @@ from bibliofabric import SyncBaseApiClient
 from bibliofabric.unwrap import JsonApiUnwrapper
 
 from ..config import DataphoraSettings, get_settings
-from ..dialect import DATACITE_API_BASE_URL
+from ..dialect import DATACITE_API_BASE_URL, DATACITE_HEARTBEAT_PATH
 from .dois import ActivitiesSyncClient, DoisSyncClient
 from .events import EventsSyncClient
 from .graphql import GraphqlSyncClient
@@ -111,6 +111,15 @@ class DataphoraSyncClient(SyncBaseApiClient):
     def graphql(self) -> GraphqlSyncClient:
         """The public GraphQL API client."""
         return GraphqlSyncClient(self)
+
+    def heartbeat(self) -> bool:
+        """Return ``True`` when the API answers ``GET /heartbeat`` with ``OK``.
+
+        The route needs no credentials and answers a plain ``OK``. An error
+        status raises, as with every request.
+        """
+        response = self.request("GET", DATACITE_HEARTBEAT_PATH)
+        return response.text.strip() == "OK"
 
 
 __all__ = ["DataphoraSyncClient"]

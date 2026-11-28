@@ -46,9 +46,14 @@ page.results[0].relationships["provider"].data.id
 ## Production statistics
 
 ```python
-totals = await client.prefixes.totals()
-totals  # [] anonymously; the route answers 204 No Content and the client returns an empty list
+totals = await client.prefixes.totals("cern.zenodo")
+totals[0].id  # "10.5281"
+totals[0].count
+totals[0].states[0].count
 ```
 
-`/prefixes/totals` requires a login; the model accepts the empty answer as
-`None` so callers can branch on it.
+`totals()` reads `/prefixes/totals` with the required `client-id`
+parameter: one unpaged entry per prefix of the client, with the same
+`count`, `temporal`, and `states` fields as the client and provider totals.
+Pass a list of client ids to cover several clients. Without `client-id` the
+route answers `204 No Content`, so the method requires it.

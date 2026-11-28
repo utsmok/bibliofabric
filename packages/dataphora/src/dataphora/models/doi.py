@@ -1,15 +1,32 @@
 """Pydantic models for DataCite DOI records.
 
-Field names follow the JSON attributes of the live API (verified
-2026-11-27). Without the ``detail=true`` or ``affiliation=true``/``publisher=true``
-request flags some attributes are trimmed or omitted upstream; those fields
-are optional here and extras are always kept.
+Field names follow the JSON attributes of the live API (checked against
+about 11,000 records on 2026-11-28). Without the ``detail=true`` or
+``affiliation=true``/``publisher=true`` request flags some attributes are
+trimmed or omitted upstream; those fields are optional here and extras are
+always kept. Several attributes change type between repositories (numbers
+sent as strings or the other way round, one object sent where a list is
+expected); those fields accept both shapes and keep what upstream sent.
 """
 
+from typing import Annotated, TypeVar
+
 from bibliofabric import SafeList, SafeStr
-from pydantic import ConfigDict, model_validator
+from pydantic import BeforeValidator, ConfigDict, model_validator
 
 from .common import DataphoraModel, DataphoraResource
+
+_PersonConfig = ConfigDict(extra="allow", populate_by_name=True)
+
+_T = TypeVar("_T")
+
+
+def _wrap_lone_object(value: object) -> object:
+    """Wrap one object as a one-element list."""
+    return [value] if isinstance(value, dict) else value
+
+
+_ObjectList = Annotated[SafeList[_T], BeforeValidator(_wrap_lone_object)]
 
 _PersonConfig = ConfigDict(extra="allow", populate_by_name=True)
 
@@ -98,6 +115,7 @@ class Types(DataphoraModel):
     bibtex: SafeStr | None = None
     citeproc: SafeStr | None = None
     schemaOrg: SafeStr | None = None
+    ris: SafeStr | None = None
 
 
 class Publisher(DataphoraModel):
@@ -141,23 +159,28 @@ class RelatedItemIdentifier(DataphoraModel):
 
 
 class RelatedItem(DataphoraModel):
-    """One related item (a journal issue, book chapter) of a DOI."""
+    """One related item (a journal issue, book chapter) of a DOI.
+
+    Some repositories send ``creators``, ``titles``, ``contributors``, or
+    ``subjects`` as one object instead of a list; that object then becomes
+    a one-element list.
+    """
 
     relatedItemIdentifier: RelatedItemIdentifier | None = None
     relatedItemType: SafeStr | None = None
     relationType: SafeStr | None = None
-    creators: SafeList[Creator] = []
-    titles: SafeList[Title] = []
+    creators: _ObjectList[Creator] = []
+    titles: _ObjectList[Title] = []
     volume: SafeStr | None = None
     issue: SafeStr | None = None
     number: SafeStr | None = None
     firstPage: SafeStr | None = None
     lastPage: SafeStr | None = None
-    publisher: Publisher | None = None
+    publisher: Publisher | str | None = None
     publicationYear: int | None = None
     edition: SafeStr | None = None
-    contributors: SafeList[Contributor] = []
-    subjects: SafeList[Subject] = []
+    contributors: _ObjectList[Contributor] = []
+    subjects: _ObjectList[Subject] = []
 
 
 class Rights(DataphoraModel):
@@ -180,19 +203,26 @@ class Description(DataphoraModel):
 
 
 class GeoPoint(DataphoraModel):
-    """One geographic point (``pointLongitude``, ``pointLatitude``)."""
+    """One geographic point (``pointLongitude``, ``pointLatitude``).
 
-    pointLongitude: SafeStr | None = None
-    pointLatitude: SafeStr | None = None
+    Some repositories send numbers where others send strings, so each
+    coordinate is a ``float`` or a ``str``.
+    """
+
+    pointLongitude: SafeStr | float | None = None
+    pointLatitude: SafeStr | float | None = None
 
 
 class GeoLocationBox(DataphoraModel):
-    """One bounding box (``westBoundLongitude`` and friends)."""
+    """One bounding box (``westBoundLongitude`` and friends).
 
-    westBoundLongitude: SafeStr | None = None
-    eastBoundLongitude: SafeStr | None = None
-    southBoundLatitude: SafeStr | None = None
-    northBoundLatitude: SafeStr | None = None
+    Each bound is a ``float`` or a ``str``, as upstream sent it.
+    """
+
+    westBoundLongitude: SafeStr | float | None = None
+    eastBoundLongitude: SafeStr | float | None = None
+    southBoundLatitude: SafeStr | float | None = None
+    northBoundLatitude: SafeStr | float | None = None
 
 
 class GeoLocation(DataphoraModel):
@@ -228,9 +258,16 @@ class Container(DataphoraModel):
 
 
 class OverTime(DataphoraModel):
-    """One bucket of a ``viewsOverTime`` or ``citationsOverTime`` series."""
+    """One bucket of a ``viewsOverTime``, ``downloadsOverTime``, or
+    ``citationsOverTime`` series.
+
+    ``viewsOverTime`` and ``downloadsOverTime`` buckets carry ``yearMonth``
+    (``"2016-02"``); ``citationsOverTime`` buckets carry ``year``
+    (``"2016"``).
+    """
 
     yearMonth: SafeStr | None = None
+    year: SafeStr | None = None
     total: int | None = None
 
 
@@ -259,7 +296,7 @@ class DataphoraDoi(DataphoraResource):
     types: Types | None = None
     relatedIdentifiers: SafeList[RelatedIdentifier] = []
     relatedItems: SafeList[RelatedItem] = []
-    sizes: SafeList[SafeStr] = []
+    sizes: SafeList[SafeStr | int] = []
     formats: SafeList[SafeStr] = []
     version: SafeStr | None = None
     rightsList: SafeList[Rights] = []
@@ -290,6 +327,7 @@ class DataphoraDoi(DataphoraResource):
     prefix: SafeStr | None = None
     suffix: SafeStr | None = None
     viewsOverTime: SafeList[OverTime] = []
+    downloadsOverTime: SafeList[OverTime] = []
     citationsOverTime: SafeList[OverTime] = []
     alternateIdentifiers: SafeList[Identifier] = []
 

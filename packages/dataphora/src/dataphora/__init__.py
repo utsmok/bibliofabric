@@ -54,10 +54,12 @@ from .dialect import (
 )
 from .filters import (
     ClientFilters,
+    ClientPrefixFilters,
     DoiFilters,
     EventFilters,
     PrefixFilters,
     ProviderFilters,
+    ProviderPrefixFilters,
     RepositoryFilters,
 )
 from .models import (
@@ -85,6 +87,7 @@ from .models import (
     GeoLocationBox,
     GeoPoint,
     Identifier,
+    Issn,
     JsonApiIdentifier,
     JsonApiRelationship,
     NameIdentifier,
@@ -109,6 +112,7 @@ __all__ = [
     "AuthError",
     "BibliofabricError",
     "ClientFilters",
+    "ClientPrefixFilters",
     "ClientPrefixesClient",
     "ClientPrefixesSyncClient",
     "ClientsClient",
@@ -137,6 +141,7 @@ __all__ = [
     "GraphqlSyncClient",
     "get_settings",
     "Identifier",
+    "Issn",
     "JsonApiIdentifier",
     "JsonApiRelationship",
     "NameIdentifier",
@@ -148,6 +153,7 @@ __all__ = [
     "PrefixesClient",
     "PrefixesSyncClient",
     "ProviderFilters",
+    "ProviderPrefixFilters",
     "ProviderPrefixesClient",
     "ProviderPrefixesSyncClient",
     "ProvidersClient",

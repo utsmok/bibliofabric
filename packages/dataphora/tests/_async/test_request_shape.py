@@ -1,10 +1,29 @@
 """Outgoing request shape: bracketed parameter names, headers, paging, filters."""
 
 import pytest
-from bibliofabric.exceptions import NotFoundError
-from dataphora import DataphoraClient, DoiFilters
+from bibliofabric.exceptions import (
+    APIError,
+    ConfigurationError,
+    NotFoundError,
+    ValidationError,
+)
+from dataphora import (
+    ClientPrefixFilters,
+    DataphoraClient,
+    DoiFilters,
+    PrefixFilters,
+    ProviderPrefixFilters,
+    RepositoryFilters,
+)
 
-from ..conftest import cursor_envelope, doi_resource, envelope, load_fixture
+from ..conftest import (
+    BASE_URL,
+    cursor_envelope,
+    doi_resource,
+    envelope,
+    load_fixture,
+    plain_resource,
+)
 
 DOI = load_fixture("doi.json")
 PAGE = load_fixture("dois_list.json")
@@ -189,6 +208,39 @@ async def test_activities_request_shape_and_parsing(client, httpx_mock):
     assert activities[0].version == 81
 
 
+async def test_activities_read_every_page_and_number_the_pages(client, httpx_mock):
+    """The next link of this route points at the global ``/activities`` route."""
+    first = {
+        "data": [plain_resource("a", "activities", action="update", version=2)],
+        "meta": {"total": 2, "totalPages": 2, "page": 1},
+        "links": {"next": f"{BASE_URL}/activities?page%5Bnumber%5D=2"},
+    }
+    second = {
+        "data": [plain_resource("b", "activities", action="create", version=1)],
+        "meta": {"total": 2, "totalPages": 2, "page": 2},
+        "links": {},
+    }
+    httpx_mock.add_response(json=first)
+    httpx_mock.add_response(json=second)
+    activities = await client.dois.activities("https://doi.org/10.5438/0012")
+    assert [activity.version for activity in activities] == [2, 1]
+    first_request, second_request = httpx_mock.get_requests()
+    assert "10.5438%2F0012/activities" in first_request.url.raw_path.decode()
+    assert dict(first_request.url.params) == {"page[number]": "1", "page[size]": "1000"}
+    assert second_request.url.path == "/dois/10.5438/0012/activities"
+    assert dict(second_request.url.params) == {
+        "page[number]": "2",
+        "page[size]": "1000",
+    }
+
+
+async def test_empty_ids_raise_configuration_error(client):
+    with pytest.raises(ConfigurationError):
+        await client.dois.activities("  ")
+    with pytest.raises(ConfigurationError):
+        await client.clients.activities("")
+
+
 async def test_base_url_override_points_elsewhere(httpx_mock, settings):
     httpx_mock.add_response(json=DOI)
     async with DataphoraClient(
@@ -197,3 +249,138 @@ async def test_base_url_override_points_elsewhere(httpx_mock, settings):
         await test_client.dois.get("10.5438/0012")
     assert last_request(httpx_mock).url.path == "/dois/10.5438/0012"
     assert str(last_request(httpx_mock).url).startswith("https://api.test.datacite.org")
+
+
+async def test_batch_get_is_disabled(client):
+    """No DataCite route reads several records by id."""
+    with pytest.raises(ConfigurationError):
+        await client.dois.batch_get(["10.5438/0012"])
+
+
+@pytest.mark.parametrize("page", [0, -1, 401])
+async def test_unreachable_numbered_pages_raise_configuration_error(client, page):
+    """Upstream reads page 0 as page 1 and repeats the last page past 10,000."""
+    with pytest.raises(ConfigurationError):
+        await client.dois.search(page=page)
+
+
+async def test_last_reachable_numbered_pages_are_allowed(client, httpx_mock):
+    httpx_mock.add_response(json=PAGE)
+    httpx_mock.add_response(json=PAGE)
+    await client.dois.search(page=400)
+    await client.dois.search(page=10, page_size=1000)
+    assert [
+        request.url.params["page[number]"] for request in httpx_mock.get_requests()
+    ] == [
+        "400",
+        "10",
+    ]
+
+
+async def test_totals_send_their_parameters(client, httpx_mock):
+    entry = [{"id": "cern", "count": 1}]
+    httpx_mock.add_response(json=entry)
+    httpx_mock.add_response(json=entry)
+    httpx_mock.add_response(json=entry)
+    await client.clients.totals(provider_id=["cern", "dryad"], state="findable")
+    await client.providers.totals(state="consortium")
+    await client.prefixes.totals("cern.zenodo")
+    clients_request, providers_request, prefixes_request = httpx_mock.get_requests()
+    assert clients_request.url.path == "/clients/totals"
+    assert dict(clients_request.url.params) == {
+        "provider-id": "cern,dryad",
+        "state": "findable",
+    }
+    assert providers_request.url.path == "/providers/totals"
+    assert dict(providers_request.url.params) == {"state": "consortium"}
+    assert prefixes_request.url.path == "/prefixes/totals"
+    assert dict(prefixes_request.url.params) == {"client-id": "cern.zenodo"}
+
+
+async def test_totals_reject_a_body_that_is_not_an_array(client, httpx_mock):
+    body = {"data": [{"id": "cern", "count": 1}]}
+    httpx_mock.add_response(json=body)
+    with pytest.raises(ValidationError) as info:
+        await client.providers.totals()
+    assert info.value.model_name == "DataphoraTotals"
+    assert info.value.raw == body
+
+
+async def test_account_activities_stay_on_the_account_route(client, httpx_mock):
+    httpx_mock.add_response(json=load_fixture("client_activities.json"))
+    httpx_mock.add_response(json=load_fixture("provider_activities.json"))
+    client_page = await client.clients.activities(
+        "datacite.datacite", page=2, page_size=2
+    )
+    provider_page = await client.providers.activities("datacite", page_size=2)
+    client_request, provider_request = httpx_mock.get_requests()
+    assert client_request.url.path == "/clients/datacite.datacite/activities"
+    assert dict(client_request.url.params) == {"page[number]": "2", "page[size]": "2"}
+    assert provider_request.url.path == "/providers/datacite/activities"
+    assert dict(provider_request.url.params) == {"page[number]": "1", "page[size]": "2"}
+    assert client_page.next_cursor is None
+    assert provider_page.next_cursor is None
+
+
+async def test_filter_models_serialize_to_upstream_names(client, httpx_mock):
+    httpx_mock.add_response(json=PAGE)
+    await client.dois.search(
+        DoiFilters(
+            sample_size=5,
+            has_citations=1,
+            random=True,
+            field_of_science="natural sciences",
+            enriched=True,
+        )
+    )
+    params = last_params(httpx_mock)
+    assert params["sample-size"] == "5"
+    assert params["has-citations"] == "1"
+    assert params["random"] == "true"
+    assert params["field-of-science"] == "natural sciences"
+    assert params["enriched"] == "true"
+
+
+async def test_account_and_prefix_filter_models(client, httpx_mock):
+    httpx_mock.add_response(json=load_fixture("client_prefixes.json"))
+    await client.client_prefixes.search(
+        ClientPrefixFilters(client_id="cern.zenodo", prefix_id="10.5281")
+    )
+    assert last_params(httpx_mock)["client-id"] == "cern.zenodo"
+    assert last_params(httpx_mock)["prefix-id"] == "10.5281"
+    httpx_mock.add_response(json=load_fixture("provider_prefixes.json"))
+    await client.provider_prefixes.search(
+        ProviderPrefixFilters(
+            consortium_id="cadre", provider_id="dryad", prefix_id="10.5061"
+        )
+    )
+    assert last_params(httpx_mock)["consortium-id"] == "cadre"
+    assert last_params(httpx_mock)["provider-id"] == "dryad"
+    assert last_params(httpx_mock)["prefix-id"] == "10.5061"
+    httpx_mock.add_response(json=load_fixture("prefix.json"))
+    await client.prefixes.search(
+        PrefixFilters(state="unassigned", client_id="cern.zenodo")
+    )
+    assert last_params(httpx_mock)["state"] == "unassigned"
+    assert last_params(httpx_mock)["client-id"] == "cern.zenodo"
+    httpx_mock.add_response(json=load_fixture("repository.json"))
+    await client.repositories.search(
+        RepositoryFilters(consortium_id="cadre", client_type="periodical")
+    )
+    assert last_params(httpx_mock)["consortium-id"] == "cadre"
+    assert last_params(httpx_mock)["client-type"] == "periodical"
+
+
+async def test_heartbeat_reads_the_plain_text_answer(client, httpx_mock):
+    url = "https://api.datacite.org/heartbeat"
+    httpx_mock.add_response(
+        url=url, text="OK\n", headers={"content-type": "text/plain; charset=utf-8"}
+    )
+    assert await client.heartbeat() is True
+    httpx_mock.add_response(url=url, status_code=503)
+    with pytest.raises(APIError, match="status 503"):
+        await client.heartbeat()
+    assert [request.url.path for request in httpx_mock.get_requests()] == [
+        "/heartbeat",
+        "/heartbeat",
+    ]

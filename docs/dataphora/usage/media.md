@@ -37,5 +37,6 @@ until test credentials exist.
 
 ## Prefix totals
 
-`GET /prefixes/totals` answers `204 No Content` without a login.
-`DataphoraPrefixesClient.totals()` models that answer as `None`.
+`GET /prefixes/totals` answers `204 No Content` without a `client-id`
+parameter. `client.prefixes.totals(client_id)` sends that parameter and
+returns the statistics; see [Prefixes](prefixes.md).

@@ -1,12 +1,13 @@
 """Pydantic models for DataCite clients, providers, repositories, prefixes,
 events, activities, and usage routes."""
 
-from typing import Any
+from typing import Annotated, Any
 
 from bibliofabric import SafeList, SafeStr
-from pydantic import Field
+from pydantic import BeforeValidator, Field
 
 from .common import DataphoraModel, DataphoraResource
+from .doi import Subject
 
 
 class Issn(DataphoraModel):
@@ -16,6 +17,15 @@ class Issn(DataphoraModel):
     issnl: SafeStr | None = None
     print: SafeList[SafeStr] = []
     electronic: SafeList[SafeStr] = []
+
+
+def _empty_issn_to_none(value: object) -> object:
+    """Read the empty list upstream sends for accounts without an ISSN as
+    ``None``."""
+    return None if isinstance(value, list) and not value else value
+
+
+OptionalIssn = Annotated[Issn | None, BeforeValidator(_empty_issn_to_none)]
 
 
 class DataphoraClientRecord(DataphoraResource):
@@ -32,7 +42,7 @@ class DataphoraClientRecord(DataphoraResource):
     domains: SafeList[SafeStr] = []
     re3data: SafeStr | None = None
     opendoar: SafeStr | None = None
-    issn: Issn | None = None
+    issn: OptionalIssn = None
     url: SafeStr | None = None
     created: SafeStr | None = None
     updated: SafeStr | None = None
@@ -78,10 +88,10 @@ class DataphoraRepository(DataphoraResource):
     language: SafeList[SafeStr] = []
     certificate: SafeList[SafeStr] = []
     domains: SafeList[SafeStr] = []
-    issn: Issn | None = None
+    issn: OptionalIssn = None
     url: SafeStr | None = None
     software: SafeStr | None = None
-    subjects: SafeList[SafeStr] = []
+    subjects: SafeList[Subject] = []
     created: SafeStr | None = None
     updated: SafeStr | None = None
     isActive: bool | None = None
@@ -105,8 +115,7 @@ class DataphoraEvent(DataphoraResource):
     so both spellings validate. ``subj-id`` and ``obj-id`` name the two
     ends, ``relation-type-id`` the relation (``references``, ``cites``,
     ``is-cited-by``); the ``subj`` and ``obj`` relationships hold the
-    identifier pairs. ``occured-at`` keeps the upstream spelling, which
-    misses an ``r``.
+    identifier pairs, and ``occurred-at`` the event time.
     """
 
     subj_id: SafeStr | None = Field(None, alias="subj-id")
@@ -117,24 +126,26 @@ class DataphoraEvent(DataphoraResource):
     message_action: SafeStr | None = Field(None, alias="message-action")
     source_token: SafeStr | None = Field(None, alias="source-token")
     license: SafeStr | None = None
-    occured_at: SafeStr | None = Field(None, alias="occured-at")
     occurred_at: SafeStr | None = Field(None, alias="occurred-at")
     timestamp: SafeStr | None = None
 
 
 class DataphoraActivity(DataphoraResource):
-    """One provenance activity in a DOI's history (``action``,
-    ``version``, ``changes``).
+    """One provenance activity in the history of a DOI or an account.
 
-    The ``prov:*`` attribute keys carry the provenance links and land in
-    ``model_extra``. ``changes`` maps each changed attribute to its
+    The ``prov_*`` fields carry the ``prov:`` attributes upstream: which
+    activity ran, when, which DOI or account it changed, and which account
+    made the change. ``changes`` maps each changed attribute to its
     ``[old, new]`` pair.
     """
 
+    prov_was_generated_by: SafeStr | None = Field(None, alias="prov:wasGeneratedBy")
+    prov_generated_at_time: SafeStr | None = Field(None, alias="prov:generatedAtTime")
+    prov_was_derived_from: SafeStr | None = Field(None, alias="prov:wasDerivedFrom")
+    prov_was_attributed_to: SafeStr | None = Field(None, alias="prov:wasAttributedTo")
     action: SafeStr | None = None
     version: int | None = None
     changes: dict[str, Any] | None = None
-    requestId: SafeStr | None = None
 
 
 class FacetCount(DataphoraModel):

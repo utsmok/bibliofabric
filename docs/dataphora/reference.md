@@ -19,6 +19,7 @@ Generated from the source with mkdocstrings.
         - prefixes
         - events
         - graphql
+        - heartbeat
         - get_settings
         - request
         - is_retryable
@@ -40,6 +41,7 @@ Generated from the source with mkdocstrings.
         - prefixes
         - events
         - graphql
+        - heartbeat
         - get_settings
         - request
         - is_retryable
@@ -80,6 +82,7 @@ members are shown here.
       heading_level: 3
       show_source: false
       members:
+        - activities
         - dois
         - totals
 
@@ -88,6 +91,7 @@ members are shown here.
       heading_level: 3
       show_source: false
       members:
+        - activities
         - dois
         - totals
 
@@ -152,6 +156,16 @@ and allows extra fields.
       show_source: false
 
 ::: dataphora.filters.PrefixFilters
+    options:
+      heading_level: 3
+      show_source: false
+
+::: dataphora.filters.ClientPrefixFilters
+    options:
+      heading_level: 3
+      show_source: false
+
+::: dataphora.filters.ProviderPrefixFilters
     options:
       heading_level: 3
       show_source: false
@@ -230,6 +244,16 @@ are plain Pydantic models; see the source for the full field list.
       show_source: false
 
 ::: dataphora.models.DataphoraActivity
+    options:
+      heading_level: 3
+      show_source: false
+
+::: dataphora.models.DataphoraClientPrefix
+    options:
+      heading_level: 3
+      show_source: false
+
+::: dataphora.models.DataphoraProviderPrefix
     options:
       heading_level: 3
       show_source: false

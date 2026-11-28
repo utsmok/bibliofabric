@@ -46,6 +46,7 @@ from .registry import (
     DataphoraRepository,
     DataphoraTotals,
     FacetCount,
+    Issn,
 )
 
 __all__ = [
@@ -61,6 +62,7 @@ __all__ = [
     "GeoLocationBox",
     "GeoPoint",
     "Identifier",
+    "Issn",
     "JsonApiIdentifier",
     "JsonApiRelationship",
     "NameIdentifier",
@@ -74,13 +76,16 @@ __all__ = [
     "Title",
     "DataphoraActivity",
     "DataphoraClientRecord",
+    "DataphoraClientPrefix",
     "DataphoraDoi",
     "DataphoraEvent",
     "DataphoraModel",
     "DataphoraPrefix",
     "DataphoraProvider",
+    "DataphoraProviderPrefix",
     "DataphoraRepository",
     "DataphoraResource",
+    "DataphoraTotals",
     "Types",
     "resource_ids",
 ]

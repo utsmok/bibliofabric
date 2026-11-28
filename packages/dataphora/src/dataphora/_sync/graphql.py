@@ -18,8 +18,13 @@ class GraphqlSyncClient:
 
     The schema covers the same records as the REST API (works, persons,
     organizations, repositories, funders, prefixes, and events) and adds the
-    connections between them. Queries need no credentials. Mutations need
-    a bearer token and are out of scope.
+    connections between them. Queries need no credentials. The schema also
+    lists three mutations (``createClaim``, ``deleteClaim``, and
+    ``updateUserProfile``); they need a bearer token and are out of scope.
+
+    DataCite will retire the GraphQL API in July 2027 and asks its users to
+    move to the REST API (announced on the DataCite support portal). New
+    code should use the REST resources of this client.
     """
 
     def __init__(self, client: SyncBaseApiClient) -> None:

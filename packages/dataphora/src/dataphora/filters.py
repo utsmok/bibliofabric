@@ -1,13 +1,16 @@
 """Pydantic filter models for the DataCite REST API.
 
-Each field maps to one query parameter of the ``/dois`` route (verified
-against the live API and the DataCite documentation on 2026-11-27). A value
-that is a sequence joins its items with a comma, which DataCite reads as
-``OR``; different keys ``AND``. Every model allows extra fields, so filters
-added upstream stay usable before they land here.
+Each field maps to one query parameter of its route. Only parameters that
+change the answer anonymously are typed (checked against the live API and the
+DataCite reference on 2026-11-28). A value that is a sequence joins its items
+with a comma, which DataCite reads as ``OR``; different keys ``AND``. Every
+model allows extra fields, so filters added upstream stay usable before they
+land here.
 
 The API silently ignores unknown query parameters, so a misspelled filter
-changes nothing instead of failing; prefer the typed fields.
+changes nothing instead of failing; prefer the typed fields. A parameter that
+another route accepts does not carry over: for example ``prefix=`` filters
+``/dois`` but is ignored on ``/clients``.
 """
 
 from collections.abc import Mapping, Sequence
@@ -24,12 +27,22 @@ _SharedConfig = ConfigDict(extra="allow", populate_by_name=True)
 class DoiFilters(BaseModel):
     """Filter model for the ``/dois`` route.
 
-    ``state`` is ``findable``, ``registered``, or ``draft``; anonymous reads
-    only ever see ``findable`` records, so ``registered`` and ``draft`` need
-    a login. ``affiliation-id``, ``funded-by``, and ``user-id`` take ROR ids
-    and ORCID iDs either bare or as URLs. Date filters (``created``,
-    ``registered``, ``published``) take a year or a comma-separated list of
-    years.
+    ``state`` is ``findable``, ``registered``, or ``draft``. Without a login
+    the API ignores ``registered`` and ``draft`` and answers as for
+    ``findable``. ``affiliation-id`` and ``funded-by`` take ROR ids,
+    ``funder-id`` a Crossref Funder ID, and ``user-id`` an ORCID iD, bare or
+    as a URL. Date filters (``created``, ``registered``, ``published``) take a
+    year or a comma-separated list of years. ``field-of-science`` takes the
+    plain label (``natural sciences``). ``has-citations``,
+    ``has-references``, ``has-parts``, ``has-part-of``, ``has-versions``,
+    ``has-version-of``, ``has-views``, and ``has-downloads`` take a minimum
+    count (``1``); ``true`` does not work for them, while it does for
+    ``has-person``, ``has-affiliation``, ``has-organization``, and
+    ``has-funder``. ``random=true`` draws random records, and
+    ``sample_group="client"`` draws one random record per client account (a
+    slow query, about two minutes on 2026-11-28). ``sample_size`` did not
+    change the number of records on 2026-11-28; the page size decides how
+    many of the drawn records come back.
     """
 
     model_config = _SharedConfig
@@ -60,6 +73,7 @@ class DoiFilters(BaseModel):
     field_of_science: _StrFilter = Field(None, alias="field-of-science")
     license: _StrFilter = None
     link_check_status: _StrFilter = Field(None, alias="link-check-status")
+    enriched: _BoolFilter = None
     has_citations: _IntFilter = Field(None, alias="has-citations")
     has_references: _IntFilter = Field(None, alias="has-references")
     has_parts: _IntFilter = Field(None, alias="has-parts")
@@ -73,16 +87,18 @@ class DoiFilters(BaseModel):
     has_organization: _BoolFilter = Field(None, alias="has-organization")
     has_funder: _BoolFilter = Field(None, alias="has-funder")
     random: _BoolFilter = None
-    sample_size: _IntFilter = None
+    sample_size: _IntFilter = Field(None, alias="sample-size")
     sample_group: _StrFilter = None
 
 
 class ClientFilters(BaseModel):
     """Filter model for the ``/clients`` route.
 
-    ``client-type`` is ``repository`` or ``periodical``; ``year`` takes a
-    year or a comma-separated list of years. The remaining keys mirror the
-    filters of the ``/dois`` route with the same meaning.
+    ``client-type`` is ``repository``, ``periodical``, ``igsnCatalog``, or
+    ``raidRegistry``; ``repository-type`` is ``disciplinary``,
+    ``governmental``, ``institutional``, ``multidisciplinary``,
+    ``project-related``, or ``other``; ``year`` is the year the client was
+    created; ``software`` is the repository software (``dspace``).
     """
 
     model_config = _SharedConfig
@@ -90,64 +106,48 @@ class ClientFilters(BaseModel):
     year: _StrFilter = None
     client_type: _StrFilter = Field(None, alias="client-type")
     provider_id: _StrFilter = Field(None, alias="provider-id")
-    consortium_id: _StrFilter = Field(None, alias="consortium-id")
-    prefix: _StrFilter = None
     certificate: _StrFilter = None
-    repositories: _BoolFilter = None
-    created: _StrFilter = None
-    registered: _StrFilter = None
-    published: _StrFilter = None
-    resource_type_id: _StrFilter = Field(None, alias="resource-type-id")
-    resource_type: _StrFilter = None
-    subject: _StrFilter = None
-    field_of_science: _StrFilter = Field(None, alias="field-of-science")
-    license: _StrFilter = None
-    affiliation_id: _StrFilter = Field(None, alias="affiliation-id")
-    funded_by: _StrFilter = Field(None, alias="funded-by")
+    software: _StrFilter = None
+    repository_type: _StrFilter = Field(None, alias="repository-type")
 
 
 class ProviderFilters(BaseModel):
     """Filter model for the ``/providers`` route.
 
-    ``member-type`` is one of ``direct-member``, ``consortium``,
-    ``consortium-organization``, ``for-profit-provider``,
-    ``provider``, or ``epoch-member``; ``region`` is one of ``amer``,
-    ``apa``, ``emea``.
+    ``member-type`` is one of ``consortium_organization``, ``direct_member``,
+    ``consortium``, ``member_only``, or ``developer`` (underscores, as in the
+    payloads); ``region`` is ``emea``, ``amer``, or ``apac``, in any case.
     """
 
     model_config = _SharedConfig
 
     year: _StrFilter = None
+    consortium_id: _StrFilter = Field(None, alias="consortium-id")
     member_type: _StrFilter = Field(None, alias="member-type")
     region: _StrFilter = None
     organization_type: _StrFilter = Field(None, alias="organization-type")
     focus_area: _StrFilter = None
-    non_profit_status: _StrFilter = Field(None, alias="non-profit-status")
-    country: _StrFilter = None
+    has_required_contacts: _BoolFilter = Field(None, alias="has-required-contacts")
 
 
-class RepositoryFilters(BaseModel):
+class RepositoryFilters(ClientFilters):
     """Filter model for the ``/repositories`` route.
 
-    ``repository-type`` values are free text (``governmental``,
-    ``institutional``, and similar); ``certificate`` takes repository
-    certificate names such as ``CoreTrustSeal``.
+    The route serves every client account, periodicals included, and accepts
+    the filters of ``/clients`` plus ``consortium-id``.
     """
 
     model_config = _SharedConfig
 
-    year: _StrFilter = None
-    repository_type: _StrFilter = Field(None, alias="repository-type")
-    certificate: _StrFilter = None
-    provider_id: _StrFilter = Field(None, alias="provider-id")
     consortium_id: _StrFilter = Field(None, alias="consortium-id")
-    software: _StrFilter = None
-    prefix: _StrFilter = None
-    client_type: _StrFilter = Field(None, alias="client-type")
 
 
 class PrefixFilters(BaseModel):
-    """Filter model for the ``/prefixes`` route."""
+    """Filter model for the ``/prefixes`` route.
+
+    ``state`` is ``with-repository``, ``without-repository``, or
+    ``unassigned``.
+    """
 
     model_config = _SharedConfig
 
@@ -155,7 +155,27 @@ class PrefixFilters(BaseModel):
     state: _StrFilter = None
     provider_id: _StrFilter = Field(None, alias="provider-id")
     client_id: _StrFilter = Field(None, alias="client-id")
+
+
+class ClientPrefixFilters(BaseModel):
+    """Filter model for the ``/client-prefixes`` route."""
+
+    model_config = _SharedConfig
+
+    year: _StrFilter = None
+    client_id: _StrFilter = Field(None, alias="client-id")
+    prefix_id: _StrFilter = Field(None, alias="prefix-id")
+
+
+class ProviderPrefixFilters(BaseModel):
+    """Filter model for the ``/provider-prefixes`` route."""
+
+    model_config = _SharedConfig
+
+    year: _StrFilter = None
     consortium_id: _StrFilter = Field(None, alias="consortium-id")
+    provider_id: _StrFilter = Field(None, alias="provider-id")
+    prefix_id: _StrFilter = Field(None, alias="prefix-id")
 
 
 class EventFilters(BaseModel):
@@ -215,10 +235,12 @@ def serialize_filter_params(
 
 __all__ = [
     "ClientFilters",
+    "ClientPrefixFilters",
     "DoiFilters",
     "EventFilters",
     "PrefixFilters",
     "ProviderFilters",
+    "ProviderPrefixFilters",
     "RepositoryFilters",
     "serialize_filter_params",
 ]
