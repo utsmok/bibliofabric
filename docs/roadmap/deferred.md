@@ -107,6 +107,7 @@ Wave 1 needed two of the six planned core additions. `BaseApiClient.default_head
 | Per-form and per-sense REST routes | The lexeme REST API has no route for a single form or sense (404 on 2026-11-28). The lexeme payload carries its forms and senses. | The lexeme REST API adding the routes. |
 | SPARQL UPDATE | The query service is read-only. | Nothing on our side. The service has no update endpoint. |
 | Linked-data endpoint of the query service (`/bigdata/ld/...`) | The endpoint is gone (404 on 2026-11-28). | Nothing on our side. |
+| Wikibase submodules of the MediaWiki query API (`meta=wbcontentlanguages`, `list=wblistentityusage`, `prop=wbentityusage`, `list=wbsubscribers`, `prop=pageterms`, `list=wbsearch`) | They describe wiki pages and the use of entities on other wikis, not the entities themselves, and `list=wbsearch` repeats `wbsearchentities` (checked 2026-11-28). `client.request("GET", "w/api.php", params=...)` reaches them today. | A caller that needs typed results for one of them. |
 
 ## DOAJ (`diurnalia`)
 
