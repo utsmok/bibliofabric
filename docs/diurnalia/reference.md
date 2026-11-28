@@ -69,3 +69,10 @@ Generated from the source with mkdocstrings.
     options:
       heading_level: 3
       show_source: false
+
+## Journal CSV export
+
+::: diurnalia.iter_journal_csv
+    options:
+      heading_level: 3
+      show_source: false

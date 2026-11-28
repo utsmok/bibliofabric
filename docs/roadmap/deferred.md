@@ -114,7 +114,7 @@ Wave 1 needed two of the six planned core additions. `BaseApiClient.default_head
 | Applications search (`GET /api/v4/search/applications/{query}`) | The route answers 401 without an admin key (verified 2026-11-27). | A DOAJ admin key in `.env`. |
 | Write routes (`POST /api/articles`, `PUT` and `DELETE` on `/api/articles/{id}` and `/api/journals/{id}`, `POST /api/applications`, and `GET`, `PUT`, `DELETE` on `/api/applications/{id}`) | Wave 1 covers reads only. They need an admin key. | A DOAJ admin key and a decision to support writes. |
 | Bulk upload routes (`POST` and `DELETE` on `/api/bulk/articles`, `GET /api/bulk/articles/{upload_id}`, and `POST` and `DELETE` on `/api/bulk/applications`) | They manage article uploads by publishers and need a publisher key. | A DOAJ publisher account. |
-| Download of the public data dump | The dump holds every journal and article and serves bulk harvest, not lookups. | A decision to ship a dump loader, as the ROR client has. |
+| Download of the full journal and article data dumps | DOAJ grants access to the dumps case by case, and the dump routes answer 401 without it (verified 2026-11-28). The public journal CSV export is wrapped by `journals.download_csv()`. | An access grant from DOAJ, then a dump loader like the ROR one. |
 
 ## ISSN Portal (`seriatim`)
 

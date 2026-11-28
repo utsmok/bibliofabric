@@ -1,6 +1,6 @@
 # Journals
 
-`client.journals` talks to `/api/v4/search/journals/{query}` and `/api/v4/journals/{id}` and returns `Journal` models. DOAJ has no journal listing route, so searches and ISSN lookups go through the search route. One query reaches at most 1000 records, so a full registry harvest should use the [DOAJ public data dump](https://doaj.org/docs/public-data-dump/).
+`client.journals` talks to `/api/v4/search/journals/{query}` and `/api/v4/journals/{id}` and returns `Journal` models. DOAJ has no journal listing route, so searches and ISSN lookups go through the search route. One query reaches at most 1000 records, so a full registry harvest uses the [journal CSV export](#every-journal-as-csv).
 
 ## Get one journal by ISSN
 
@@ -68,3 +68,17 @@ page.meta  # the envelope: pageSize, timestamp, query, last/next/prev URLs
 ## Sorting
 
 `sort=` takes `field` or `field:direction` with `asc` (the default) and `desc`. The field uses the dot notation (`sort=bibjson.title:desc`). An unknown sort field answers 400. Fields that hold multiple values sort by their smallest value.
+
+## Every journal as CSV
+
+DOAJ publishes a CSV export of every journal at `https://doaj.org/csv`, which redirects to a file on Amazon S3. On 2026-11-28 it held 23,672 journals in 52 columns and was about 26 MB. `download_csv()` streams it to a file, and `iter_journal_csv()` reads it row by row.
+
+```python
+from diurnalia import iter_journal_csv
+
+path = await client.journals.download_csv("doaj_journals.csv")
+for row in iter_journal_csv(path):
+    row["Journal title"], row["Journal EISSN (online version)"]
+```
+
+Each row is a dict keyed by the column headers as DOAJ writes them, and every value is a string. The full journal and article data dumps are not public: DOAJ grants access case by case and the dump routes answer 401 without it.

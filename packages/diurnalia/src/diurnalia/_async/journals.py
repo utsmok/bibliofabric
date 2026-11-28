@@ -1,10 +1,12 @@
 """Client for the DOAJ journal search route."""
 
 from collections.abc import Mapping
+from pathlib import Path
 from typing import Any, override
 
 from bibliofabric.exceptions import NotFoundError
 
+from ..dialect import DOAJ_JOURNAL_CSV_URL
 from ..filters import issn_query
 from ..models import Journal
 from .base import DiurnaliaResourceClient
@@ -14,8 +16,9 @@ class JournalsClient(DiurnaliaResourceClient[Journal]):
     """Client for the ``/search/journals`` route.
 
     DOAJ has no journal listing; every read goes through a search. One
-    query reaches at most 1000 records (page and page size combined), so
-    full registry harvests should use the DOAJ public data dump instead.
+    query reaches at most 1000 records (page and page size combined). For
+    the whole registry, :meth:`download_csv` fetches the public CSV export
+    of every journal.
     """
 
     path = "search/journals"
@@ -44,6 +47,24 @@ class JournalsClient(DiurnaliaResourceClient[Journal]):
         if not page.results:
             raise NotFoundError(f"No DOAJ journal with ISSN {id!r}.")
         return page.results[0]
+
+    async def download_csv(self, dest: Path | str) -> Path:
+        """Stream the public CSV export of every DOAJ journal to ``dest``.
+
+        The export holds one row per journal with 52 columns (2026-11-28)
+        and is about 26 MB. Read it with :func:`diurnalia.iter_journal_csv`.
+        Creates parent directories, overwrites an existing file, and returns
+        the path.
+        """
+        target = Path(dest)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        async with self._client.stream(
+            "GET", DOAJ_JOURNAL_CSV_URL, follow_redirects=True
+        ) as response:
+            with target.open("wb") as handle:
+                async for chunk in response.aiter_bytes():
+                    handle.write(chunk)
+        return target
 
 
 __all__ = ["JournalsClient"]

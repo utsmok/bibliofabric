@@ -34,10 +34,12 @@ from .dialect import (
     DOAJ_DEFAULT_PAGE_SIZE,
     DOAJ_DIALECT,
     DOAJ_ITERATE_PAGE_SIZE,
+    DOAJ_JOURNAL_CSV_URL,
     DOAJ_MAX_OFFSET,
     DOAJ_MAX_PAGE_SIZE,
 )
 from .filters import doi_query, issn_query
+from .journal_csv import iter_journal_csv
 from .models import (
     Admin,
     Apc,
@@ -86,6 +88,7 @@ __all__ = [
     "DOAJ_DIALECT",
     "DOAJ_ITERATE_PAGE_SIZE",
     "DOAJ_MAX_OFFSET",
+    "DOAJ_JOURNAL_CSV_URL",
     "DOAJ_MAX_PAGE_SIZE",
     "DepositPolicy",
     "Editorial",
@@ -121,5 +124,6 @@ __all__ = [
     "doi_query",
     "get_settings",
     "issn_query",
+    "iter_journal_csv",
     "quote_query",
 ]

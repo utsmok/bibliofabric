@@ -10,6 +10,12 @@ from bibliofabric.paging import QueryDialect
 #: Base URL of the DOAJ API version 4.
 DOAJ_API_BASE_URL = "https://doaj.org/api/v4"
 
+#: Public CSV export of every DOAJ journal. The route redirects to a file on
+#: Amazon S3 that DOAJ regenerates (about 26 MB and 52 columns on
+#: 2026-11-28). The full journal and article data dumps need an access
+#: grant from DOAJ and answer 401 otherwise.
+DOAJ_JOURNAL_CSV_URL = "https://doaj.org/csv"
+
 #: The API silently clamps ``pageSize`` to this value (verified 2026-11-27).
 DOAJ_MAX_PAGE_SIZE = 50
 

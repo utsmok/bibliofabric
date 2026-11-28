@@ -8,7 +8,12 @@ one per second, which is inside the documented limit.
 """
 
 import pytest
-from diurnalia import DiurnaliaSettings, DiurnaliaSyncClient, NotFoundError
+from diurnalia import (
+    DiurnaliaSettings,
+    DiurnaliaSyncClient,
+    NotFoundError,
+    iter_journal_csv,
+)
 
 pytestmark = pytest.mark.live_api
 
@@ -100,3 +105,11 @@ def test_sort_journals_smoke(live_client):
     )
     titles = [record.bibjson.title for record in page.results]
     assert titles == sorted(titles, key=str.casefold)
+
+
+def test_journal_csv_smoke(live_client, tmp_path):
+    path = live_client.journals.download_csv(tmp_path / "journals.csv")
+    rows = iter_journal_csv(path)
+    first = next(rows)
+    assert first["Journal title"]
+    assert sum(1 for _ in rows) > 20_000

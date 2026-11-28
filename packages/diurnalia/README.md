@@ -51,7 +51,7 @@ page = await client.articles.search(
 
 ## Paging limits
 
-`pageSize` defaults to 10 and the API clamps it to 50. A query reaches at most 1000 records: `(page - 1) * pageSize + pageSize` must stay within 1000, so the last full page at `pageSize=50` is page 20. `iterate()` pages at 50 and the client raises `ConfigurationError` when a page would go beyond the cap. DOAJ serves everything else through its [public data dump](https://doaj.org/docs/public-data-dump/).
+`pageSize` defaults to 10 and the API clamps it to 50. A query reaches at most 1000 records: `(page - 1) * pageSize + pageSize` must stay within 1000, so the last full page at `pageSize=50` is page 20. `iterate()` pages at 50 and the client raises `ConfigurationError` when a page would go beyond the cap. For every journal at once, `client.journals.download_csv(path)` fetches the public journal CSV export and `iter_journal_csv(path)` reads it. The full article data dump needs an access grant from DOAJ.
 
 ## Sync usage
 

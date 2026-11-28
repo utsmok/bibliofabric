@@ -43,7 +43,7 @@ Commands live at the workspace root (see the root `AGENTS.md`). Package-specific
 
 ## Known gaps
 
-- The API serves at most 1000 records per query. Full harvests should use the DOAJ public data dump (https://doaj.org/docs/public-data-dump/), which this package does not read.
+- The API serves at most 1000 records per query. `journals.download_csv()` fetches the public CSV export of every journal (`https://doaj.org/csv`, a 307 to S3); `journal_csv.iter_journal_csv()` reads it. The full journal and article dumps need an access grant (401 without it) and are not read.
 - Applications search (`/api/v4/search/applications/`) needs an admin API key and is not wrapped.
 - Write routes (article and application CRUD, bulk uploads, journal management) need an admin key and are not wrapped.
 - Wildcards, fuzzy (`~`), regex, and proximity syntax are disabled by DOAJ; a query using them answers 400.
