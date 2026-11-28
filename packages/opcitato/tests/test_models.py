@@ -1,7 +1,7 @@
 """Pydantic models: rows from the real API validate, properties parse ids."""
 
 import pytest
-from opcitato import Citation, Count, MetadataRecord
+from opcitato import Citation, Count, MetadataRecord, SparqlResult
 from pydantic import ValidationError
 
 from .conftest import citation, count_rows, load_fixture_json, metadata_row
@@ -65,3 +65,58 @@ def test_metadata_empty_strings_become_defaults():
     row = MetadataRecord.model_validate({"id": "omid:br/1", "author": ""})
     assert row.authors == []
     assert row.title == ""
+
+
+def test_rows_keep_the_fields_the_models_do_not_name():
+    row = Citation.model_validate(citation(data_source="crossref"))
+    assert row.model_extra == {"data_source": "crossref"}
+    record = MetadataRecord.model_validate(metadata_row(oa_url="https://example.org"))
+    assert record.model_extra == {"oa_url": "https://example.org"}
+
+
+def test_sparql_results_of_the_live_endpoints_validate():
+    index = SparqlResult.model_validate(load_fixture_json("sparql_index.json"))
+    assert index.rows() == [
+        {
+            "ci": "https://w3id.org/oc/index/ci/0601-061203747253",
+            "citing": "https://w3id.org/oc/meta/br/0601",
+            "cited": "https://w3id.org/oc/meta/br/061203747253",
+        },
+        {
+            "ci": "https://w3id.org/oc/index/ci/0601-061203747376",
+            "citing": "https://w3id.org/oc/meta/br/0601",
+            "cited": "https://w3id.org/oc/meta/br/061203747376",
+        },
+    ]
+    assert index.meta["result-size-total"] == 2
+
+    meta = SparqlResult.model_validate(load_fixture_json("sparql_meta.json"))
+    assert meta.results is not None
+    term = meta.results.bindings[0]["date"]
+    assert term.type == "literal"
+    assert term.value == "1999-10"
+    assert term.datatype == "http://www.w3.org/2001/XMLSchema#gYearMonth"
+    assert term.xml_lang is None
+
+
+def test_sparql_ask_answer_has_a_boolean_and_no_bindings():
+    ask = SparqlResult.model_validate(load_fixture_json("sparql_ask.json"))
+    assert ask.boolean is True
+    assert ask.head.vars == []
+    assert ask.results is None
+    assert ask.rows() == []
+
+
+def test_sparql_language_tag_reads_the_colon_key():
+    ask = SparqlResult.model_validate(
+        {
+            "head": {"vars": ["label"]},
+            "results": {
+                "bindings": [
+                    {"label": {"type": "literal", "value": "Titel", "xml:lang": "de"}}
+                ]
+            },
+        }
+    )
+    assert ask.results is not None
+    assert ask.results.bindings[0]["label"].xml_lang == "de"

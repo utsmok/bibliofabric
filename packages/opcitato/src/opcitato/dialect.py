@@ -2,9 +2,10 @@
 
 Both REST APIs are served by one host and are built with RAMOSE, so they
 share the row-shaping parameters (``require``, ``filter``, ``sort``,
-``format``, ``json``) and the documented rate limit. The resource clients
-that consume these constants live in :mod:`opcitato._async`
-(their sync twins are generated from them).
+``format``, ``json``) and the documented rate limit. Each dataset also has
+a SPARQL endpoint on a second host. The resource clients that consume
+these constants live in :mod:`opcitato._async` (their sync twins are
+generated from them).
 """
 
 #: Base URL of both OpenCitations APIs (Index and Meta).
@@ -16,9 +17,11 @@ INDEX_API_PATH = "index/v2"
 #: Path prefix of the Meta API v1 routes.
 META_API_PATH = "meta/v1"
 
-#: Number of rows one Index or Meta request returns. There is no paging:
-#: every operation answers with the complete result of the query.
-UNPAGED = True
+#: SPARQL endpoint of the Index dataset.
+INDEX_SPARQL_URL = "https://sparql.opencitations.net/index"
+
+#: SPARQL endpoint of the Meta dataset.
+META_SPARQL_URL = "https://sparql.opencitations.net/meta"
 
 #: Separator OpenCitations uses to pack several identifiers into one path
 #: segment (documented for the Meta ``/metadata/{ids}`` operation).
@@ -47,10 +50,11 @@ __all__ = [
     "FORMATS",
     "INDEX_API_PATH",
     "INDEX_ID_SCHEMES",
+    "INDEX_SPARQL_URL",
     "META_API_PATH",
     "META_ID_SCHEMES",
+    "META_SPARQL_URL",
     "MULTI_ID_SEPARATOR",
     "OPENCITATIONS_API_BASE_URL",
     "PERSON_ID_SCHEMES",
-    "UNPAGED",
 ]

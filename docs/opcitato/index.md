@@ -1,16 +1,16 @@
 # opcitato
 
-opcitato is a placeholder name. The package will be renamed before its first release.
+The package is not yet published on PyPI. Until the first release, install it from a checkout of the `bibliofabric` workspace, where `uv sync --all-packages` installs it together with the `bibliofabric` 0.8 it needs.
 
-opcitato is a Python client for the [OpenCitations Index API v2](https://opencitations.net/index/api/v2) and the [OpenCitations Meta API v1](https://opencitations.net/meta/api/v1), built on [bibliofabric](https://github.com/utsmok/bibliofabric). It types the citation rows and the bibliographic metadata with Pydantic models, parses the multi-identifier strings into `(scheme, value)` pairs, validates the prefixed identifiers before a request is sent, and reads the CSV representation into the same models. It ships an async client and a generated sync twin with the same API. The APIs need no credentials.
+opcitato is a Python client for the [OpenCitations Index API v2](https://opencitations.net/index/api/v2), the [OpenCitations Meta API v1](https://opencitations.net/meta/api/v1), and the SPARQL endpoint of each dataset, built on [bibliofabric](https://github.com/utsmok/bibliofabric). It types the citation rows, the count rows, and the bibliographic metadata with Pydantic models, parses the multi-identifier strings into `(scheme, value)` pairs, validates the prefixed identifiers before a request is sent, and reads the CSV representation into the same models. It ships an async client and a generated sync twin with the same API. The APIs need no credentials.
 
 ## Install
 
 ```bash
-uv add opcitato
+uv sync --all-packages
 ```
 
-Requires Python 3.12 or newer.
+Run the command from the root of the `bibliofabric` workspace checkout. It requires Python 3.12 or newer.
 
 ## Quick start
 
@@ -30,11 +30,18 @@ async def main():
         records = await client.meta.metadata("doi:10.1007/978-1-4020-9632-7")
         print(records[0].title, records[0].pub_date)
 
+        result = await client.index.sparql(
+            "SELECT ?ci ?cited WHERE { "
+            "?ci <http://purl.org/spar/cito/hasCitedEntity> ?cited } LIMIT 3"
+        )
+        for row in result.rows():
+            print(row["ci"], row["cited"])
+
 
 asyncio.run(main())
 ```
 
-`client.index` exposes the six Index operations (`citation()`, `citations()`, `references()`, `citation_count()`, `reference_count()`, `venue_citation_count()`). `client.meta` exposes the three Meta operations (`metadata()`, `author()`, `editor()`). Every operation answers with the complete result; neither API pages.
+`client.index` exposes the six Index operations (`citation()`, `citations()`, `references()`, `citation_count()`, `reference_count()`, `venue_citation_count()`) and the Index SPARQL endpoint (`sparql()` and `sparql_text()`). `client.meta` exposes the three Meta operations (`metadata()`, `author()`, `editor()`) and the Meta SPARQL endpoint. Every operation answers with the complete result; neither API pages.
 
 ## Sync usage
 
@@ -54,7 +61,7 @@ with OpcitatoSyncClient() as client:
 
 ## Where to go next
 
-- [Index API](index-api.md) covers citations, references, counts, and the row-shaping parameters.
+- [Index API](index-api.md) covers citations, references, counts, the row-shaping parameters, and the SPARQL endpoints of both datasets.
 - [Meta API](meta-api.md) covers metadata, authors, editors, and multi-id requests.
 - [Upstream quirks](upstream-quirks.md) lists what the live APIs do differently from their documentation, with the dates each fact was verified.
 - The [API reference](reference.md) is generated from the source.

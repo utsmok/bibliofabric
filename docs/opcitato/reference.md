@@ -52,7 +52,9 @@ Generated from the source with mkdocstrings.
       members:
         - OPENCITATIONS_API_BASE_URL
         - INDEX_API_PATH
+        - INDEX_SPARQL_URL
         - META_API_PATH
+        - META_SPARQL_URL
         - MULTI_ID_SEPARATOR
         - FORMATS
         - INDEX_ID_SCHEMES
@@ -70,6 +72,11 @@ Generated from the source with mkdocstrings.
       show_source: false
 
 ::: opcitato.ids.normalize_index_id
+    options:
+      heading_level: 3
+      show_source: false
+
+::: opcitato.ids.normalize_issn
     options:
       heading_level: 3
       show_source: false
@@ -124,3 +131,25 @@ The models live in `opcitato.models` and are re-exported from the top-level pack
         - identifiers
         - authors
         - editors
+
+::: opcitato.models.SparqlResult
+    options:
+      heading_level: 3
+      show_source: false
+      members:
+        - rows
+
+::: opcitato.models.SparqlTerm
+    options:
+      heading_level: 3
+      show_source: false
+
+::: opcitato.models.SparqlHead
+    options:
+      heading_level: 3
+      show_source: false
+
+::: opcitato.models.SparqlResults
+    options:
+      heading_level: 3
+      show_source: false

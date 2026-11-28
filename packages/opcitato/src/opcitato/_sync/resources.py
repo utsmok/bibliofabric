@@ -5,19 +5,27 @@ Both APIs are unpaged: every operation answers with the complete result of
 the query. Every operation accepts the row-shaping parameters ``require``,
 ``filter``, ``sort``, and ``format`` that the RAMOSE engine applies in that
 order; ``format="csv"`` parses into the same models as the JSON form
-because the CSV header repeats the JSON field names.
+because the CSV header repeats the JSON field names. Each dataset also has
+a SPARQL endpoint, reached with ``sparql()`` and ``sparql_text()``.
 """
 
 from collections.abc import Sequence
 from typing import Any, Literal
 from urllib.parse import urlencode
 
+import httpx
 from bibliofabric import SyncBaseApiClient, validate_model
 from bibliofabric.exceptions import ConfigurationError
 from pydantic import BaseModel
 
 from ..csvparse import parse_csv_rows
-from ..dialect import FORMATS, INDEX_API_PATH, META_API_PATH
+from ..dialect import (
+    FORMATS,
+    INDEX_API_PATH,
+    INDEX_SPARQL_URL,
+    META_API_PATH,
+    META_SPARQL_URL,
+)
 from ..ids import (
     normalize_index_id,
     normalize_issn,
@@ -25,11 +33,26 @@ from ..ids import (
     normalize_oci,
     normalize_person_id,
 )
-from ..models import Citation, Count, MetadataRecord
+from ..models import Citation, Count, MetadataRecord, SparqlResult
 
 #: Result representation of an operation; ``format=csv`` overrides the
 #: ``Accept`` header server-side.
 RowFormat = Literal["json", "csv"]
+
+#: Result representations of the SPARQL endpoints, selected through the
+#: ``Accept`` header (verified 2026-11-28).
+SPARQL_MEDIA_TYPES: dict[str, str] = {
+    "json": "application/sparql-results+json",
+    "xml": "application/sparql-results+xml",
+    "csv": "text/csv",
+    "tsv": "text/tab-separated-values",
+    "turtle": "text/turtle",
+    "n-triples": "application/n-triples",
+}
+
+#: How a SPARQL query travels: in the URL (``GET``) or in a form body
+#: without a length limit (``POST``).
+SparqlMethod = Literal["GET", "POST"]
 
 #: The two orders the ``sort`` parameter accepts.
 _SORT_ORDERS = ("asc", "desc")
@@ -78,6 +101,11 @@ def _row_params(
     return pairs
 
 
+def _attached_request(response: httpx.Response) -> httpx.Request | None:
+    """Return the request of ``response``, or ``None`` when none is attached."""
+    return getattr(response, "request", None)
+
+
 def _fetch_rows[E: BaseModel](
     client: SyncBaseApiClient,
     model: type[E],
@@ -105,24 +133,112 @@ def _fetch_rows[E: BaseModel](
                 f"for {path}."
             )
         rows = body
-    request = getattr(response, "request", None)
     return [
-        validate_model(model, row, request=request, response=response) for row in rows
+        validate_model(
+            model, row, request=_attached_request(response), response=response
+        )
+        for row in rows
     ]
 
 
 def _fetch_count(client: SyncBaseApiClient, path: str) -> int | None:
     """Send one count request and return the count, or ``None`` for ``[]``.
 
-    An unknown identifier is not an error: the API answers 200 with an
-    empty list, and this reads it as "no count reported".
+    An empty list is read as "no count reported". Any other body that is
+    not a list raises :class:`ConfigurationError`, because the count
+    operations always answer a list.
     """
     response = client.request("GET", path)
     body = client.parse_json(response)
-    if not isinstance(body, list) or not body:
+    if not isinstance(body, list):
+        raise ConfigurationError(
+            f"OpenCitations answered {type(body).__name__} instead of a list "
+            f"for {path}."
+        )
+    if not body:
         return None
-    request = getattr(response, "request", None)
-    return validate_model(Count, body[0], request=request, response=response).count
+    return validate_model(
+        Count, body[0], request=_attached_request(response), response=response
+    ).count
+
+
+def _send_sparql(
+    client: SyncBaseApiClient,
+    endpoint: str,
+    query: str,
+    *,
+    method: SparqlMethod,
+    accept: str,
+    timeout: float | None,
+) -> httpx.Response:
+    """Send one SPARQL request to ``endpoint``, an absolute URL on a second host.
+
+    The endpoints answer XML unless asked otherwise, so ``accept`` always
+    travels. ``POST`` carries the query in a form body, which has no length
+    limit; the request only reads, so it passes ``retry=True``.
+    """
+    if not query.strip():
+        raise ConfigurationError("The SPARQL query must be non-empty.")
+    headers = {"Accept": accept}
+    if method == "POST":
+        return client.request(
+            "POST",
+            endpoint,
+            data={"query": query},
+            headers=headers,
+            timeout=timeout,
+            retry=True,
+        )
+    return client.request(
+        "GET", endpoint, params={"query": query}, headers=headers, timeout=timeout
+    )
+
+
+def _run_sparql(
+    client: SyncBaseApiClient,
+    endpoint: str,
+    query: str,
+    *,
+    method: SparqlMethod,
+    timeout: float | None,
+) -> SparqlResult:
+    """Run a SPARQL query and validate the SPARQL 1.1 JSON answer."""
+    response = _send_sparql(
+        client,
+        endpoint,
+        query,
+        method=method,
+        accept=SPARQL_MEDIA_TYPES["json"],
+        timeout=timeout,
+    )
+    return validate_model(
+        SparqlResult,
+        client.parse_json(response),
+        request=_attached_request(response),
+        response=response,
+    )
+
+
+def _run_sparql_text(
+    client: SyncBaseApiClient,
+    endpoint: str,
+    query: str,
+    *,
+    format: str,
+    method: SparqlMethod,
+    timeout: float | None,
+) -> str:
+    """Run a SPARQL query and return the raw body of the requested representation."""
+    accept = SPARQL_MEDIA_TYPES.get(format)
+    if accept is None:
+        raise ConfigurationError(
+            "SPARQL format must be one of "
+            f"{sorted(SPARQL_MEDIA_TYPES)}, got {format!r}."
+        )
+    response = _send_sparql(
+        client, endpoint, query, method=method, accept=accept, timeout=timeout
+    )
+    return response.text
 
 
 class IndexSyncClient:
@@ -132,7 +248,9 @@ class IndexSyncClient:
     has no paging. ``citations`` and ``references`` accept ``require``,
     ``filter``, ``sort``, and ``format``; ``filter`` entries look like
     ``creation:>2019-12`` (a regular expression, or ``=``, ``<``, ``>``
-    with a value), and ``sort`` looks like ``desc(creation)``.
+    with a value), and ``sort`` looks like ``desc(creation)``. The SPARQL
+    endpoint of the Index dataset answers arbitrary queries through
+    :meth:`sparql` and :meth:`sparql_text`.
     """
 
     def __init__(self, client: SyncBaseApiClient) -> None:
@@ -194,8 +312,9 @@ class IndexSyncClient:
     def citation_count(self, id: str) -> int | None:
         """Return the number of incoming citations of one entity.
 
-        Returns ``None`` when the entity is unknown (the API answers ``[]``
-        with status 200 instead of an error or a zero row).
+        An unknown identifier answers ``0``: the API returns a zero row with
+        status 200 (verified 2026-11-28). ``None`` means the API answered an
+        empty list, which it did for unknown identifiers on 2026-11-27.
         """
         path = f"{INDEX_API_PATH}/citation-count/{normalize_index_id(id)}"
         return _fetch_count(self._client, path)
@@ -203,7 +322,7 @@ class IndexSyncClient:
     def reference_count(self, id: str) -> int | None:
         """Return the number of outgoing references of one entity.
 
-        Returns ``None`` when the entity is unknown.
+        An unknown identifier answers ``0``; see :meth:`citation_count`.
         """
         path = f"{INDEX_API_PATH}/reference-count/{normalize_index_id(id)}"
         return _fetch_count(self._client, path)
@@ -212,17 +331,68 @@ class IndexSyncClient:
         """Return the number of incoming citations to a whole venue.
 
         ``issn`` is an ``issn:``-prefixed identifier; this is the only
-        scheme the operation accepts.
+        scheme the operation accepts. An unknown identifier answers ``0``;
+        see :meth:`citation_count`.
         """
         path = f"{INDEX_API_PATH}/venue-citation-count/{normalize_issn(issn)}"
         return _fetch_count(self._client, path)
+
+    def sparql(
+        self,
+        query: str,
+        *,
+        method: SparqlMethod = "GET",
+        timeout: float | None = None,
+    ) -> SparqlResult:
+        """Run a SPARQL SELECT or ASK query on the Index dataset.
+
+        The endpoint is ``https://sparql.opencitations.net/index``. A SELECT
+        answer fills ``results``, and ``rows()`` on the result returns the
+        bindings as plain strings. An ASK answer fills ``boolean``. The
+        ``meta`` member carries the query time and the number of rows.
+
+        ``method="POST"`` sends the query in the request body, which has no
+        length limit. A malformed query answers 400 and raises
+        :class:`~bibliofabric.exceptions.APIError` with the server's message
+        in the body.
+        """
+        return _run_sparql(
+            self._client, INDEX_SPARQL_URL, query, method=method, timeout=timeout
+        )
+
+    def sparql_text(
+        self,
+        query: str,
+        *,
+        format: str = "turtle",
+        method: SparqlMethod = "GET",
+        timeout: float | None = None,
+    ) -> str:
+        """Run a SPARQL query and return the raw body as text.
+
+        ``format`` selects the representation through the ``Accept``
+        header: ``json``, ``xml``, ``csv``, ``tsv``, ``turtle``, or
+        ``n-triples``. CONSTRUCT and DESCRIBE answers are RDF, so use this
+        method for them: the endpoint answers Turtle for a CONSTRUCT query
+        that asks for the JSON representation (verified 2026-11-28).
+        """
+        return _run_sparql_text(
+            self._client,
+            INDEX_SPARQL_URL,
+            query,
+            format=format,
+            method=method,
+            timeout=timeout,
+        )
 
 
 class MetaSyncClient:
     """The read operations of the OpenCitations Meta API v1.
 
-    The rows share the shape of :class:`MetadataRecord`; missing values are
-    empty strings. The row-shaping parameters behave as in the Index API.
+    The rows share the shape of :class:`~opcitato.models.MetadataRecord`;
+    missing values are empty strings. The row-shaping parameters behave as
+    in the Index API. The SPARQL endpoint of the Meta dataset answers
+    arbitrary queries through :meth:`sparql` and :meth:`sparql_text`.
     """
 
     def __init__(self, client: SyncBaseApiClient) -> None:
@@ -285,5 +455,50 @@ class MetaSyncClient:
         params = _row_params(require=require, filter=filter, sort=sort, format=format)
         return _fetch_rows(self._client, MetadataRecord, path, params)
 
+    def sparql(
+        self,
+        query: str,
+        *,
+        method: SparqlMethod = "GET",
+        timeout: float | None = None,
+    ) -> SparqlResult:
+        """Run a SPARQL SELECT or ASK query on the Meta dataset.
 
-__all__ = ["IndexSyncClient", "MetaSyncClient", "RowFormat"]
+        The endpoint is ``https://sparql.opencitations.net/meta``. The
+        answer follows the same shape as in
+        :meth:`IndexClient.sparql`.
+        """
+        return _run_sparql(
+            self._client, META_SPARQL_URL, query, method=method, timeout=timeout
+        )
+
+    def sparql_text(
+        self,
+        query: str,
+        *,
+        format: str = "turtle",
+        method: SparqlMethod = "GET",
+        timeout: float | None = None,
+    ) -> str:
+        """Run a SPARQL query and return the raw body as text.
+
+        The parameters behave exactly as in
+        :meth:`IndexClient.sparql_text`.
+        """
+        return _run_sparql_text(
+            self._client,
+            META_SPARQL_URL,
+            query,
+            format=format,
+            method=method,
+            timeout=timeout,
+        )
+
+
+__all__ = [
+    "IndexSyncClient",
+    "MetaSyncClient",
+    "RowFormat",
+    "SPARQL_MEDIA_TYPES",
+    "SparqlMethod",
+]

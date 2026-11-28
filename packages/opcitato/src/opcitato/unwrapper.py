@@ -1,11 +1,15 @@
 """OpenCitations implementation of bibliofabric's ``ResponseUnwrapper`` protocol.
 
 Both APIs answer every read operation with a top-level JSON list of row
-objects; there is no envelope, no total field, and no paging. An unknown
-identifier is not an error: the API answers 200 with ``[]``.
+objects; there is no envelope, no total field, and no paging. The resource
+clients read the responses directly, so this unwrapper only exists to
+satisfy the ``BaseApiClient`` constructor; its readers interpret the list
+bodies.
 """
 
 from typing import Any
+
+from bibliofabric.exceptions import NotFoundError
 
 
 class OpcitatoUnwrapper:
@@ -18,8 +22,15 @@ class OpcitatoUnwrapper:
         return [row for row in body if isinstance(row, dict)]
 
     def item(self, body: Any) -> dict[str, Any]:
-        """Return a single row; OpenCitations has no single-entity envelope."""
-        return body if isinstance(body, dict) else {}
+        """Return the first row of the list.
+
+        Raises :class:`NotFoundError` when the list is empty, which is how
+        the APIs answer an unknown identifier.
+        """
+        rows = self.results(body)
+        if not rows:
+            raise NotFoundError("OpenCitations answered no row for this identifier.")
+        return rows[0]
 
     def total(self, body: Any) -> int | None:
         """Return the length of the result list (the complete result set)."""

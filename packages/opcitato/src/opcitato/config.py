@@ -11,8 +11,9 @@ from pydantic import Field
 from pydantic_settings import SettingsConfigDict
 
 #: Both APIs document a limit of 180 requests per minute per IP address
-#: (3 requests per second). Higher unlimited rates need an OpenCitations
-#: Access Token, which this client does not manage yet.
+#: (3 requests per second). The optional OpenCitations Access Token, which
+#: is free and counts unique users, does not change this limit; the client
+#: sends no token (see ``OpcitatoClient`` for how a caller can send one).
 DEFAULT_MAX_REQUESTS_PER_SECOND = 3.0
 DEFAULT_MAX_CONCURRENCY = 3
 
@@ -23,8 +24,7 @@ class OpcitatoSettings(BaseApiSettings):
     Inherits ``timeout``, ``max_retries``, ``max_retry_wait``,
     ``max_requests_per_second``, ``max_concurrency``, ``user_agent`` and
     ``mailto`` from :class:`bibliofabric.config.BaseApiSettings` and sets the
-    documented pace (3 req/s, concurrency 3). The APIs need no credentials;
-    anonymous usage is limited to 180 requests per minute per IP.
+    documented pace (3 req/s, concurrency 3). The APIs need no credentials.
     """
 
     model_config = SettingsConfigDict(

@@ -1,5 +1,7 @@
 """The unwrapper reads top-level JSON list envelopes."""
 
+import pytest
+from bibliofabric.exceptions import NotFoundError
 from opcitato.unwrapper import OpcitatoUnwrapper
 
 from .conftest import citation
@@ -18,10 +20,15 @@ def test_results_of_a_non_list_is_empty():
     assert OpcitatoUnwrapper().results({"rows": []}) == []
 
 
-def test_item_reads_a_single_object():
+def test_item_returns_the_first_row():
     row = citation()
-    assert OpcitatoUnwrapper().item(row) == row
-    assert OpcitatoUnwrapper().item([row]) == {}
+    assert OpcitatoUnwrapper().item([row, citation(oci="1-2")]) == row
+
+
+@pytest.mark.parametrize("body", [[], {"count": "0"}, "nope"])
+def test_item_raises_not_found_without_a_row(body):
+    with pytest.raises(NotFoundError, match="no row"):
+        OpcitatoUnwrapper().item(body)
 
 
 def test_total_is_the_list_length_and_next_cursor_is_none():

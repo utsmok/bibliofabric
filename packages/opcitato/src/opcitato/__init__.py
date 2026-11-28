@@ -7,7 +7,6 @@ try:
 except PackageNotFoundError:
     __version__ = "0.0.0"
 
-from bibliofabric import Page
 from bibliofabric.exceptions import (
     APIError,
     AuthError,
@@ -35,7 +34,7 @@ from .ids import (
     normalize_person_id,
     parse_identifiers,
 )
-from .models import Citation, Count, MetadataRecord
+from .models import Citation, Count, MetadataRecord, SparqlResult, SparqlTerm
 
 __all__ = [
     "__version__",
@@ -52,13 +51,14 @@ __all__ = [
     "MetaSyncClient",
     "NetworkError",
     "NotFoundError",
-    "Page",
-    "ParsedIdentifier",
-    "RateLimitError",
-    "TimeoutError",
     "OpcitatoClient",
     "OpcitatoSettings",
     "OpcitatoSyncClient",
+    "ParsedIdentifier",
+    "RateLimitError",
+    "SparqlResult",
+    "SparqlTerm",
+    "TimeoutError",
     "ValidationError",
     "get_settings",
     "normalize_index_id",

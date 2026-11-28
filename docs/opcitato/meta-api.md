@@ -41,3 +41,18 @@ for record in works:
 ## Row shaping
 
 All three methods accept the same `require`, `filter`, `sort`, and `format` parameters as the Index API; see [Index API](index-api.md#row-shaping). `format="csv"` parses into `MetadataRecord` rows like the JSON form.
+
+## SPARQL
+
+The Meta dataset has a SPARQL endpoint at `https://sparql.opencitations.net/meta`. `client.meta.sparql()` and `client.meta.sparql_text()` take the same arguments as their Index counterparts; see [Index API](index-api.md#sparql).
+
+```python
+result = await client.meta.sparql(
+    "SELECT ?br ?title WHERE { "
+    "?br <http://purl.org/dc/terms/title> ?title ; "
+    "<http://prismstandard.org/namespaces/basic/2.0/publicationDate> ?date } LIMIT 5",
+    method="POST",
+)
+for row in result.rows():
+    print(row["br"], row["title"])
+```

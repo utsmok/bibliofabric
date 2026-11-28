@@ -4,12 +4,13 @@ OpenCitations packs several identifiers into one space-separated string
 (``citing`` and ``cited`` of the Index API, ``id`` of the Meta API) and
 requires prefixed identifiers (``doi:...``, ``omid:br/...``) in path
 parameters. The helpers here split those strings into typed identifiers
-and validate path identifiers before a request is sent.
+and validate and percent-encode path identifiers before a request is sent.
 """
 
 import re
 from collections.abc import Sequence
 from dataclasses import dataclass
+from urllib.parse import quote
 
 from bibliofabric.exceptions import ConfigurationError
 
@@ -63,7 +64,13 @@ def parse_identifiers(text: str) -> list[ParsedIdentifier]:
 
 
 def _require_prefixed(value: str, *, schemes: frozenset[str], usage: str) -> str:
-    """Return ``value`` stripped, rejecting blanks, whitespace, and bad schemes."""
+    """Return ``value`` as a percent-encoded ``scheme:value`` path segment.
+
+    The identifier travels in the URL path, so characters with a syntactic
+    meaning are encoded; a DOI that contains ``#`` or ``?`` would otherwise
+    cut the path short. Raises :class:`ConfigurationError` for blanks,
+    whitespace, a missing prefix, and a scheme the operation rejects.
+    """
     identifier = value.strip()
     if not identifier:
         raise ConfigurationError(f"OpenCitations {usage} must be non-empty.")
@@ -84,15 +91,19 @@ def _require_prefixed(value: str, *, schemes: frozenset[str], usage: str) -> str
             f"accepted schemes are: {accepted}. The API answers 400 for "
             f"other schemes, including bare ids."
         )
-    return f"{scheme.lower()}:{id_value}"
+    # The scheme prefix and the identifier keep their separators (``:`` and
+    # ``/``) because the routes are written for them, as in
+    # ``/citations/doi:10.1038/nature12373`` and ``/author/omid:ra/0601``.
+    return quote(f"{scheme.lower()}:{id_value}", safe="/:")
 
 
 def normalize_index_id(value: str) -> str:
-    """Validate one Index API identifier and return it as ``scheme:value``.
+    """Validate one Index API identifier for the URL path.
 
     Accepts the schemes the Index API documents (``omid``, ``doi``,
-    ``pmid``, ``issn``, ``isbn``). Raises :class:`ConfigurationError` for a
-    bare id or an unsupported scheme, which the API would answer with 400.
+    ``pmid``, ``issn``, ``isbn``) and returns the identifier percent-encoded.
+    Raises :class:`ConfigurationError` for a bare id or an unsupported
+    scheme, which the API would answer with 400.
     """
     return _require_prefixed(value, schemes=INDEX_ID_SCHEMES, usage="index id")
 
@@ -102,8 +113,8 @@ def normalize_meta_ids(value: str | Sequence[str]) -> str:
 
     Accepts one identifier or a list of them (a single string may already
     carry the ``__`` separator). Each identifier must use a scheme the Meta
-    ``/metadata`` operation documents. Raises :class:`ConfigurationError`
-    otherwise.
+    ``/metadata`` operation documents, and comes back percent-encoded.
+    Raises :class:`ConfigurationError` otherwise.
     """
     parts = value.split(MULTI_ID_SEPARATOR) if isinstance(value, str) else list(value)
     if not parts:

@@ -1,9 +1,9 @@
 """Outgoing request shape and row handling of the Meta API client."""
 
 import pytest
-from bibliofabric.exceptions import ConfigurationError
+from bibliofabric.exceptions import ConfigurationError, ValidationError
 
-from ..conftest import load_fixture, load_fixture_json, metadata_row
+from ..conftest import load_fixture, load_fixture_json
 
 
 def last_request(httpx_mock):
@@ -33,13 +33,37 @@ async def test_metadata_packs_several_ids_with_double_underscore(client, httpx_m
 
 
 async def test_metadata_accepts_a_packed_string(client, httpx_mock):
-    httpx_mock.add_response(json=[])
+    httpx_mock.add_response(json=load_fixture_json("empty.json"))
     await client.meta.metadata("doi:a__omid:br/1")
     assert last_request(httpx_mock).url.path == "/meta/v1/metadata/doi:a__omid:br/1"
 
 
+async def test_metadata_encodes_each_id_of_a_list(client, httpx_mock):
+    httpx_mock.add_response(json=load_fixture_json("empty.json"))
+    await client.meta.metadata(["doi:10.1000/a#1", "pmid:12?3"])
+    request = last_request(httpx_mock)
+    assert request.url.path == "/meta/v1/metadata/doi:10.1000/a#1__pmid:12?3"
+    assert (
+        request.url.raw_path
+        == b"/meta/v1/metadata/doi:10.1000/a%231__pmid:12%3F3?format=json"
+    )
+
+
+async def test_metadata_with_require_and_filter(client, httpx_mock):
+    httpx_mock.add_response(json=load_fixture_json("metadata_single.json"))
+    rows = await client.meta.metadata(
+        "doi:10.1108/jd-12-2013-0166",
+        require=["title", "author"],
+        filter="title:References",
+    )
+    params = last_request(httpx_mock).url.params
+    assert params.get_list("require") == ["title", "author"]
+    assert params["filter"] == "title:References"
+    assert rows[0].volume == "71"
+
+
 async def test_metadata_unknown_id_answers_empty_list(client, httpx_mock):
-    httpx_mock.add_response(json=[])
+    httpx_mock.add_response(json=load_fixture_json("empty.json"))
     assert await client.meta.metadata("doi:10.9999/nonexistent.000") == []
 
 
@@ -48,22 +72,43 @@ async def test_metadata_rejects_unknown_scheme(client):
         await client.meta.metadata("handle:1234")
 
 
+async def test_metadata_rejects_an_empty_id_list(client):
+    with pytest.raises(ConfigurationError, match="non-empty"):
+        await client.meta.metadata([])
+
+
+async def test_metadata_rejects_an_empty_id_in_a_list(client, httpx_mock):
+    with pytest.raises(ConfigurationError, match="non-empty"):
+        await client.meta.metadata(["doi:10.1000/a", " "])
+    assert not httpx_mock.get_requests()
+
+
 async def test_author_and_editor_person_ids(client, httpx_mock):
-    httpx_mock.add_response(json=[metadata_row()])
+    httpx_mock.add_response(json=load_fixture_json("author.json"))
     httpx_mock.add_response(json=load_fixture_json("editor.json"))
     authored = await client.meta.author("orcid:0000-0002-8420-0696")
+    assert last_request(httpx_mock).url.path == (
+        "/meta/v1/author/orcid:0000-0002-8420-0696"
+    )
     assert last_request(httpx_mock).url.params["format"] == "json"
     edited = await client.meta.editor("orcid:0000-0003-2098-4759")
     assert (
         last_request(httpx_mock).url.path == "/meta/v1/editor/orcid:0000-0003-2098-4759"
     )
-    assert authored[0].authors
+    assert [row.pub_date for row in authored] == ["2025-07-30", "2025"]
+    assert all("orcid:0000-0002-8420-0696" in row.author for row in authored)
     assert edited[0].editors
 
 
 async def test_person_id_rejects_document_schemes(client):
     with pytest.raises(ConfigurationError, match="unsupported scheme"):
         await client.meta.author("doi:10.1038/nature12373")
+
+
+async def test_a_metadata_row_that_fails_validation_raises(client, httpx_mock):
+    httpx_mock.add_response(json=[{"title": "no id field"}])
+    with pytest.raises(ValidationError, match="Failed to validate MetadataRecord"):
+        await client.meta.metadata("doi:10.1000/a")
 
 
 async def test_metadata_csv_parses_into_the_same_model(client, httpx_mock):
@@ -76,7 +121,8 @@ async def test_metadata_csv_parses_into_the_same_model(client, httpx_mock):
         format="csv",
         sort="asc(pub_date)",
     )
-    path = last_request(httpx_mock).url
-    assert path.params["sort"] == "asc(pub_date)"
-    assert path.params["format"] == "csv"
+    url = last_request(httpx_mock).url
+    assert url.params["sort"] == "asc(pub_date)"
+    assert url.params["format"] == "csv"
     assert rows[0].type == "book"
+    assert rows[0].editors[0].startswith("Allan, Catherine")

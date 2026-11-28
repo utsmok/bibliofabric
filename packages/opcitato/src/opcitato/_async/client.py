@@ -15,15 +15,17 @@ logger = logging.getLogger(__name__)
 
 
 class OpcitatoClient(BaseApiClient):
-    """Client for the OpenCitations Index API v2 and Meta API v1.
+    """Client for the OpenCitations Index API v2, the Meta API v1, and SPARQL.
 
-    The APIs need no credentials; anonymous usage is rate-limited to 180
-    requests per minute per IP address, which the settings pace to
-    3 requests per second. OpenCitations sells Access Tokens that raise the
-    limit; such a token would travel in an ``authorization`` header and can
-    be added through ``default_headers`` once credentials exist. The client
+    The APIs need no credentials. The documented limit is 180 requests per
+    minute per IP address, which the settings pace to 3 requests per
+    second. OpenCitations hands out a free Access Token by email and uses
+    it to count unique users; the token travels in an ``authorization``
+    header, and this client does not manage one. To send one, pass a
+    prepared ``httpx.AsyncClient`` that carries the header. The client
     sends ``Accept: application/json`` on every request; ``format="csv"``
-    selects the CSV representation regardless of that header.
+    selects the CSV representation regardless of that header. The two
+    SPARQL endpoints live on a second host and share the request pacing.
     """
 
     def __init__(
@@ -56,12 +58,12 @@ class OpcitatoClient(BaseApiClient):
 
     @cached_property
     def index(self) -> IndexClient:
-        """The Index API resource client (citations, references, counts)."""
+        """The Index API resource client (citations, references, counts, SPARQL)."""
         return IndexClient(self)
 
     @cached_property
     def meta(self) -> MetaClient:
-        """The Meta API resource client (metadata, authors, editors)."""
+        """The Meta API resource client (metadata, authors, editors, SPARQL)."""
         return MetaClient(self)
 
 

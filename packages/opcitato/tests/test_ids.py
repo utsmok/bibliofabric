@@ -113,3 +113,16 @@ def test_normalize_oci_strips_the_prefix():
 def test_normalize_oci_rejects_other_shapes(value):
     with pytest.raises(Exception, match="dash"):
         normalize_oci(value)
+
+
+def test_path_ids_are_percent_encoded_and_keep_their_separators():
+    sici = "10.1002/(SICI)1097-4636(199823)43:3<338::AID-JBM16>3.0.CO;2-B"
+    assert normalize_index_id(f"doi:{sici}") == (
+        "doi:10.1002/%28SICI%291097-4636%28199823%2943:3%3C338::AID-JBM16%3E3.0.CO%3B2-B"
+    )
+    assert normalize_index_id("doi:10.1000/a#b?c") == "doi:10.1000/a%23b%3Fc"
+    assert normalize_index_id(" doi:10.1038/nature12373 ") == "doi:10.1038/nature12373"
+    assert normalize_person_id("omid:ra/0601") == "omid:ra/0601"
+    assert normalize_meta_ids(["doi:10.1000/a#1", "pmid:12"]) == (
+        "doi:10.1000/a%231__pmid:12"
+    )

@@ -1,0 +1,16 @@
+{
+    "exception": "Invalid SPARQL query: Token \"nonsense\": mismatched input 'nonsense' expecting {'*', '(', DISTINCT, REDUCED, VAR1, VAR2}",
+    "metadata": {
+        "line": 1,
+        "positionInLine": 7,
+        "startIndex": 7,
+        "stopIndex": 14
+    },
+    "query": "SELECT nonsense",
+    "resultsize": 0,
+    "status": "ERROR",
+    "time": {
+        "computeResult": 1,
+        "total": 1
+    }
+}
