@@ -1,6 +1,6 @@
 """Clients for the Wikibase REST entity routes (items and properties)."""
 
-from bibliofabric import BaseApiClient
+from bibliofabric import BaseApiClient, validate_model
 from bibliofabric.exceptions import ConfigurationError
 
 from ..dialect import REST_PREFIX
@@ -45,7 +45,7 @@ class ItemsClient:
         response = await self._client.request(
             "GET", f"{REST_PREFIX}/entities/{segment}/{normalized}"
         )
-        return RestItem.model_validate(self._client.parse_json(response))
+        return validate_model(RestItem, self._client.parse_json(response))
 
     async def _term(self, id: str, part: str, language: str) -> RestTermResponse:
         segment, normalized = _entity_segment(id)
@@ -60,7 +60,7 @@ class ItemsClient:
         if isinstance(body, str):
             # The fallback target answers the plain value string.
             body = {"language": language, "value": body}
-        return RestTermResponse.model_validate(body)
+        return validate_model(RestTermResponse, body)
 
     async def label(self, id: str, language: str) -> RestTermResponse:
         """Return the item label in ``language`` (no fallback chain)."""
@@ -96,7 +96,7 @@ class ItemsClient:
         response = await self._client.request(
             "GET", f"{REST_PREFIX}/entities/{segment}/{normalized}/sitelinks/{site}"
         )
-        return RestSitelink.model_validate(self._client.parse_json(response))
+        return validate_model(RestSitelink, self._client.parse_json(response))
 
 
 class PropertiesClient:
@@ -112,7 +112,7 @@ class PropertiesClient:
         response = await self._client.request(
             "GET", f"{REST_PREFIX}/entities/{segment}/{normalized}"
         )
-        return RestProperty.model_validate(self._client.parse_json(response))
+        return validate_model(RestProperty, self._client.parse_json(response))
 
     async def datatypes(self) -> dict[str, str]:
         """Return ``/property-data-types``: data type id to value type id."""

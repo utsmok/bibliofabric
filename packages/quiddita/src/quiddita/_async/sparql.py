@@ -2,6 +2,7 @@
 
 from typing import TYPE_CHECKING, Any
 
+from bibliofabric import validate_model
 from bibliofabric.exceptions import ConfigurationError
 
 from ..dialect import SPARQL_BASE_URL, SPARQL_PATH
@@ -46,7 +47,7 @@ class SparqlClient:
     ) -> SparqlResult:
         """Run a query with ``GET`` and return the typed SPARQL 1.1 JSON result."""
         body = await self._send(query, method="GET", timeout=timeout)
-        return SparqlResult.model_validate(self._client.parse_json(body))
+        return validate_model(SparqlResult, self._client.parse_json(body))
 
     async def query_post(
         self,
@@ -61,7 +62,7 @@ class SparqlClient:
         for the framework's transient-failure retries.
         """
         response = await self._send(query, method="POST", timeout=timeout)
-        return SparqlResult.model_validate(self._client.parse_json(response))
+        return validate_model(SparqlResult, self._client.parse_json(response))
 
     async def query_text(
         self,

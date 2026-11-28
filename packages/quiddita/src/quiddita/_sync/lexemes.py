@@ -7,7 +7,7 @@ lexeme entity route exists; per-form and per-sense routes answer
 ``rest-no-match``, so forms and senses come inside the lexeme payload.
 """
 
-from bibliofabric import SyncBaseApiClient
+from bibliofabric import SyncBaseApiClient, validate_model
 
 from ..dialect import REST_LEXEME_PREFIX
 from ..ids import normalize_wikidata_id
@@ -29,7 +29,7 @@ class LexemesSyncClient:
         response = self._client.request(
             "GET", f"{REST_LEXEME_PREFIX}/entities/lexemes/{normalized}"
         )
-        return RestLexeme.model_validate(self._client.parse_json(response))
+        return validate_model(RestLexeme, self._client.parse_json(response))
 
 
 __all__ = ["LexemesSyncClient"]

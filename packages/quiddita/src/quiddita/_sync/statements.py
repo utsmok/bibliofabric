@@ -3,7 +3,7 @@
 
 from urllib.parse import quote
 
-from bibliofabric import SyncBaseApiClient
+from bibliofabric import SyncBaseApiClient, validate_model
 
 from ..dialect import REST_PREFIX
 from ..ids import normalize_wikidata_id
@@ -56,7 +56,7 @@ class StatementsSyncClient:
             if not isinstance(records, list):
                 continue
             result[property_id] = [
-                RestStatement.model_validate(record)
+                validate_model(RestStatement, record)
                 for record in records
                 if isinstance(record, dict)
             ]
@@ -74,7 +74,7 @@ class StatementsSyncClient:
         response = self._client.request(
             "GET", f"{REST_PREFIX}/statements/{quote(statement_id, safe='')}"
         )
-        return RestStatement.model_validate(self._client.parse_json(response))
+        return validate_model(RestStatement, self._client.parse_json(response))
 
 
 __all__ = ["StatementsSyncClient"]

@@ -3,7 +3,7 @@
 from collections.abc import Mapping, Sequence
 from typing import Any, override
 
-from bibliofabric import OnError
+from bibliofabric import OnError, validate_model
 from bibliofabric.exceptions import ConfigurationError
 from bibliofabric.paging import Page
 
@@ -179,7 +179,7 @@ class SearchClient(WikidataResourceClient[EntitySearchResult]):
         )
         body = self._client.parse_json(response)
         return [
-            RestSearchResult.model_validate(record)
+            validate_model(RestSearchResult, record)
             for record in body.get("results", [])
             if isinstance(record, dict)
         ]

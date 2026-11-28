@@ -9,7 +9,7 @@ serves an old revision; an unknown revision answers 404 with an HTML page,
 an invalid id 400 with ``Invalid ID: ...``.
 """
 
-from bibliofabric import BaseApiClient
+from bibliofabric import BaseApiClient, validate_model
 from bibliofabric.exceptions import ConfigurationError
 
 from ..ids import normalize_wikidata_id
@@ -69,7 +69,9 @@ class EntityDataClient:
             body = self._client.parse_json(response)
             entities = body.get("entities") if isinstance(body, dict) else None
             record = entities.get(normalized) if isinstance(entities, dict) else None
-            entity = Entity.model_validate(record) if isinstance(record, dict) else None
+            entity = (
+                validate_model(Entity, record) if isinstance(record, dict) else None
+            )
             return EntityDataResult(
                 id=normalized,
                 format=format,

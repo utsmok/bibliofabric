@@ -11,7 +11,7 @@ in ``docs/quiddita/upstream-quirks.md``.
 import json
 from typing import Any
 
-from bibliofabric import SyncBaseApiClient
+from bibliofabric import SyncBaseApiClient, validate_model
 from bibliofabric.exceptions import ConfigurationError
 
 from ..ids import normalize_wikidata_id
@@ -85,7 +85,7 @@ class UtilitiesSyncClient:
             "wbparsevalue", {"values": "|".join(values), "datatype": datatype}
         )
         results = body.get("results") if isinstance(body, dict) else None
-        return [ParsedValue.model_validate(item) for item in results or []]
+        return [validate_model(ParsedValue, item) for item in results or []]
 
     def suggestions(
         self,
@@ -124,7 +124,7 @@ class UtilitiesSyncClient:
             )
         body = self._module("wbsgetsuggestions", params)
         search = body.get("search") if isinstance(body, dict) else None
-        return [PropertySuggestion.model_validate(item) for item in search or []]
+        return [validate_model(PropertySuggestion, item) for item in search or []]
 
     def check_constraints(
         self,
@@ -160,7 +160,7 @@ class UtilitiesSyncClient:
                 else {}
             )
             report[str(entity_id)] = {
-                str(property_id): [CheckedClaim.model_validate(item) for item in items]
+                str(property_id): [validate_model(CheckedClaim, item) for item in items]
                 for property_id, items in claims.items()
             }
         return report

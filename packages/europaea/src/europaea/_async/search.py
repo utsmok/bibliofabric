@@ -3,7 +3,7 @@
 from collections.abc import AsyncIterator, Callable, Mapping, Sequence
 from typing import Any, Literal, override
 
-from bibliofabric import OnError
+from bibliofabric import OnError, validate_model
 from bibliofabric.exceptions import ConfigurationError
 from bibliofabric.paging import Page
 from pydantic import BaseModel
@@ -234,7 +234,7 @@ class SearchClient(EuropepmcResourceClient[SearchResult]):
     async def fields(self) -> list[str]:
         """Return the searchable index terms of the ``/fields`` endpoint."""
         body = await self._client.get_json("fields", params={"format": "json"})
-        document = FieldsResponse.model_validate(body)
+        document = validate_model(FieldsResponse, body)
         entries = (
             document.search_term_list.search_terms
             if document.search_term_list is not None

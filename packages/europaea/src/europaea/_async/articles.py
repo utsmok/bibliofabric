@@ -4,6 +4,7 @@ import re
 from collections.abc import Mapping
 from typing import Any, override
 
+from bibliofabric import validate_model
 from bibliofabric.exceptions import ConfigurationError, NotFoundError
 from bibliofabric.paging import Page
 from pydantic import BaseModel
@@ -162,7 +163,7 @@ class ArticlesClient(EuropepmcResourceClient[SearchResult]):
         if obtained_by:
             params["obtainedBy"] = obtained_by
         body = await self._client.get_json(f"{source}/{bare}/datalinks", params=params)
-        return DataLinksResponse.model_validate(body)
+        return validate_model(DataLinksResponse, body)
 
     async def labs_links(
         self, id: str, *, page: int | None = None, page_size: int | None = None
@@ -179,7 +180,7 @@ class ArticlesClient(EuropepmcResourceClient[SearchResult]):
         if page_size is not None:
             params["pageSize"] = str(page_size)
         body = await self._client.get_json(f"{source}/{bare}/labsLinks", params=params)
-        return LabsLinksResponse.model_validate(body)
+        return validate_model(LabsLinksResponse, body)
 
     async def status_updates(
         self, ids: str | list[str], *, source: str | None = None
@@ -220,7 +221,7 @@ class ArticlesClient(EuropepmcResourceClient[SearchResult]):
             retry=True,
         )
         parsed = self._client.parse_json(response)
-        return StatusUpdateResponse.model_validate(parsed)
+        return validate_model(StatusUpdateResponse, parsed)
 
     async def evaluations(self, id: str) -> EvaluationsResponse:
         """Return the community evaluations (peer reviews) of an article."""
@@ -228,7 +229,7 @@ class ArticlesClient(EuropepmcResourceClient[SearchResult]):
         body = await self._client.get_json(
             f"evaluations/{source}/{bare}", params={"format": "json"}
         )
-        return EvaluationsResponse.model_validate(body)
+        return validate_model(EvaluationsResponse, body)
 
     async def exists(self, id: str | int) -> bool:
         """Return ``True`` when the article exists; 404 returns ``False``.

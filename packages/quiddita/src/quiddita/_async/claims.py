@@ -1,6 +1,6 @@
 """Client for ``wbgetclaims``."""
 
-from bibliofabric import BaseApiClient
+from bibliofabric import BaseApiClient, validate_model
 from bibliofabric.exceptions import ConfigurationError
 
 from ..dialect import ACTION_PATH
@@ -66,7 +66,7 @@ class ClaimsClient:
             if not isinstance(records, list):
                 continue
             result[property_id] = [
-                Claim.model_validate(record)
+                validate_model(Claim, record)
                 for record in records
                 if isinstance(record, dict)
             ]

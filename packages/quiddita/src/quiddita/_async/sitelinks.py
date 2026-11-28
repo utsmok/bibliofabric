@@ -2,7 +2,7 @@
 
 from collections.abc import Sequence
 
-from bibliofabric import BaseApiClient
+from bibliofabric import BaseApiClient, validate_model
 
 from ..dialect import ACTION_PATH
 from ..ids import normalize_wikidata_id
@@ -58,7 +58,7 @@ class SitelinksClient:
         if not isinstance(raw, dict):
             return {}
         return {
-            site: Sitelink.model_validate(link)
+            site: validate_model(Sitelink, link)
             for site, link in raw.items()
             if isinstance(link, dict)
         }
