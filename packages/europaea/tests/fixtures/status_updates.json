@@ -1,0 +1,49 @@
+{
+  "metrics": {
+    "articlesQueried": 30,
+    "articlesFoundInTheDatabase": 30,
+    "articlesWithoutStatusUpdate": 16,
+    "articlesWithStatusUpdate": 14,
+    "articlesNotFound": []
+  },
+  "articlesWithStatusUpdate": [
+    {
+      "title": "Evidence for Neuropsychological Health Disparities in Black Americans with HIV Disease",
+      "firstPublishDate": "2020-12-31",
+      "statusUpdates": [
+        "PUBLISHED_VERSION_AVAILABLE"
+      ],
+      "links": [
+        {
+          "rel": "SELF",
+          "href": "nullPPR/PPR324115"
+        },
+        {
+          "rel": "PUBLISHED_ARTICLE",
+          "href": "nullMED/35166174"
+        }
+      ],
+      "src": "PPR",
+      "ext_ID": "PPR324115"
+    },
+    {
+      "title": "Chikungunya Manifestations and Viremia in Patients Who Presented to the Fever Clinic at Bangkok Hospital for Tropical Diseases During the 2019 Outbreak in Thailand",
+      "firstPublishDate": "2020-12-31",
+      "statusUpdates": [
+        "PUBLISHED_VERSION_AVAILABLE"
+      ],
+      "links": [
+        {
+          "rel": "SELF",
+          "href": "nullPPR/PPR260832"
+        },
+        {
+          "rel": "PUBLISHED_ARTICLE",
+          "href": "nullMED/33494514"
+        }
+      ],
+      "src": "PPR",
+      "ext_ID": "PPR260832"
+    }
+  ]
+}

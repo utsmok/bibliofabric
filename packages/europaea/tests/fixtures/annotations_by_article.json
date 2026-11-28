@@ -1,0 +1,252 @@
+[
+  {
+    "source": "MED",
+    "extId": "23903748",
+    "pmcid": "PMC4221854",
+    "annotations": [
+      {
+        "prefix": "spin associated with",
+        "exact": "nitrogen",
+        "postfix": "-vacancy colour centres in",
+        "tags": [
+          {
+            "name": "nitrogen",
+            "uri": "http://purl.obolibrary.org/obo/CHEBI_51143"
+          }
+        ],
+        "id": "http://europepmc.org/article/MED/23903748#europepmc-f7745922ed6a24700a23377b8c4be722",
+        "type": "Chemicals",
+        "section": "Abstract (http://purl.org/dc/terms/abstract)",
+        "provider": "Europe PMC"
+      },
+      {
+        "prefix": "colour centres in",
+        "exact": "diamond",
+        "postfix": ".",
+        "tags": [
+          {
+            "name": "diamond",
+            "uri": "http://purl.obolibrary.org/obo/CHEBI_33417"
+          }
+        ],
+        "id": "http://europepmc.org/article/MED/23903748#europepmc-26825b0279e0a6e82a72d03f5ee4e6a7",
+        "type": "Chemicals",
+        "section": "Abstract (http://purl.org/dc/terms/abstract)",
+        "provider": "Europe PMC"
+      },
+      {
+        "prefix": "an ultrapure bulk",
+        "exact": "diamond",
+        "postfix": "sample.",
+        "tags": [
+          {
+            "name": "diamond",
+            "uri": "http://purl.obolibrary.org/obo/CHEBI_33417"
+          }
+        ],
+        "id": "http://europepmc.org/article/MED/23903748#europepmc-4b933214c9fe42a5046920366d01647a",
+        "type": "Chemicals",
+        "section": "Abstract (http://purl.org/dc/terms/abstract)",
+        "provider": "Europe PMC"
+      },
+      {
+        "prefix": "Using",
+        "exact": "nitrogen",
+        "postfix": "-vacancy centres in diamond",
+        "tags": [
+          {
+            "name": "nitrogen",
+            "uri": "http://purl.obolibrary.org/obo/CHEBI_51143"
+          }
+        ],
+        "id": "http://europepmc.org/article/MED/23903748#europepmc-d6b2d1465248cf1d8ac548da41f53300",
+        "type": "Chemicals",
+        "section": "Abstract (http://purl.org/dc/terms/abstract)",
+        "provider": "Europe PMC"
+      },
+      {
+        "prefix": "nitrogen-vacancy centres in",
+        "exact": "diamond",
+        "postfix": "nanocrystals (nanodiamonds), w",
+        "tags": [
+          {
+            "name": "diamond",
+            "uri": "http://purl.obolibrary.org/obo/CHEBI_33417"
+          }
+        ],
+        "id": "http://europepmc.org/article/MED/23903748#europepmc-64fc09d9127ee2e317a720d1ca3d6cae",
+        "type": "Chemicals",
+        "section": "Abstract (http://purl.org/dc/terms/abstract)",
+        "provider": "Europe PMC"
+      },
+      {
+        "prefix": "centres in diamond",
+        "exact": "nanocrystals",
+        "postfix": "(nanodiamonds), we directly",
+        "tags": [
+          {
+            "name": "nanocrystal",
+            "uri": "http://purl.obolibrary.org/obo/CHEBI_52529"
+          }
+        ],
+        "id": "http://europepmc.org/article/MED/23903748#europepmc-1f61de6551351b5a03ea4519e21f8372",
+        "type": "Chemicals",
+        "section": "Abstract (http://purl.org/dc/terms/abstract)",
+        "provider": "Europe PMC"
+      },
+      {
+        "prefix": "by introducing both",
+        "exact": "nanodiamonds",
+        "postfix": "and gold nanoparticles",
+        "tags": [
+          {
+            "name": "silicon nanoparticle",
+            "uri": "http://purl.obolibrary.org/obo/CHEBI_52526"
+          }
+        ],
+        "id": "http://europepmc.org/article/MED/23903748#europepmc-f834975e89af8762f2b256df98ecbe3c",
+        "type": "Chemicals",
+        "section": "Abstract (http://purl.org/dc/terms/abstract)",
+        "provider": "Europe PMC"
+      },
+      {
+        "prefix": "both nanodiamonds and",
+        "exact": "gold nanoparticles",
+        "postfix": "nanoparticles into a",
+        "tags": [
+          {
+            "name": "gold nanoparticle",
+            "uri": "http://purl.obolibrary.org/obo/CHEBI_50825"
+          }
+        ],
+        "id": "http://europepmc.org/article/MED/23903748#europepmc-d96b181f8844e50f827884e05e3d8a76",
+        "type": "Chemicals",
+        "section": "Abstract (http://purl.org/dc/terms/abstract)",
+        "provider": "Europe PMC"
+      },
+      {
+        "exact": "nanodiamonds",
+        "tags": [
+          {
+            "name": "silicon nanoparticle",
+            "uri": "http://purl.obolibrary.org/obo/CHEBI_52526"
+          }
+        ],
+        "type": "Chemicals",
+        "provider": "Europe PMC",
+        "frequency": 0
+      },
+      {
+        "exact": "diamond",
+        "tags": [
+          {
+            "name": "diamond",
+            "uri": "http://purl.obolibrary.org/obo/CHEBI_33417"
+          }
+        ],
+        "type": "Chemicals",
+        "provider": "Europe PMC",
+        "frequency": 6
+      },
+      {
+        "exact": "nanocrystal",
+        "tags": [
+          {
+            "name": "nanocrystal",
+            "uri": "http://purl.obolibrary.org/obo/CHEBI_52529"
+          }
+        ],
+        "type": "Chemicals",
+        "provider": "Europe PMC",
+        "frequency": 2
+      },
+      {
+        "exact": "water",
+        "tags": [
+          {
+            "name": "water",
+            "uri": "http://purl.obolibrary.org/obo/CHEBI_15377"
+          }
+        ],
+        "type": "Chemicals",
+        "provider": "Europe PMC",
+        "frequency": 1
+      },
+      {
+        "exact": "silicon",
+        "tags": [
+          {
+            "name": "silicon",
+            "uri": "http://purl.obolibrary.org/obo/CHEBI_27573"
+          }
+        ],
+        "type": "Chemicals",
+        "provider": "Europe PMC",
+        "frequency": 3
+      },
+      {
+        "exact": "nanowire",
+        "tags": [
+          {
+            "name": "nanowire",
+            "uri": "http://purl.obolibrary.org/obo/CHEBI_52593"
+          }
+        ],
+        "type": "Chemicals",
+        "provider": "Europe PMC",
+        "frequency": 3
+      },
+      {
+        "exact": "nanowires",
+        "tags": [
+          {
+            "name": "nanowire",
+            "uri": "http://purl.obolibrary.org/obo/CHEBI_52593"
+          }
+        ],
+        "type": "Chemicals",
+        "provider": "Europe PMC",
+        "frequency": 0
+      },
+      {
+        "exact": "amino",
+        "tags": [
+          {
+            "name": "amino oligosaccharide",
+            "uri": "http://purl.obolibrary.org/obo/CHEBI_22483"
+          }
+        ],
+        "type": "Chemicals",
+        "provider": "Europe PMC",
+        "frequency": 0
+      },
+      {
+        "exact": "calcein-AM",
+        "tags": [
+          {
+            "name": "22:2-18:3-pc",
+            "uri": "http://purl.obolibrary.org/obo/CHEBI_191355"
+          }
+        ],
+        "type": "Chemicals",
+        "provider": "Europe PMC",
+        "frequency": 0
+      },
+      {
+        "exact": "ethidium homodimer",
+        "tags": [
+          {
+            "name": "ethidium homodimer",
+            "uri": "http://purl.obolibrary.org/obo/CHEBI_52055"
+          }
+        ],
+        "type": "Chemicals",
+        "provider": "Europe PMC",
+        "frequency": 1
+      }
+    ],
+    "fullTextIdList": [
+      "PMC4221854"
+    ]
+  }
+]

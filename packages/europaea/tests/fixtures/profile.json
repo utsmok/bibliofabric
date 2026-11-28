@@ -1,0 +1,75 @@
+{
+  "version": "6.9",
+  "request": {
+    "queryString": "Mok S",
+    "profileType": "all",
+    "synonym": false
+  },
+  "profileList": {
+    "source": [
+      {
+        "name": "AGR",
+        "count": 2
+      },
+      {
+        "name": "CBA",
+        "count": 0
+      },
+      {
+        "name": "CTX",
+        "count": 0
+      },
+      {
+        "name": "ETH",
+        "count": 0
+      },
+      {
+        "name": "HIR",
+        "count": 0
+      },
+      {
+        "name": "MED",
+        "count": 701
+      },
+      {
+        "name": "PAT",
+        "count": 0
+      },
+      {
+        "name": "CIT",
+        "count": 0
+      },
+      {
+        "name": "PMC",
+        "count": 10
+      },
+      {
+        "name": "PPR",
+        "count": 59
+      }
+    ],
+    "pubType": [
+      {
+        "name": "ALL",
+        "count": 772
+      },
+      {
+        "name": "FULL TEXT",
+        "count": 378
+      },
+      {
+        "name": "OPEN ACCESS",
+        "count": 246
+      },
+      {
+        "name": "REVIEW",
+        "count": 62
+      },
+      {
+        "name": "BOOKS AND DOCUMENTS",
+        "count": 0
+      }
+    ],
+    "subset": []
+  }
+}

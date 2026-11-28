@@ -1,0 +1,4392 @@
+{
+  "nextCursorMark": 265.731278071,
+  "cursorMark": 0.0,
+  "articles": [
+    {
+      "source": "MED",
+      "extId": "31653027",
+      "pmcid": "PMC6895806",
+      "annotations": [
+        {
+          "prefix": "e past two decades, ",
+          "exact": "aspirin",
+          "postfix": " has emerged as a pr",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/MED/31653027#ontogene-67ea658ae80c4b55d89efd62cdccedab",
+          "type": "Clinical Drug",
+          "section": "Abstract (http://purl.org/dc/terms/abstract)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "lar use of low-dose ",
+          "exact": "aspirin",
+          "postfix": " in some subgroups o",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/MED/31653027#ontogene-da8d9ca68bae8d5a5773060dd99525b1",
+          "type": "Clinical Drug",
+          "section": "Abstract (http://purl.org/dc/terms/abstract)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "rotective effect of ",
+          "exact": "aspirin",
+          "postfix": " against other cance",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/MED/31653027#ontogene-acd99c3041e7d2eaf083a3583c36f937",
+          "type": "Clinical Drug",
+          "section": "Abstract (http://purl.org/dc/terms/abstract)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "rotective effect of ",
+          "exact": "aspirin",
+          "postfix": " against other cance",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/MED/31653027#ontogene-acd99c3041e7d2eaf083a3583c36f937",
+          "type": "Clinical Drug",
+          "section": "Abstract (http://purl.org/dc/terms/abstract)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "g-awaited trials of ",
+          "exact": "aspirin",
+          "postfix": " in the primary prev",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/MED/31653027#ontogene-f70e06b76590758e19ec2eba142eab5a",
+          "type": "Clinical Drug",
+          "section": "Abstract (http://purl.org/dc/terms/abstract)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "rting no benefit of ",
+          "exact": "aspirin",
+          "postfix": " on overall cancer i",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/MED/31653027#ontogene-c4fee24103d0492d0f905cb8279a2311",
+          "type": "Clinical Drug",
+          "section": "Abstract (http://purl.org/dc/terms/abstract)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "rotective effect of ",
+          "exact": "aspirin",
+          "postfix": " against colorectal ",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-23f102af150a6defe64279077b06f728",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "lar use of low-dose ",
+          "exact": "aspirin",
+          "postfix": " to prevent CRC in s",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-67c6ffdeb2efbf1ca8afc4025f607e5d",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "k of bleeding).\n[8] ",
+          "exact": "Aspirin",
+          "postfix": " is also recommended",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-d066ac10656c72286e5d194d28836d84",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "rotective effect of ",
+          "exact": "aspirin",
+          "postfix": " against other cance",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-acd99c3041e7d2eaf083a3583c36f937",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "rotective effect of ",
+          "exact": "aspirin",
+          "postfix": " against cancers oth",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-7bb21b9c5e7af2569903988e55c7ed1a",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "g-awaited trials of ",
+          "exact": "aspirin",
+          "postfix": " in the primary prev",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-f70e06b76590758e19ec2eba142eab5a",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "rting no benefit of ",
+          "exact": "aspirin",
+          "postfix": " on overall cancer i",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-c4fee24103d0492d0f905cb8279a2311",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": " of action by which ",
+          "exact": "aspirin",
+          "postfix": " exerts its anticanc",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-f617b40dfa233c78b54346dd8f62c564",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "rotective Effect of ",
+          "exact": "Aspirin",
+          "postfix": "\n2.1.\nChemoprotectiv",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-9bce2bb56fc8db363e11c2ebc70f83a8",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "rotective Effect of ",
+          "exact": "Aspirin",
+          "postfix": " on Colorectal Cance",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-458732f21b90e2bfd4928475a42eaa33",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "association between ",
+          "exact": "aspirin",
+          "postfix": " use and the risk of",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-dcfa5f4a8cb1fdddb50c0dae746b1df8",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "otective effects of ",
+          "exact": "aspirin",
+          "postfix": " and found a 47% ris",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-ffea148d07a5a0c5db47e1b8aaa46017",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": " in patients taking ",
+          "exact": "aspirin",
+          "postfix": ", or aspirin-contain",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-8d8d47c3c787e3db894ec248cd164fc0",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": " taking aspirin, or ",
+          "exact": "aspirin",
+          "postfix": "-containing medicati",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-cf8da3880d6d26c4132a871039cd0e8a",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "otective effects of ",
+          "exact": "aspirin",
+          "postfix": " on the incidence of",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-22efafb4c9c6261d77cbff88c0bd42b2",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "s), long-term daily ",
+          "exact": "aspirin",
+          "postfix": " use (for 5 years or",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-353416feecedbbad7788c73cc463820c",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "vely filed low-dose ",
+          "exact": "aspirin",
+          "postfix": " prescriptions for m",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-883e22d41f0d237a49053b4326b32a07",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "tential benefits of ",
+          "exact": "aspirin",
+          "postfix": " for cancer preventi",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-c9a4b18418c59b21ade82175f45d76c4",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "t analysis, regular ",
+          "exact": "aspirin",
+          "postfix": " use was associated ",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-61fc82a053bfe133ac02b2440d2452c0",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "y for a duration of ",
+          "exact": "aspirin",
+          "postfix": " treatment longer th",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-c9d3275e674705faf497cb79fb32f0ef",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "ween regular use of ",
+          "exact": "aspirin",
+          "postfix": " and the risk for br",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-230f493cf04daa1f9727ca4679b422ed",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "rotective effect of ",
+          "exact": "aspirin",
+          "postfix": " on gastrointestinal",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-ac4463b0e41e1527eccd0f624feb2a65",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "0.5 to 1.5 standard ",
+          "exact": "aspirin",
+          "postfix": " tablets per week or",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-56de5965fd39f23d9f647571329f0c1b",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "er than 50: Regular ",
+          "exact": "aspirin",
+          "postfix": " use could have prev",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-ba75b2eeeca1ac6023de436687906a65",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "s also suggest that ",
+          "exact": "aspirin",
+          "postfix": " may have an absolut",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-4b1231ee337d220883b0312151724cde",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "icacy and Safety of ",
+          "exact": "Aspirin",
+          "postfix": " in the Prevention o",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-dadb97b5649226256abfc0e3027cd89b",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": " for the effects of ",
+          "exact": "aspirin",
+          "postfix": " on reduction of the",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-01ac1925f7bfceace27ac484edaa48bc",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "ety and efficacy of ",
+          "exact": "aspirin",
+          "postfix": " in the primary or s",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-ca61998c427667df6378aa10cf139ffa",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "ernate-day doses of ",
+          "exact": "aspirin",
+          "postfix": " (325 mg) versus pla",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-49b0c7b112bb08f94ac0898a602cd75a",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "ernate-day doses of ",
+          "exact": "aspirin",
+          "postfix": " (100 mg) versus pla",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-5f900399c4ce47416be23e9da7429d94",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "was observed in the ",
+          "exact": "aspirin",
+          "postfix": " group after 10 year",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-85ed3669629828f969fd06e541af67ee",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "in CRC incidence in ",
+          "exact": "aspirin",
+          "postfix": " users treated for f",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-c5877d206e0e6a561c2e5f6bb9ba6975",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "nificant benefit of ",
+          "exact": "aspirin",
+          "postfix": " use was observed on",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-6f1794337fc46605df433dbbf676ac8b",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "tration of low-dose ",
+          "exact": "aspirin",
+          "postfix": " (75–300 mg per day)",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-fd1e7a43e9087deea016ea750e876f51",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "25].\nThe benefit of ",
+          "exact": "aspirin",
+          "postfix": " use increased with ",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-ede11c573079eec44419b30cd8bd512d",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "tions on the use of ",
+          "exact": "aspirin",
+          "postfix": " for primary prevent",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-9b71b87788de018fd54e24a9b09c8631",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "rs of initiation of ",
+          "exact": "aspirin",
+          "postfix": " treatment (RR, 0.60",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-0c7a76707e3cbc497a428a4b9cf40ef9",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "rted that long-term ",
+          "exact": "aspirin",
+          "postfix": " use is associated w",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-d65081535414495458dcdc888cd200f7",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": " for the benefit of ",
+          "exact": "aspirin",
+          "postfix": " on CRC-related mort",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-c59edc61f0374a0b95128078073c6be4",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": " participants using ",
+          "exact": "aspirin",
+          "postfix": " 16 or more times pe",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-2f149f4da03576092789d08e670a66c6",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "ong-term effects of ",
+          "exact": "aspirin",
+          "postfix": " on CRC, Rothwell et",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-8db69487b86a74f254da3b28ac86bd57",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": " in patients taking ",
+          "exact": "aspirin",
+          "postfix": " on a daily basis (R",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-0d797d501ee2e230120e1c91a10e0583",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": " those taking daily ",
+          "exact": "aspirin",
+          "postfix": " for at least 5 year",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-c49421647816299c95702e4fd167bb3f",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": " harmful effects of ",
+          "exact": "aspirin",
+          "postfix": " in the primary prev",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-ecbc80d5f85fc4ac1e375ceaed58aa34",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "enough to recommend ",
+          "exact": "aspirin",
+          "postfix": " for primary prevent",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-d69ca9b0d5f415708d673c66d2b4c092",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "e USPSTF recommends ",
+          "exact": "aspirin",
+          "postfix": " use to be considere",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-22ffd87057a207279035afb1d06a057d",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "neficial effects of ",
+          "exact": "aspirin",
+          "postfix": " were also widely in",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-d12c6024463e211464a79208c8e8956a",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "rials investigating ",
+          "exact": "aspirin",
+          "postfix": " for chemoprevention",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-b2c27af2b9f40649a6d51da499b8696e",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "icacy and safety of ",
+          "exact": "aspirin",
+          "postfix": " (75 to 325 mg daily",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-0cf07170ef0d316ff3155f297f665117",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": " patients receiving ",
+          "exact": "aspirin",
+          "postfix": ", at any dose, versu",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-552983e113d1f9e88984497b53b47ca6",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "rotective effect of ",
+          "exact": "aspirin",
+          "postfix": " was not found to di",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-0be3ecf89a7858c7fd8b14493c0729ba",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "n high and low-dose ",
+          "exact": "aspirin",
+          "postfix": ", for any adenomas o",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-0db77cb6303f59d88d89725aca319818",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "er Japan Colorectal ",
+          "exact": "Aspirin",
+          "postfix": " Polyps Prevention (",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-9504adfec8cfa3acb1b97afda49d8bf5",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "enoma or CRC in the ",
+          "exact": "aspirin",
+          "postfix": " arm compared to the",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-ee3ba15ea88de1289255969ca99feef0",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "ombination of 75 mg ",
+          "exact": "aspirin",
+          "postfix": ", calcitriol and cal",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-9255a4f271f37e2d316df07edf111742",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "was observed in the ",
+          "exact": "aspirin",
+          "postfix": " treatment group in ",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-263b31169e22465d32c74dc47852126d",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "that the benefit of ",
+          "exact": "aspirin",
+          "postfix": " use was confined to",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-2f349c93b85409f96a24405e85b3a330",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "ata on modifiers of ",
+          "exact": "aspirin",
+          "postfix": " benefit in smokers ",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-a33acebe619ce3a7e5f584216521c0dc",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "association between ",
+          "exact": "aspirin",
+          "postfix": " and CRC-related mor",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-83a63dcaf6c2f0e778a4b03fd1f1fc40",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "sed the efficacy of ",
+          "exact": "aspirin",
+          "postfix": " and eicosapentaenoi",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-391393b12da47dcb54948833008096ca",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "ceive either 300 mg ",
+          "exact": "aspirin",
+          "postfix": " per day, 2 g EPA pe",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-a2f5d4691039fdea36e14bd8c70d69e0",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "fer between groups.\n",
+          "exact": "Aspirin",
+          "postfix": " use was not associa",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-6cce28670d35d36901c8756024e4e6f2",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "nificant benefit of ",
+          "exact": "aspirin",
+          "postfix": " in preventing adeno",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-45b06ee8189db3b4a4a1bbb75c421e71",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "icacy and safety of ",
+          "exact": "aspirin",
+          "postfix": " and resistant starc",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-6e0ca5f5844979843c2fe7197dcfdb3c",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "ve either high-dose ",
+          "exact": "aspirin",
+          "postfix": " (600 mg per day) pl",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-57963ce546eb674cce9dd70b16a02808",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": " starch (30 g) plus ",
+          "exact": "aspirin",
+          "postfix": " placebo, aspirin pl",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-8f1639cc95bb4814126da8c1d0cdc8ba",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "us aspirin placebo, ",
+          "exact": "aspirin",
+          "postfix": " plus resistant star",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-0749da2faa23b530c93aa03b44af6a6a",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "esistant starch, or ",
+          "exact": "aspirin",
+          "postfix": " placebo plus starch",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-21e6e7fa7f95dce75a675400e039f579",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "ts receiving 600 mg ",
+          "exact": "aspirin",
+          "postfix": " daily (RR,1.00; 95%",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-049909adadce241b20c931095ba7cc7a",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "erved in the pooled ",
+          "exact": "aspirin",
+          "postfix": " groups compared to ",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-d45e109efcc3e5cfe28d951d7902bf99",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": " patients receiving ",
+          "exact": "aspirin",
+          "postfix": " (3.8% versus 8.2% i",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-ecacd8cc17aa09c34e9b20b964166dcb",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": " patients receiving ",
+          "exact": "aspirin",
+          "postfix": " placebo; HR, 0.41; ",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-07905bb00fc36b702ffc3b6c2e7d1169",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "35–1.13; p = 0.12), ",
+          "exact": "aspirin",
+          "postfix": " was associated with",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-a8f09c1b00f0d90a5fde8ff20011efe9",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": " delayed benefit of ",
+          "exact": "aspirin",
+          "postfix": ", as observed in pre",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-7a0cd0406a71bb2a3c81b507fa329df6",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "lyses.\nFurthermore, ",
+          "exact": "aspirin",
+          "postfix": " seemed to confer a ",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-a69b0fa87f7ade2ebd20ecd8375642cd",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "erse events between ",
+          "exact": "aspirin",
+          "postfix": " and placebo groups.",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-f4dfcd073da7753b181f412b190b4fb7",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": " gene reported that ",
+          "exact": "aspirin",
+          "postfix": " use was associated ",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-2a2e51f0dea84b3633c50ade6850b495",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "that treatment with ",
+          "exact": "aspirin",
+          "postfix": " should be considere",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-a2894fe0363fa361d04647cb8e379537",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "that routine use of ",
+          "exact": "aspirin",
+          "postfix": " should be considere",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-470c27fbc671f5cc89ff60bd566f85d5",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "be documented since ",
+          "exact": "aspirin",
+          "postfix": " has not yet been ap",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-8c4f9519567d51cda03babe1716c79c5",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "ose and duration of ",
+          "exact": "aspirin",
+          "postfix": " treatment for preve",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-570329d73d0965110cadc6d475f7736d",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "g of enteric coated ",
+          "exact": "aspirin",
+          "postfix": " for two years.\nThe ",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-c82a6c581a725aada7916689183428a9",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "rotective Effect of ",
+          "exact": "Aspirin",
+          "postfix": " on Other Cancers\n2.",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-96faeb6a64421883c64e8eeabf1e9b09",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "rotective effect of ",
+          "exact": "aspirin",
+          "postfix": " against other cance",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-acd99c3041e7d2eaf083a3583c36f937",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "have suggested that ",
+          "exact": "aspirin",
+          "postfix": " might also reduce t",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-91db75ce1d71456a352c884163a34f16",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "sing daily low-dose ",
+          "exact": "aspirin",
+          "postfix": " in primary cancer p",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-e32b47c5e2e289cb9b402d006da43139",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "cancer incidence in ",
+          "exact": "aspirin",
+          "postfix": " users compared to a",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-bd96c771ead5f0ded44c891fb38547d0",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "n users compared to ",
+          "exact": "aspirin",
+          "postfix": " non-users more than",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-657e2b64d5c73020e3634c1a11440f79",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "gnificant effect of ",
+          "exact": "aspirin",
+          "postfix": " on overall cancer i",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-644d0261128e49f0a20c6b38a2cb15d4",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "I, 0.82–1.02) [26].\n",
+          "exact": "Aspirin",
+          "postfix": " did not reduce canc",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-ae5643a8fbaf976318cdc402a17323a1",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": " to trials of daily ",
+          "exact": "aspirin",
+          "postfix": " use, including seco",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-45402bd26deacb037fd6aecf976cf0a3",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "of any cancer among ",
+          "exact": "aspirin",
+          "postfix": " users during an ave",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-ab7f1e37f94f68e4149c3b5c107b66bb",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "ed similar results; ",
+          "exact": "aspirin",
+          "postfix": " had no effect on th",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-52e616c7ca7e1f08fadb6d753a8adb87",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "cer was observed in ",
+          "exact": "aspirin",
+          "postfix": " users only for CRC ",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-984679f2e604a8e7c3f3051b4e1ee105",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "otective effects of ",
+          "exact": "aspirin",
+          "postfix": " on overall cancer i",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-21715659212f18fc712078c97e8b3c1f",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "ing the efficacy of ",
+          "exact": "aspirin",
+          "postfix": " in the primary prev",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-a299cf12062c84ba46962ba00fe6961a",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "ceive either 100 mg ",
+          "exact": "aspirin",
+          "postfix": " or placebo daily, r",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-0bb455b618cc81b7b0e470b8941dba08",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "sis of the WHS.\nThe ",
+          "exact": "Aspirin",
+          "postfix": " to Reduce Risk of I",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-9a42dd66f2b81b4bd895c40fc15f6680",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "s to receive 100 mg ",
+          "exact": "aspirin",
+          "postfix": " daily or placebo fo",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-1f8ca100f67b52dba904e7e56d86f458",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "prostate cancers in ",
+          "exact": "aspirin",
+          "postfix": " users versus 0.72% ",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-0642e88edd4c419f71cca0f056fad7bb",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "ers versus 0.72% in ",
+          "exact": "aspirin",
+          "postfix": " non-users; 0.22% of",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-e380acc2c0ced9d1d3c4e14cd0110912",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "rs; 0.22% of CRC in ",
+          "exact": "aspirin",
+          "postfix": " users versus 0.70% ",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-63e22d269c168582406a192d274725c9",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "ers versus 0.70% in ",
+          "exact": "aspirin",
+          "postfix": " non-users), without",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-1e8d38715d6b1da204c30221d88dc19c",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "ent cancers between ",
+          "exact": "aspirin",
+          "postfix": " users and aspirin n",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-fb3d56343e74f52438e48f6a3ba8b0a8",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "n aspirin users and ",
+          "exact": "aspirin",
+          "postfix": " non-users (HR, 1.01",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-f4f9e1612957267d60b47c200a20f49d",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "CTs comparing daily ",
+          "exact": "aspirin",
+          "postfix": " versus no aspirin u",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-f653ab9378525ca406d206e5dd9eb325",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "y aspirin versus no ",
+          "exact": "aspirin",
+          "postfix": " use in the preventi",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-da0ebf13cf66881d08ccd67cb9a82466",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "tients treated with ",
+          "exact": "aspirin",
+          "postfix": " [60,61,62,63,64] an",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-d57c619210a03bcabc21b8416afa268f",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "association between ",
+          "exact": "aspirin",
+          "postfix": " and overall cancer-",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-6cadbe6f4ac501758d31116fca5631e1",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "uggested that daily ",
+          "exact": "aspirin",
+          "postfix": " use over a five-yea",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-69ac0d9b09de48b953cf8f3a3e90ed76",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "CTs comparing daily ",
+          "exact": "aspirin",
+          "postfix": " versus no aspirin u",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-f653ab9378525ca406d206e5dd9eb325",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "y aspirin versus no ",
+          "exact": "aspirin",
+          "postfix": " use in the primary ",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-0525b873c5abfccf395832ba57463695",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "ntion of CVD, daily ",
+          "exact": "aspirin",
+          "postfix": " use resulted in a 2",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-eec90c15a1caff451567afbc43f95558",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "Ts), the benefit of ",
+          "exact": "aspirin",
+          "postfix": " use on cancer-relat",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-ed945e5bab5feca500b6f0431446c2e6",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "ers, the benefit of ",
+          "exact": "aspirin",
+          "postfix": " use was restricted ",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-1925f7ca952b66fa2acd57008a656296",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "ation between daily ",
+          "exact": "aspirin",
+          "postfix": " use and the risk of",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-ff10bc3e4c85abdce947cc6e0df4657a",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "elated mortality in ",
+          "exact": "aspirin",
+          "postfix": " users after a treat",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-a8f85ddbdaeb36f3a77b4a52ed86f0be",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "CTs comparing daily ",
+          "exact": "aspirin",
+          "postfix": " versus no aspirin i",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-35c94eceaaf16f50d4889c3a7d21a96a",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "y aspirin versus no ",
+          "exact": "aspirin",
+          "postfix": " in any population (",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-26cd8bd9397f06472af5eeeb2c5826ea",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "98 patients).\nDaily ",
+          "exact": "aspirin",
+          "postfix": " use after at least ",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-d699ceb68db5c79cb3cfdf6823553ba6",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "CTs comparing daily ",
+          "exact": "aspirin",
+          "postfix": " versus placebo in t",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-6253402a7bc52e277a84350ac384913a",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "tion of CVD trials, ",
+          "exact": "aspirin",
+          "postfix": " use was not found t",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-a2e028f562b90256d117bee13abed0b0",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "of 4 years or more, ",
+          "exact": "aspirin",
+          "postfix": " use was associated ",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-e69f14258a0031e51b30a4d4123da667",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "ars of follow-up in ",
+          "exact": "aspirin",
+          "postfix": " users, this finding",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-78107d1d61a751239277ce9a5648f05b",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "d-mortality between ",
+          "exact": "aspirin",
+          "postfix": " users and aspirin n",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-853594fdb037d63d96cabddacc1a5580",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "n aspirin users and ",
+          "exact": "aspirin",
+          "postfix": " non-users despite a",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-33fb35832a6f0f296c44840582708043",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "y, results from the ",
+          "exact": "Aspirin",
+          "postfix": " in Reducing Events ",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-149af0e7ca2b0b7655e309e20258c363",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "g of enteric-coated ",
+          "exact": "aspirin",
+          "postfix": " daily or placebo.\nT",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-c252e25012664851cc5bceac6ce0b535",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "was observed in the ",
+          "exact": "aspirin",
+          "postfix": " arm, driven by a 31",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-d16905fa4a36cb4737d01e7985c180f6",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "occurred in 3.1% of ",
+          "exact": "aspirin",
+          "postfix": " users compared to 2",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-6a8ea2149cb8d81b23ddc7e103cb3776",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "compared to 2.3% of ",
+          "exact": "aspirin",
+          "postfix": " nonusers (HR, 1.31;",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-48db4fdba41d594415dee86c5bf07662",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "ed mortality in the ",
+          "exact": "aspirin",
+          "postfix": " group was not confi",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-1677f57e83dcf7bd8ec8be397f5df3ed",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "tion [13].\nHowever, ",
+          "exact": "aspirin",
+          "postfix": " use was not strongl",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-d5bcf27535e10a5433d8fe61e36c25f4",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "(981 cancers in the ",
+          "exact": "aspirin",
+          "postfix": " group compared to 9",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-3cf8d1e2d31afc52c291858a0b4367a3",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "tion.\nThe effect of ",
+          "exact": "aspirin",
+          "postfix": " on cancer-related m",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-4dc1585678a66d6f57259946fba18007",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "an a true effect of ",
+          "exact": "aspirin",
+          "postfix": " on cancer incidence",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-5289a08769697a76fae3249da19a641f",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "CTs comparing daily ",
+          "exact": "aspirin",
+          "postfix": " versus no aspirin u",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-f653ab9378525ca406d206e5dd9eb325",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "y aspirin versus no ",
+          "exact": "aspirin",
+          "postfix": " use in the primary ",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-0525b873c5abfccf395832ba57463695",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "d mortality between ",
+          "exact": "aspirin",
+          "postfix": " users and aspirin n",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-50f9eff6800f26d23ddd51f62cbe225a",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "n aspirin users and ",
+          "exact": "aspirin",
+          "postfix": " non-users (HR, 1.03",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-f2df775848ddf9dd4ee7a9d94bdde39d",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "e data suggest that ",
+          "exact": "aspirin",
+          "postfix": " has no effect on ov",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-6e434d129d39c414aac39bfc17ef34cc",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "RC.\n2.3.\nBenefit of ",
+          "exact": "Aspirin",
+          "postfix": " as Adjuvant Treatme",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-824b896f140b7470ae38a44389e884f4",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "association between ",
+          "exact": "aspirin",
+          "postfix": " use in cancer patie",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-22355d3c58fa83d78ef6ab76f835cd4d",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "CTS examining daily ",
+          "exact": "aspirin",
+          "postfix": " in the prevention o",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-df7f30d7028b30d38e645f5208425e06",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "ess frequent in the ",
+          "exact": "aspirin",
+          "postfix": " group compared to t",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-4229b32d0a6f206c2bb5f169bcf14190",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "l studies reporting ",
+          "exact": "aspirin",
+          "postfix": " use in cancer patie",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-133640bb82e4ad2d52e05fe3869ae7dd",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "patients found that ",
+          "exact": "aspirin",
+          "postfix": " was associated with",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-70ba1e1aa230e787e6b9787d0d4a88eb",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "read suggested that ",
+          "exact": "aspirin",
+          "postfix": " reduced metastatic ",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-16979a0f52c8d19de5f5829d376f206d",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "otential benefit of ",
+          "exact": "aspirin",
+          "postfix": " given as adjuvant t",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-54dedfe065c11577be8b5c192d01fa23",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": " to receive 1200 mg ",
+          "exact": "aspirin",
+          "postfix": " per day or placebo ",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-39dd43af3b2975dc2a1c355956ab8573",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "ents to receive 1 g ",
+          "exact": "aspirin",
+          "postfix": " per day for 18 mont",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-ebd9fde771a326980edd0d8224965620",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "for 18 months or no ",
+          "exact": "aspirin",
+          "postfix": ", in addition to che",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-0b7ff5b69d73eda7c12669b0db605dce",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": " or without 2400 mg ",
+          "exact": "aspirin",
+          "postfix": " per day, and found ",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-47cb9b353c19b92c304efbc65361cb9d",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "ival benefit in the ",
+          "exact": "aspirin",
+          "postfix": " group (HR, 0.91; 95",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-f7d79eb143f574d7e97dbee1dbeb5648",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "rapeutic effects of ",
+          "exact": "aspirin",
+          "postfix": " when used as an adj",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-cae372cca9d0167fcd98970adf3586db",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "le 3) including the ",
+          "exact": "Aspirin",
+          "postfix": " for Breast Cancer (",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-83ef5d8e13ce189924f0ccc63cf3688e",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "02927249) [70], the ",
+          "exact": "Aspirin",
+          "postfix": " for Dukes C and hig",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-7ec0479cad06f5d6710e89d8b01793ea",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": ") [71], and the ADD-",
+          "exact": "ASPIRIN",
+          "postfix": " trial (NCT02804815)",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-710dc322f261bce9f8a868fb73e1b1e3",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": " of Action by Which ",
+          "exact": "Aspirin",
+          "postfix": " Exerts Its Anticanc",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-4b00c25ec1ec9f3adf982617ba07120e",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "nticancer effect of ",
+          "exact": "aspirin",
+          "postfix": " is hypothesized to ",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-2c3468e0bb145ebb7a66077afbb3aed1",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "platelet functions, ",
+          "exact": "aspirin",
+          "postfix": " might interrupt thi",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-c33cd7606c89daf1d380c720ff779d60",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "k [5].\nIn addition, ",
+          "exact": "aspirin",
+          "postfix": " also decreases PGE2",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-3a9a924d5a05e3c458bb6bc3ffe3f2fe",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "ticancer effects of ",
+          "exact": "aspirin",
+          "postfix": " have also been sugg",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-597b9af853968de6d546ce6aa58f3afd",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "ation with low-dose ",
+          "exact": "aspirin",
+          "postfix": ", is limited and inc",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-0a907c221944020601188e61d129d8fe",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "erved with low-dose ",
+          "exact": "aspirin",
+          "postfix": ", with consistent re",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-2463b5cacae7cebc94d39c8543f04a69",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "ared the benefit of ",
+          "exact": "aspirin",
+          "postfix": " given as monotherap",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-62ca7f84e852c34156b42c62c911163b",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "therapy (DAPT) with ",
+          "exact": "aspirin",
+          "postfix": " and clopidogrel [77",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-aa537d89dc4f6d6abaeaa618cfcb5376",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "cer was observed in ",
+          "exact": "aspirin",
+          "postfix": " users (adjusted HR,",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-2c56237a8bd71d4dfccb9981b67006e6",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "0.001).\nCompared to ",
+          "exact": "aspirin",
+          "postfix": " given in monotherap",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-5a947019e1e0a00783a12adc0c7e8a22",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "dogrel and low-dose ",
+          "exact": "aspirin",
+          "postfix": " on the risk of CRC ",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-024a5c6f7f689717f983b1cc61ecfd43",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "erved with low-dose ",
+          "exact": "aspirin",
+          "postfix": " (adjusted OR, 0.83;",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-d3371dacab9580fc221c51349c9666f4",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "tched comparison of ",
+          "exact": "aspirin",
+          "postfix": " or clopidogrel give",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-56f1532ac63b6e3f6b5b31f933c17d0e",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "37% versus 22% with ",
+          "exact": "aspirin",
+          "postfix": " monotherapy and ver",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-f3552c94d3b28d844e3e68c3132e2594",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "th DAPT with either ",
+          "exact": "aspirin",
+          "postfix": " and clopidogrel, or",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-fb9347df5d2b5665b367877da798170d",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "and clopidogrel, or ",
+          "exact": "aspirin",
+          "postfix": " and prasugrel, or a",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-21a6d11a9db8c6c16ff21e6e16da545c",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "n and prasugrel, or ",
+          "exact": "aspirin",
+          "postfix": " and ticagrelor [79]",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-e184d406438f834b96f04fc83575c9c3",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "of DAPT followed by ",
+          "exact": "aspirin",
+          "postfix": " plus placebo (31 ve",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-f4847021be4d1889a789ae8dd6934f6e",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "o receive DAPT with ",
+          "exact": "aspirin",
+          "postfix": " plus clopidogrel or",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-ed100a67ea3b22d832275d97d6e915b4",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "plus clopidogrel or ",
+          "exact": "aspirin",
+          "postfix": " plus prasugrel [90]",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-7eb2c8a8dc0001e73e2df6e1d0f86b2e",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": " of 6 RCTs compared ",
+          "exact": "aspirin",
+          "postfix": " in combination with",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-c3dc423e0dce1a468f05807b894f279e",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "tion with DAPT with ",
+          "exact": "aspirin",
+          "postfix": " and a P2Y12 inhibit",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-c2545870efbed6e467dfab6929066afe",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "otective effects of ",
+          "exact": "aspirin",
+          "postfix": " and the resulting e",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-dd6f15b95319efc972de4e0ac2939a67",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": " the routine use of ",
+          "exact": "aspirin",
+          "postfix": " for the primary pre",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-c89f33cb9eefd480e5b30e7d64a79247",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "such as the optimal ",
+          "exact": "aspirin",
+          "postfix": " dose and duration o",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-4b371b727038de26913ab64bdd276030",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "otective effects of ",
+          "exact": "aspirin",
+          "postfix": " against other cance",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-e6b8d6382bbb6e40ff687e43617e87a6",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "prefix": "ation with low-dose ",
+          "exact": "aspirin",
+          "postfix": ", still remain uncle",
+          "tags": [
+            {
+              "name": "Aspirin",
+              "uri": "http://purl.bioontology.org/ontology/RXNORM/1191"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#ontogene-0359026e8883647adfb11e15e0e60d65",
+          "type": "Clinical Drug",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "OntoGene"
+        },
+        {
+          "exact": "In contrast, the chemoprotective effects of aspirin against other cancers remains a controversial issue and prospective studies are warranted to yield more definitive conclusions.",
+          "tags": [
+            {
+              "name": "cancers",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-58da5e68d6d8436a534d267bb8f3ad70",
+          "type": "Disease Drug Relationship",
+          "section": "Conclusion (http://purl.obolibrary.org/obo/IAO_0000615)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Finally, a 2019 Bayesian meta-analysis of 13 RCTs including 10 RCTs reporting overall cancer incidence found no difference in the rates of incident cancers between aspirin users and aspirin non-users (HR, 1.01; 95% CI, 0.93–1.08) [61].",
+          "tags": [
+            {
+              "name": "cancers",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-93ce2fe54f3bc17425e39a4cc20ad6b5",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "The potential therapeutic effects of aspirin when used as an adjuvant treatment in patients with cancer are being explored in several ongoing clinical trials (detailed in Table 3) including the Aspirin for Breast Cancer (ABC) trial (NCT02927249) [70], the Aspirin for Dukes C and high-risk B COLorecTal cancer (ASCOLT) trial (NCT00565708) [71], and the ADD-ASPIRIN trial (NCT02804815) [72].",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-eb9e02f346ba03c06fe0339e71cb3aa0",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Moreover, in the DAPT trial [88], which assessed the impact of an extended duration of DAPT in patients with ACS undergoing percutaneous coronary intervention, a significant excess of cancer-related deaths was observed in patients receiving 30 months of DAPT, compared to those receiving 12 months of DAPT followed by aspirin plus placebo (31 versus 14, p = 0.02) [88], suggesting that DAPT should be limited to 1–2 years to avoid the potential risk of new cancers.",
+          "tags": [
+            {
+              "name": "ACS",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0019796"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-f780afa8ce17bb06144c4896ce7dc5d9",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "A first pre-planned analysis reported no reduction in the risk of colorectal adenoma or carcinoma after a mean follow-up of 29 months in patients receiving 600 mg aspirin daily (RR,1.00; 95% CI, 0.7–1.4) [44].",
+          "tags": [
+            {
+              "name": "colorectal adenoma",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=EFO_0005406"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-5960afbeb073b29e2608ebf197138cef",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "A significant reduction in incident cancer was observed in aspirin users only for CRC (HR, 0.80, 95% CI, 0.67–0.97) [21].",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-f75cd88b130cda429335e9d977d81fa1",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "2.3. Benefit of Aspirin as Adjuvant Treatment in Patients with Cancer",
+          "tags": [
+            {
+              "name": "Cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "Aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-ee45b6c0a6a4246db890fd102c247cc2",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "In an early IPD meta-analysis including eight RCTs comparing daily aspirin versus no aspirin use in the primary or secondary prevention of CVD, daily aspirin use resulted in a 21% reduction in the risk of cancer-related mortality (n = 25,570 patients; OR, 0.79; 95% CI, 0.68–0.92, p = 0.003) [62].",
+          "tags": [
+            {
+              "name": "CVD",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=EFO_0000319"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-a09cee7d3d33e758d1a3b8e81f86c391",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Moreover, the potential chemoprotective effect of aspirin against cancers other than CRC has recently been questioned with the publication of 3 long-awaited trials of aspirin in the primary prevention of cardiovascular diseases (CVD) reporting no benefit of aspirin on overall cancer incidence and cancer-related mortality [11,12,13].",
+          "tags": [
+            {
+              "name": "CVD",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=EFO_0000319"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-64c6abb39b6294096ac8070bea49dc00",
+          "type": "Disease Drug Relationship",
+          "section": "Introduction (http://purl.org/orb/Introduction)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "In 2016, the USPSTF reviewed both the beneficial and harmful effects of aspirin in the primary prevention of CVD and CRC, along with a decision analysis to support their position statement [8,26,31,32].",
+          "tags": [
+            {
+              "name": "CVD",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=EFO_0000319"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-069290f2d90966a2306cb317eaf3d82b",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "The ASCEND (A Study of Cardiovascular Events iN Diabetes) trial, which randomly assigned 15,480 patients with diabetes to receive either 100 mg aspirin or placebo daily, reported no difference in the incidence of any cancer within a mean follow-up of 7.4 years (rate ratio, 1.01, 95% CI, 0.92–1.11) [11].",
+          "tags": [
+            {
+              "name": "Diabetes",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=EFO_0000400"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-ddfd6263c40806226dea93c0d727a43b",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "In addition, the mean age of participants was approximately 60 years in the meta-analyses of RCTs comparing daily aspirin versus no aspirin use in the primary prevention of CVD while the ASPREE trial enrolled patients 70 years of age or older.",
+          "tags": [
+            {
+              "name": "CVD",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=EFO_0000319"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-b86ef06e7ebb8850d78eab8299fe5169",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "In contrast, a pooled analysis of eight RCTs comparing daily aspirin versus placebo in the primary prevention of CVD found no significant reduction in cancer-related mortality (OR, 0.93; 95% CI, 0.84–1.03) [63] Similarly, in the Chubak et al. review, when analyses were restricted to primary prevention of CVD trials, aspirin use was not found to decrease the risk of cancer-related mortality over 3.7 to 10.1 years (RR, 0.96; 95% CI, 0.87–1.06) [26].",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-3997e5c18fcaf19691068d368afa5c4e",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Moreover, the chemoprotective effects of aspirin on overall cancer incidence have been recently questioned with the publication of long-awaited large clinical trials assessing the efficacy of aspirin in the primary prevention of CVD.",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-c1b66b83d9b41c59fa42720a1002cd1c",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "The chemoprotective effect of aspirin was not found to differ between high and low-dose aspirin, for any adenomas or for advanced lesions [37].",
+          "tags": [
+            {
+              "name": "adenomas",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=EFO_0000232"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-993f9565fdfe1b25f685c901ed054566",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Lebeau et al. randomized 303 small cell lung cancer patients to receive 1 g aspirin per day for 18 months or no aspirin, in addition to chemotherapy.",
+          "tags": [
+            {
+              "name": "small cell lung cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=EFO_0000702"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-50e77a784083aa85441fd6f788fcd3a9",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "The effect of aspirin on cancer-related mortality observed in the ASPREE trial might be due to a decreased survival among participants with undiagnosed cancers at time of enrollment rather than a true effect of aspirin on cancer incidence and cancer-related mortality.",
+          "tags": [
+            {
+              "name": "cancers",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-69708b71eabbfc6094c3a1e0a991912e",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "The ongoing Colorectal Adenoma/Carcinoma Prevention Programme 3 (CAPP3) double-blind dose, non-inferiority trial will randomize patients with Lynch Syndrome to receive daily doses of 600 mg, 300 mg, or 100 mg of enteric coated aspirin for two years.",
+          "tags": [
+            {
+              "name": "Lynch Syndrome",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0005835"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-4226966250238de8e99c5553201d7bf2",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "In contrast, a large randomized, double-blind, placebo-controlled trial found no overall association between treatment with a combination of 75 mg aspirin, calcitriol and calcium carbonate, and recurrent adenoma (n = 1,107; OR, 0.95; 95% CI, 0.61–1.48).",
+          "tags": [
+            {
+              "name": "adenoma",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=EFO_0000232"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-647b1e8ab97e050bd0be7cce4160324e",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Moreover, the potential chemoprotective effect of aspirin against other cancers has been recently questioned with the publication of 3 long-awaited trials of aspirin in the primary prevention of cardiovascular diseases reporting no benefit of aspirin on overall cancer incidence and cancer-related mortality.",
+          "tags": [
+            {
+              "name": "cardiovascular diseases",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=EFO_0000319"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/MED/31653027#opentargets-18aa75b1e62f734c6d262d4e6d24ee32",
+          "type": "Disease Drug Relationship",
+          "section": "Abstract (http://purl.org/dc/terms/abstract)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "In the Cancer Prevention Study II (CPS II) Nutrition Cohort, a large prospective study of cancer incidence and mortality (n = 146,113 participants), long-term daily aspirin use (for 5 years or more) was associated with a significantly lower incidence of CRC among both men and women (RR, 0.68, 95% CI, 0.52–0.90) [15].",
+          "tags": [
+            {
+              "name": "Cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-a7fda60017f46a27ca444a7517616369",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "A marginally significant decrease in cancer incidence was observed only when the analysis was restricted to trials of daily aspirin use, including secondary prevention studies, and having a median intended duration of at least four years (four trials; n = 11,800; RR, 0.86; 95% CI, 0.74–0.99) [26].",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-2e185f033b2939567623f85c6e65d93d",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Moreover, the potential chemoprotective effect of aspirin against other cancers has been recently questioned with the publication of 3 long-awaited trials of aspirin in the primary prevention of cardiovascular diseases reporting no benefit of aspirin on overall cancer incidence and cancer-related mortality.",
+          "tags": [
+            {
+              "name": "cancers",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/MED/31653027#opentargets-e884596826f50927717df33403364d57",
+          "type": "Disease Drug Relationship",
+          "section": "Abstract (http://purl.org/dc/terms/abstract)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Similarly, a recent systematic review and meta-analysis of all studies reporting aspirin use in cancer patients found that aspirin was associated with a significant 25% reduction in CRC-related mortality (HR, 0.75; 95% CI, 0.68–0.83), in a significant 20% reduction in breast cancer-related mortality (HR, 0.80; 95% CI, 0.66, 0.97) and in a 15% reduction in prostate cancer-related mortality (HR, 0.86; 95% CI 0.78–0.95).",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-5b9c11bfc0e2ebde6d39f0a90b5543bd",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "In contrast, data on the chemoprotective effect of aspirin against other cancers are less clear and remain controversial.",
+          "tags": [
+            {
+              "name": "cancers",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/MED/31653027#opentargets-f237eb9f9813fa85eadd9ad0415e68d0",
+          "type": "Disease Drug Relationship",
+          "section": "Abstract (http://purl.org/dc/terms/abstract)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Of note, while earlier meta-analyses found that the reduction in cancer-related mortality emerged after at least five years of follow-up in aspirin users, this finding was not replicated in the large ARRIVE trial which did not find any difference in cancer-related-mortality between aspirin users and aspirin non-users despite a mean follow-up of 7.4 years (rate ratio, 0.98; 95% CI, 0.84–1.15).",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-6b28fe8212fcb54412fa2673656b9c44",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Aspirin did not reduce cancer rates in six primary prevention trials with a follow-up duration ranging from 3.6 to 10.1 years (n = 72,926; RR, 0.98; 95% CI, 0.93) [26].",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "Aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-17dc419c7aae65fbcaee80dfec34fe82",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Within a median follow-up of 60 months, few cancer outcomes were reported (0.94% of prostate cancers in aspirin users versus 0.72% in aspirin non-users; 0.22% of CRC in aspirin users versus 0.70% in aspirin non-users), without any differences between groups [12].",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-d01206b1e74a2f66ff4350ac99fbd32c",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Aspirin use was not associated with a decreased rate of adenoma (RR, 0.99; 95% CI, 0.87–1.12; p = 0.88).",
+          "tags": [
+            {
+              "name": "adenoma",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=EFO_0000232"
+            },
+            {
+              "name": "Aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-c58d0e8f83a2b405973d516964847091",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Similarly, the randomized, placebo-controlled multicenter Japan Colorectal Aspirin Polyps Prevention (J-CAPP) trial reported a lower risk of any recurrent adenoma or CRC in the aspirin arm compared to the placebo arm (n = 311; RR, 0.60; 95% CI, 0.36–0.98) [38].",
+          "tags": [
+            {
+              "name": "adenoma",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=EFO_0000232"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-0f98f82b6eefe496a6e7300ee4a6030f",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Moreover, a retrospective cohort study of patients with Lynch syndrome who are carriers of a pathogenic germline mutation in the MLH1, MSH2, MSH6, or PMS2 gene reported that aspirin use was associated with a decreased risk of colorectal cancer (for 1 month to 4.9 years: HR, 0.49, 95% C, 0.27–0.90; for ≥ 5 years: HR, 0.25; 95% CI, 0.10–0.62) [46].",
+          "tags": [
+            {
+              "name": "PMS2",
+              "uri": "https://www.ensembl.org/Homo_sapiens/Gene/Summary?db=core;g=ENSG00000122512"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-0ba139515a90824a32e0f86fc5d47a1b",
+          "type": "Gene Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Moreover, a retrospective cohort study of patients with Lynch syndrome who are carriers of a pathogenic germline mutation in the MLH1, MSH2, MSH6, or PMS2 gene reported that aspirin use was associated with a decreased risk of colorectal cancer (for 1 month to 4.9 years: HR, 0.49, 95% C, 0.27–0.90; for ≥ 5 years: HR, 0.25; 95% CI, 0.10–0.62) [46].",
+          "tags": [
+            {
+              "name": "Lynch syndrome",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0005835"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-36b4931a59279f7a5363cb333709df2e",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Moreover, the potential chemoprotective effect of aspirin against cancers other than CRC has recently been questioned with the publication of 3 long-awaited trials of aspirin in the primary prevention of cardiovascular diseases (CVD) reporting no benefit of aspirin on overall cancer incidence and cancer-related mortality [11,12,13].",
+          "tags": [
+            {
+              "name": "cardiovascular diseases",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=EFO_0000319"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-64c6abb39b6294096ac8070bea49dc00",
+          "type": "Disease Drug Relationship",
+          "section": "Introduction (http://purl.org/orb/Introduction)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "More recently, Cao et al. assessed the potential benefits of aspirin for cancer prevention based on 2 large prospective US cohort studies.",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-00ab22d9962467b699ee64d29d49a0b2",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "The ASCEND (A Study of Cardiovascular Events iN Diabetes) trial, which randomly assigned 15,480 patients with diabetes to receive either 100 mg aspirin or placebo daily, reported no difference in the incidence of any cancer within a mean follow-up of 7.4 years (rate ratio, 1.01, 95% CI, 0.92–1.11) [11].",
+          "tags": [
+            {
+              "name": "diabetes",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=EFO_0000400"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-ddfd6263c40806226dea93c0d727a43b",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Together, these data suggest that aspirin has no effect on overall cancer incidence and related mortality, except in CRC.",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-545e78ccf27b98a0c3d8a94d3c107c7f",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Taken together, these data indicate a small but significant benefit of aspirin in preventing adenoma and CRC and suggest the need for an individualized rather than a one-size-fits-all approach to CRC chemoprevention.",
+          "tags": [
+            {
+              "name": "adenoma",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=EFO_0000232"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-1d05fa2d7afff29780ad1ffc8f4ed5a9",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "The pooled analysis of these trials found a statistically significant 17% decrease in the relative risk of recurrent adenoma in patients receiving aspirin, at any dose, versus patients receiving placebo (pooled RR, 0.83; 95% CI, 0.72–0.96), and a 28% decrease in the relative risk of advanced lesions (pooled RR, 0.72; 95% CI, 0.57–0.90) [37].",
+          "tags": [
+            {
+              "name": "adenoma",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=EFO_0000232"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-3cf5ceb506e1d4ac30ea15e352f78a70",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "While three meta-analyses suggested that daily aspirin use over a five-year treatment period or more might reduce the risk of cancer-related mortality [60,62,64], two others reported no benefit [61,63].",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-06143905b459169e35fc56d6b76f48ab",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Several placebo-controlled trials investigating aspirin for chemoprevention of recurrent adenoma and CRC were conducted over the past number of years, but they have reported conflicting results (Table 2).",
+          "tags": [
+            {
+              "name": "adenoma",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=EFO_0000232"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-4631b1bbc2489864a701623b165bf12f",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "The ongoing Colorectal Adenoma/Carcinoma Prevention Programme 3 (CAPP3) double-blind dose, non-inferiority trial will randomize patients with Lynch Syndrome to receive daily doses of 600 mg, 300 mg, or 100 mg of enteric coated aspirin for two years.",
+          "tags": [
+            {
+              "name": "Carcinoma",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=EFO_0000313"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-17dbab7b5906c68a4c49e20f9e82b986",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "However, a systematic review re-analyzing this set of trials found no significant effect of aspirin on overall cancer incidence after exclusion of two of the studies reporting on fatal cancers only and providing concomitant treatment with vitamin K antagonists (4 trials; RR, 0.92; 95% CI, 0.82–1.02) [26].",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-a875b4af6e79db741ac340accb5b0845",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Finally, a retrospective registry study assessed the risk of de novo cancer diagnosis in acute coronary syndrome (ACS) patients discharged from a tertiary hospital with DAPT with either aspirin and clopidogrel, or aspirin and prasugrel, or aspirin and ticagrelor [79].",
+          "tags": [
+            {
+              "name": "acute coronary syndrome",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=EFO_0005672"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-fad32b072518671c505ce01f6e31021a",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Five meta-analyses of RCTs comparing daily aspirin versus no aspirin use in the prevention of CVD or in any population of patients treated with aspirin [60,61,62,63,64] and a systematic review of the literature for the USPSTF [26] have assessed the association between aspirin and overall cancer-related mortality, with conflicting results.",
+          "tags": [
+            {
+              "name": "CVD",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=EFO_0000319"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-8cac3b6dba76efdbf1f1d948a6a37c53",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "A significantly greater number of deaths was observed in the aspirin arm, driven by a 31% increase in cancer-related deaths.",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-26b1874e1b3600b9e393cfd12f3964d2",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "The potential therapeutic effects of aspirin when used as an adjuvant treatment in patients with cancer are being explored in several ongoing clinical trials (detailed in Table 3) including the Aspirin for Breast Cancer (ABC) trial (NCT02927249) [70], the Aspirin for Dukes C and high-risk B COLorecTal cancer (ASCOLT) trial (NCT00565708) [71], and the ADD-ASPIRIN trial (NCT02804815) [72].",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "Aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-eb9e02f346ba03c06fe0339e71cb3aa0",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Moreover, a retrospective cohort study of patients with Lynch syndrome who are carriers of a pathogenic germline mutation in the MLH1, MSH2, MSH6, or PMS2 gene reported that aspirin use was associated with a decreased risk of colorectal cancer (for 1 month to 4.9 years: HR, 0.49, 95% C, 0.27–0.90; for ≥ 5 years: HR, 0.25; 95% CI, 0.10–0.62) [46].",
+          "tags": [
+            {
+              "name": "MLH1",
+              "uri": "https://www.ensembl.org/Homo_sapiens/Gene/Summary?db=core;g=ENSG00000076242"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-eca6653283e0e72d565879dde86625b5",
+          "type": "Gene Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "In contrast, a pooled analysis of eight RCTs comparing daily aspirin versus placebo in the primary prevention of CVD found no significant reduction in cancer-related mortality (OR, 0.93; 95% CI, 0.84–1.03) [63] Similarly, in the Chubak et al. review, when analyses were restricted to primary prevention of CVD trials, aspirin use was not found to decrease the risk of cancer-related mortality over 3.7 to 10.1 years (RR, 0.96; 95% CI, 0.87–1.06) [26].",
+          "tags": [
+            {
+              "name": "CVD",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=EFO_0000319"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-d476e8d7ecec6107df2121b7c990007f",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "By irreversibly inhibiting platelet functions, aspirin might interrupt this platelet-cancer crosstalk [5].",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-4fd7986c46163427895e5f1b05cadad7",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "The chemoprotective effect of aspirin on gastrointestinal tract cancers emerged at a dose of 0.5 to 1.5 standard aspirin tablets per week or the equivalent of a daily dose, and was dose-dependent, with significantly greater effects observed with increasing doses.",
+          "tags": [
+            {
+              "name": "gastrointestinal tract cancers",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0002516"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-be9c9b5fc1f5e6ed511224b6f5f89fc0",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Moreover, a retrospective cohort study of patients with Lynch syndrome who are carriers of a pathogenic germline mutation in the MLH1, MSH2, MSH6, or PMS2 gene reported that aspirin use was associated with a decreased risk of colorectal cancer (for 1 month to 4.9 years: HR, 0.49, 95% C, 0.27–0.90; for ≥ 5 years: HR, 0.25; 95% CI, 0.10–0.62) [46].",
+          "tags": [
+            {
+              "name": "MSH6",
+              "uri": "https://www.ensembl.org/Homo_sapiens/Gene/Summary?db=core;g=ENSG00000116062"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-f88665697fda5746fd58e41ac98825fe",
+          "type": "Gene Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "In the most recent meta-analysis including results from the ASPREE trial, there was no significant difference in cancer-related mortality between aspirin users and aspirin non-users (HR, 1.03; 95% CI, 0.96–1.11).",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-883c6554ba2592727fe698f2f91224b3",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "2.2. Chemoprotective Effect of Aspirin on Other Cancers",
+          "tags": [
+            {
+              "name": "Cancers",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "Aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-d6b996e00e08a6ffae09297a7f848b8a",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "In the Cancer Prevention Study II (CPS II) Nutrition Cohort, a large prospective study of cancer incidence and mortality (n = 146,113 participants), long-term daily aspirin use (for 5 years or more) was associated with a significantly lower incidence of CRC among both men and women (RR, 0.68, 95% CI, 0.52–0.90) [15].",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-a7fda60017f46a27ca444a7517616369",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "An association between aspirin use in cancer patients and metastatic spread was first suggested by a long-term follow-up study of five large RCTS examining daily aspirin in the prevention of CVD (n = 17,285 participants; mean in-trial follow-up, 6.5 years).",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-3143edf8ccfe85c88943d6a6bab6026d",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "The optimal dose and duration of aspirin treatment for preventing Lynch syndrome cancers remains unknown.",
+          "tags": [
+            {
+              "name": "Lynch syndrome",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0005835"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-1007fb9be4590568f3c9787d8565513f",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "The large body of available evidence was considered to be strong enough to recommend aspirin for primary prevention of CVD and CRC in patients aged 50 to 59 years with a low risk of bleeding and a 10-year atherosclerotic CVD risk of 10% (B recommendation).",
+          "tags": [
+            {
+              "name": "CVD",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=EFO_0000319"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-f5726568c4e9711a59fbd8853f2971cb",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Compared to subjects receiving no antiplatelet therapy, a 46% risk reduction in incident cancer was observed in aspirin users (adjusted HR, 0.54; 95% CI, 0.52–0.56; p < 0.001), and a 54% risk reduction was observed in DAPT users (adjusted HR, 0.46; 95% CI, 0.44–0.49; p < 0.001).",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-67dcca14de790313223396e292c47b0e",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "The Colorectal Adenoma/Carcinoma Prevention Programme 2 (CAPP2) randomized, double-blind, placebo-controlled trial assessed the efficacy and safety of aspirin and resistant starch on the development of colorectal adenoma and cancer.",
+          "tags": [
+            {
+              "name": "Carcinoma",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=EFO_0000313"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-7401050e8289efad2506a02d15631779",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "The study randomized 9326 ACS patients to receive DAPT with aspirin plus clopidogrel or aspirin plus prasugrel [90].",
+          "tags": [
+            {
+              "name": "ACS",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0019796"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-f92257580fca6121eb3663167670ffcc",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "The large WHS study found no reduction in the incidence of any cancer among aspirin users during an average 10 year follow-up (n = 39,876; RR, 1.01; 95% CI, 0.94–1.08; p = 0.87) [20].",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-bf5162e5bd5d69741efaf5a631c2a004",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Daily aspirin use after at least 2.5 years of follow-up was associated with a 23% reduction in the risk of cancer-related mortality (RR, 0.77; 95% CI, 0.63–0.95) [64].",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-6191a48379bc215a0297024694131f95",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "A time-to-event IPD meta-analysis of 6 trials assessing daily low-dose aspirin in primary cancer prevention reported a slight reduction in overall cancer incidence in aspirin users compared to aspirin non-users more than three years after randomization, regardless of sex (n = 35,535; OR, 0.76; 95% CI, 0.66–0.88; p = 0.0003) [60].",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-370164681daef87c0cad077002d34793",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Finally, a retrospective registry study assessed the risk of de novo cancer diagnosis in acute coronary syndrome (ACS) patients discharged from a tertiary hospital with DAPT with either aspirin and clopidogrel, or aspirin and prasugrel, or aspirin and ticagrelor [79].",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-92a4ba37154d4bf0055da99f9ea8bfda",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "The higher cancer-related mortality in the aspirin group was not confined to a specific tumor location [13].",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-d4a97c5f688d25959f9de00c970387dd",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "A meta-analysis of four randomized double-blind placebo-controlled trials [33,34,35,36] evaluating the efficacy and safety of aspirin (75 to 325 mg daily) for the prevention of recurrent colorectal adenomas included 2,967 patients with a previous history of colorectal adenoma or CRC.",
+          "tags": [
+            {
+              "name": "colorectal adenomas",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=EFO_0005406"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-0f721d415d2161452cea57303353f4ec",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "However, aspirin use was not strongly associated with higher cancer incidence in the ASPREE trial (981 cancers in the aspirin group compared to 952 cancers in the placebo) and results should be interpreted with caution.",
+          "tags": [
+            {
+              "name": "cancers",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-8b7f3bb940c70af1a860a26006aaf553",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Direct evidence on the potential benefit of aspirin given as adjuvant treatment in cancer patients is limited to three small randomized-controlled trials, which were negative.",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-32ee1d5d5bd78188b4d406abeb99cded",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "The effect of aspirin on cancer-related mortality observed in the ASPREE trial might be due to a decreased survival among participants with undiagnosed cancers at time of enrollment rather than a true effect of aspirin on cancer incidence and cancer-related mortality.",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-69708b71eabbfc6094c3a1e0a991912e",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "However, when including trials of both primary and secondary prevention of CVD with a treatment duration of 4 years or more, aspirin use was associated with slightly significant benefit as regards cancer mortality benefit (RR, 0.83; 95% CI, 0.70–0.98) [26], as previously reported [60,62,63,64].",
+          "tags": [
+            {
+              "name": "CVD",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=EFO_0000319"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-6f8d7a53e6cf6b9571cf1da05ac2277b",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Evidence from Post-Hoc Analyses of Randomized Controlled Trials Assessing the Efficacy and Safety of Aspirin in the Prevention of Cardiovascular Disease",
+          "tags": [
+            {
+              "name": "Cardiovascular Disease",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=EFO_0000319"
+            },
+            {
+              "name": "Aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-bf785ee8e0815225044e520fdd3f08ee",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Finally, a retrospective registry study assessed the risk of de novo cancer diagnosis in acute coronary syndrome (ACS) patients discharged from a tertiary hospital with DAPT with either aspirin and clopidogrel, or aspirin and prasugrel, or aspirin and ticagrelor [79].",
+          "tags": [
+            {
+              "name": "ACS",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0019796"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-a2e18eb86fd9c7983ee895107583187d",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "A first pre-planned analysis reported no reduction in the risk of colorectal adenoma or carcinoma after a mean follow-up of 29 months in patients receiving 600 mg aspirin daily (RR,1.00; 95% CI, 0.7–1.4) [44].",
+          "tags": [
+            {
+              "name": "carcinoma",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=EFO_0000313"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-3b4032fbd74c3bd1bbb1429f05672d18",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "The protective effect of aspirin against other cancers is much less clear.",
+          "tags": [
+            {
+              "name": "cancers",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-0afbe88d728ded99e232600d6a28ddd9",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "However, aspirin use was not strongly associated with higher cancer incidence in the ASPREE trial (981 cancers in the aspirin group compared to 952 cancers in the placebo) and results should be interpreted with caution.",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-8b7f3bb940c70af1a860a26006aaf553",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "The ongoing Colorectal Adenoma/Carcinoma Prevention Programme 3 (CAPP3) double-blind dose, non-inferiority trial will randomize patients with Lynch Syndrome to receive daily doses of 600 mg, 300 mg, or 100 mg of enteric coated aspirin for two years.",
+          "tags": [
+            {
+              "name": "Colorectal Adenoma",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=EFO_0005406"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-3977cdd0f8b28152426a2f1db3ae2846",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Moreover, a retrospective cohort study of patients with Lynch syndrome who are carriers of a pathogenic germline mutation in the MLH1, MSH2, MSH6, or PMS2 gene reported that aspirin use was associated with a decreased risk of colorectal cancer (for 1 month to 4.9 years: HR, 0.49, 95% C, 0.27–0.90; for ≥ 5 years: HR, 0.25; 95% CI, 0.10–0.62) [46].",
+          "tags": [
+            {
+              "name": "MSH2",
+              "uri": "https://www.ensembl.org/Homo_sapiens/Gene/Summary?db=core;g=ENSG00000095002"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-226bc367f5bd27015197b0a2ba796f17",
+          "type": "Gene Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Moreover, the potential chemoprotective effect of aspirin against cancers other than CRC has recently been questioned with the publication of 3 long-awaited trials of aspirin in the primary prevention of cardiovascular diseases (CVD) reporting no benefit of aspirin on overall cancer incidence and cancer-related mortality [11,12,13].",
+          "tags": [
+            {
+              "name": "cancers",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-6bd9c14fba96e7578a63454ac7b5fa61",
+          "type": "Disease Drug Relationship",
+          "section": "Introduction (http://purl.org/orb/Introduction)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Furthermore, aspirin seemed to confer a protective effect from cancers (i.e., colorectal, endometrial, ovarian, pancreatic, small bowel, gallbladder, ureter, stomach, kidney, and brain; HR, 0.63; 95% CI, 0.34–1.19; p = 0.16) [45].",
+          "tags": [
+            {
+              "name": "cancers",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-36e640b5640169415ff12315ee3e3972",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "When analyzing individual patient data (7 RCTs), the benefit of aspirin use on cancer-related mortality was observed regardless of dose, but only after 5 or more years of follow-up (HR, 0.66; 95% CI, 0.50–0.87 for all cancers and HR, 0.46; 95% CI, 0.27–0.77 for gastrointestinal cancers; p = 0.003 for both).",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-df67f4a3c5bbdc330848d70531d270fe",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "[17] In their combined cohort analysis, regular aspirin use was associated with a slight (3%) reduction in the risk of cancer overall (n = 135,965; RR, 0.97; 95% CI, 0.94–0.99).",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-cd9978d763d72ed6704655e9cd2b2116",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Finally, a 2019 Bayesian meta-analysis of 13 RCTs including 10 RCTs reporting overall cancer incidence found no difference in the rates of incident cancers between aspirin users and aspirin non-users (HR, 1.01; 95% CI, 0.93–1.08) [61].",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-93ce2fe54f3bc17425e39a4cc20ad6b5",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Cancer-related mortality occurred in 3.1% of aspirin users compared to 2.3% of aspirin nonusers (HR, 1.31; 95% CI, 1.10–1.56), within a median follow-up of 4.7 years.",
+          "tags": [
+            {
+              "name": "Cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-a5860cb5a6b468402f66c946089b2716",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "A second meta-analysis (69,224 patients) by the same authors corroborated these finding; an inverse association between daily aspirin use and the risk of cancer-related mortality was observed (in 34 RCTs; OR, 0.85; 95% CI, 0.76–0.96; p = 0.008), with a 37% reduction in the risk of cancer-related mortality in aspirin users after a treatment duration of 5 years or more (OR, 0.63, 95% CI 0.49–0.82; p = 0.0005) [60].",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-ff8a6d7f3b7e1e8bcaaff65299e753e5",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "The Colorectal Adenoma/Carcinoma Prevention Programme 2 (CAPP2) randomized, double-blind, placebo-controlled trial assessed the efficacy and safety of aspirin and resistant starch on the development of colorectal adenoma and cancer.",
+          "tags": [
+            {
+              "name": "Colorectal Adenoma",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=EFO_0005406"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-33176b378574c03877462202e1bc3328",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Recently, the multicenter, randomized, double-blind, placebo-controlled, 2 × 2 factorial SeAFOod Polyp Prevention trial [40] assessed the efficacy of aspirin and eicosapentaenoic acid (EPA) in preventing colorectal adenoma in patients included in the English Bowel Cancer Screening Programme and identified as being at high risk during colonoscopy.",
+          "tags": [
+            {
+              "name": "colorectal adenoma",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=EFO_0005406"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-c1a6c85d0ca99f8a4ef4c76e5281e1fe",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "The Aspirin to Reduce Risk of Initial Vascular Events (ARRIVE) trial randomized 12,456 patients (aged 55 to 60 years) with moderate CV risk and without diabetes to receive 100 mg aspirin daily or placebo for 5 years.",
+          "tags": [
+            {
+              "name": "diabetes",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=EFO_0000400"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-2d3b61d69e73d9b432f44d6748116928",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        },
+        {
+          "exact": "Moreover, in the DAPT trial [88], which assessed the impact of an extended duration of DAPT in patients with ACS undergoing percutaneous coronary intervention, a significant excess of cancer-related deaths was observed in patients receiving 30 months of DAPT, compared to those receiving 12 months of DAPT followed by aspirin plus placebo (31 versus 14, p = 0.02) [88], suggesting that DAPT should be limited to 1–2 years to avoid the potential risk of new cancers.",
+          "tags": [
+            {
+              "name": "cancer",
+              "uri": "https://www.ebi.ac.uk/ols/ontologies/efo/terms?short_form=MONDO_0004992"
+            },
+            {
+              "name": "aspirin",
+              "uri": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL25"
+            }
+          ],
+          "id": "http://europepmc.org/article/PMC/PMC6895806#opentargets-382cfddb5e06a740006a6b21c9665193",
+          "type": "Disease Drug Relationship",
+          "section": "Article (http://semanticscience.org/resource/SIO_001029)",
+          "provider": "Open Targets Platform"
+        }
+      ],
+      "fullTextIdList": [
+        "PMC6895806"
+      ]
+    }
+  ]
+}

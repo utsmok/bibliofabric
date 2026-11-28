@@ -1,0 +1,46 @@
+{
+  "version": "6.9",
+  "hitCount": 22,
+  "request": {
+    "id": "23903748",
+    "source": "MED",
+    "offSet": 1,
+    "pageSize": 2
+  },
+  "referenceList": {
+    "reference": [
+      {
+        "source": "MED",
+        "id": "21574616",
+        "citationType": "JOURNAL ARTICLE",
+        "title": "Quantum dot nano thermometers reveal heterogeneous local thermogenesis in living cells.",
+        "authorString": "Yang JM, Yang H, Lin L.",
+        "journalAbbreviation": "ACS Nano",
+        "issue": "6",
+        "pubYear": 2011,
+        "volume": "5",
+        "pageInfo": "5067-5071",
+        "citedOrder": 1,
+        "match": "Y",
+        "essn": "1936-086X",
+        "issn": "1936-0851"
+      },
+      {
+        "source": "MED",
+        "id": "21967343",
+        "citationType": "JOURNAL ARTICLE",
+        "title": "Localized temperature and chemical reaction control in nanoscale space by nanowire array.",
+        "authorString": "Jin CY, Li Z, Williams RS, Lee KC, Park I.",
+        "journalAbbreviation": "Nano Lett",
+        "issue": "11",
+        "pubYear": 2011,
+        "volume": "11",
+        "pageInfo": "4818-4825",
+        "citedOrder": 2,
+        "match": "Y",
+        "essn": "1530-6992",
+        "issn": "1530-6984"
+      }
+    ]
+  }
+}

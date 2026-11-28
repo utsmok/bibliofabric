@@ -1,0 +1,51 @@
+{
+  "version": "6.9",
+  "hitCount": 2,
+  "request": {
+    "id": "23903748",
+    "source": "MED",
+    "offSet": 1,
+    "pageSize": 10
+  },
+  "linksCountList": {
+    "provider": [
+      {
+        "providerName": "BioStudies: supplemental material and supporting data",
+        "linksCount": 1
+      },
+      {
+        "providerName": "Altmetric",
+        "linksCount": 1
+      }
+    ]
+  },
+  "providers": {
+    "provider": [
+      {
+        "id": 1518,
+        "name": "BioStudies: supplemental material and supporting data",
+        "description": "Database of biological studies",
+        "frontTab": "N",
+        "link": [
+          {
+            "title": "Nanometre-scale thermometry in a living cell.",
+            "url": "http://www.ebi.ac.uk/biostudies/studies/S-EPMC4221854?xr=true"
+          }
+        ]
+      },
+      {
+        "id": 1562,
+        "name": "Altmetric",
+        "description": "Discover the attention surrounding your research",
+        "frontTab": "N",
+        "link": [
+          {
+            "title": "Nanometre-scale thermometry in a living cell",
+            "url": "https://www.altmetric.com/details/1660635",
+            "imgUrl": "https://api.altmetric.com/v2/donut/1660635_64.png"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,83 @@
+"""Client for the Europe PMC grants (Grist) API."""
+
+from collections.abc import Mapping
+from typing import Any
+from urllib.parse import quote
+
+from bibliofabric import BaseApiClient, validate_model
+
+from ..models import GrantRecord, GrantsResponse
+from .resources import GRIST_API_BASE_URL
+
+
+class GrantsClient:
+    """Client for the grants RESTful (Grist) API.
+
+    The Grist database holds the grants of the Europe PMC funders. Its query
+    endpoint lives at ``https://www.ebi.ac.uk/europepmc/GristAPI/rest/get``
+    and carries the query in the path (``query=malaria``). Paging uses the
+    ``page`` parameter; the route has no ``pageSize`` (a ``pageSize`` query
+    parameter is concatenated into the query string, which breaks the query).
+    """
+
+    def __init__(self, client: BaseApiClient) -> None:
+        """Build the grants client over an owning :class:`EuropaeaClient`."""
+        self._client = client
+
+    async def search(
+        self, query: str, *, page: int = 1, params: Mapping[str, Any] | None = None
+    ) -> GrantsResponse:
+        """Search the grants database and return the typed envelope.
+
+        Args:
+            query: Grist query string (free text or a field query such as
+                ``"ga:Wellcome Trust"`` for a grant agency).
+            page: 1-based page number; each page carries a fixed record set.
+
+        Returns:
+            The typed envelope with ``hit_count`` (as the API reports it,
+            a string), the request echo, and the grant records.
+        """
+        return await self._get(query, page, params)
+
+    async def iterate(
+        self, query: str, *, limit: int | None = None
+    ) -> list[GrantRecord]:
+        """Collect grant records page by page until the record list empties.
+
+        This is a plain helper (the Grist route has no cursor), bounded by
+        ``limit`` pages when given.
+        """
+        records: list[GrantRecord] = []
+        page = 1
+        while True:
+            response = await self._get(query, page, None)
+            batch = (response.record_list.record if response.record_list else []) or []
+            records.extend(batch)
+            if limit is not None and page >= limit:
+                break
+            if not batch:
+                break
+            page += 1
+        return records
+
+    async def _get(
+        self, query: str, page: int, params: Mapping[str, Any] | None
+    ) -> GrantsResponse:
+        """Send one GET against the Grist API base URL."""
+        # Grist wants the parameters glued to the query path with '&', not a
+        # '?'-style query string: '/get/query=malaria&format=json&page=1'.
+        # With '?' the route content-negotiates instead and answers 406 for
+        # Accept: application/json, and answers XML regardless of the format
+        # parameter when the negotiation succeeds.
+        path = (
+            f"{GRIST_API_BASE_URL}/query={quote(query, safe='')}"
+            f"&format=json&page={page}"
+        )
+        body = await self._client.get_json(
+            path, params=params, headers={"Accept": "*/*"}
+        )
+        return validate_model(GrantsResponse, body)
+
+
+__all__ = ["GrantsClient"]

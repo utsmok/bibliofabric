@@ -1,0 +1,80 @@
+{
+  "version": "6.9",
+  "hitCount": 5670999,
+  "request": {
+    "queryString": "cancer",
+    "resultType": "lite",
+    "cursorMark": "AoIIP4kfdSg1NzAxMzQ3Mw==",
+    "pageSize": 25,
+    "sort": "",
+    "synonym": false
+  },
+  "resultList": {
+    "result": [
+      {
+        "id": "42867783",
+        "source": "MED",
+        "pmid": "42867783",
+        "doi": "10.1007/978-1-0716-5559-7_8",
+        "title": "Establishment of In Vivo Mouse Models to Study Salmonella-Induced Chronic Infection and Gastrointestinal Cancer.",
+        "authorString": "Zhang Y, Sun J.",
+        "journalTitle": "Methods Mol Biol",
+        "journalVolume": "3078",
+        "pubYear": "2027",
+        "journalIssn": "1064-3745; 1940-6029; ",
+        "pageInfo": "85-93",
+        "pubType": "journal article",
+        "isOpenAccess": "N",
+        "inEPMC": "N",
+        "inPMC": "N",
+        "citedByCount": 0,
+        "hasReferences": "Y",
+        "hasTextMinedTerms": "Y",
+        "hasDbCrossReferences": "N",
+        "hasPDF": "N",
+        "hasBook": "N",
+        "hasSuppl": "N",
+        "hasLabsLinks": "N",
+        "hasTMAccessionNumbers": "N",
+        "firstPublicationDate": "2027-01-01",
+        "firstIndexDate": "2026-10-19"
+      },
+      {
+        "id": "43046908",
+        "source": "MED",
+        "pmid": "43046908",
+        "pmcid": "PMC13778760",
+        "fullTextIdList": {
+          "fullTextId": [
+            "PMC13778760"
+          ]
+        },
+        "doi": "10.1002/cncr.70684",
+        "title": "Collaborative strategies to inform trial portfolios and enrollment reflecting catchment area cancer burden.",
+        "authorString": "Amorrortu RP, Kirtane KS, Zhao Y, Tapia-Kwan E, Ugrenovic-Petrovic M, Moffett K, Soliman H, Lebsack J, Khushalani NI, Gonzalez-Calderon G, Hawk ET, Eschrich SA, Rollison DE, Haura EB, Vadaparampil ST.",
+        "journalTitle": "Cancer",
+        "issue": "23",
+        "journalVolume": "132",
+        "pubYear": "2026",
+        "journalIssn": "0008-543x; 1097-0142; ",
+        "pageInfo": "e70684",
+        "pubType": "article-commentary; journal article",
+        "isOpenAccess": "Y",
+        "inEPMC": "Y",
+        "inPMC": "Y",
+        "citedByCount": 0,
+        "hasReferences": "Y",
+        "hasTextMinedTerms": "Y",
+        "hasDbCrossReferences": "N",
+        "hasPDF": "Y",
+        "hasBook": "N",
+        "hasSuppl": "Y",
+        "hasLabsLinks": "N",
+        "hasTMAccessionNumbers": "N",
+        "firstPublicationDate": "2026-12-01",
+        "firstIndexDate": "2026-11-18"
+      }
+    ]
+  },
+  "nextCursorMark": "AoIIP4bcjig1NzAxMzAzOQ=="
+}

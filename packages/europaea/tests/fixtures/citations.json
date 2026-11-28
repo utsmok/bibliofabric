@@ -1,0 +1,39 @@
+{
+  "version": "6.9",
+  "hitCount": 712,
+  "request": {
+    "id": "23903748",
+    "source": "MED",
+    "offSet": 0,
+    "pageSize": 2
+  },
+  "citationList": {
+    "citation": [
+      {
+        "source": "MED",
+        "id": "42955633",
+        "citationType": "journal article",
+        "title": "Cell Labeling with Fluorescent Nanodiamonds for Visualization and Manipulation.",
+        "authorString": "Le TN, Chang HC.",
+        "journalAbbreviation": "Methods Mol Biol",
+        "pubYear": 2027,
+        "volume": "3101",
+        "pageInfo": "161-174",
+        "citedByCount": 0
+      },
+      {
+        "source": "MED",
+        "id": "42695354",
+        "citationType": "review; journal article",
+        "title": "Optical multi-physical field imaging within single cells.",
+        "authorString": "Xu Y, Ji C, Tan J, Feng J.",
+        "journalAbbreviation": "Chem Soc Rev",
+        "pubYear": 2026,
+        "volume": "55",
+        "issue": "20",
+        "pageInfo": "10506-10554",
+        "citedByCount": 0
+      }
+    ]
+  }
+}

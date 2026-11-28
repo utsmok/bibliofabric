@@ -1,0 +1,71 @@
+{
+  "version": "6.9",
+  "hitCount": 5670999,
+  "request": {
+    "queryString": "cancer",
+    "resultType": "lite",
+    "cursorMark": "AoIIP9Pbaig1NjkwMDM2Mw==",
+    "pageSize": 2,
+    "sort": "",
+    "synonym": false
+  },
+  "resultList": {
+    "result": [
+      {
+        "id": "42880333",
+        "source": "MED",
+        "pmid": "42880333",
+        "doi": "10.1016/j.langlo.2026.104112",
+        "title": "Expression of concern: Global feasibility of cervical cancer elimination: a multidimensional scenario-based modelling analysis across 175 countries.",
+        "authorString": "The Lancet Global Health Editors.",
+        "journalTitle": "Lancet Glob Health",
+        "pubYear": "2027",
+        "journalIssn": "2214-109x",
+        "pageInfo": "104112",
+        "pubType": "journal article; expression of concern",
+        "isOpenAccess": "N",
+        "inEPMC": "N",
+        "inPMC": "N",
+        "citedByCount": 0,
+        "hasReferences": "N",
+        "hasTextMinedTerms": "N",
+        "hasDbCrossReferences": "N",
+        "hasPDF": "N",
+        "hasBook": "N",
+        "hasSuppl": "N",
+        "hasLabsLinks": "N",
+        "hasTMAccessionNumbers": "N",
+        "firstPublicationDate": "2027-09-24",
+        "firstIndexDate": "2026-10-19"
+      },
+      {
+        "id": "43014335",
+        "source": "MED",
+        "pmid": "43014335",
+        "doi": "10.1016/j.langlo.2026.104093",
+        "title": "Paediatric cancer treatment abandonment: multifaceted solutions required.",
+        "authorString": "Nri-Ezedi CA, Ulasi TO.",
+        "journalTitle": "Lancet Glob Health",
+        "pubYear": "2027",
+        "journalIssn": "2214-109x",
+        "pageInfo": "104093",
+        "pubType": "journal article",
+        "isOpenAccess": "N",
+        "inEPMC": "N",
+        "inPMC": "N",
+        "citedByCount": 0,
+        "hasReferences": "Y",
+        "hasTextMinedTerms": "N",
+        "hasDbCrossReferences": "N",
+        "hasPDF": "N",
+        "hasBook": "N",
+        "hasSuppl": "N",
+        "hasLabsLinks": "N",
+        "hasTMAccessionNumbers": "N",
+        "firstPublicationDate": "2027-09-02",
+        "firstIndexDate": "2026-11-12"
+      }
+    ]
+  },
+  "nextCursorMark": "AoIIP73T+Cg1NjkwMDM2Mg=="
+}

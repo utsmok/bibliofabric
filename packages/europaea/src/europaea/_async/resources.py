@@ -1,0 +1,63 @@
+"""Shared constants and the resource base of the Europe PMC client."""
+
+from bibliofabric import ResourceClient
+from bibliofabric.paging import QueryDialect
+from pydantic import BaseModel
+
+#: Base URL of the Europe PMC REST web services.
+EUROPEPMC_API_BASE_URL = "https://www.ebi.ac.uk/europepmc/webservices/rest"
+
+#: Base URL of the Europe PMC annotations API (a separate service).
+ANNOTATIONS_API_BASE_URL = "https://www.ebi.ac.uk/europepmc/annotations_api"
+
+#: Base URL of the grants (Grist) API (a separate service).
+GRIST_API_BASE_URL = "https://www.ebi.ac.uk/europepmc/GristAPI/rest/get"
+
+#: Search pages with ``cursorMark`` tokens. ``pageSize`` accepts at most 1000
+#: records; a larger value answers 404 with a range error. ``nextCursorMark``
+#: repeats unchanged once the list is exhausted.
+EUROPEPMC_DIALECT = QueryDialect(
+    page_size_param="pageSize",
+    max_page_size=1000,
+    default_page_size=25,
+    page_param=None,
+    cursor_param="cursorMark",
+    cursor_start="*",
+    sort_param="sort",
+    query_param="query",
+    select_param=None,
+    count_page_size=1,
+)
+
+#: References and citations page by ``page`` and ``pageSize`` with the same
+#: 1000-record ceiling as the search route.
+EUROPEPMC_LIST_DIALECT = QueryDialect(
+    page_size_param="pageSize",
+    max_page_size=1000,
+    default_page_size=25,
+    page_param="page",
+    page_start=1,
+    cursor_param=None,
+    sort_param=None,
+    query_param=None,
+    select_param=None,
+    count_page_size=1,
+)
+
+
+class EuropepmcResourceClient[E: BaseModel](ResourceClient[E]):
+    """Base client for Europe PMC resources: ``format=json`` on every route."""
+
+    def default_params(self) -> dict[str, str]:
+        """Parameters sent with every JSON route of this resource."""
+        return {"format": "json"}
+
+
+__all__ = [
+    "ANNOTATIONS_API_BASE_URL",
+    "EUROPEPMC_API_BASE_URL",
+    "EUROPEPMC_DIALECT",
+    "EUROPEPMC_LIST_DIALECT",
+    "GRIST_API_BASE_URL",
+    "EuropepmcResourceClient",
+]

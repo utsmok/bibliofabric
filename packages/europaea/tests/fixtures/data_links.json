@@ -1,0 +1,113 @@
+{
+  "version": "6.9",
+  "hitCount": 2,
+  "request": {
+    "id": "23903748",
+    "source": "MED"
+  },
+  "dataLinkList": {
+    "Category": [
+      {
+        "Name": "Altmetric",
+        "CategoryLinkCount": 1,
+        "Section": [
+          {
+            "ObtainedBy": "ext_links",
+            "SectionLinkCount": 1,
+            "Tags": [
+              "altmetrics"
+            ],
+            "Linklist": {
+              "Link": [
+                {
+                  "PublicationDate": "19-11-2026",
+                  "RelationshipType": {
+                    "Name": "IsReferencedBy"
+                  },
+                  "ObtainedBy": "ext_links",
+                  "Source": {
+                    "Identifier": {
+                      "ID": "23903748",
+                      "IDScheme": "PMID"
+                    },
+                    "Type": {
+                      "Name": "literature"
+                    }
+                  },
+                  "Target": {
+                    "Identifier": {
+                      "ID": "https://www.altmetric.com/details/1660635",
+                      "IDScheme": "URL",
+                      "IDURL": "https://www.altmetric.com/details/1660635"
+                    },
+                    "Type": {
+                      "Name": "dataset"
+                    },
+                    "Title": "Nanometre-scale thermometry in a living cell",
+                    "Publisher": {
+                      "Name": "Altmetric"
+                    },
+                    "ImageURL": "https://api.altmetric.com/v2/donut/1660635_64.png"
+                  },
+                  "LinkProvider": {
+                    "Name": "Europe PMC"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "Name": "BioStudies: supplemental material and supporting data",
+        "CategoryLinkCount": 1,
+        "Section": [
+          {
+            "ObtainedBy": "ext_links",
+            "SectionLinkCount": 1,
+            "Tags": [
+              "supporting_data"
+            ],
+            "Linklist": {
+              "Link": [
+                {
+                  "PublicationDate": "16-07-2025",
+                  "RelationshipType": {
+                    "Name": "IsReferencedBy"
+                  },
+                  "ObtainedBy": "ext_links",
+                  "Source": {
+                    "Identifier": {
+                      "ID": "23903748",
+                      "IDScheme": "PMID"
+                    },
+                    "Type": {
+                      "Name": "literature"
+                    }
+                  },
+                  "Target": {
+                    "Identifier": {
+                      "ID": "http://www.ebi.ac.uk/biostudies/studies/S-EPMC4221854?xr=true",
+                      "IDScheme": "URL",
+                      "IDURL": "http://www.ebi.ac.uk/biostudies/studies/S-EPMC4221854?xr=true"
+                    },
+                    "Type": {
+                      "Name": "dataset"
+                    },
+                    "Title": "Nanometre-scale thermometry in a living cell.",
+                    "Publisher": {
+                      "Name": "BioStudies: supplemental material and supporting data"
+                    }
+                  },
+                  "LinkProvider": {
+                    "Name": "Europe PMC"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

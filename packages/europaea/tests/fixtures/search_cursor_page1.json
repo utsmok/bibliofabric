@@ -1,0 +1,71 @@
+{
+  "version": "6.9",
+  "hitCount": 5670999,
+  "request": {
+    "queryString": "cancer",
+    "resultType": "lite",
+    "cursorMark": "*",
+    "pageSize": 25,
+    "sort": "",
+    "synonym": false
+  },
+  "resultList": {
+    "result": [
+      {
+        "id": "43064585",
+        "source": "MED",
+        "pmid": "43064585",
+        "doi": "10.1016/j.bja.2026.08.011",
+        "title": "Beyond the binary: vaping and the changing face of perioperative pulmonary risk.",
+        "authorString": "van Meenen DMP, Hemmes SNT, Buiteman-Kruizinga LA.",
+        "journalTitle": "Br J Anaesth",
+        "pubYear": "2028",
+        "journalIssn": "0007-0912; 1471-6771; ",
+        "pageInfo": "S0007-0912(26)00612-4",
+        "pubType": "editorial",
+        "isOpenAccess": "N",
+        "inEPMC": "N",
+        "inPMC": "N",
+        "citedByCount": 0,
+        "hasReferences": "N",
+        "hasTextMinedTerms": "Y",
+        "hasDbCrossReferences": "N",
+        "hasPDF": "N",
+        "hasBook": "N",
+        "hasSuppl": "N",
+        "hasLabsLinks": "N",
+        "hasTMAccessionNumbers": "N",
+        "firstPublicationDate": "2028-09-15",
+        "firstIndexDate": "2026-11-21"
+      },
+      {
+        "id": "43014336",
+        "source": "MED",
+        "pmid": "43014336",
+        "doi": "10.1016/j.langlo.2026.104074",
+        "title": "Interventions to reduce paediatric cancer treatment abandonment in low-income and middle-income countries: a systematic review and meta-analysis.",
+        "authorString": "Gillipelli SR, Schaeffer AR, McAtee CL, Nyasulu C, Makuti S, Andrew NR, Haq HA, Zobeck MC.",
+        "journalTitle": "Lancet Glob Health",
+        "pubYear": "2027",
+        "journalIssn": "2214-109x",
+        "pageInfo": "104074",
+        "pubType": "journal article",
+        "isOpenAccess": "N",
+        "inEPMC": "N",
+        "inPMC": "N",
+        "citedByCount": 0,
+        "hasReferences": "Y",
+        "hasTextMinedTerms": "Y",
+        "hasDbCrossReferences": "N",
+        "hasPDF": "N",
+        "hasBook": "N",
+        "hasSuppl": "N",
+        "hasLabsLinks": "N",
+        "hasTMAccessionNumbers": "N",
+        "firstPublicationDate": "2027-09-02",
+        "firstIndexDate": "2026-11-12"
+      }
+    ]
+  },
+  "nextCursorMark": "AoIIP4kfdSg1NzAxMzQ3Mw=="
+}

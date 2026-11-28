@@ -1,0 +1,29 @@
+{
+  "HitCount": "1739",
+  "Request": {
+    "Query": "malaria",
+    "ResultType": "Lite",
+    "Page": "2"
+  },
+  "RecordList": {
+    "Record": [
+      {
+        "Person": {
+          "FamilyName": "Asante",
+          "GivenName": "Kwaku",
+          "Initials": "KP",
+          "Title": "Dr"
+        },
+        "Grant": {
+          "Funder": {
+            "Name": "Wellcome Trust",
+            "pubMedSearchTerm": "Wellcome Trust"
+          },
+          "Id": "329783",
+          "Doi": "10.35802/329783",
+          "Title": "Predictive Modeling for climate-sensitive health outcomes and decision support in Ghana"
+        }
+      }
+    ]
+  }
+}
