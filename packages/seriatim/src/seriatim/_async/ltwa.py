@@ -1,0 +1,134 @@
+"""Client for the Title Word Abbreviation table (``/ltwa``).
+
+The LTWA page renders one table per request; this client fetches the page
+and parses it with :func:`seriatim.ltwa_parser.parse_ltwa_page`.
+"""
+
+from collections.abc import AsyncIterator, Sequence
+
+import httpx
+from bibliofabric import BaseApiClient
+from bibliofabric.exceptions import ConfigurationError
+
+from ..dialect import DEFAULT_LTWA_PAGE_SIZE
+from ..ltwa_parser import parse_ltwa_page
+from ..models import LtwaEntry, LtwaPage
+
+
+class LtwaClient:
+    """Typed client for the list of Title Word Abbreviations.
+
+    Reads the HTML table of ``https://portal.issn.org/ltwa``: :meth:`page`
+    returns the rows of one page and :meth:`iterate` walks the table. This
+    is an HTML scrape of a public page, not a machine-readable API; the
+    Portal's own ``/ltwa-export`` CSV route answered 502 on 2026-11-27 and
+    is not wrapped.
+    """
+
+    def __init__(self, client: BaseApiClient) -> None:
+        """Store the shared :class:`BaseApiClient` (rate limiting, headers)."""
+        self._client = client
+
+    async def page(
+        self,
+        *,
+        search: str | None = None,
+        languages: Sequence[str] | None = None,
+        page: int = 1,
+        page_size: int = DEFAULT_LTWA_PAGE_SIZE,
+        sort: str = "word",
+        order: str = "asc",
+    ) -> LtwaPage:
+        """Fetch one page of Title Word Abbreviations.
+
+        ``search`` filters by word text, ``languages`` takes ISO 639-2 codes
+        (for example ``ger`` or ``fra``), ``sort`` is ``word`` or
+        ``abbreviation`` and ``order`` is ``asc`` or ``desc``. The Portal
+        serves at most 100 rows per page; a larger ``page_size`` answers an
+        empty page.
+        """
+        if page < 1:
+            raise ConfigurationError(f"page must be >= 1, got {page}.")
+        pairs: list[tuple[str, str | float | None]] = [
+            ("page", str(page)),
+            ("page_size", str(page_size)),
+            ("order", order),
+            ("sort", sort),
+        ]
+        if search:
+            pairs.append(("search", search))
+        for value in languages or ():
+            if not value or not value.strip():
+                raise ConfigurationError("languages values must be non-empty.")
+            pairs.append(("languages", value))
+        response = await self._client.request(
+            "GET", "ltwa", params=httpx.QueryParams(pairs)
+        )
+        entries = parse_ltwa_page(response.text)
+        return LtwaPage(
+            entries=entries,
+            page=page,
+            page_size=page_size,
+            search=search,
+            languages=list(languages or ()),
+            sort=sort,
+            order=order,
+        )
+
+    def iterate(
+        self,
+        *,
+        search: str | None = None,
+        languages: Sequence[str] | None = None,
+        page_size: int = DEFAULT_LTWA_PAGE_SIZE,
+        sort: str = "word",
+        order: str = "asc",
+        limit: int | None = None,
+    ) -> AsyncIterator[LtwaEntry]:
+        """Iterate over the whole table (or the filtered rows), page by page.
+
+        The page carries no total, so iteration stops on the first page
+        without rows. Each page costs one paced request.
+        """
+        return self._iterate(
+            search=search,
+            languages=languages,
+            page_size=page_size,
+            sort=sort,
+            order=order,
+            limit=limit,
+        )
+
+    async def _iterate(
+        self,
+        *,
+        search: str | None,
+        languages: Sequence[str] | None,
+        page_size: int,
+        sort: str,
+        order: str,
+        limit: int | None,
+    ) -> AsyncIterator[LtwaEntry]:
+        """Fetch page after page until a page has no rows."""
+        seen = 0
+        page_number = 1
+        while True:
+            result = await self.page(
+                search=search,
+                languages=languages,
+                page=page_number,
+                page_size=page_size,
+                sort=sort,
+                order=order,
+            )
+            if not result.entries:
+                return
+            for entry in result.entries:
+                yield entry
+                seen += 1
+                if limit is not None and seen >= limit:
+                    return
+            page_number += 1
+
+
+__all__ = ["LtwaClient"]

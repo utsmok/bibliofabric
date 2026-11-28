@@ -1,0 +1,155 @@
+"""Offline request-shape and paging tests for the search and LTWA routes."""
+
+import pytest
+from bibliofabric.exceptions import ConfigurationError
+from seriatim import LtwaEntry
+
+from ..conftest import load_fixture
+
+SEARCH_HTML = load_fixture("search_results.html")
+LTWA_HTML = load_fixture("ltwa_rows.html")
+LTWA_EMPTY_HTML = load_fixture("ltwa_page_empty.html")
+
+
+def last_params(httpx_mock) -> list[tuple[str, str]]:
+    return list(httpx_mock.get_requests()[-1].url.params.multi_items())
+
+
+async def test_search_page_parses_hits(client, httpx_mock):
+    httpx_mock.add_response(text=SEARCH_HTML)
+    page = await client.search.page("0028-0836")
+    assert page.total == 6
+    assert [hit.issn for hit in page.hits] == ["0028-0836", "1476-4687"]
+    assert last_params(httpx_mock) == [
+        ("search", "0028-0836"),
+        ("page", "1"),
+        ("page_size", "20"),
+    ]
+
+
+async def test_search_page_sends_form_filters(client, httpx_mock):
+    httpx_mock.add_response(text=SEARCH_HTML)
+    await client.search.page(
+        "nature",
+        fuzzy=True,
+        chinese_script=True,
+        partner_repositories=["kee", "roa"],
+        iso_country=["GBR"],
+        media=["ta", "cr"],
+        category=["reg"],
+        page=2,
+        page_size=50,
+        sort_field="title",
+        sort_order="desc",
+    )
+    assert last_params(httpx_mock) == [
+        ("search", "nature"),
+        ("fuzzy", "True"),
+        ("chinese_script", "True"),
+        ("partner_repositories", "kee"),
+        ("partner_repositories", "roa"),
+        ("iso_country", "GBR"),
+        ("media", "ta"),
+        ("media", "cr"),
+        ("category", "reg"),
+        ("sort_field", "title"),
+        ("sort_order", "desc"),
+        ("page", "2"),
+        ("page_size", "50"),
+    ]
+
+
+async def test_search_rejects_unknown_partner_repository(client, httpx_mock):
+    with pytest.raises(ConfigurationError, match="partner_repositories"):
+        await client.search.page("nature", partner_repositories=["nope"])
+    assert not httpx_mock.get_requests()
+
+
+async def test_search_requires_a_criterion(client, httpx_mock):
+    with pytest.raises(ConfigurationError, match="query or at least one filter"):
+        await client.search.page()
+    assert not httpx_mock.get_requests()
+
+
+async def test_search_count_reads_total(client, httpx_mock):
+    httpx_mock.add_response(text=SEARCH_HTML)
+    assert await client.search.count("0028-0836") == 6
+
+
+async def test_search_iterate_stops_at_total(client, httpx_mock):
+    httpx_mock.add_response(text=SEARCH_HTML)
+    httpx_mock.add_response(text=SEARCH_HTML)
+    httpx_mock.add_response(text=SEARCH_HTML)
+    hits = [hit async for hit in client.search.iterate("nature", page_size=2)]
+    # two hits per page, total 6: exactly three pages, then the total stops it
+    assert [hit.issn for hit in hits] == ["0028-0836", "1476-4687"] * 3
+    assert len(httpx_mock.get_requests()) == 3
+
+
+async def test_search_iterate_stops_on_empty_page(client, httpx_mock):
+    # synthesized from the real hits container: a page past the end has no rows
+    empty = '<html><body><div class="search-results__hits-items" data-hits="6"></div></body></html>'
+    httpx_mock.add_response(text=SEARCH_HTML)
+    httpx_mock.add_response(text=empty)
+    hits = [hit async for hit in client.search.iterate("nature", page_size=2)]
+    assert [hit.issn for hit in hits] == ["0028-0836", "1476-4687"]
+    assert len(httpx_mock.get_requests()) == 2
+
+
+async def test_search_iterate_limit(client, httpx_mock):
+    httpx_mock.add_response(text=SEARCH_HTML)
+    hits = [hit async for hit in client.search.iterate("nature", page_size=20, limit=1)]
+    assert [hit.issn for hit in hits] == ["0028-0836"]
+
+
+async def test_ltwa_page_parses_rows(client, httpx_mock):
+    httpx_mock.add_response(text=LTWA_HTML)
+    page = await client.ltwa.page(
+        page=2, page_size=100, search="aachen", languages=["ger"]
+    )
+    assert page.page == 2
+    assert page.page_size == 100
+    assert page.search == "aachen"
+    assert page.languages == ["ger"]
+    assert page.sort == "word"
+    assert page.order == "asc"
+    assert [entry.word for entry in page.entries] == [
+        "Aabenraa",
+        "Aachen",
+        "Aachener",
+        "aakkos-",
+    ]
+    assert last_params(httpx_mock) == [
+        ("page", "2"),
+        ("page_size", "100"),
+        ("order", "asc"),
+        ("sort", "word"),
+        ("search", "aachen"),
+        ("languages", "ger"),
+    ]
+
+
+async def test_ltwa_page_rejects_page_below_one(client, httpx_mock):
+    with pytest.raises(ConfigurationError, match="page must be >= 1"):
+        await client.ltwa.page(page=0)
+    assert not httpx_mock.get_requests()
+
+
+async def test_ltwa_iterate_stops_on_empty_page(client, httpx_mock):
+    httpx_mock.add_response(text=LTWA_HTML)
+    httpx_mock.add_response(text=LTWA_EMPTY_HTML)
+    entries = [entry async for entry in client.ltwa.iterate(page_size=3)]
+    assert isinstance(entries[0], LtwaEntry)
+    assert [entry.word for entry in entries] == [
+        "Aabenraa",
+        "Aachen",
+        "Aachener",
+        "aakkos-",
+    ]
+    assert len(httpx_mock.get_requests()) == 2
+
+
+async def test_ltwa_iterate_limit(client, httpx_mock):
+    httpx_mock.add_response(text=LTWA_HTML)
+    entries = [entry async for entry in client.ltwa.iterate(page_size=3, limit=2)]
+    assert [entry.word for entry in entries] == ["Aabenraa", "Aachen"]
