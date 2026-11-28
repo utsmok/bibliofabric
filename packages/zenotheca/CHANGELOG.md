@@ -9,8 +9,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Vocabularies resource (`VocabulariesClient`): `search()`, `iterate()`,
-  and `get()` for `resourcetypes`, `licenses`, `languages`, and
-  `communitytypes`, with the `ZenothecaVocabulary` model.
+  and `get()` for the `/vocabularies/{name}` lists (`resourcetypes`,
+  `licenses`, `languages`, `communitytypes`) and for the top-level
+  `funders`, `awards`, `affiliations`, and `subjects` routes, with the
+  `ZenothecaVocabulary` model.
+- `records.communities()` for the communities of a record, and
+  `records.export()` for the twelve export formats in
+  `RECORD_EXPORT_FORMATS` (BibTeX, CSL, DataCite JSON and XML, DCAT-AP,
+  CodeMeta, CFF, and others).
 - OAI-PMH client (`OaiClient`) for `https://zenodo.org/oai2d`:
   `identify()`, `list_metadata_formats()`, `list_sets()`,
   `list_identifiers()`, `list_records()`, `get_record()`, plus

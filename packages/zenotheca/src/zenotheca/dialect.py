@@ -32,6 +32,31 @@ ZENODO_MAX_RESULT_WINDOW = 10_000
 #: Sort options the records search accepts (verified 2026-11-27).
 RECORD_SORT_OPTIONS = frozenset({"bestmatch", "mostrecent", "-mostrecent"})
 
+#: Vocabularies with their own top-level route (``/api/funders`` and so on)
+#: instead of ``/api/vocabularies/{name}``, where the same names answer no
+#: entries (verified 2026-11-28: 758 funders match ``european``, and the
+#: awards hold 3.5 million entries).
+TOP_LEVEL_VOCABULARIES = frozenset({"affiliations", "awards", "funders", "subjects"})
+
+#: Export formats of ``/records/{id}/export/{format}``, each answered 200
+#: with its own media type on 2026-11-28. ``ris`` and ``xml`` answer 404.
+RECORD_EXPORT_FORMATS = frozenset(
+    {
+        "bibtex",
+        "cff",
+        "codemeta",
+        "csl",
+        "datacite-json",
+        "datacite-xml",
+        "dcat-ap",
+        "dublincore",
+        "geojson",
+        "json",
+        "json-ld",
+        "marcxml",
+    }
+)
+
 #: Rate class of the two search routes (see :func:`is_search_route`).
 ZENODO_SEARCH_RATE_CLASS = "search"
 
@@ -99,7 +124,9 @@ def is_search_route(path: str, api_path: str = "/api") -> bool:
 
 
 __all__ = [
+    "RECORD_EXPORT_FORMATS",
     "RECORD_SORT_OPTIONS",
+    "TOP_LEVEL_VOCABULARIES",
     "ZENODO_API_BASE_URL",
     "ZENODO_DIALECT",
     "ZENODO_DIALECT_AUTHED",

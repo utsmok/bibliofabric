@@ -100,6 +100,29 @@ print(target.stat().st_size)
 
 Verify the download against the record's `md5:` checksum if you need to.
 
+## Communities of a record
+
+`communities()` lists the communities that include one record version, as
+a page of `ZenothecaCommunity` models.
+
+```python
+page = await client.records.communities(24378467)
+[community.slug for community in page.results]  # ["ror-data"]
+```
+
+## Export formats
+
+`export()` returns one record version in an export format as text. The
+exports live on the website (`https://zenodo.org/records/{id}/export/{format}`),
+not under `/api`. `RECORD_EXPORT_FORMATS` lists the twelve formats that
+answered on 2026-11-28: `bibtex`, `cff`, `codemeta`, `csl`, `datacite-json`,
+`datacite-xml`, `dcat-ap`, `dublincore`, `geojson`, `json`, `json-ld`, and
+`marcxml`. An unknown format answers 404 and raises `NotFoundError`.
+
+```python
+bibtex = await client.records.export(24378467, "bibtex")
+```
+
 ## The access token
 
 Without a token the client sends no `Authorization` header and clamps

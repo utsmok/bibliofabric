@@ -12,7 +12,7 @@ from bibliofabric.paging import Page
 from pydantic import BaseModel
 
 from ..ids import normalize_record_id
-from ..models import ZenothecaFiles, ZenothecaRecord
+from ..models import ZenothecaCommunity, ZenothecaFiles, ZenothecaRecord
 from .dialect import ZenothecaResourceClient
 
 
@@ -233,6 +233,60 @@ class ZenothecaRecordsClient(ZenothecaResourceClient[ZenothecaRecord]):
             request=getattr(response, "request", None),
             response=response,
         )
+
+    async def communities(
+        self,
+        id: str | int,
+        *,
+        page: int | None = None,
+        page_size: int | None = None,
+    ) -> Page[ZenothecaCommunity]:
+        """List the communities that include one record version.
+
+        Zenodo pages the list like a search and reports the number of
+        communities in ``hits.total``.
+        """
+        query_params = self._search_params(
+            filters=None, page=page, page_size=page_size, params=None
+        )
+        response = await self._client.request(
+            "GET",
+            f"{self.path.rstrip('/')}/{self.normalize_id(str(id))}/communities",
+            params=query_params,
+        )
+        body = self._client.parse_json(response)
+        unwrapper = self._client.unwrapper
+        request = getattr(response, "request", None)
+        return Page(
+            results=[
+                validate_model(
+                    ZenothecaCommunity, entry, request=request, response=response
+                )
+                for entry in unwrapper.results(body)
+            ],
+            total=unwrapper.total(body),
+            next_cursor=None,
+            page=page if page is not None else self.dialect.page_start,
+            meta=unwrapper.meta(body),
+        )
+
+    async def export(self, id: str | int, format: str) -> str:
+        """Return one record version in an export format, as text.
+
+        ``format`` is a name from :data:`zenotheca.RECORD_EXPORT_FORMATS`,
+        such as ``bibtex``, ``csl``, ``datacite-json``, or ``dcat-ap``. The
+        exports live on the website (``/records/{id}/export/{format}``), not
+        under ``/api``; an unknown format answers 404.
+        """
+        wanted = format.strip()
+        if not wanted or "/" in wanted:
+            raise ConfigurationError(f"{format!r} is not a Zenodo export format.")
+        origin = httpx.URL(self._client.base_url).copy_with(path="/")
+        url = origin.join(
+            f"records/{self.normalize_id(str(id))}/export/{quote(wanted, safe='')}"
+        )
+        response = await self._client.request("GET", str(url))
+        return response.text
 
     async def download_file(
         self,

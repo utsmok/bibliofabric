@@ -32,7 +32,9 @@ from ._sync.records import ZenothecaRecordsSyncClient
 from ._sync.vocabularies import VocabulariesSyncClient
 from .config import ZenothecaSettings, get_settings
 from .dialect import (
+    RECORD_EXPORT_FORMATS,
     RECORD_SORT_OPTIONS,
+    TOP_LEVEL_VOCABULARIES,
     ZENODO_API_BASE_URL,
     ZENODO_DEFAULT_PAGE_SIZE,
     ZENODO_MAX_PAGE_SIZE,
@@ -73,7 +75,9 @@ __all__ = [
     "NetworkError",
     "NotFoundError",
     "Page",
+    "RECORD_EXPORT_FORMATS",
     "RECORD_SORT_OPTIONS",
+    "TOP_LEVEL_VOCABULARIES",
     "RateLimitError",
     "TimeoutError",
     "OaiClient",

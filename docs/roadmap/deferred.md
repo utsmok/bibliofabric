@@ -37,6 +37,7 @@ Wave 1 needed two of the six planned core additions. `BaseApiClient.default_head
 | Typed facet aggregations | Search answers `aggregations` with a different bucket shape per facet. The client returns them as plain dicts in `Page.meta`, so no data is lost. | A decision on which facets need typed models. |
 | Typed models for OAI-PMH metadata schemas | The metadata element depends on the metadata prefix (eight prefixes on 2026-11-27). Each record carries the metadata as raw XML. | A decision on which prefixes need typed models. |
 | Live check of the token settings | No Zenodo token exists. The `Authorization` header and the page size of 100 with a token are covered by offline tests only. | A Zenodo access token in `.env`. |
+| `GET /api/records/{id}/files-archive` (every file of a record as one zip) and `GET /api/names` | Both answer 403 without a token (verified 2026-11-28). `download_file()` fetches each file of a record. | A Zenodo access token in `.env`. |
 
 ## DataCite (`dataphora`)
 

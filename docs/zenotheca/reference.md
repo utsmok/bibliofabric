@@ -61,6 +61,8 @@ Only the members that Zenodo changes or adds are shown here.
         - latest
         - files
         - download_file
+        - communities
+        - export
 
 ::: zenotheca._async.communities.ZenothecaCommunitiesClient
     options:
@@ -142,6 +144,8 @@ Only the members that Zenodo changes or adds are shown here.
         - ZENODO_DEFAULT_PAGE_SIZE
         - ZENODO_MAX_RESULT_WINDOW
         - RECORD_SORT_OPTIONS
+        - RECORD_EXPORT_FORMATS
+        - TOP_LEVEL_VOCABULARIES
         - ZENODO_SEARCH_RATE_CLASS
         - ZENODO_SEARCH_REQUESTS_PER_SECOND
         - is_search_route

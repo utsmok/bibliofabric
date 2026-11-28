@@ -8,17 +8,19 @@ from bibliofabric import BaseApiClient, Page, ValidationError
 from bibliofabric.exceptions import ConfigurationError
 from pydantic import ValidationError as PydanticValidationError
 
+from ..dialect import TOP_LEVEL_VOCABULARIES
 from ..models import ZenothecaVocabulary
 
 
 class VocabulariesClient:
-    """Client for the ``/vocabularies`` endpoints.
+    """Client for the vocabulary routes.
 
-    A vocabulary is a small reference list (``resourcetypes``,
-    ``licenses``, ``languages``, ``communitytypes``); ``funders`` and
-    ``affiliations`` exist but answer no entries yet, and unknown names
-    answer 404. Entries page like a search (``size``, ``page``, ``q``,
-    sorted by title).
+    A vocabulary is a reference list. Most live under ``/vocabularies/{name}``
+    (``resourcetypes``, ``licenses``, ``languages``, ``communitytypes``).
+    The four large ones have their own top-level routes, which the client
+    picks for these names: ``funders``, ``awards``, ``affiliations``, and
+    ``subjects`` (``/funders`` and so on). Unknown names answer 404. Entries
+    page like a search (``size``, ``page``, ``q``).
     """
 
     def __init__(self, client: BaseApiClient) -> None:
@@ -160,6 +162,8 @@ class VocabulariesClient:
         wanted = name.strip()
         if not wanted or "/" in wanted:
             raise ConfigurationError(f"{name!r} is not a Zenodo vocabulary name.")
+        if wanted in TOP_LEVEL_VOCABULARIES:
+            return wanted
         return f"vocabularies/{quote(wanted, safe='')}"
 
 

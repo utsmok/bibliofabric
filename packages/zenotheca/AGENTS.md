@@ -74,8 +74,12 @@ tests carry the `live_api` marker.
 ## Known gaps
 
 - Write routes (deposits, drafts, uploads, publishing) are unwrapped.
-- `funders` and `affiliations` vocabularies exist upstream but answer no
-  entries; unknown vocabulary names answer 404.
+- `/api/vocabularies/funders` and `/api/vocabularies/affiliations` answer no
+  entries; the client sends `funders`, `awards`, `affiliations`, and
+  `subjects` to their top-level routes, which do. Unknown vocabulary names
+  answer 404; `/api/names` answers 403.
+- `/api/records/{id}/files-archive` (all files as one zip) answers 403
+  without a token and is not wrapped; `download_file()` covers each file.
 - Authenticated page size 100 is implemented but unverified (no token was
   available on 2026-11-27). The limits for token holders are unverified
   too; the `search` class applies to them as well.

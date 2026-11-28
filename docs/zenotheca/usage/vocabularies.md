@@ -1,12 +1,15 @@
 # Vocabularies
 
-The `vocabularies` resource wraps Zenodo's vocabulary routes on
-`https://zenodo.org/api/vocabularies`. A vocabulary is a small reference
-list; the ones with entries on 2026-11-27 are `resourcetypes` (43 entries),
-`licenses` (37 entries for the query `creative`), `languages`, and
-`communitytypes` (4 entries: `event`, `organization`, `project`, `topic`).
-`funders` and `affiliations` exist as routes but answered no entries, and
-unknown names answer 404.
+The `vocabularies` resource wraps Zenodo's vocabulary routes. A vocabulary
+is a reference list. The small ones live on
+`https://zenodo.org/api/vocabularies/{name}`; on 2026-11-27 these with
+entries were `resourcetypes` (43 entries), `licenses` (37 entries for the
+query `creative`), `languages`, and `communitytypes` (4 entries: `event`,
+`organization`, `project`, `topic`). Four large vocabularies have their own
+top-level routes, and the client sends these names there: `funders` (to
+`/api/funders`), `awards`, `affiliations`, and `subjects`. On 2026-11-28 the
+query `european` matched 758 funders and 93,558 awards. Unknown names answer
+404.
 
 Each entry is a `ZenothecaVocabulary`. `title` and `description` map
 language codes to texts; `props` carries the vocabulary specific extras

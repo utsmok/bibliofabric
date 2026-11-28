@@ -105,9 +105,16 @@ A pace of 2 requests per second therefore fails on a long iteration over a searc
 - Verified vocabularies with entries: `resourcetypes` (43 entries),
   `licenses` (37 for `q=creative`), `languages` (22 for `q=english`), and
   `communitytypes` (4: `event`, `organization`, `project`, `topic`).
-- `funders` and `affiliations` answer an empty list; unknown names such as
-  `datatypes` or `freekeywords` answer HTTP 404 with
-  `{"status": 404, "message": "Not found."}`.
+- `funders` and `affiliations` under `/api/vocabularies` answer an empty
+  list, but the same vocabularies have entries on their own top-level
+  routes: `/api/funders`, `/api/awards`, `/api/affiliations`, and
+  `/api/subjects` (verified 2026-11-28). Unknown names such as `datatypes`
+  or `freekeywords` answer HTTP 404 with `{"status": 404, "message": "Not
+  found."}`, and `/api/names` answers 403.
+- Record exports live on the website, not under `/api`:
+  `/records/{id}/export/{format}` answers twelve formats with their own media
+  types; `ris` and `xml` answer 404. `/api/records/{id}/files-archive`
+  answers 403 without a token.
 - An entry carries `id`, `created`, `updated`, `links.self`, `revision_id`,
   `title` and `description` as language maps, an optional `icon`, `tags`,
   `props`, and `type`.

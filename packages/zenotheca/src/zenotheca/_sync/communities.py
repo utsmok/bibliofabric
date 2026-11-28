@@ -4,10 +4,10 @@
 from collections.abc import Mapping, Sequence
 from typing import Any, override
 
-from bibliofabric import OnError, validate_model
+from bibliofabric import OnError, ValidationError, validate_model
 from bibliofabric.exceptions import ConfigurationError
 from bibliofabric.paging import Page
-from pydantic import BaseModel, ValidationError as PydanticValidationError
+from pydantic import BaseModel
 
 from ..ids import normalize_community_slug
 from ..models import ZenothecaCommunity, ZenothecaRecord
@@ -77,7 +77,7 @@ class ZenothecaCommunitiesSyncClient(ZenothecaResourceSyncClient[ZenothecaCommun
                         ZenothecaRecord, record, request=request, response=response
                     )
                 )
-            except PydanticValidationError as error:
+            except ValidationError as error:
                 if on_error == "skip":
                     if failures is not None:
                         failures.append((record, error))
